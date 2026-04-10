@@ -1,0 +1,17 @@
+{
+  "mode": "yolo",
+  "depth": "comprehensive",
+  "parallelization": true,
+  "commit_docs": true,
+  "model_profile": "quality",
+  "workflow": {
+    "research": true,
+    "job_check": true,
+    "verifier": true,
+    "auto_advance": false
+  },
+  "gates": {
+    "require_verification": true,
+    "require_tests": true
+  }
+}

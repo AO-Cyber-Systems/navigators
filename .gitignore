@@ -39,5 +39,4 @@ node_modules/
 *.db
 *.sqlite
 
-# Planning (DevFlow)
-.planning/
+# Planning (DevFlow) - tracked in git per config
