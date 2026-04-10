@@ -1,0 +1,43 @@
+# IDE
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS
+.DS_Store
+Thumbs.db
+
+# Go
+/bin/
+/vendor/
+*.exe
+
+# Flutter
+.dart_tool/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+build/
+*.iml
+
+# Environment
+.env
+.env.*
+!.env.example
+
+# Dependencies
+node_modules/
+
+# Generated
+*.g.dart
+*.freezed.dart
+*.pb.dart
+*.connect.dart
+
+# Database
+*.db
+*.sqlite
+
+# Planning (DevFlow)
+.planning/
