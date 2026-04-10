@@ -162,13 +162,86 @@ Deferred to future release. Tracked but not in current roadmap.
 
 | Requirement | Objective | Status |
 |-------------|-----------|--------|
-| *(populated during roadmap creation)* | | |
+| AUTH-01 | Objective 1 | Pending |
+| AUTH-02 | Objective 1 | Pending |
+| AUTH-03 | Objective 1 | Pending |
+| AUTH-04 | Objective 1 | Pending |
+| AUTH-05 | Objective 1 | Pending |
+| AUTH-06 | Objective 1 | Pending |
+| AUTH-07 | Objective 1 | Pending |
+| AUTH-08 | Objective 1 | Pending |
+| AUTH-09 | Objective 1 | Pending |
+| VOTER-01 | Objective 2 | Pending |
+| VOTER-02 | Objective 2 | Pending |
+| VOTER-03 | Objective 2 | Pending |
+| VOTER-04 | Objective 2 | Pending |
+| VOTER-05 | Objective 2 | Pending |
+| VOTER-06 | Objective 2 | Pending |
+| VOTER-07 | Objective 2 | Pending |
+| VOTER-08 | Objective 2 | Pending |
+| VOTER-09 | Objective 2 | Pending |
+| VOTER-10 | Objective 2 | Pending |
+| TURF-01 | Objective 3 | Pending |
+| TURF-02 | Objective 3 | Pending |
+| TURF-03 | Objective 3 | Pending |
+| TURF-04 | Objective 3 | Pending |
+| TURF-05 | Objective 3 | Pending |
+| TURF-06 | Objective 3 | Pending |
+| TURF-07 | Objective 3 | Pending |
+| TURF-08 | Objective 3 | Pending |
+| SYNC-01 | Objective 4 | Pending |
+| SYNC-02 | Objective 4 | Pending |
+| SYNC-03 | Objective 4 | Pending |
+| SYNC-04 | Objective 4 | Pending |
+| SYNC-05 | Objective 4 | Pending |
+| SYNC-06 | Objective 4 | Pending |
+| SYNC-07 | Objective 4 | Pending |
+| DOOR-01 | Objective 5 | Pending |
+| DOOR-02 | Objective 5 | Pending |
+| DOOR-03 | Objective 5 | Pending |
+| DOOR-04 | Objective 5 | Pending |
+| DOOR-05 | Objective 5 | Pending |
+| NOTE-01 | Objective 5 | Pending |
+| NOTE-02 | Objective 5 | Pending |
+| NOTE-03 | Objective 5 | Pending |
+| NOTE-04 | Objective 5 | Pending |
+| SMS-01 | Objective 6 | Pending |
+| SMS-02 | Objective 6 | Pending |
+| SMS-03 | Objective 6 | Pending |
+| SMS-04 | Objective 6 | Pending |
+| SMS-05 | Objective 6 | Pending |
+| SMS-06 | Objective 6 | Pending |
+| SMS-07 | Objective 6 | Pending |
+| SMS-08 | Objective 6 | Pending |
+| CALL-01 | Objective 7 | Pending |
+| CALL-02 | Objective 7 | Pending |
+| CALL-03 | Objective 7 | Pending |
+| CALL-04 | Objective 7 | Pending |
+| TASK-01 | Objective 8 | Pending |
+| TASK-02 | Objective 8 | Pending |
+| TASK-03 | Objective 8 | Pending |
+| TASK-04 | Objective 8 | Pending |
+| TASK-05 | Objective 8 | Pending |
+| PUSH-01 | Objective 8 | Pending |
+| PUSH-02 | Objective 8 | Pending |
+| PUSH-03 | Objective 8 | Pending |
+| ANLYT-01 | Objective 9 | Pending |
+| ANLYT-02 | Objective 9 | Pending |
+| ANLYT-03 | Objective 9 | Pending |
+| ANLYT-04 | Objective 9 | Pending |
+| ANLYT-05 | Objective 9 | Pending |
+| VOL-01 | Objective 10 | Pending |
+| VOL-02 | Objective 10 | Pending |
+| VOL-03 | Objective 10 | Pending |
+| EVT-01 | Objective 10 | Pending |
+| EVT-02 | Objective 10 | Pending |
+| EVT-03 | Objective 10 | Pending |
 
 **Coverage:**
-- v1 requirements: 55 total
-- Mapped to objectives: 0
-- Unmapped: 55 ⚠️
+- v1 requirements: 74 total
+- Mapped to objectives: 74
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-04-10*
-*Last updated: 2026-04-10 after initial definition*
+*Last updated: 2026-04-10 after roadmap creation*
