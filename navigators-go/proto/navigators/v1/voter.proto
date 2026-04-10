@@ -1,0 +1,8 @@
+syntax = "proto3";
+
+package navigators.v1;
+
+option go_package = "navigators-go/gen/go/navigators/v1;navigatorsv1";
+
+// VoterService handles voter data operations.
+service VoterService {}
