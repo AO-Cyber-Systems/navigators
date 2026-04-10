@@ -1,0 +1,27 @@
+name: navigators
+description: "MaineGOP Voter Outreach Platform"
+publish_to: none
+version: 1.0.0
+
+environment:
+  sdk: ^3.11.1
+
+dependencies:
+  flutter:
+    sdk: flutter
+  flutter_riverpod: ^2.6.1
+  eden_platform_flutter:
+    path: ../../eden-libs/eden-platform-flutter
+  eden_ui_flutter:
+    path: ../../eden-libs/eden-ui-flutter
+  eden_platform_api_dart:
+    path: ../../eden-libs/eden-platform-api-dart
+  go_router: ^14.0.0
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^6.0.0
+
+flutter:
+  uses-material-design: true

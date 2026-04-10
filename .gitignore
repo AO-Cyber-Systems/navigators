@@ -12,6 +12,7 @@ Thumbs.db
 /bin/
 /vendor/
 *.exe
+navigators-go/server
 
 # Flutter
 .dart_tool/
