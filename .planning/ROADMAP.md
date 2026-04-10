@@ -31,12 +31,12 @@ Navigators goes from foundation to field-ready in 10 objectives. The first four 
   3. Navigator can only see voters in their assigned turfs; Super Navigator sees their team; Admin sees everything
   4. Every voter data access is recorded in an audit trail visible to Admins
   5. Inactive sessions time out and Admins can revoke any session
-**Plans**: TBD
+**TRDs:** 3 plans in 3 waves
 
 Jobs:
-- [ ] 01-01: TBD
-- [ ] 01-02: TBD
-- [ ] 01-03: TBD
+- [ ] 01-01: Project scaffold + Docker Compose + Justfile + Flutter app shell
+- [ ] 01-02: Auth + RBAC + permission matrix + admin user mgmt + password reset + sessions
+- [ ] 01-03: Domain schema (turfs/teams/audit) + turf-scoped filtering + audit viewer
 
 ### Objective 2: Voter Data Pipeline
 **Goal**: Admins can import voter files and all users can search, filter, and view complete voter profiles
@@ -194,7 +194,7 @@ Jobs:
 
 | Objective | Jobs Complete | Status | Completed |
 |-----------|--------------|--------|-----------|
-| 1. Foundation + Auth | 0/3 | Not started | - |
+| 1. Foundation + Auth | 0/3 | Planning complete | - |
 | 2. Voter Data Pipeline | 0/3 | Not started | - |
 | 3. Turf Management + Maps | 0/3 | Not started | - |
 | 4. Offline Sync Engine | 0/3 | Not started | - |
