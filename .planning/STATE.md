@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-04-10)
 **Objective:** 6 of 10 (SMS Integration)
 **Current Job:** 3
 **Total Jobs in Objective:** 3
-**Status:** Ready to execute
+**Status:** Objective complete — ready for verification
 **Last Activity:** 2026-04-11
 
 Progress: [##........] 13%
@@ -47,6 +47,7 @@ Progress: [##........] 13%
 | Objective 05 P03 | 5min | 2 tasks | 5 files |
 | Objective 06 P01 | 12min | 2 tasks | 12 files |
 | Objective 06 P02 | 8min | 2 tasks | 10 files |
+| Objective 06-sms-integration P03 | 6min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -106,6 +107,9 @@ Recent decisions affecting current work:
 - [Objective 06]: VoterContext struct with 5 merge fields for text/template rendering
 - [Objective 06]: Campaign segment filtering simplified to company-wide for v1; full JSONB parsing deferred
 - [Objective 06]: Rate limiter at 1 msg/sec for A2P sends using golang.org/x/time/rate
+- [Objective 06-sms-integration]: Admin sees Templates/Campaigns via AppBar IconButtons (not sub-tabs) for simplicity
+- [Objective 06-sms-integration]: Optimistic message add in thread screen with rollback on send error
+- [Objective 06-sms-integration]: Local template preview with sample data for unsaved templates
 
 ### Pending Todos
 
