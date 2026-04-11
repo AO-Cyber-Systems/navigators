@@ -18,6 +18,7 @@ const (
 	FeatureSMS         rbac.Feature = "sms"
 	FeatureCallScripts rbac.Feature = "call_scripts"
 	FeatureTasks       rbac.Feature = "tasks"
+	FeatureAnalytics   rbac.Feature = "analytics"
 )
 
 // NavigatorsPermissionMatrix returns the RBAC permission matrix for the Navigators app.
@@ -88,6 +89,10 @@ func NavigatorsPermissionMatrix() rbac.PermissionMatrix {
 			"create": rbac.RoleLevelManager, // Super Navigator (60)
 			"assign": rbac.RoleLevelManager, // Super Navigator (60)
 			"admin":  rbac.RoleLevelAdmin,   // Admin (80)
+		},
+		FeatureAnalytics: {
+			"view":   rbac.RoleLevelMember, // Navigator (40) -- all roles can view dashboard
+			"export": rbac.RoleLevelAdmin,  // Admin (80) -- export is admin-only
 		},
 	}
 }
@@ -202,6 +207,13 @@ func NavigatorsProcedurePermissions() map[string]server.Permission {
 		// Task sync
 		"/navigators.v1.SyncService/PullTasks":     {Feature: "sync", Action: "pull"},
 		"/navigators.v1.SyncService/PullTaskNotes": {Feature: "sync", Action: "pull"},
+
+		// Analytics (read endpoints accessible to all authenticated roles)
+		"/navigators.v1.AnalyticsService/GetDashboardMetrics":  {Feature: "analytics", Action: "view"},
+		"/navigators.v1.AnalyticsService/GetTrendData":          {Feature: "analytics", Action: "view"},
+		"/navigators.v1.AnalyticsService/GetPerformanceReport":  {Feature: "analytics", Action: "view"},
+		// Export is admin-only
+		"/navigators.v1.AnalyticsService/ExportData": {Feature: "analytics", Action: "export"},
 	}
 }
 

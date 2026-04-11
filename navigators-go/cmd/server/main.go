@@ -234,6 +234,13 @@ func main() {
 	callScriptService := navpkg.NewCallScriptService(navQueries, pgBackend.Pool())
 	taskService := navpkg.NewTaskService(navQueries, pgBackend.Pool(), js)
 
+	// --- Analytics + Export services ---
+	analyticsService := navpkg.NewAnalyticsService(navQueries, pgBackend.Pool(), turfScopedFilter)
+	exportService := navpkg.NewExportService(navQueries, pgBackend.Pool(), turfScopedFilter)
+	analyticsHandler := navpkg.NewAnalyticsHandler(analyticsService, exportService)
+	analyticsPath, analyticsHTTPHandler := navigatorsv1connect.NewAnalyticsServiceHandler(analyticsHandler, interceptors)
+	mux.Handle(analyticsPath, analyticsHTTPHandler)
+
 	// --- Task handler ---
 	taskHandler := navpkg.NewTaskHandler(taskService, fcmDisp)
 	taskPath, taskHTTPHandler := navigatorsv1connect.NewTaskServiceHandler(taskHandler, interceptors)
