@@ -14,10 +14,15 @@ import 'features/sms/template_list_screen.dart';
 import 'features/dashboard/admin_dashboard_screen.dart';
 import 'features/dashboard/navigator_dashboard_screen.dart';
 import 'features/dashboard/team_dashboard_screen.dart';
+import 'features/events/event_list_screen.dart';
+import 'features/leaderboard/leaderboard_screen.dart';
+import 'features/onboarding/onboarding_screen.dart';
 import 'features/sync/sync_status_widget.dart';
 import 'features/sync/turf_download_screen.dart';
 import 'features/tasks/task_list_screen.dart';
+import 'features/training/training_list_screen.dart';
 import 'features/voters/voter_list_screen.dart';
+import 'services/volunteer_service.dart';
 import 'sync/sync_engine.dart';
 import 'sync/sync_status.dart';
 
@@ -48,6 +53,8 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
   int _selectedTab = 0;
   bool _wasAuthenticated = false;
   bool _hasTriggeredInitialSync = false;
+  bool _onboardingComplete = true; // assume complete until checked
+  bool _onboardingChecked = false;
   late final AppLifecycleListener _lifecycleListener;
 
   @override
@@ -122,6 +129,24 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
 
     await _ensureDatabaseInitialized();
 
+    // Check onboarding status from server
+    try {
+      final volunteerService = ref.read(volunteerServiceProvider);
+      final status = await volunteerService.getOnboardingStatus();
+      final complete = status['onboardingComplete'] == true;
+      if (mounted) {
+        setState(() {
+          _onboardingComplete = complete;
+          _onboardingChecked = true;
+        });
+      }
+    } catch (_) {
+      // Network error: assume complete to avoid blocking existing users
+      if (mounted) {
+        setState(() => _onboardingChecked = true);
+      }
+    }
+
     // Check if we have local data; if not, show turf download screen
     try {
       final db = ref.read(databaseProvider);
@@ -157,6 +182,8 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
     } else if (!auth.isAuthenticated && _wasAuthenticated) {
       _wasAuthenticated = false;
       _hasTriggeredInitialSync = false;
+      _onboardingComplete = true;
+      _onboardingChecked = false;
     }
 
     if (!auth.isAuthenticated) {
@@ -168,6 +195,13 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
           : PlatformLoginScreen(
               onSignUpTap: () => setState(() => _showSignUp = true),
             );
+    }
+
+    // Onboarding gate: redirect new users to onboarding wizard
+    if (auth.isAuthenticated && _onboardingChecked && !_onboardingComplete) {
+      return OnboardingScreen(
+        onComplete: () => setState(() => _onboardingComplete = true),
+      );
     }
 
     final isAdmin = auth.role?.toLowerCase() == 'admin';
@@ -199,6 +233,11 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
         icon: Icons.task_alt_outlined,
         activeIcon: Icons.task_alt,
       ),
+      const _TabItem(
+        label: 'Events',
+        icon: Icons.event_outlined,
+        activeIcon: Icons.event,
+      ),
       if (isAdmin)
         const _TabItem(
           label: 'Import',
@@ -221,6 +260,7 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
           const TurfMapScreen(),
           _buildSmsTab(isAdmin),
           const TaskListScreen(),
+          const EventListScreen(),
           if (isAdmin) const ImportScreen(),
         ],
       ),
@@ -280,6 +320,24 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
         title: const Text('Dashboard'),
         actions: [
           const SyncStatusWidget(),
+          IconButton(
+            icon: const Icon(Icons.leaderboard_outlined),
+            tooltip: 'Leaderboard',
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const LeaderboardScreen(),
+              ),
+            ),
+          ),
+          IconButton(
+            icon: const Icon(Icons.school_outlined),
+            tooltip: 'Training',
+            onPressed: () => Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const TrainingListScreen(),
+              ),
+            ),
+          ),
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
