@@ -5,17 +5,17 @@
 See: .planning/PROJECT.md (updated 2026-04-10)
 
 **Core value:** Navigators can go into the field with a complete voter list, map, and outreach tools -- work entirely offline in rural Maine -- and have every interaction automatically sync back to give leadership real-time visibility into grassroots organizing efforts.
-**Current focus:** Analytics Dashboards (Objective 9)
+**Current focus:** PROJECT COMPLETE -- All 10 objectives delivered
 
 ## Current Position
 
-**Objective:** 9 of 10 (Analytics Dashboards)
-**Current Job:** 3
-**Total Jobs in Objective:** 3
-**Status:** Objective complete — ready for verification
+**Objective:** 10 of 10 (Volunteer Management & Events)
+**Current Job:** 2
+**Total Jobs in Objective:** 2
+**Status:** PROJECT COMPLETE -- all 10 objectives delivered
 **Last Activity:** 2026-04-11
 
-Progress: [##........] 13%
+Progress: [##########] 100%
 
 ## Performance Metrics
 
@@ -57,6 +57,7 @@ Progress: [##........] 13%
 | Objective 09 P02 | 4min | 2 tasks | 8 files |
 | Objective 09 P03 | 4min | 2 tasks | 6 files |
 | Objective 10 P01 | 12min | 2 tasks | 25 files |
+| Objective 10 P02 | 9min | 2 tasks | 23 files |
 
 ## Accumulated Context
 
@@ -142,6 +143,10 @@ Recent decisions affecting current work:
 - [Objective 10]: Leaderboard aggregation over contact_logs + event_checkins with time window param
 - [Objective 10]: Training materials use MinIO presigned URLs with 15-minute expiry
 - [Objective 10]: EventWorker uses separate NAVIGATORS_EVENTS NATS stream; reminder dedup via last_reminder_sent_at (2-hour threshold)
+- [Objective 10]: Onboarding gate defaults to complete on network error to avoid blocking existing users
+- [Objective 10]: Events and training pull sync are company-wide (not turf-scoped)
+- [Objective 10]: VolunteerService combines OnboardingService, LeaderboardService, TrainingService RPCs into one Flutter client
+- [Objective 10]: Leaderboard is online-only (aggregation query not suitable for local storage)
 
 ### Pending Todos
 
@@ -156,11 +161,14 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-04-11
-Stopped at: Completed 09-02-TRD.md
+Stopped at: Completed 10-02-TRD.md -- PROJECT COMPLETE
 Resume file: None
 
 ## History
 
+- 2026-04-11: PROJECT COMPLETE -- All 10 objectives, 27 TRDs delivered
+- 2026-04-11: Completed 10-02-TRD (Onboarding wizard, event screens, leaderboard, training viewer, Drift tables/sync, app.dart integration)
+- 2026-04-11: Completed 10-01-TRD (Volunteer management backend: OnboardingService, EventService, LeaderboardService, TrainingService, migration 016)
 - 2026-04-11: Completed 09-02-TRD (Flutter dashboard UI: AnalyticsService client, NavigatorDashboardScreen, TeamDashboardScreen, fl_chart widgets, role-based Home tab)
 - 2026-04-11: Completed 09-01-TRD (Analytics proto, SQL aggregation queries, AnalyticsService with role scoping, ExportService with CSV/Excel streaming, handler + server wiring)
 - 2026-04-11: Completed 08-03-TRD (Flutter task UI screens, NotificationService, TaskService, PUSH-03 sync alert, Tasks tab)

@@ -17,7 +17,7 @@ Navigators goes from foundation to field-ready in 10 objectives. The first four 
 - [x] **Objective 7: Phone Calls + Scripts** - Click-to-call, post-call dispositions, and call scripts
 - [x] **Objective 8: Tasks + Collaboration** - Task CRUD, auto-progress, push notifications
 - [x] **Objective 9: Analytics + Dashboards** - Per-role dashboards, heat maps, metrics, and data export
-- [ ] **Objective 10: Volunteer Management + Events** - Onboarding flow, events, leaderboards, training materials
+- [x] **Objective 10: Volunteer Management + Events** - Onboarding flow, events, leaderboards, training materials (completed 2026-04-11)
 
 ## Objective Details
 
@@ -203,7 +203,7 @@ Jobs:
 | 7. Phone Calls + Scripts | 0/2 | Not started | - |
 | 8. Tasks + Collaboration | 0/3 | Not started | - |
 | 9. Analytics + Dashboards | 0/3 | Not started | - |
-| 10. Volunteer Management + Events | 1/2 | In Progress|  |
+| 10. Volunteer Management + Events | 2/2 | Complete   | 2026-04-11 |
 
 ---
 *Roadmap created: 2026-04-10*
