@@ -2415,6 +2415,586 @@ func (x *SyncTaskNote) GetCreatedAt() string {
 	return ""
 }
 
+type PullEventsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SinceCursor   string                 `protobuf:"bytes,1,opt,name=since_cursor,json=sinceCursor,proto3" json:"since_cursor,omitempty"`
+	BatchSize     int32                  `protobuf:"varint,2,opt,name=batch_size,json=batchSize,proto3" json:"batch_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PullEventsRequest) Reset() {
+	*x = PullEventsRequest{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[32]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PullEventsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PullEventsRequest) ProtoMessage() {}
+
+func (x *PullEventsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[32]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PullEventsRequest.ProtoReflect.Descriptor instead.
+func (*PullEventsRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{32}
+}
+
+func (x *PullEventsRequest) GetSinceCursor() string {
+	if x != nil {
+		return x.SinceCursor
+	}
+	return ""
+}
+
+func (x *PullEventsRequest) GetBatchSize() int32 {
+	if x != nil {
+		return x.BatchSize
+	}
+	return 0
+}
+
+type PullEventsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Events        []*SyncEvent           `protobuf:"bytes,1,rep,name=events,proto3" json:"events,omitempty"`
+	Rsvps         []*SyncEventRSVP       `protobuf:"bytes,2,rep,name=rsvps,proto3" json:"rsvps,omitempty"`
+	NextCursor    string                 `protobuf:"bytes,3,opt,name=next_cursor,json=nextCursor,proto3" json:"next_cursor,omitempty"`
+	HasMore       bool                   `protobuf:"varint,4,opt,name=has_more,json=hasMore,proto3" json:"has_more,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PullEventsResponse) Reset() {
+	*x = PullEventsResponse{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[33]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PullEventsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PullEventsResponse) ProtoMessage() {}
+
+func (x *PullEventsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[33]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PullEventsResponse.ProtoReflect.Descriptor instead.
+func (*PullEventsResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{33}
+}
+
+func (x *PullEventsResponse) GetEvents() []*SyncEvent {
+	if x != nil {
+		return x.Events
+	}
+	return nil
+}
+
+func (x *PullEventsResponse) GetRsvps() []*SyncEventRSVP {
+	if x != nil {
+		return x.Rsvps
+	}
+	return nil
+}
+
+func (x *PullEventsResponse) GetNextCursor() string {
+	if x != nil {
+		return x.NextCursor
+	}
+	return ""
+}
+
+func (x *PullEventsResponse) GetHasMore() bool {
+	if x != nil {
+		return x.HasMore
+	}
+	return false
+}
+
+type SyncEvent struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	CompanyId     string                 `protobuf:"bytes,2,opt,name=company_id,json=companyId,proto3" json:"company_id,omitempty"`
+	Title         string                 `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
+	Description   string                 `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
+	EventType     string                 `protobuf:"bytes,5,opt,name=event_type,json=eventType,proto3" json:"event_type,omitempty"`
+	Status        string                 `protobuf:"bytes,6,opt,name=status,proto3" json:"status,omitempty"`
+	StartsAt      string                 `protobuf:"bytes,7,opt,name=starts_at,json=startsAt,proto3" json:"starts_at,omitempty"`
+	EndsAt        string                 `protobuf:"bytes,8,opt,name=ends_at,json=endsAt,proto3" json:"ends_at,omitempty"`
+	LocationName  string                 `protobuf:"bytes,9,opt,name=location_name,json=locationName,proto3" json:"location_name,omitempty"`
+	LocationLat   float64                `protobuf:"fixed64,10,opt,name=location_lat,json=locationLat,proto3" json:"location_lat,omitempty"`
+	LocationLng   float64                `protobuf:"fixed64,11,opt,name=location_lng,json=locationLng,proto3" json:"location_lng,omitempty"`
+	LinkedTurfId  string                 `protobuf:"bytes,12,opt,name=linked_turf_id,json=linkedTurfId,proto3" json:"linked_turf_id,omitempty"`
+	MaxAttendees  int32                  `protobuf:"varint,13,opt,name=max_attendees,json=maxAttendees,proto3" json:"max_attendees,omitempty"`
+	CreatedBy     string                 `protobuf:"bytes,14,opt,name=created_by,json=createdBy,proto3" json:"created_by,omitempty"`
+	CreatedAt     string                 `protobuf:"bytes,15,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt     string                 `protobuf:"bytes,16,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SyncEvent) Reset() {
+	*x = SyncEvent{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[34]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SyncEvent) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SyncEvent) ProtoMessage() {}
+
+func (x *SyncEvent) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[34]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SyncEvent.ProtoReflect.Descriptor instead.
+func (*SyncEvent) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{34}
+}
+
+func (x *SyncEvent) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *SyncEvent) GetCompanyId() string {
+	if x != nil {
+		return x.CompanyId
+	}
+	return ""
+}
+
+func (x *SyncEvent) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *SyncEvent) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *SyncEvent) GetEventType() string {
+	if x != nil {
+		return x.EventType
+	}
+	return ""
+}
+
+func (x *SyncEvent) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *SyncEvent) GetStartsAt() string {
+	if x != nil {
+		return x.StartsAt
+	}
+	return ""
+}
+
+func (x *SyncEvent) GetEndsAt() string {
+	if x != nil {
+		return x.EndsAt
+	}
+	return ""
+}
+
+func (x *SyncEvent) GetLocationName() string {
+	if x != nil {
+		return x.LocationName
+	}
+	return ""
+}
+
+func (x *SyncEvent) GetLocationLat() float64 {
+	if x != nil {
+		return x.LocationLat
+	}
+	return 0
+}
+
+func (x *SyncEvent) GetLocationLng() float64 {
+	if x != nil {
+		return x.LocationLng
+	}
+	return 0
+}
+
+func (x *SyncEvent) GetLinkedTurfId() string {
+	if x != nil {
+		return x.LinkedTurfId
+	}
+	return ""
+}
+
+func (x *SyncEvent) GetMaxAttendees() int32 {
+	if x != nil {
+		return x.MaxAttendees
+	}
+	return 0
+}
+
+func (x *SyncEvent) GetCreatedBy() string {
+	if x != nil {
+		return x.CreatedBy
+	}
+	return ""
+}
+
+func (x *SyncEvent) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
+func (x *SyncEvent) GetUpdatedAt() string {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return ""
+}
+
+type SyncEventRSVP struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	EventId       string                 `protobuf:"bytes,2,opt,name=event_id,json=eventId,proto3" json:"event_id,omitempty"`
+	UserId        string                 `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Status        string                 `protobuf:"bytes,4,opt,name=status,proto3" json:"status,omitempty"`
+	CreatedAt     string                 `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SyncEventRSVP) Reset() {
+	*x = SyncEventRSVP{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[35]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SyncEventRSVP) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SyncEventRSVP) ProtoMessage() {}
+
+func (x *SyncEventRSVP) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[35]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SyncEventRSVP.ProtoReflect.Descriptor instead.
+func (*SyncEventRSVP) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{35}
+}
+
+func (x *SyncEventRSVP) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *SyncEventRSVP) GetEventId() string {
+	if x != nil {
+		return x.EventId
+	}
+	return ""
+}
+
+func (x *SyncEventRSVP) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *SyncEventRSVP) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *SyncEventRSVP) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
+type PullTrainingMaterialsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SinceCursor   string                 `protobuf:"bytes,1,opt,name=since_cursor,json=sinceCursor,proto3" json:"since_cursor,omitempty"`
+	BatchSize     int32                  `protobuf:"varint,2,opt,name=batch_size,json=batchSize,proto3" json:"batch_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PullTrainingMaterialsRequest) Reset() {
+	*x = PullTrainingMaterialsRequest{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[36]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PullTrainingMaterialsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PullTrainingMaterialsRequest) ProtoMessage() {}
+
+func (x *PullTrainingMaterialsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[36]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PullTrainingMaterialsRequest.ProtoReflect.Descriptor instead.
+func (*PullTrainingMaterialsRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{36}
+}
+
+func (x *PullTrainingMaterialsRequest) GetSinceCursor() string {
+	if x != nil {
+		return x.SinceCursor
+	}
+	return ""
+}
+
+func (x *PullTrainingMaterialsRequest) GetBatchSize() int32 {
+	if x != nil {
+		return x.BatchSize
+	}
+	return 0
+}
+
+type PullTrainingMaterialsResponse struct {
+	state         protoimpl.MessageState  `protogen:"open.v1"`
+	Materials     []*SyncTrainingMaterial `protobuf:"bytes,1,rep,name=materials,proto3" json:"materials,omitempty"`
+	NextCursor    string                  `protobuf:"bytes,2,opt,name=next_cursor,json=nextCursor,proto3" json:"next_cursor,omitempty"`
+	HasMore       bool                    `protobuf:"varint,3,opt,name=has_more,json=hasMore,proto3" json:"has_more,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PullTrainingMaterialsResponse) Reset() {
+	*x = PullTrainingMaterialsResponse{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[37]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PullTrainingMaterialsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PullTrainingMaterialsResponse) ProtoMessage() {}
+
+func (x *PullTrainingMaterialsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[37]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PullTrainingMaterialsResponse.ProtoReflect.Descriptor instead.
+func (*PullTrainingMaterialsResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{37}
+}
+
+func (x *PullTrainingMaterialsResponse) GetMaterials() []*SyncTrainingMaterial {
+	if x != nil {
+		return x.Materials
+	}
+	return nil
+}
+
+func (x *PullTrainingMaterialsResponse) GetNextCursor() string {
+	if x != nil {
+		return x.NextCursor
+	}
+	return ""
+}
+
+func (x *PullTrainingMaterialsResponse) GetHasMore() bool {
+	if x != nil {
+		return x.HasMore
+	}
+	return false
+}
+
+type SyncTrainingMaterial struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	CompanyId     string                 `protobuf:"bytes,2,opt,name=company_id,json=companyId,proto3" json:"company_id,omitempty"`
+	Title         string                 `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
+	Description   string                 `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
+	ContentUrl    string                 `protobuf:"bytes,5,opt,name=content_url,json=contentUrl,proto3" json:"content_url,omitempty"`
+	SortOrder     int32                  `protobuf:"varint,6,opt,name=sort_order,json=sortOrder,proto3" json:"sort_order,omitempty"`
+	IsPublished   bool                   `protobuf:"varint,7,opt,name=is_published,json=isPublished,proto3" json:"is_published,omitempty"`
+	CreatedAt     string                 `protobuf:"bytes,8,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt     string                 `protobuf:"bytes,9,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SyncTrainingMaterial) Reset() {
+	*x = SyncTrainingMaterial{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[38]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SyncTrainingMaterial) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SyncTrainingMaterial) ProtoMessage() {}
+
+func (x *SyncTrainingMaterial) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[38]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SyncTrainingMaterial.ProtoReflect.Descriptor instead.
+func (*SyncTrainingMaterial) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{38}
+}
+
+func (x *SyncTrainingMaterial) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *SyncTrainingMaterial) GetCompanyId() string {
+	if x != nil {
+		return x.CompanyId
+	}
+	return ""
+}
+
+func (x *SyncTrainingMaterial) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *SyncTrainingMaterial) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *SyncTrainingMaterial) GetContentUrl() string {
+	if x != nil {
+		return x.ContentUrl
+	}
+	return ""
+}
+
+func (x *SyncTrainingMaterial) GetSortOrder() int32 {
+	if x != nil {
+		return x.SortOrder
+	}
+	return 0
+}
+
+func (x *SyncTrainingMaterial) GetIsPublished() bool {
+	if x != nil {
+		return x.IsPublished
+	}
+	return false
+}
+
+func (x *SyncTrainingMaterial) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
+func (x *SyncTrainingMaterial) GetUpdatedAt() string {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return ""
+}
+
 var File_navigators_v1_sync_proto protoreflect.FileDescriptor
 
 const file_navigators_v1_sync_proto_rawDesc = "" +
@@ -2658,7 +3238,71 @@ const file_navigators_v1_sync_proto_rawDesc = "" +
 	"visibility\x18\x06 \x01(\tR\n" +
 	"visibility\x12\x1d\n" +
 	"\n" +
-	"created_at\x18\a \x01(\tR\tcreatedAt2\xcf\a\n" +
+	"created_at\x18\a \x01(\tR\tcreatedAt\"U\n" +
+	"\x11PullEventsRequest\x12!\n" +
+	"\fsince_cursor\x18\x01 \x01(\tR\vsinceCursor\x12\x1d\n" +
+	"\n" +
+	"batch_size\x18\x02 \x01(\x05R\tbatchSize\"\xb6\x01\n" +
+	"\x12PullEventsResponse\x120\n" +
+	"\x06events\x18\x01 \x03(\v2\x18.navigators.v1.SyncEventR\x06events\x122\n" +
+	"\x05rsvps\x18\x02 \x03(\v2\x1c.navigators.v1.SyncEventRSVPR\x05rsvps\x12\x1f\n" +
+	"\vnext_cursor\x18\x03 \x01(\tR\n" +
+	"nextCursor\x12\x19\n" +
+	"\bhas_more\x18\x04 \x01(\bR\ahasMore\"\xf2\x03\n" +
+	"\tSyncEvent\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
+	"\n" +
+	"company_id\x18\x02 \x01(\tR\tcompanyId\x12\x14\n" +
+	"\x05title\x18\x03 \x01(\tR\x05title\x12 \n" +
+	"\vdescription\x18\x04 \x01(\tR\vdescription\x12\x1d\n" +
+	"\n" +
+	"event_type\x18\x05 \x01(\tR\teventType\x12\x16\n" +
+	"\x06status\x18\x06 \x01(\tR\x06status\x12\x1b\n" +
+	"\tstarts_at\x18\a \x01(\tR\bstartsAt\x12\x17\n" +
+	"\aends_at\x18\b \x01(\tR\x06endsAt\x12#\n" +
+	"\rlocation_name\x18\t \x01(\tR\flocationName\x12!\n" +
+	"\flocation_lat\x18\n" +
+	" \x01(\x01R\vlocationLat\x12!\n" +
+	"\flocation_lng\x18\v \x01(\x01R\vlocationLng\x12$\n" +
+	"\x0elinked_turf_id\x18\f \x01(\tR\flinkedTurfId\x12#\n" +
+	"\rmax_attendees\x18\r \x01(\x05R\fmaxAttendees\x12\x1d\n" +
+	"\n" +
+	"created_by\x18\x0e \x01(\tR\tcreatedBy\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\x0f \x01(\tR\tcreatedAt\x12\x1d\n" +
+	"\n" +
+	"updated_at\x18\x10 \x01(\tR\tupdatedAt\"\x8a\x01\n" +
+	"\rSyncEventRSVP\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x19\n" +
+	"\bevent_id\x18\x02 \x01(\tR\aeventId\x12\x17\n" +
+	"\auser_id\x18\x03 \x01(\tR\x06userId\x12\x16\n" +
+	"\x06status\x18\x04 \x01(\tR\x06status\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\x05 \x01(\tR\tcreatedAt\"`\n" +
+	"\x1cPullTrainingMaterialsRequest\x12!\n" +
+	"\fsince_cursor\x18\x01 \x01(\tR\vsinceCursor\x12\x1d\n" +
+	"\n" +
+	"batch_size\x18\x02 \x01(\x05R\tbatchSize\"\x9e\x01\n" +
+	"\x1dPullTrainingMaterialsResponse\x12A\n" +
+	"\tmaterials\x18\x01 \x03(\v2#.navigators.v1.SyncTrainingMaterialR\tmaterials\x12\x1f\n" +
+	"\vnext_cursor\x18\x02 \x01(\tR\n" +
+	"nextCursor\x12\x19\n" +
+	"\bhas_more\x18\x03 \x01(\bR\ahasMore\"\x9e\x02\n" +
+	"\x14SyncTrainingMaterial\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
+	"\n" +
+	"company_id\x18\x02 \x01(\tR\tcompanyId\x12\x14\n" +
+	"\x05title\x18\x03 \x01(\tR\x05title\x12 \n" +
+	"\vdescription\x18\x04 \x01(\tR\vdescription\x12\x1f\n" +
+	"\vcontent_url\x18\x05 \x01(\tR\n" +
+	"contentUrl\x12\x1d\n" +
+	"\n" +
+	"sort_order\x18\x06 \x01(\x05R\tsortOrder\x12!\n" +
+	"\fis_published\x18\a \x01(\bR\visPublished\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\b \x01(\tR\tcreatedAt\x12\x1d\n" +
+	"\n" +
+	"updated_at\x18\t \x01(\tR\tupdatedAt2\x96\t\n" +
 	"\vSyncService\x12c\n" +
 	"\x10PullVoterUpdates\x12&.navigators.v1.PullVoterUpdatesRequest\x1a'.navigators.v1.PullVoterUpdatesResponse\x12`\n" +
 	"\x0fPullContactLogs\x12%.navigators.v1.PullContactLogsRequest\x1a&.navigators.v1.PullContactLogsResponse\x12Z\n" +
@@ -2669,7 +3313,10 @@ const file_navigators_v1_sync_proto_rawDesc = "" +
 	"\x0fPullCallScripts\x12%.navigators.v1.PullCallScriptsRequest\x1a&.navigators.v1.PullCallScriptsResponse\x12N\n" +
 	"\tPullTasks\x12\x1f.navigators.v1.PullTasksRequest\x1a .navigators.v1.PullTasksResponse\x12Z\n" +
 	"\rPullTaskNotes\x12#.navigators.v1.PullTaskNotesRequest\x1a$.navigators.v1.PullTaskNotesResponse\x12`\n" +
-	"\x0fGetSyncManifest\x12%.navigators.v1.GetSyncManifestRequest\x1a&.navigators.v1.GetSyncManifestResponseB1Z/navigators-go/gen/go/navigators/v1;navigatorsv1b\x06proto3"
+	"\x0fGetSyncManifest\x12%.navigators.v1.GetSyncManifestRequest\x1a&.navigators.v1.GetSyncManifestResponse\x12Q\n" +
+	"\n" +
+	"PullEvents\x12 .navigators.v1.PullEventsRequest\x1a!.navigators.v1.PullEventsResponse\x12r\n" +
+	"\x15PullTrainingMaterials\x12+.navigators.v1.PullTrainingMaterialsRequest\x1a,.navigators.v1.PullTrainingMaterialsResponseB1Z/navigators-go/gen/go/navigators/v1;navigatorsv1b\x06proto3"
 
 var (
 	file_navigators_v1_sync_proto_rawDescOnce sync.Once
@@ -2683,40 +3330,47 @@ func file_navigators_v1_sync_proto_rawDescGZIP() []byte {
 	return file_navigators_v1_sync_proto_rawDescData
 }
 
-var file_navigators_v1_sync_proto_msgTypes = make([]protoimpl.MessageInfo, 32)
+var file_navigators_v1_sync_proto_msgTypes = make([]protoimpl.MessageInfo, 39)
 var file_navigators_v1_sync_proto_goTypes = []any{
-	(*PullVoterUpdatesRequest)(nil),     // 0: navigators.v1.PullVoterUpdatesRequest
-	(*PullVoterUpdatesResponse)(nil),    // 1: navigators.v1.PullVoterUpdatesResponse
-	(*SyncVoter)(nil),                   // 2: navigators.v1.SyncVoter
-	(*PullContactLogsRequest)(nil),      // 3: navigators.v1.PullContactLogsRequest
-	(*PullContactLogsResponse)(nil),     // 4: navigators.v1.PullContactLogsResponse
-	(*SyncContactLog)(nil),              // 5: navigators.v1.SyncContactLog
-	(*PushSyncBatchRequest)(nil),        // 6: navigators.v1.PushSyncBatchRequest
-	(*PushSyncBatchResponse)(nil),       // 7: navigators.v1.PushSyncBatchResponse
-	(*SyncOperation)(nil),               // 8: navigators.v1.SyncOperation
-	(*SyncError)(nil),                   // 9: navigators.v1.SyncError
-	(*GetSyncManifestRequest)(nil),      // 10: navigators.v1.GetSyncManifestRequest
-	(*GetSyncManifestResponse)(nil),     // 11: navigators.v1.GetSyncManifestResponse
-	(*TurfAssignmentInfo)(nil),          // 12: navigators.v1.TurfAssignmentInfo
-	(*PullSurveyFormsRequest)(nil),      // 13: navigators.v1.PullSurveyFormsRequest
-	(*PullSurveyFormsResponse)(nil),     // 14: navigators.v1.PullSurveyFormsResponse
-	(*SyncSurveyForm)(nil),              // 15: navigators.v1.SyncSurveyForm
-	(*PullSurveyResponsesRequest)(nil),  // 16: navigators.v1.PullSurveyResponsesRequest
-	(*PullSurveyResponsesResponse)(nil), // 17: navigators.v1.PullSurveyResponsesResponse
-	(*SyncSurveyResponse)(nil),          // 18: navigators.v1.SyncSurveyResponse
-	(*PullVoterNotesRequest)(nil),       // 19: navigators.v1.PullVoterNotesRequest
-	(*PullVoterNotesResponse)(nil),      // 20: navigators.v1.PullVoterNotesResponse
-	(*SyncVoterNote)(nil),               // 21: navigators.v1.SyncVoterNote
-	(*PullCallScriptsRequest)(nil),      // 22: navigators.v1.PullCallScriptsRequest
-	(*PullCallScriptsResponse)(nil),     // 23: navigators.v1.PullCallScriptsResponse
-	(*SyncCallScript)(nil),              // 24: navigators.v1.SyncCallScript
-	(*PullTasksRequest)(nil),            // 25: navigators.v1.PullTasksRequest
-	(*PullTasksResponse)(nil),           // 26: navigators.v1.PullTasksResponse
-	(*SyncTask)(nil),                    // 27: navigators.v1.SyncTask
-	(*SyncTaskAssignment)(nil),          // 28: navigators.v1.SyncTaskAssignment
-	(*PullTaskNotesRequest)(nil),        // 29: navigators.v1.PullTaskNotesRequest
-	(*PullTaskNotesResponse)(nil),       // 30: navigators.v1.PullTaskNotesResponse
-	(*SyncTaskNote)(nil),                // 31: navigators.v1.SyncTaskNote
+	(*PullVoterUpdatesRequest)(nil),       // 0: navigators.v1.PullVoterUpdatesRequest
+	(*PullVoterUpdatesResponse)(nil),      // 1: navigators.v1.PullVoterUpdatesResponse
+	(*SyncVoter)(nil),                     // 2: navigators.v1.SyncVoter
+	(*PullContactLogsRequest)(nil),        // 3: navigators.v1.PullContactLogsRequest
+	(*PullContactLogsResponse)(nil),       // 4: navigators.v1.PullContactLogsResponse
+	(*SyncContactLog)(nil),                // 5: navigators.v1.SyncContactLog
+	(*PushSyncBatchRequest)(nil),          // 6: navigators.v1.PushSyncBatchRequest
+	(*PushSyncBatchResponse)(nil),         // 7: navigators.v1.PushSyncBatchResponse
+	(*SyncOperation)(nil),                 // 8: navigators.v1.SyncOperation
+	(*SyncError)(nil),                     // 9: navigators.v1.SyncError
+	(*GetSyncManifestRequest)(nil),        // 10: navigators.v1.GetSyncManifestRequest
+	(*GetSyncManifestResponse)(nil),       // 11: navigators.v1.GetSyncManifestResponse
+	(*TurfAssignmentInfo)(nil),            // 12: navigators.v1.TurfAssignmentInfo
+	(*PullSurveyFormsRequest)(nil),        // 13: navigators.v1.PullSurveyFormsRequest
+	(*PullSurveyFormsResponse)(nil),       // 14: navigators.v1.PullSurveyFormsResponse
+	(*SyncSurveyForm)(nil),                // 15: navigators.v1.SyncSurveyForm
+	(*PullSurveyResponsesRequest)(nil),    // 16: navigators.v1.PullSurveyResponsesRequest
+	(*PullSurveyResponsesResponse)(nil),   // 17: navigators.v1.PullSurveyResponsesResponse
+	(*SyncSurveyResponse)(nil),            // 18: navigators.v1.SyncSurveyResponse
+	(*PullVoterNotesRequest)(nil),         // 19: navigators.v1.PullVoterNotesRequest
+	(*PullVoterNotesResponse)(nil),        // 20: navigators.v1.PullVoterNotesResponse
+	(*SyncVoterNote)(nil),                 // 21: navigators.v1.SyncVoterNote
+	(*PullCallScriptsRequest)(nil),        // 22: navigators.v1.PullCallScriptsRequest
+	(*PullCallScriptsResponse)(nil),       // 23: navigators.v1.PullCallScriptsResponse
+	(*SyncCallScript)(nil),                // 24: navigators.v1.SyncCallScript
+	(*PullTasksRequest)(nil),              // 25: navigators.v1.PullTasksRequest
+	(*PullTasksResponse)(nil),             // 26: navigators.v1.PullTasksResponse
+	(*SyncTask)(nil),                      // 27: navigators.v1.SyncTask
+	(*SyncTaskAssignment)(nil),            // 28: navigators.v1.SyncTaskAssignment
+	(*PullTaskNotesRequest)(nil),          // 29: navigators.v1.PullTaskNotesRequest
+	(*PullTaskNotesResponse)(nil),         // 30: navigators.v1.PullTaskNotesResponse
+	(*SyncTaskNote)(nil),                  // 31: navigators.v1.SyncTaskNote
+	(*PullEventsRequest)(nil),             // 32: navigators.v1.PullEventsRequest
+	(*PullEventsResponse)(nil),            // 33: navigators.v1.PullEventsResponse
+	(*SyncEvent)(nil),                     // 34: navigators.v1.SyncEvent
+	(*SyncEventRSVP)(nil),                 // 35: navigators.v1.SyncEventRSVP
+	(*PullTrainingMaterialsRequest)(nil),  // 36: navigators.v1.PullTrainingMaterialsRequest
+	(*PullTrainingMaterialsResponse)(nil), // 37: navigators.v1.PullTrainingMaterialsResponse
+	(*SyncTrainingMaterial)(nil),          // 38: navigators.v1.SyncTrainingMaterial
 }
 var file_navigators_v1_sync_proto_depIdxs = []int32{
 	2,  // 0: navigators.v1.PullVoterUpdatesResponse.voters:type_name -> navigators.v1.SyncVoter
@@ -2731,31 +3385,38 @@ var file_navigators_v1_sync_proto_depIdxs = []int32{
 	27, // 9: navigators.v1.PullTasksResponse.tasks:type_name -> navigators.v1.SyncTask
 	28, // 10: navigators.v1.PullTasksResponse.task_assignments:type_name -> navigators.v1.SyncTaskAssignment
 	31, // 11: navigators.v1.PullTaskNotesResponse.task_notes:type_name -> navigators.v1.SyncTaskNote
-	0,  // 12: navigators.v1.SyncService.PullVoterUpdates:input_type -> navigators.v1.PullVoterUpdatesRequest
-	3,  // 13: navigators.v1.SyncService.PullContactLogs:input_type -> navigators.v1.PullContactLogsRequest
-	6,  // 14: navigators.v1.SyncService.PushSyncBatch:input_type -> navigators.v1.PushSyncBatchRequest
-	13, // 15: navigators.v1.SyncService.PullSurveyForms:input_type -> navigators.v1.PullSurveyFormsRequest
-	16, // 16: navigators.v1.SyncService.PullSurveyResponses:input_type -> navigators.v1.PullSurveyResponsesRequest
-	19, // 17: navigators.v1.SyncService.PullVoterNotes:input_type -> navigators.v1.PullVoterNotesRequest
-	22, // 18: navigators.v1.SyncService.PullCallScripts:input_type -> navigators.v1.PullCallScriptsRequest
-	25, // 19: navigators.v1.SyncService.PullTasks:input_type -> navigators.v1.PullTasksRequest
-	29, // 20: navigators.v1.SyncService.PullTaskNotes:input_type -> navigators.v1.PullTaskNotesRequest
-	10, // 21: navigators.v1.SyncService.GetSyncManifest:input_type -> navigators.v1.GetSyncManifestRequest
-	1,  // 22: navigators.v1.SyncService.PullVoterUpdates:output_type -> navigators.v1.PullVoterUpdatesResponse
-	4,  // 23: navigators.v1.SyncService.PullContactLogs:output_type -> navigators.v1.PullContactLogsResponse
-	7,  // 24: navigators.v1.SyncService.PushSyncBatch:output_type -> navigators.v1.PushSyncBatchResponse
-	14, // 25: navigators.v1.SyncService.PullSurveyForms:output_type -> navigators.v1.PullSurveyFormsResponse
-	17, // 26: navigators.v1.SyncService.PullSurveyResponses:output_type -> navigators.v1.PullSurveyResponsesResponse
-	20, // 27: navigators.v1.SyncService.PullVoterNotes:output_type -> navigators.v1.PullVoterNotesResponse
-	23, // 28: navigators.v1.SyncService.PullCallScripts:output_type -> navigators.v1.PullCallScriptsResponse
-	26, // 29: navigators.v1.SyncService.PullTasks:output_type -> navigators.v1.PullTasksResponse
-	30, // 30: navigators.v1.SyncService.PullTaskNotes:output_type -> navigators.v1.PullTaskNotesResponse
-	11, // 31: navigators.v1.SyncService.GetSyncManifest:output_type -> navigators.v1.GetSyncManifestResponse
-	22, // [22:32] is the sub-list for method output_type
-	12, // [12:22] is the sub-list for method input_type
-	12, // [12:12] is the sub-list for extension type_name
-	12, // [12:12] is the sub-list for extension extendee
-	0,  // [0:12] is the sub-list for field type_name
+	34, // 12: navigators.v1.PullEventsResponse.events:type_name -> navigators.v1.SyncEvent
+	35, // 13: navigators.v1.PullEventsResponse.rsvps:type_name -> navigators.v1.SyncEventRSVP
+	38, // 14: navigators.v1.PullTrainingMaterialsResponse.materials:type_name -> navigators.v1.SyncTrainingMaterial
+	0,  // 15: navigators.v1.SyncService.PullVoterUpdates:input_type -> navigators.v1.PullVoterUpdatesRequest
+	3,  // 16: navigators.v1.SyncService.PullContactLogs:input_type -> navigators.v1.PullContactLogsRequest
+	6,  // 17: navigators.v1.SyncService.PushSyncBatch:input_type -> navigators.v1.PushSyncBatchRequest
+	13, // 18: navigators.v1.SyncService.PullSurveyForms:input_type -> navigators.v1.PullSurveyFormsRequest
+	16, // 19: navigators.v1.SyncService.PullSurveyResponses:input_type -> navigators.v1.PullSurveyResponsesRequest
+	19, // 20: navigators.v1.SyncService.PullVoterNotes:input_type -> navigators.v1.PullVoterNotesRequest
+	22, // 21: navigators.v1.SyncService.PullCallScripts:input_type -> navigators.v1.PullCallScriptsRequest
+	25, // 22: navigators.v1.SyncService.PullTasks:input_type -> navigators.v1.PullTasksRequest
+	29, // 23: navigators.v1.SyncService.PullTaskNotes:input_type -> navigators.v1.PullTaskNotesRequest
+	10, // 24: navigators.v1.SyncService.GetSyncManifest:input_type -> navigators.v1.GetSyncManifestRequest
+	32, // 25: navigators.v1.SyncService.PullEvents:input_type -> navigators.v1.PullEventsRequest
+	36, // 26: navigators.v1.SyncService.PullTrainingMaterials:input_type -> navigators.v1.PullTrainingMaterialsRequest
+	1,  // 27: navigators.v1.SyncService.PullVoterUpdates:output_type -> navigators.v1.PullVoterUpdatesResponse
+	4,  // 28: navigators.v1.SyncService.PullContactLogs:output_type -> navigators.v1.PullContactLogsResponse
+	7,  // 29: navigators.v1.SyncService.PushSyncBatch:output_type -> navigators.v1.PushSyncBatchResponse
+	14, // 30: navigators.v1.SyncService.PullSurveyForms:output_type -> navigators.v1.PullSurveyFormsResponse
+	17, // 31: navigators.v1.SyncService.PullSurveyResponses:output_type -> navigators.v1.PullSurveyResponsesResponse
+	20, // 32: navigators.v1.SyncService.PullVoterNotes:output_type -> navigators.v1.PullVoterNotesResponse
+	23, // 33: navigators.v1.SyncService.PullCallScripts:output_type -> navigators.v1.PullCallScriptsResponse
+	26, // 34: navigators.v1.SyncService.PullTasks:output_type -> navigators.v1.PullTasksResponse
+	30, // 35: navigators.v1.SyncService.PullTaskNotes:output_type -> navigators.v1.PullTaskNotesResponse
+	11, // 36: navigators.v1.SyncService.GetSyncManifest:output_type -> navigators.v1.GetSyncManifestResponse
+	33, // 37: navigators.v1.SyncService.PullEvents:output_type -> navigators.v1.PullEventsResponse
+	37, // 38: navigators.v1.SyncService.PullTrainingMaterials:output_type -> navigators.v1.PullTrainingMaterialsResponse
+	27, // [27:39] is the sub-list for method output_type
+	15, // [15:27] is the sub-list for method input_type
+	15, // [15:15] is the sub-list for extension type_name
+	15, // [15:15] is the sub-list for extension extendee
+	0,  // [0:15] is the sub-list for field type_name
 }
 
 func init() { file_navigators_v1_sync_proto_init() }
@@ -2769,7 +3430,7 @@ func file_navigators_v1_sync_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_navigators_v1_sync_proto_rawDesc), len(file_navigators_v1_sync_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   32,
+			NumMessages:   39,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

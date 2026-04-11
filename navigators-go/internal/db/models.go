@@ -98,6 +98,41 @@ type EncryptedCredential struct {
 	UpdatedAt      time.Time `json:"updated_at"`
 }
 
+type Event struct {
+	ID           uuid.UUID   `json:"id"`
+	CompanyID    uuid.UUID   `json:"company_id"`
+	Title        string      `json:"title"`
+	Description  string      `json:"description"`
+	EventType    string      `json:"event_type"`
+	Status       string      `json:"status"`
+	StartsAt     time.Time   `json:"starts_at"`
+	EndsAt       time.Time   `json:"ends_at"`
+	LocationName *string     `json:"location_name"`
+	LocationLat  *float64    `json:"location_lat"`
+	LocationLng  *float64    `json:"location_lng"`
+	LinkedTurfID pgtype.UUID `json:"linked_turf_id"`
+	MaxAttendees *int32      `json:"max_attendees"`
+	CreatedBy    uuid.UUID   `json:"created_by"`
+	CreatedAt    time.Time   `json:"created_at"`
+	UpdatedAt    time.Time   `json:"updated_at"`
+}
+
+type EventCheckin struct {
+	ID          uuid.UUID `json:"id"`
+	EventID     uuid.UUID `json:"event_id"`
+	UserID      uuid.UUID `json:"user_id"`
+	CheckedInAt time.Time `json:"checked_in_at"`
+}
+
+type EventRsvp struct {
+	ID                 uuid.UUID          `json:"id"`
+	EventID            uuid.UUID          `json:"event_id"`
+	UserID             uuid.UUID          `json:"user_id"`
+	Status             string             `json:"status"`
+	LastReminderSentAt pgtype.Timestamptz `json:"last_reminder_sent_at"`
+	CreatedAt          time.Time          `json:"created_at"`
+}
+
 type ImportJob struct {
 	ID             uuid.UUID       `json:"id"`
 	CompanyID      uuid.UUID       `json:"company_id"`
@@ -156,6 +191,17 @@ type ImportStaging struct {
 	Email                 string          `json:"email"`
 	DedupKey              string          `json:"dedup_key"`
 	RawLine               string          `json:"raw_line"`
+}
+
+type NavigatorProfile struct {
+	UserID                     uuid.UUID          `json:"user_id"`
+	CompanyID                  uuid.UUID          `json:"company_id"`
+	OnboardingCompletedAt      pgtype.Timestamptz `json:"onboarding_completed_at"`
+	LegalAcknowledgmentAt      pgtype.Timestamptz `json:"legal_acknowledgment_at"`
+	LegalAcknowledgmentVersion *string            `json:"legal_acknowledgment_version"`
+	LeaderboardOptIn           bool               `json:"leaderboard_opt_in"`
+	CreatedAt                  time.Time          `json:"created_at"`
+	UpdatedAt                  time.Time          `json:"updated_at"`
 }
 
 type OauthCredential struct {
@@ -388,6 +434,19 @@ type TeamAssignment struct {
 	CompanyID        uuid.UUID `json:"company_id"`
 	AssignedBy       uuid.UUID `json:"assigned_by"`
 	AssignedAt       time.Time `json:"assigned_at"`
+}
+
+type TrainingMaterial struct {
+	ID          uuid.UUID `json:"id"`
+	CompanyID   uuid.UUID `json:"company_id"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	ContentUrl  string    `json:"content_url"`
+	SortOrder   int32     `json:"sort_order"`
+	IsPublished bool      `json:"is_published"`
+	CreatedBy   uuid.UUID `json:"created_by"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
 }
 
 type Turf struct {

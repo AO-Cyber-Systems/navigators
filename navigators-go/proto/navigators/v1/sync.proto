@@ -35,6 +35,12 @@ service SyncService {
 
   // GetSyncManifest returns the user's turf assignments with metadata for initial sync.
   rpc GetSyncManifest(GetSyncManifestRequest) returns (GetSyncManifestResponse);
+
+  // PullEvents returns events and RSVPs updated since the given cursor.
+  rpc PullEvents(PullEventsRequest) returns (PullEventsResponse);
+
+  // PullTrainingMaterials returns published training materials updated since the given cursor.
+  rpc PullTrainingMaterials(PullTrainingMaterialsRequest) returns (PullTrainingMaterialsResponse);
 }
 
 // --- Pull Voters ---
@@ -307,4 +313,70 @@ message SyncTaskNote {
   string content = 5;
   string visibility = 6;
   string created_at = 7;
+}
+
+// --- Pull Events ---
+
+message PullEventsRequest {
+  string since_cursor = 1;
+  int32 batch_size = 2;
+}
+
+message PullEventsResponse {
+  repeated SyncEvent events = 1;
+  repeated SyncEventRSVP rsvps = 2;
+  string next_cursor = 3;
+  bool has_more = 4;
+}
+
+message SyncEvent {
+  string id = 1;
+  string company_id = 2;
+  string title = 3;
+  string description = 4;
+  string event_type = 5;
+  string status = 6;
+  string starts_at = 7;
+  string ends_at = 8;
+  string location_name = 9;
+  double location_lat = 10;
+  double location_lng = 11;
+  string linked_turf_id = 12;
+  int32 max_attendees = 13;
+  string created_by = 14;
+  string created_at = 15;
+  string updated_at = 16;
+}
+
+message SyncEventRSVP {
+  string id = 1;
+  string event_id = 2;
+  string user_id = 3;
+  string status = 4;
+  string created_at = 5;
+}
+
+// --- Pull Training Materials ---
+
+message PullTrainingMaterialsRequest {
+  string since_cursor = 1;
+  int32 batch_size = 2;
+}
+
+message PullTrainingMaterialsResponse {
+  repeated SyncTrainingMaterial materials = 1;
+  string next_cursor = 2;
+  bool has_more = 3;
+}
+
+message SyncTrainingMaterial {
+  string id = 1;
+  string company_id = 2;
+  string title = 3;
+  string description = 4;
+  string content_url = 5;
+  int32 sort_order = 6;
+  bool is_published = 7;
+  string created_at = 8;
+  string updated_at = 9;
 }

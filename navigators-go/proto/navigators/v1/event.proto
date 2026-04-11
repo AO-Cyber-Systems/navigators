@@ -1,0 +1,168 @@
+syntax = "proto3";
+
+package navigators.v1;
+
+option go_package = "navigators-go/gen/go/navigators/v1;navigatorsv1";
+
+// EventService manages events, RSVPs, and check-ins.
+service EventService {
+  // CreateEvent creates a new event.
+  rpc CreateEvent(CreateEventRequest) returns (CreateEventResponse);
+
+  // GetEvent returns an event by ID.
+  rpc GetEvent(GetEventRequest) returns (GetEventResponse);
+
+  // ListEvents returns events for the user's company.
+  rpc ListEvents(ListEventsRequest) returns (ListEventsResponse);
+
+  // UpdateEvent updates an existing event.
+  rpc UpdateEvent(UpdateEventRequest) returns (UpdateEventResponse);
+
+  // CancelEvent cancels an event.
+  rpc CancelEvent(CancelEventRequest) returns (CancelEventResponse);
+
+  // RSVPEvent creates or updates an RSVP for an event.
+  rpc RSVPEvent(RSVPEventRequest) returns (RSVPEventResponse);
+
+  // CheckInEvent records a check-in at an event.
+  rpc CheckInEvent(CheckInEventRequest) returns (CheckInEventResponse);
+
+  // GetEventAttendance returns RSVPs and check-ins for an event.
+  rpc GetEventAttendance(GetEventAttendanceRequest) returns (GetEventAttendanceResponse);
+}
+
+// --- Messages ---
+
+message Event {
+  string id = 1;
+  string company_id = 2;
+  string title = 3;
+  string description = 4;
+  string event_type = 5;      // canvass, phone_bank, meeting, other
+  string status = 6;           // scheduled, in_progress, completed, cancelled
+  string starts_at = 7;        // ISO timestamp
+  string ends_at = 8;          // ISO timestamp
+  string location_name = 9;
+  double location_lat = 10;
+  double location_lng = 11;
+  string linked_turf_id = 12;
+  int32 max_attendees = 13;
+  int32 rsvp_count = 14;
+  string created_by = 15;
+  string created_at = 16;
+  string updated_at = 17;
+}
+
+message EventRSVP {
+  string id = 1;
+  string event_id = 2;
+  string user_id = 3;
+  string status = 4;           // going, maybe, declined
+  string display_name = 5;
+  string created_at = 6;
+}
+
+message EventCheckin {
+  string id = 1;
+  string event_id = 2;
+  string user_id = 3;
+  string display_name = 4;
+  string checked_in_at = 5;
+}
+
+// --- CreateEvent ---
+
+message CreateEventRequest {
+  string title = 1;
+  string description = 2;
+  string event_type = 3;
+  string starts_at = 4;
+  string ends_at = 5;
+  string location_name = 6;
+  double location_lat = 7;
+  double location_lng = 8;
+  string linked_turf_id = 9;
+  int32 max_attendees = 10;
+}
+
+message CreateEventResponse {
+  Event event = 1;
+}
+
+// --- GetEvent ---
+
+message GetEventRequest {
+  string event_id = 1;
+}
+
+message GetEventResponse {
+  Event event = 1;
+}
+
+// --- ListEvents ---
+
+message ListEventsRequest {}
+
+message ListEventsResponse {
+  repeated Event events = 1;
+}
+
+// --- UpdateEvent ---
+
+message UpdateEventRequest {
+  string event_id = 1;
+  string title = 2;
+  string description = 3;
+  string event_type = 4;
+  string starts_at = 5;
+  string ends_at = 6;
+  string location_name = 7;
+  double location_lat = 8;
+  double location_lng = 9;
+  string linked_turf_id = 10;
+  int32 max_attendees = 11;
+}
+
+message UpdateEventResponse {
+  Event event = 1;
+}
+
+// --- CancelEvent ---
+
+message CancelEventRequest {
+  string event_id = 1;
+}
+
+message CancelEventResponse {}
+
+// --- RSVPEvent ---
+
+message RSVPEventRequest {
+  string event_id = 1;
+  string status = 2; // going, maybe, declined
+}
+
+message RSVPEventResponse {
+  EventRSVP rsvp = 1;
+}
+
+// --- CheckInEvent ---
+
+message CheckInEventRequest {
+  string event_id = 1;
+}
+
+message CheckInEventResponse {
+  EventCheckin checkin = 1;
+}
+
+// --- GetEventAttendance ---
+
+message GetEventAttendanceRequest {
+  string event_id = 1;
+}
+
+message GetEventAttendanceResponse {
+  repeated EventRSVP rsvps = 1;
+  repeated EventCheckin checkins = 2;
+}

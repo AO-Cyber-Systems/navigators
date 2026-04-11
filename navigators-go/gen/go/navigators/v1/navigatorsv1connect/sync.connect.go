@@ -62,6 +62,11 @@ const (
 	// SyncServiceGetSyncManifestProcedure is the fully-qualified name of the SyncService's
 	// GetSyncManifest RPC.
 	SyncServiceGetSyncManifestProcedure = "/navigators.v1.SyncService/GetSyncManifest"
+	// SyncServicePullEventsProcedure is the fully-qualified name of the SyncService's PullEvents RPC.
+	SyncServicePullEventsProcedure = "/navigators.v1.SyncService/PullEvents"
+	// SyncServicePullTrainingMaterialsProcedure is the fully-qualified name of the SyncService's
+	// PullTrainingMaterials RPC.
+	SyncServicePullTrainingMaterialsProcedure = "/navigators.v1.SyncService/PullTrainingMaterials"
 )
 
 // SyncServiceClient is a client for the navigators.v1.SyncService service.
@@ -86,6 +91,10 @@ type SyncServiceClient interface {
 	PullTaskNotes(context.Context, *connect.Request[v1.PullTaskNotesRequest]) (*connect.Response[v1.PullTaskNotesResponse], error)
 	// GetSyncManifest returns the user's turf assignments with metadata for initial sync.
 	GetSyncManifest(context.Context, *connect.Request[v1.GetSyncManifestRequest]) (*connect.Response[v1.GetSyncManifestResponse], error)
+	// PullEvents returns events and RSVPs updated since the given cursor.
+	PullEvents(context.Context, *connect.Request[v1.PullEventsRequest]) (*connect.Response[v1.PullEventsResponse], error)
+	// PullTrainingMaterials returns published training materials updated since the given cursor.
+	PullTrainingMaterials(context.Context, *connect.Request[v1.PullTrainingMaterialsRequest]) (*connect.Response[v1.PullTrainingMaterialsResponse], error)
 }
 
 // NewSyncServiceClient constructs a client for the navigators.v1.SyncService service. By default,
@@ -159,21 +168,35 @@ func NewSyncServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(syncServiceMethods.ByName("GetSyncManifest")),
 			connect.WithClientOptions(opts...),
 		),
+		pullEvents: connect.NewClient[v1.PullEventsRequest, v1.PullEventsResponse](
+			httpClient,
+			baseURL+SyncServicePullEventsProcedure,
+			connect.WithSchema(syncServiceMethods.ByName("PullEvents")),
+			connect.WithClientOptions(opts...),
+		),
+		pullTrainingMaterials: connect.NewClient[v1.PullTrainingMaterialsRequest, v1.PullTrainingMaterialsResponse](
+			httpClient,
+			baseURL+SyncServicePullTrainingMaterialsProcedure,
+			connect.WithSchema(syncServiceMethods.ByName("PullTrainingMaterials")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // syncServiceClient implements SyncServiceClient.
 type syncServiceClient struct {
-	pullVoterUpdates    *connect.Client[v1.PullVoterUpdatesRequest, v1.PullVoterUpdatesResponse]
-	pullContactLogs     *connect.Client[v1.PullContactLogsRequest, v1.PullContactLogsResponse]
-	pushSyncBatch       *connect.Client[v1.PushSyncBatchRequest, v1.PushSyncBatchResponse]
-	pullSurveyForms     *connect.Client[v1.PullSurveyFormsRequest, v1.PullSurveyFormsResponse]
-	pullSurveyResponses *connect.Client[v1.PullSurveyResponsesRequest, v1.PullSurveyResponsesResponse]
-	pullVoterNotes      *connect.Client[v1.PullVoterNotesRequest, v1.PullVoterNotesResponse]
-	pullCallScripts     *connect.Client[v1.PullCallScriptsRequest, v1.PullCallScriptsResponse]
-	pullTasks           *connect.Client[v1.PullTasksRequest, v1.PullTasksResponse]
-	pullTaskNotes       *connect.Client[v1.PullTaskNotesRequest, v1.PullTaskNotesResponse]
-	getSyncManifest     *connect.Client[v1.GetSyncManifestRequest, v1.GetSyncManifestResponse]
+	pullVoterUpdates      *connect.Client[v1.PullVoterUpdatesRequest, v1.PullVoterUpdatesResponse]
+	pullContactLogs       *connect.Client[v1.PullContactLogsRequest, v1.PullContactLogsResponse]
+	pushSyncBatch         *connect.Client[v1.PushSyncBatchRequest, v1.PushSyncBatchResponse]
+	pullSurveyForms       *connect.Client[v1.PullSurveyFormsRequest, v1.PullSurveyFormsResponse]
+	pullSurveyResponses   *connect.Client[v1.PullSurveyResponsesRequest, v1.PullSurveyResponsesResponse]
+	pullVoterNotes        *connect.Client[v1.PullVoterNotesRequest, v1.PullVoterNotesResponse]
+	pullCallScripts       *connect.Client[v1.PullCallScriptsRequest, v1.PullCallScriptsResponse]
+	pullTasks             *connect.Client[v1.PullTasksRequest, v1.PullTasksResponse]
+	pullTaskNotes         *connect.Client[v1.PullTaskNotesRequest, v1.PullTaskNotesResponse]
+	getSyncManifest       *connect.Client[v1.GetSyncManifestRequest, v1.GetSyncManifestResponse]
+	pullEvents            *connect.Client[v1.PullEventsRequest, v1.PullEventsResponse]
+	pullTrainingMaterials *connect.Client[v1.PullTrainingMaterialsRequest, v1.PullTrainingMaterialsResponse]
 }
 
 // PullVoterUpdates calls navigators.v1.SyncService.PullVoterUpdates.
@@ -226,6 +249,16 @@ func (c *syncServiceClient) GetSyncManifest(ctx context.Context, req *connect.Re
 	return c.getSyncManifest.CallUnary(ctx, req)
 }
 
+// PullEvents calls navigators.v1.SyncService.PullEvents.
+func (c *syncServiceClient) PullEvents(ctx context.Context, req *connect.Request[v1.PullEventsRequest]) (*connect.Response[v1.PullEventsResponse], error) {
+	return c.pullEvents.CallUnary(ctx, req)
+}
+
+// PullTrainingMaterials calls navigators.v1.SyncService.PullTrainingMaterials.
+func (c *syncServiceClient) PullTrainingMaterials(ctx context.Context, req *connect.Request[v1.PullTrainingMaterialsRequest]) (*connect.Response[v1.PullTrainingMaterialsResponse], error) {
+	return c.pullTrainingMaterials.CallUnary(ctx, req)
+}
+
 // SyncServiceHandler is an implementation of the navigators.v1.SyncService service.
 type SyncServiceHandler interface {
 	// PullVoterUpdates returns voters updated since the given cursor, scoped to turfs.
@@ -248,6 +281,10 @@ type SyncServiceHandler interface {
 	PullTaskNotes(context.Context, *connect.Request[v1.PullTaskNotesRequest]) (*connect.Response[v1.PullTaskNotesResponse], error)
 	// GetSyncManifest returns the user's turf assignments with metadata for initial sync.
 	GetSyncManifest(context.Context, *connect.Request[v1.GetSyncManifestRequest]) (*connect.Response[v1.GetSyncManifestResponse], error)
+	// PullEvents returns events and RSVPs updated since the given cursor.
+	PullEvents(context.Context, *connect.Request[v1.PullEventsRequest]) (*connect.Response[v1.PullEventsResponse], error)
+	// PullTrainingMaterials returns published training materials updated since the given cursor.
+	PullTrainingMaterials(context.Context, *connect.Request[v1.PullTrainingMaterialsRequest]) (*connect.Response[v1.PullTrainingMaterialsResponse], error)
 }
 
 // NewSyncServiceHandler builds an HTTP handler from the service implementation. It returns the path
@@ -317,6 +354,18 @@ func NewSyncServiceHandler(svc SyncServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(syncServiceMethods.ByName("GetSyncManifest")),
 		connect.WithHandlerOptions(opts...),
 	)
+	syncServicePullEventsHandler := connect.NewUnaryHandler(
+		SyncServicePullEventsProcedure,
+		svc.PullEvents,
+		connect.WithSchema(syncServiceMethods.ByName("PullEvents")),
+		connect.WithHandlerOptions(opts...),
+	)
+	syncServicePullTrainingMaterialsHandler := connect.NewUnaryHandler(
+		SyncServicePullTrainingMaterialsProcedure,
+		svc.PullTrainingMaterials,
+		connect.WithSchema(syncServiceMethods.ByName("PullTrainingMaterials")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/navigators.v1.SyncService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case SyncServicePullVoterUpdatesProcedure:
@@ -339,6 +388,10 @@ func NewSyncServiceHandler(svc SyncServiceHandler, opts ...connect.HandlerOption
 			syncServicePullTaskNotesHandler.ServeHTTP(w, r)
 		case SyncServiceGetSyncManifestProcedure:
 			syncServiceGetSyncManifestHandler.ServeHTTP(w, r)
+		case SyncServicePullEventsProcedure:
+			syncServicePullEventsHandler.ServeHTTP(w, r)
+		case SyncServicePullTrainingMaterialsProcedure:
+			syncServicePullTrainingMaterialsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -386,4 +439,12 @@ func (UnimplementedSyncServiceHandler) PullTaskNotes(context.Context, *connect.R
 
 func (UnimplementedSyncServiceHandler) GetSyncManifest(context.Context, *connect.Request[v1.GetSyncManifestRequest]) (*connect.Response[v1.GetSyncManifestResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SyncService.GetSyncManifest is not implemented"))
+}
+
+func (UnimplementedSyncServiceHandler) PullEvents(context.Context, *connect.Request[v1.PullEventsRequest]) (*connect.Response[v1.PullEventsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SyncService.PullEvents is not implemented"))
+}
+
+func (UnimplementedSyncServiceHandler) PullTrainingMaterials(context.Context, *connect.Request[v1.PullTrainingMaterialsRequest]) (*connect.Response[v1.PullTrainingMaterialsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SyncService.PullTrainingMaterials is not implemented"))
 }
