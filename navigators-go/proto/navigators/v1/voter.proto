@@ -47,6 +47,18 @@ service VoterService {
 
   // GetVoterTags returns all tags assigned to a voter.
   rpc GetVoterTags(GetVoterTagsRequest) returns (GetVoterTagsResponse);
+
+  // AddToSuppressionList adds a voter to the global suppression list.
+  rpc AddToSuppressionList(AddToSuppressionListRequest) returns (AddToSuppressionListResponse);
+
+  // RemoveFromSuppressionList removes a voter from the suppression list.
+  rpc RemoveFromSuppressionList(RemoveFromSuppressionListRequest) returns (RemoveFromSuppressionListResponse);
+
+  // IsVoterSuppressed checks if a voter is on the suppression list.
+  rpc IsVoterSuppressed(IsVoterSuppressedRequest) returns (IsVoterSuppressedResponse);
+
+  // ListSuppressedVoters returns a paginated list of suppressed voters.
+  rpc ListSuppressedVoters(ListSuppressedVotersRequest) returns (ListSuppressedVotersResponse);
 }
 
 // --- Import Messages ---
@@ -116,6 +128,8 @@ message GetVoterRequest {
 
 message GetVoterResponse {
   Voter voter = 1;
+  bool is_suppressed = 2;
+  repeated VoterTag tags = 3;
 }
 
 message SearchVotersRequest {
@@ -262,4 +276,51 @@ message GetVoterTagsRequest {
 
 message GetVoterTagsResponse {
   repeated VoterTag tags = 1;
+}
+
+// --- Suppression Messages ---
+
+message AddToSuppressionListRequest {
+  string voter_id = 1;
+  string reason = 2;
+}
+
+message AddToSuppressionListResponse {}
+
+message RemoveFromSuppressionListRequest {
+  string voter_id = 1;
+}
+
+message RemoveFromSuppressionListResponse {}
+
+message IsVoterSuppressedRequest {
+  string voter_id = 1;
+}
+
+message IsVoterSuppressedResponse {
+  bool is_suppressed = 1;
+}
+
+message ListSuppressedVotersRequest {
+  int32 page_size = 1;
+  int32 page = 2;
+}
+
+message ListSuppressedVotersResponse {
+  repeated SuppressedVoter voters = 1;
+  int64 total_count = 2;
+}
+
+message SuppressedVoter {
+  string id = 1;
+  string voter_id = 2;
+  string first_name = 3;
+  string last_name = 4;
+  string res_street_address = 5;
+  string res_city = 6;
+  string res_state = 7;
+  string res_zip = 8;
+  string reason = 9;
+  string added_by = 10;
+  string added_at = 11;
 }

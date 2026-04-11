@@ -176,10 +176,13 @@ func main() {
 	importPath, importHTTPHandler := navigatorsv1connect.NewVoterImportServiceHandler(importHandler, interceptors)
 	mux.Handle(importPath, importHTTPHandler)
 
+	// --- Suppression service ---
+	suppressionService := navpkg.NewSuppressionService(navQueries, navAuditService)
+
 	// --- Voter query service ---
 	voterService := navpkg.NewVoterService(navQueries, pgBackend.Pool(), turfScopedFilter, navAuditService)
 	tagService := navpkg.NewTagService(navQueries, navAuditService)
-	voterHandler := navpkg.NewVoterHandler(voterService, tagService)
+	voterHandler := navpkg.NewVoterHandler(voterService, tagService, suppressionService)
 	voterPath, voterHTTPHandler := navigatorsv1connect.NewVoterServiceHandler(voterHandler, interceptors)
 	mux.Handle(voterPath, voterHTTPHandler)
 

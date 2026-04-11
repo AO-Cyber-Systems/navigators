@@ -95,6 +95,12 @@ func NavigatorsProcedurePermissions() map[string]server.Permission {
 		"/navigators.v1.VoterService/SearchVoters": {Feature: "voters", Action: "view"},
 		"/navigators.v1.VoterService/ListVoters":   {Feature: "voters", Action: "view"},
 
+		// Voter suppression list management
+		"/navigators.v1.VoterService/AddToSuppressionList":      {Feature: "voters", Action: "admin"},
+		"/navigators.v1.VoterService/RemoveFromSuppressionList": {Feature: "voters", Action: "admin"},
+		"/navigators.v1.VoterService/IsVoterSuppressed":         {Feature: "voters", Action: "view"},
+		"/navigators.v1.VoterService/ListSuppressedVoters":      {Feature: "voters", Action: "admin"},
+
 		// Voter tag management
 		"/navigators.v1.VoterService/CreateTag":          {Feature: "voters", Action: "admin"},
 		"/navigators.v1.VoterService/ListTags":            {Feature: "voters", Action: "view"},

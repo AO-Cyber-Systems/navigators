@@ -19,15 +19,17 @@ var _ navigatorsv1connect.VoterServiceHandler = (*VoterHandler)(nil)
 
 // VoterHandler implements the navigators.v1.VoterService ConnectRPC handler.
 type VoterHandler struct {
-	voterService *VoterService
-	tagService   *TagService
+	voterService       *VoterService
+	tagService         *TagService
+	suppressionService *SuppressionService
 }
 
 // NewVoterHandler creates a new VoterHandler.
-func NewVoterHandler(voterService *VoterService, tagService *TagService) *VoterHandler {
+func NewVoterHandler(voterService *VoterService, tagService *TagService, suppressionService *SuppressionService) *VoterHandler {
 	return &VoterHandler{
-		voterService: voterService,
-		tagService:   tagService,
+		voterService:       voterService,
+		tagService:         tagService,
+		suppressionService: suppressionService,
 	}
 }
 
@@ -46,8 +48,25 @@ func (h *VoterHandler) GetVoter(ctx context.Context, req *connect.Request[naviga
 		return nil, connect.NewError(connect.CodeNotFound, fmt.Errorf("voter not found"))
 	}
 
+	// Check suppression status
+	isSuppressed, _ := h.suppressionService.IsVoterSuppressed(ctx, voterID)
+
+	// Get voter tags
+	voterTags, err := h.tagService.GetVoterTags(ctx, voterID)
+	if err != nil {
+		// Non-fatal: return voter without tags rather than failing
+		voterTags = nil
+	}
+
+	pbTags := make([]*navigatorsv1.VoterTag, len(voterTags))
+	for i := range voterTags {
+		pbTags[i] = voterTagToProto(&voterTags[i])
+	}
+
 	return connect.NewResponse(&navigatorsv1.GetVoterResponse{
-		Voter: voterToProto(voter),
+		Voter:        voterToProto(voter),
+		IsSuppressed: isSuppressed,
+		Tags:         pbTags,
 	}), nil
 }
 
@@ -253,6 +272,93 @@ func (h *VoterHandler) GetVoterTags(ctx context.Context, req *connect.Request[na
 
 	return connect.NewResponse(&navigatorsv1.GetVoterTagsResponse{
 		Tags: pbTags,
+	}), nil
+}
+
+// --- Suppression RPCs ---
+
+// AddToSuppressionList adds a voter to the global suppression list.
+func (h *VoterHandler) AddToSuppressionList(ctx context.Context, req *connect.Request[navigatorsv1.AddToSuppressionListRequest]) (*connect.Response[navigatorsv1.AddToSuppressionListResponse], error) {
+	voterID, err := uuid.Parse(req.Msg.GetVoterId())
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("invalid voter_id"))
+	}
+
+	if err := h.suppressionService.AddToSuppressionList(ctx, voterID, req.Msg.GetReason()); err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("add to suppression list: %w", err))
+	}
+
+	return connect.NewResponse(&navigatorsv1.AddToSuppressionListResponse{}), nil
+}
+
+// RemoveFromSuppressionList removes a voter from the suppression list.
+func (h *VoterHandler) RemoveFromSuppressionList(ctx context.Context, req *connect.Request[navigatorsv1.RemoveFromSuppressionListRequest]) (*connect.Response[navigatorsv1.RemoveFromSuppressionListResponse], error) {
+	voterID, err := uuid.Parse(req.Msg.GetVoterId())
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("invalid voter_id"))
+	}
+
+	if err := h.suppressionService.RemoveFromSuppressionList(ctx, voterID); err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("remove from suppression list: %w", err))
+	}
+
+	return connect.NewResponse(&navigatorsv1.RemoveFromSuppressionListResponse{}), nil
+}
+
+// IsVoterSuppressed checks if a voter is on the suppression list.
+func (h *VoterHandler) IsVoterSuppressed(ctx context.Context, req *connect.Request[navigatorsv1.IsVoterSuppressedRequest]) (*connect.Response[navigatorsv1.IsVoterSuppressedResponse], error) {
+	voterID, err := uuid.Parse(req.Msg.GetVoterId())
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("invalid voter_id"))
+	}
+
+	suppressed, err := h.suppressionService.IsVoterSuppressed(ctx, voterID)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("check suppression: %w", err))
+	}
+
+	return connect.NewResponse(&navigatorsv1.IsVoterSuppressedResponse{
+		IsSuppressed: suppressed,
+	}), nil
+}
+
+// ListSuppressedVoters returns a paginated list of suppressed voters.
+func (h *VoterHandler) ListSuppressedVoters(ctx context.Context, req *connect.Request[navigatorsv1.ListSuppressedVotersRequest]) (*connect.Response[navigatorsv1.ListSuppressedVotersResponse], error) {
+	pageSize := req.Msg.GetPageSize()
+	if pageSize <= 0 || pageSize > 100 {
+		pageSize = 50
+	}
+	page := req.Msg.GetPage()
+	if page < 0 {
+		page = 0
+	}
+	offset := page * pageSize
+
+	rows, totalCount, err := h.suppressionService.ListSuppressedVoters(ctx, pageSize, offset)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("list suppressed voters: %w", err))
+	}
+
+	voters := make([]*navigatorsv1.SuppressedVoter, len(rows))
+	for i, r := range rows {
+		voters[i] = &navigatorsv1.SuppressedVoter{
+			Id:               r.ID.String(),
+			VoterId:          r.VoterID.String(),
+			FirstName:        r.FirstName,
+			LastName:         r.LastName,
+			ResStreetAddress: r.ResStreetAddress,
+			ResCity:          r.ResCity,
+			ResState:         r.ResState,
+			ResZip:           r.ResZip,
+			Reason:           r.Reason,
+			AddedBy:          r.AddedBy.String(),
+			AddedAt:          r.AddedAt.Format("2006-01-02T15:04:05Z"),
+		}
+	}
+
+	return connect.NewResponse(&navigatorsv1.ListSuppressedVotersResponse{
+		Voters:     voters,
+		TotalCount: totalCount,
 	}), nil
 }
 

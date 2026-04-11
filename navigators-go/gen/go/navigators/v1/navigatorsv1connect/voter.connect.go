@@ -69,6 +69,18 @@ const (
 	// VoterServiceGetVoterTagsProcedure is the fully-qualified name of the VoterService's GetVoterTags
 	// RPC.
 	VoterServiceGetVoterTagsProcedure = "/navigators.v1.VoterService/GetVoterTags"
+	// VoterServiceAddToSuppressionListProcedure is the fully-qualified name of the VoterService's
+	// AddToSuppressionList RPC.
+	VoterServiceAddToSuppressionListProcedure = "/navigators.v1.VoterService/AddToSuppressionList"
+	// VoterServiceRemoveFromSuppressionListProcedure is the fully-qualified name of the VoterService's
+	// RemoveFromSuppressionList RPC.
+	VoterServiceRemoveFromSuppressionListProcedure = "/navigators.v1.VoterService/RemoveFromSuppressionList"
+	// VoterServiceIsVoterSuppressedProcedure is the fully-qualified name of the VoterService's
+	// IsVoterSuppressed RPC.
+	VoterServiceIsVoterSuppressedProcedure = "/navigators.v1.VoterService/IsVoterSuppressed"
+	// VoterServiceListSuppressedVotersProcedure is the fully-qualified name of the VoterService's
+	// ListSuppressedVoters RPC.
+	VoterServiceListSuppressedVotersProcedure = "/navigators.v1.VoterService/ListSuppressedVoters"
 )
 
 // VoterImportServiceClient is a client for the navigators.v1.VoterImportService service.
@@ -247,6 +259,14 @@ type VoterServiceClient interface {
 	RemoveTagFromVoter(context.Context, *connect.Request[v1.RemoveTagFromVoterRequest]) (*connect.Response[v1.RemoveTagFromVoterResponse], error)
 	// GetVoterTags returns all tags assigned to a voter.
 	GetVoterTags(context.Context, *connect.Request[v1.GetVoterTagsRequest]) (*connect.Response[v1.GetVoterTagsResponse], error)
+	// AddToSuppressionList adds a voter to the global suppression list.
+	AddToSuppressionList(context.Context, *connect.Request[v1.AddToSuppressionListRequest]) (*connect.Response[v1.AddToSuppressionListResponse], error)
+	// RemoveFromSuppressionList removes a voter from the suppression list.
+	RemoveFromSuppressionList(context.Context, *connect.Request[v1.RemoveFromSuppressionListRequest]) (*connect.Response[v1.RemoveFromSuppressionListResponse], error)
+	// IsVoterSuppressed checks if a voter is on the suppression list.
+	IsVoterSuppressed(context.Context, *connect.Request[v1.IsVoterSuppressedRequest]) (*connect.Response[v1.IsVoterSuppressedResponse], error)
+	// ListSuppressedVoters returns a paginated list of suppressed voters.
+	ListSuppressedVoters(context.Context, *connect.Request[v1.ListSuppressedVotersRequest]) (*connect.Response[v1.ListSuppressedVotersResponse], error)
 }
 
 // NewVoterServiceClient constructs a client for the navigators.v1.VoterService service. By default,
@@ -314,20 +334,48 @@ func NewVoterServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 			connect.WithSchema(voterServiceMethods.ByName("GetVoterTags")),
 			connect.WithClientOptions(opts...),
 		),
+		addToSuppressionList: connect.NewClient[v1.AddToSuppressionListRequest, v1.AddToSuppressionListResponse](
+			httpClient,
+			baseURL+VoterServiceAddToSuppressionListProcedure,
+			connect.WithSchema(voterServiceMethods.ByName("AddToSuppressionList")),
+			connect.WithClientOptions(opts...),
+		),
+		removeFromSuppressionList: connect.NewClient[v1.RemoveFromSuppressionListRequest, v1.RemoveFromSuppressionListResponse](
+			httpClient,
+			baseURL+VoterServiceRemoveFromSuppressionListProcedure,
+			connect.WithSchema(voterServiceMethods.ByName("RemoveFromSuppressionList")),
+			connect.WithClientOptions(opts...),
+		),
+		isVoterSuppressed: connect.NewClient[v1.IsVoterSuppressedRequest, v1.IsVoterSuppressedResponse](
+			httpClient,
+			baseURL+VoterServiceIsVoterSuppressedProcedure,
+			connect.WithSchema(voterServiceMethods.ByName("IsVoterSuppressed")),
+			connect.WithClientOptions(opts...),
+		),
+		listSuppressedVoters: connect.NewClient[v1.ListSuppressedVotersRequest, v1.ListSuppressedVotersResponse](
+			httpClient,
+			baseURL+VoterServiceListSuppressedVotersProcedure,
+			connect.WithSchema(voterServiceMethods.ByName("ListSuppressedVoters")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // voterServiceClient implements VoterServiceClient.
 type voterServiceClient struct {
-	getVoter           *connect.Client[v1.GetVoterRequest, v1.GetVoterResponse]
-	searchVoters       *connect.Client[v1.SearchVotersRequest, v1.SearchVotersResponse]
-	listVoters         *connect.Client[v1.ListVotersRequest, v1.ListVotersResponse]
-	createTag          *connect.Client[v1.CreateTagRequest, v1.CreateTagResponse]
-	listTags           *connect.Client[v1.ListTagsRequest, v1.ListTagsResponse]
-	deleteTag          *connect.Client[v1.DeleteTagRequest, v1.DeleteTagResponse]
-	assignTagToVoter   *connect.Client[v1.AssignTagToVoterRequest, v1.AssignTagToVoterResponse]
-	removeTagFromVoter *connect.Client[v1.RemoveTagFromVoterRequest, v1.RemoveTagFromVoterResponse]
-	getVoterTags       *connect.Client[v1.GetVoterTagsRequest, v1.GetVoterTagsResponse]
+	getVoter                  *connect.Client[v1.GetVoterRequest, v1.GetVoterResponse]
+	searchVoters              *connect.Client[v1.SearchVotersRequest, v1.SearchVotersResponse]
+	listVoters                *connect.Client[v1.ListVotersRequest, v1.ListVotersResponse]
+	createTag                 *connect.Client[v1.CreateTagRequest, v1.CreateTagResponse]
+	listTags                  *connect.Client[v1.ListTagsRequest, v1.ListTagsResponse]
+	deleteTag                 *connect.Client[v1.DeleteTagRequest, v1.DeleteTagResponse]
+	assignTagToVoter          *connect.Client[v1.AssignTagToVoterRequest, v1.AssignTagToVoterResponse]
+	removeTagFromVoter        *connect.Client[v1.RemoveTagFromVoterRequest, v1.RemoveTagFromVoterResponse]
+	getVoterTags              *connect.Client[v1.GetVoterTagsRequest, v1.GetVoterTagsResponse]
+	addToSuppressionList      *connect.Client[v1.AddToSuppressionListRequest, v1.AddToSuppressionListResponse]
+	removeFromSuppressionList *connect.Client[v1.RemoveFromSuppressionListRequest, v1.RemoveFromSuppressionListResponse]
+	isVoterSuppressed         *connect.Client[v1.IsVoterSuppressedRequest, v1.IsVoterSuppressedResponse]
+	listSuppressedVoters      *connect.Client[v1.ListSuppressedVotersRequest, v1.ListSuppressedVotersResponse]
 }
 
 // GetVoter calls navigators.v1.VoterService.GetVoter.
@@ -375,6 +423,26 @@ func (c *voterServiceClient) GetVoterTags(ctx context.Context, req *connect.Requ
 	return c.getVoterTags.CallUnary(ctx, req)
 }
 
+// AddToSuppressionList calls navigators.v1.VoterService.AddToSuppressionList.
+func (c *voterServiceClient) AddToSuppressionList(ctx context.Context, req *connect.Request[v1.AddToSuppressionListRequest]) (*connect.Response[v1.AddToSuppressionListResponse], error) {
+	return c.addToSuppressionList.CallUnary(ctx, req)
+}
+
+// RemoveFromSuppressionList calls navigators.v1.VoterService.RemoveFromSuppressionList.
+func (c *voterServiceClient) RemoveFromSuppressionList(ctx context.Context, req *connect.Request[v1.RemoveFromSuppressionListRequest]) (*connect.Response[v1.RemoveFromSuppressionListResponse], error) {
+	return c.removeFromSuppressionList.CallUnary(ctx, req)
+}
+
+// IsVoterSuppressed calls navigators.v1.VoterService.IsVoterSuppressed.
+func (c *voterServiceClient) IsVoterSuppressed(ctx context.Context, req *connect.Request[v1.IsVoterSuppressedRequest]) (*connect.Response[v1.IsVoterSuppressedResponse], error) {
+	return c.isVoterSuppressed.CallUnary(ctx, req)
+}
+
+// ListSuppressedVoters calls navigators.v1.VoterService.ListSuppressedVoters.
+func (c *voterServiceClient) ListSuppressedVoters(ctx context.Context, req *connect.Request[v1.ListSuppressedVotersRequest]) (*connect.Response[v1.ListSuppressedVotersResponse], error) {
+	return c.listSuppressedVoters.CallUnary(ctx, req)
+}
+
 // VoterServiceHandler is an implementation of the navigators.v1.VoterService service.
 type VoterServiceHandler interface {
 	// GetVoter returns a single voter by ID.
@@ -395,6 +463,14 @@ type VoterServiceHandler interface {
 	RemoveTagFromVoter(context.Context, *connect.Request[v1.RemoveTagFromVoterRequest]) (*connect.Response[v1.RemoveTagFromVoterResponse], error)
 	// GetVoterTags returns all tags assigned to a voter.
 	GetVoterTags(context.Context, *connect.Request[v1.GetVoterTagsRequest]) (*connect.Response[v1.GetVoterTagsResponse], error)
+	// AddToSuppressionList adds a voter to the global suppression list.
+	AddToSuppressionList(context.Context, *connect.Request[v1.AddToSuppressionListRequest]) (*connect.Response[v1.AddToSuppressionListResponse], error)
+	// RemoveFromSuppressionList removes a voter from the suppression list.
+	RemoveFromSuppressionList(context.Context, *connect.Request[v1.RemoveFromSuppressionListRequest]) (*connect.Response[v1.RemoveFromSuppressionListResponse], error)
+	// IsVoterSuppressed checks if a voter is on the suppression list.
+	IsVoterSuppressed(context.Context, *connect.Request[v1.IsVoterSuppressedRequest]) (*connect.Response[v1.IsVoterSuppressedResponse], error)
+	// ListSuppressedVoters returns a paginated list of suppressed voters.
+	ListSuppressedVoters(context.Context, *connect.Request[v1.ListSuppressedVotersRequest]) (*connect.Response[v1.ListSuppressedVotersResponse], error)
 }
 
 // NewVoterServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -458,6 +534,30 @@ func NewVoterServiceHandler(svc VoterServiceHandler, opts ...connect.HandlerOpti
 		connect.WithSchema(voterServiceMethods.ByName("GetVoterTags")),
 		connect.WithHandlerOptions(opts...),
 	)
+	voterServiceAddToSuppressionListHandler := connect.NewUnaryHandler(
+		VoterServiceAddToSuppressionListProcedure,
+		svc.AddToSuppressionList,
+		connect.WithSchema(voterServiceMethods.ByName("AddToSuppressionList")),
+		connect.WithHandlerOptions(opts...),
+	)
+	voterServiceRemoveFromSuppressionListHandler := connect.NewUnaryHandler(
+		VoterServiceRemoveFromSuppressionListProcedure,
+		svc.RemoveFromSuppressionList,
+		connect.WithSchema(voterServiceMethods.ByName("RemoveFromSuppressionList")),
+		connect.WithHandlerOptions(opts...),
+	)
+	voterServiceIsVoterSuppressedHandler := connect.NewUnaryHandler(
+		VoterServiceIsVoterSuppressedProcedure,
+		svc.IsVoterSuppressed,
+		connect.WithSchema(voterServiceMethods.ByName("IsVoterSuppressed")),
+		connect.WithHandlerOptions(opts...),
+	)
+	voterServiceListSuppressedVotersHandler := connect.NewUnaryHandler(
+		VoterServiceListSuppressedVotersProcedure,
+		svc.ListSuppressedVoters,
+		connect.WithSchema(voterServiceMethods.ByName("ListSuppressedVoters")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/navigators.v1.VoterService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case VoterServiceGetVoterProcedure:
@@ -478,6 +578,14 @@ func NewVoterServiceHandler(svc VoterServiceHandler, opts ...connect.HandlerOpti
 			voterServiceRemoveTagFromVoterHandler.ServeHTTP(w, r)
 		case VoterServiceGetVoterTagsProcedure:
 			voterServiceGetVoterTagsHandler.ServeHTTP(w, r)
+		case VoterServiceAddToSuppressionListProcedure:
+			voterServiceAddToSuppressionListHandler.ServeHTTP(w, r)
+		case VoterServiceRemoveFromSuppressionListProcedure:
+			voterServiceRemoveFromSuppressionListHandler.ServeHTTP(w, r)
+		case VoterServiceIsVoterSuppressedProcedure:
+			voterServiceIsVoterSuppressedHandler.ServeHTTP(w, r)
+		case VoterServiceListSuppressedVotersProcedure:
+			voterServiceListSuppressedVotersHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -521,4 +629,20 @@ func (UnimplementedVoterServiceHandler) RemoveTagFromVoter(context.Context, *con
 
 func (UnimplementedVoterServiceHandler) GetVoterTags(context.Context, *connect.Request[v1.GetVoterTagsRequest]) (*connect.Response[v1.GetVoterTagsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.VoterService.GetVoterTags is not implemented"))
+}
+
+func (UnimplementedVoterServiceHandler) AddToSuppressionList(context.Context, *connect.Request[v1.AddToSuppressionListRequest]) (*connect.Response[v1.AddToSuppressionListResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.VoterService.AddToSuppressionList is not implemented"))
+}
+
+func (UnimplementedVoterServiceHandler) RemoveFromSuppressionList(context.Context, *connect.Request[v1.RemoveFromSuppressionListRequest]) (*connect.Response[v1.RemoveFromSuppressionListResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.VoterService.RemoveFromSuppressionList is not implemented"))
+}
+
+func (UnimplementedVoterServiceHandler) IsVoterSuppressed(context.Context, *connect.Request[v1.IsVoterSuppressedRequest]) (*connect.Response[v1.IsVoterSuppressedResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.VoterService.IsVoterSuppressed is not implemented"))
+}
+
+func (UnimplementedVoterServiceHandler) ListSuppressedVoters(context.Context, *connect.Request[v1.ListSuppressedVotersRequest]) (*connect.Response[v1.ListSuppressedVotersResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.VoterService.ListSuppressedVoters is not implemented"))
 }
