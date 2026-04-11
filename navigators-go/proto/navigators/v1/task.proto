@@ -38,6 +38,9 @@ service TaskService {
 
   // ListTaskNotes returns notes for a task.
   rpc ListTaskNotes(ListTaskNotesRequest) returns (ListTaskNotesResponse);
+
+  // RegisterDeviceToken registers a device's FCM token for push notifications.
+  rpc RegisterDeviceToken(RegisterDeviceTokenRequest) returns (RegisterDeviceTokenResponse);
 }
 
 // --- Messages ---
@@ -191,3 +194,12 @@ message ListTaskNotesRequest {
 message ListTaskNotesResponse {
   repeated TaskNote notes = 1;
 }
+
+// --- RegisterDeviceToken ---
+
+message RegisterDeviceTokenRequest {
+  string token = 1;
+  string platform = 2; // "ios" or "android"
+}
+
+message RegisterDeviceTokenResponse {}

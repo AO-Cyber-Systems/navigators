@@ -1385,6 +1385,94 @@ func (x *ListTaskNotesResponse) GetNotes() []*TaskNote {
 	return nil
 }
 
+type RegisterDeviceTokenRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Token         string                 `protobuf:"bytes,1,opt,name=token,proto3" json:"token,omitempty"`
+	Platform      string                 `protobuf:"bytes,2,opt,name=platform,proto3" json:"platform,omitempty"` // "ios" or "android"
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RegisterDeviceTokenRequest) Reset() {
+	*x = RegisterDeviceTokenRequest{}
+	mi := &file_navigators_v1_task_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RegisterDeviceTokenRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RegisterDeviceTokenRequest) ProtoMessage() {}
+
+func (x *RegisterDeviceTokenRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_task_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RegisterDeviceTokenRequest.ProtoReflect.Descriptor instead.
+func (*RegisterDeviceTokenRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_task_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *RegisterDeviceTokenRequest) GetToken() string {
+	if x != nil {
+		return x.Token
+	}
+	return ""
+}
+
+func (x *RegisterDeviceTokenRequest) GetPlatform() string {
+	if x != nil {
+		return x.Platform
+	}
+	return ""
+}
+
+type RegisterDeviceTokenResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RegisterDeviceTokenResponse) Reset() {
+	*x = RegisterDeviceTokenResponse{}
+	mi := &file_navigators_v1_task_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RegisterDeviceTokenResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RegisterDeviceTokenResponse) ProtoMessage() {}
+
+func (x *RegisterDeviceTokenResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_task_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RegisterDeviceTokenResponse.ProtoReflect.Descriptor instead.
+func (*RegisterDeviceTokenResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_task_proto_rawDescGZIP(), []int{26}
+}
+
 var File_navigators_v1_task_proto protoreflect.FileDescriptor
 
 const file_navigators_v1_task_proto_rawDesc = "" +
@@ -1486,7 +1574,11 @@ const file_navigators_v1_task_proto_rawDesc = "" +
 	"\x14ListTaskNotesRequest\x12\x17\n" +
 	"\atask_id\x18\x01 \x01(\tR\x06taskId\"F\n" +
 	"\x15ListTaskNotesResponse\x12-\n" +
-	"\x05notes\x18\x01 \x03(\v2\x17.navigators.v1.TaskNoteR\x05notes2\xe3\a\n" +
+	"\x05notes\x18\x01 \x03(\v2\x17.navigators.v1.TaskNoteR\x05notes\"N\n" +
+	"\x1aRegisterDeviceTokenRequest\x12\x14\n" +
+	"\x05token\x18\x01 \x01(\tR\x05token\x12\x1a\n" +
+	"\bplatform\x18\x02 \x01(\tR\bplatform\"\x1d\n" +
+	"\x1bRegisterDeviceTokenResponse2\xd1\b\n" +
 	"\vTaskService\x12Q\n" +
 	"\n" +
 	"CreateTask\x12 .navigators.v1.CreateTaskRequest\x1a!.navigators.v1.CreateTaskResponse\x12H\n" +
@@ -1501,7 +1593,8 @@ const file_navigators_v1_task_proto_rawDesc = "" +
 	"\x12GetTaskAssignments\x12(.navigators.v1.GetTaskAssignmentsRequest\x1a).navigators.v1.GetTaskAssignmentsResponse\x12]\n" +
 	"\x0eLinkTaskVoters\x12$.navigators.v1.LinkTaskVotersRequest\x1a%.navigators.v1.LinkTaskVotersResponse\x12]\n" +
 	"\x0eCreateTaskNote\x12$.navigators.v1.CreateTaskNoteRequest\x1a%.navigators.v1.CreateTaskNoteResponse\x12Z\n" +
-	"\rListTaskNotes\x12#.navigators.v1.ListTaskNotesRequest\x1a$.navigators.v1.ListTaskNotesResponseB1Z/navigators-go/gen/go/navigators/v1;navigatorsv1b\x06proto3"
+	"\rListTaskNotes\x12#.navigators.v1.ListTaskNotesRequest\x1a$.navigators.v1.ListTaskNotesResponse\x12l\n" +
+	"\x13RegisterDeviceToken\x12).navigators.v1.RegisterDeviceTokenRequest\x1a*.navigators.v1.RegisterDeviceTokenResponseB1Z/navigators-go/gen/go/navigators/v1;navigatorsv1b\x06proto3"
 
 var (
 	file_navigators_v1_task_proto_rawDescOnce sync.Once
@@ -1515,33 +1608,35 @@ func file_navigators_v1_task_proto_rawDescGZIP() []byte {
 	return file_navigators_v1_task_proto_rawDescData
 }
 
-var file_navigators_v1_task_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
+var file_navigators_v1_task_proto_msgTypes = make([]protoimpl.MessageInfo, 27)
 var file_navigators_v1_task_proto_goTypes = []any{
-	(*Task)(nil),                       // 0: navigators.v1.Task
-	(*TaskAssignment)(nil),             // 1: navigators.v1.TaskAssignment
-	(*TaskNote)(nil),                   // 2: navigators.v1.TaskNote
-	(*CreateTaskRequest)(nil),          // 3: navigators.v1.CreateTaskRequest
-	(*CreateTaskResponse)(nil),         // 4: navigators.v1.CreateTaskResponse
-	(*GetTaskRequest)(nil),             // 5: navigators.v1.GetTaskRequest
-	(*GetTaskResponse)(nil),            // 6: navigators.v1.GetTaskResponse
-	(*ListTasksRequest)(nil),           // 7: navigators.v1.ListTasksRequest
-	(*ListTasksResponse)(nil),          // 8: navigators.v1.ListTasksResponse
-	(*UpdateTaskStatusRequest)(nil),    // 9: navigators.v1.UpdateTaskStatusRequest
-	(*UpdateTaskStatusResponse)(nil),   // 10: navigators.v1.UpdateTaskStatusResponse
-	(*DeleteTaskRequest)(nil),          // 11: navigators.v1.DeleteTaskRequest
-	(*DeleteTaskResponse)(nil),         // 12: navigators.v1.DeleteTaskResponse
-	(*AssignTaskRequest)(nil),          // 13: navigators.v1.AssignTaskRequest
-	(*AssignTaskResponse)(nil),         // 14: navigators.v1.AssignTaskResponse
-	(*UnassignTaskRequest)(nil),        // 15: navigators.v1.UnassignTaskRequest
-	(*UnassignTaskResponse)(nil),       // 16: navigators.v1.UnassignTaskResponse
-	(*GetTaskAssignmentsRequest)(nil),  // 17: navigators.v1.GetTaskAssignmentsRequest
-	(*GetTaskAssignmentsResponse)(nil), // 18: navigators.v1.GetTaskAssignmentsResponse
-	(*LinkTaskVotersRequest)(nil),      // 19: navigators.v1.LinkTaskVotersRequest
-	(*LinkTaskVotersResponse)(nil),     // 20: navigators.v1.LinkTaskVotersResponse
-	(*CreateTaskNoteRequest)(nil),      // 21: navigators.v1.CreateTaskNoteRequest
-	(*CreateTaskNoteResponse)(nil),     // 22: navigators.v1.CreateTaskNoteResponse
-	(*ListTaskNotesRequest)(nil),       // 23: navigators.v1.ListTaskNotesRequest
-	(*ListTaskNotesResponse)(nil),      // 24: navigators.v1.ListTaskNotesResponse
+	(*Task)(nil),                        // 0: navigators.v1.Task
+	(*TaskAssignment)(nil),              // 1: navigators.v1.TaskAssignment
+	(*TaskNote)(nil),                    // 2: navigators.v1.TaskNote
+	(*CreateTaskRequest)(nil),           // 3: navigators.v1.CreateTaskRequest
+	(*CreateTaskResponse)(nil),          // 4: navigators.v1.CreateTaskResponse
+	(*GetTaskRequest)(nil),              // 5: navigators.v1.GetTaskRequest
+	(*GetTaskResponse)(nil),             // 6: navigators.v1.GetTaskResponse
+	(*ListTasksRequest)(nil),            // 7: navigators.v1.ListTasksRequest
+	(*ListTasksResponse)(nil),           // 8: navigators.v1.ListTasksResponse
+	(*UpdateTaskStatusRequest)(nil),     // 9: navigators.v1.UpdateTaskStatusRequest
+	(*UpdateTaskStatusResponse)(nil),    // 10: navigators.v1.UpdateTaskStatusResponse
+	(*DeleteTaskRequest)(nil),           // 11: navigators.v1.DeleteTaskRequest
+	(*DeleteTaskResponse)(nil),          // 12: navigators.v1.DeleteTaskResponse
+	(*AssignTaskRequest)(nil),           // 13: navigators.v1.AssignTaskRequest
+	(*AssignTaskResponse)(nil),          // 14: navigators.v1.AssignTaskResponse
+	(*UnassignTaskRequest)(nil),         // 15: navigators.v1.UnassignTaskRequest
+	(*UnassignTaskResponse)(nil),        // 16: navigators.v1.UnassignTaskResponse
+	(*GetTaskAssignmentsRequest)(nil),   // 17: navigators.v1.GetTaskAssignmentsRequest
+	(*GetTaskAssignmentsResponse)(nil),  // 18: navigators.v1.GetTaskAssignmentsResponse
+	(*LinkTaskVotersRequest)(nil),       // 19: navigators.v1.LinkTaskVotersRequest
+	(*LinkTaskVotersResponse)(nil),      // 20: navigators.v1.LinkTaskVotersResponse
+	(*CreateTaskNoteRequest)(nil),       // 21: navigators.v1.CreateTaskNoteRequest
+	(*CreateTaskNoteResponse)(nil),      // 22: navigators.v1.CreateTaskNoteResponse
+	(*ListTaskNotesRequest)(nil),        // 23: navigators.v1.ListTaskNotesRequest
+	(*ListTaskNotesResponse)(nil),       // 24: navigators.v1.ListTaskNotesResponse
+	(*RegisterDeviceTokenRequest)(nil),  // 25: navigators.v1.RegisterDeviceTokenRequest
+	(*RegisterDeviceTokenResponse)(nil), // 26: navigators.v1.RegisterDeviceTokenResponse
 }
 var file_navigators_v1_task_proto_depIdxs = []int32{
 	0,  // 0: navigators.v1.CreateTaskResponse.task:type_name -> navigators.v1.Task
@@ -1561,19 +1656,21 @@ var file_navigators_v1_task_proto_depIdxs = []int32{
 	19, // 14: navigators.v1.TaskService.LinkTaskVoters:input_type -> navigators.v1.LinkTaskVotersRequest
 	21, // 15: navigators.v1.TaskService.CreateTaskNote:input_type -> navigators.v1.CreateTaskNoteRequest
 	23, // 16: navigators.v1.TaskService.ListTaskNotes:input_type -> navigators.v1.ListTaskNotesRequest
-	4,  // 17: navigators.v1.TaskService.CreateTask:output_type -> navigators.v1.CreateTaskResponse
-	6,  // 18: navigators.v1.TaskService.GetTask:output_type -> navigators.v1.GetTaskResponse
-	8,  // 19: navigators.v1.TaskService.ListTasks:output_type -> navigators.v1.ListTasksResponse
-	10, // 20: navigators.v1.TaskService.UpdateTaskStatus:output_type -> navigators.v1.UpdateTaskStatusResponse
-	12, // 21: navigators.v1.TaskService.DeleteTask:output_type -> navigators.v1.DeleteTaskResponse
-	14, // 22: navigators.v1.TaskService.AssignTask:output_type -> navigators.v1.AssignTaskResponse
-	16, // 23: navigators.v1.TaskService.UnassignTask:output_type -> navigators.v1.UnassignTaskResponse
-	18, // 24: navigators.v1.TaskService.GetTaskAssignments:output_type -> navigators.v1.GetTaskAssignmentsResponse
-	20, // 25: navigators.v1.TaskService.LinkTaskVoters:output_type -> navigators.v1.LinkTaskVotersResponse
-	22, // 26: navigators.v1.TaskService.CreateTaskNote:output_type -> navigators.v1.CreateTaskNoteResponse
-	24, // 27: navigators.v1.TaskService.ListTaskNotes:output_type -> navigators.v1.ListTaskNotesResponse
-	17, // [17:28] is the sub-list for method output_type
-	6,  // [6:17] is the sub-list for method input_type
+	25, // 17: navigators.v1.TaskService.RegisterDeviceToken:input_type -> navigators.v1.RegisterDeviceTokenRequest
+	4,  // 18: navigators.v1.TaskService.CreateTask:output_type -> navigators.v1.CreateTaskResponse
+	6,  // 19: navigators.v1.TaskService.GetTask:output_type -> navigators.v1.GetTaskResponse
+	8,  // 20: navigators.v1.TaskService.ListTasks:output_type -> navigators.v1.ListTasksResponse
+	10, // 21: navigators.v1.TaskService.UpdateTaskStatus:output_type -> navigators.v1.UpdateTaskStatusResponse
+	12, // 22: navigators.v1.TaskService.DeleteTask:output_type -> navigators.v1.DeleteTaskResponse
+	14, // 23: navigators.v1.TaskService.AssignTask:output_type -> navigators.v1.AssignTaskResponse
+	16, // 24: navigators.v1.TaskService.UnassignTask:output_type -> navigators.v1.UnassignTaskResponse
+	18, // 25: navigators.v1.TaskService.GetTaskAssignments:output_type -> navigators.v1.GetTaskAssignmentsResponse
+	20, // 26: navigators.v1.TaskService.LinkTaskVoters:output_type -> navigators.v1.LinkTaskVotersResponse
+	22, // 27: navigators.v1.TaskService.CreateTaskNote:output_type -> navigators.v1.CreateTaskNoteResponse
+	24, // 28: navigators.v1.TaskService.ListTaskNotes:output_type -> navigators.v1.ListTaskNotesResponse
+	26, // 29: navigators.v1.TaskService.RegisterDeviceToken:output_type -> navigators.v1.RegisterDeviceTokenResponse
+	18, // [18:30] is the sub-list for method output_type
+	6,  // [6:18] is the sub-list for method input_type
 	6,  // [6:6] is the sub-list for extension type_name
 	6,  // [6:6] is the sub-list for extension extendee
 	0,  // [0:6] is the sub-list for field type_name
@@ -1590,7 +1687,7 @@ func file_navigators_v1_task_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_navigators_v1_task_proto_rawDesc), len(file_navigators_v1_task_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   25,
+			NumMessages:   27,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

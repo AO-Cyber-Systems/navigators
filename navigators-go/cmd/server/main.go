@@ -212,14 +212,30 @@ func main() {
 		}
 	}
 
+	// --- Firebase Admin SDK (graceful degradation) ---
+	var fcmDispatcher notification.Dispatcher
+	var fcmDisp *navpkg.FCMDispatcher
+	firebaseApp, err := firebase.NewApp(ctx, nil)
+	if err != nil {
+		slog.Warn("Firebase init failed, push notifications disabled", "error", err)
+	} else {
+		fcmDisp, err = navpkg.NewFCMDispatcher(firebaseApp, pgBackend.Pool())
+		if err != nil {
+			slog.Warn("FCM dispatcher init failed, push notifications disabled", "error", err)
+		} else {
+			fcmDispatcher = fcmDisp
+			slog.Info("Firebase push notifications enabled")
+		}
+	}
+
 	// --- Survey + Notes + Call Script + Task services ---
 	surveyService := navpkg.NewSurveyService(navQueries, pgBackend.Pool())
 	voterNotesService := navpkg.NewVoterNotesService(navQueries, pgBackend.Pool())
 	callScriptService := navpkg.NewCallScriptService(navQueries, pgBackend.Pool())
-	taskService := navpkg.NewTaskService(navQueries, pgBackend.Pool())
+	taskService := navpkg.NewTaskService(navQueries, pgBackend.Pool(), js)
 
 	// --- Task handler ---
-	taskHandler := navpkg.NewTaskHandler(taskService)
+	taskHandler := navpkg.NewTaskHandler(taskService, fcmDisp)
 	taskPath, taskHTTPHandler := navigatorsv1connect.NewTaskServiceHandler(taskHandler, interceptors)
 	mux.Handle(taskPath, taskHTTPHandler)
 
@@ -254,21 +270,6 @@ func main() {
 			slog.Warn("SMS NATS worker failed to start", "error", err)
 		} else {
 			defer smsWorker.Stop()
-		}
-	}
-
-	// --- Firebase Admin SDK (graceful degradation) ---
-	var fcmDispatcher notification.Dispatcher
-	firebaseApp, err := firebase.NewApp(ctx, nil)
-	if err != nil {
-		slog.Warn("Firebase init failed, push notifications disabled", "error", err)
-	} else {
-		fcmDisp, fcmErr := navpkg.NewFCMDispatcher(firebaseApp, pgBackend.Pool())
-		if fcmErr != nil {
-			slog.Warn("FCM dispatcher init failed, push notifications disabled", "error", fcmErr)
-		} else {
-			fcmDispatcher = fcmDisp
-			slog.Info("Firebase push notifications enabled")
 		}
 	}
 

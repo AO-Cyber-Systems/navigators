@@ -2,12 +2,15 @@ package navigators
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/nats-io/nats.go/jetstream"
 
 	"navigators-go/internal/db"
 )
@@ -16,13 +19,15 @@ import (
 type TaskService struct {
 	queries *db.Queries
 	pool    *pgxpool.Pool
+	js      jetstream.JetStream // nil if NATS unavailable
 }
 
 // NewTaskService creates a new TaskService.
-func NewTaskService(queries *db.Queries, pool *pgxpool.Pool) *TaskService {
+func NewTaskService(queries *db.Queries, pool *pgxpool.Pool, js jetstream.JetStream) *TaskService {
 	return &TaskService{
 		queries: queries,
 		pool:    pool,
+		js:      js,
 	}
 }
 
@@ -148,8 +153,8 @@ func (s *TaskService) DeleteTask(ctx context.Context, companyID, taskID uuid.UUI
 	return nil
 }
 
-// AssignTask assigns a user to a task.
-func (s *TaskService) AssignTask(ctx context.Context, taskID, userID, assignedBy uuid.UUID) error {
+// AssignTask assigns a user to a task and publishes a NATS event for push notification.
+func (s *TaskService) AssignTask(ctx context.Context, companyID, taskID, userID, assignedBy uuid.UUID) error {
 	err := s.queries.CreateTaskAssignment(ctx, db.CreateTaskAssignmentParams{
 		TaskID:     taskID,
 		UserID:     userID,
@@ -158,6 +163,30 @@ func (s *TaskService) AssignTask(ctx context.Context, taskID, userID, assignedBy
 	if err != nil {
 		return fmt.Errorf("assign task: %w", err)
 	}
+
+	// Publish task.assigned event for push notification
+	if s.js != nil {
+		// Get task title for the notification
+		task, taskErr := s.queries.GetTask(ctx, db.GetTaskParams{
+			ID:        taskID,
+			CompanyID: companyID,
+		})
+		taskTitle := "New Task"
+		if taskErr == nil {
+			taskTitle = task.Title
+		}
+
+		event := TaskAssignedEvent{
+			TaskID:    taskID.String(),
+			UserID:    userID.String(),
+			TaskTitle: taskTitle,
+		}
+		data, _ := json.Marshal(event)
+		if _, pubErr := s.js.Publish(ctx, taskAssignedSubject, data); pubErr != nil {
+			slog.Warn("failed to publish task.assigned event", "error", pubErr, "task_id", taskID, "user_id", userID)
+		}
+	}
+
 	return nil
 }
 

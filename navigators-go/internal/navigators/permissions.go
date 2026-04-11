@@ -197,6 +197,7 @@ func NavigatorsProcedurePermissions() map[string]server.Permission {
 		"/navigators.v1.TaskService/LinkTaskVoters":        {Feature: "tasks", Action: "create"},
 		"/navigators.v1.TaskService/CreateTaskNote":        {Feature: "tasks", Action: "view"},
 		"/navigators.v1.TaskService/ListTaskNotes":         {Feature: "tasks", Action: "view"},
+		"/navigators.v1.TaskService/RegisterDeviceToken":   {Feature: "tasks", Action: "view"}, // All authenticated users (Member level)
 
 		// Task sync
 		"/navigators.v1.SyncService/PullTasks":     {Feature: "sync", Action: "pull"},

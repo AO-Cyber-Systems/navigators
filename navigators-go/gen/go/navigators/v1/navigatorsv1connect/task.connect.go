@@ -61,6 +61,9 @@ const (
 	// TaskServiceListTaskNotesProcedure is the fully-qualified name of the TaskService's ListTaskNotes
 	// RPC.
 	TaskServiceListTaskNotesProcedure = "/navigators.v1.TaskService/ListTaskNotes"
+	// TaskServiceRegisterDeviceTokenProcedure is the fully-qualified name of the TaskService's
+	// RegisterDeviceToken RPC.
+	TaskServiceRegisterDeviceTokenProcedure = "/navigators.v1.TaskService/RegisterDeviceToken"
 )
 
 // TaskServiceClient is a client for the navigators.v1.TaskService service.
@@ -87,6 +90,8 @@ type TaskServiceClient interface {
 	CreateTaskNote(context.Context, *connect.Request[v1.CreateTaskNoteRequest]) (*connect.Response[v1.CreateTaskNoteResponse], error)
 	// ListTaskNotes returns notes for a task.
 	ListTaskNotes(context.Context, *connect.Request[v1.ListTaskNotesRequest]) (*connect.Response[v1.ListTaskNotesResponse], error)
+	// RegisterDeviceToken registers a device's FCM token for push notifications.
+	RegisterDeviceToken(context.Context, *connect.Request[v1.RegisterDeviceTokenRequest]) (*connect.Response[v1.RegisterDeviceTokenResponse], error)
 }
 
 // NewTaskServiceClient constructs a client for the navigators.v1.TaskService service. By default,
@@ -166,22 +171,29 @@ func NewTaskServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(taskServiceMethods.ByName("ListTaskNotes")),
 			connect.WithClientOptions(opts...),
 		),
+		registerDeviceToken: connect.NewClient[v1.RegisterDeviceTokenRequest, v1.RegisterDeviceTokenResponse](
+			httpClient,
+			baseURL+TaskServiceRegisterDeviceTokenProcedure,
+			connect.WithSchema(taskServiceMethods.ByName("RegisterDeviceToken")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // taskServiceClient implements TaskServiceClient.
 type taskServiceClient struct {
-	createTask         *connect.Client[v1.CreateTaskRequest, v1.CreateTaskResponse]
-	getTask            *connect.Client[v1.GetTaskRequest, v1.GetTaskResponse]
-	listTasks          *connect.Client[v1.ListTasksRequest, v1.ListTasksResponse]
-	updateTaskStatus   *connect.Client[v1.UpdateTaskStatusRequest, v1.UpdateTaskStatusResponse]
-	deleteTask         *connect.Client[v1.DeleteTaskRequest, v1.DeleteTaskResponse]
-	assignTask         *connect.Client[v1.AssignTaskRequest, v1.AssignTaskResponse]
-	unassignTask       *connect.Client[v1.UnassignTaskRequest, v1.UnassignTaskResponse]
-	getTaskAssignments *connect.Client[v1.GetTaskAssignmentsRequest, v1.GetTaskAssignmentsResponse]
-	linkTaskVoters     *connect.Client[v1.LinkTaskVotersRequest, v1.LinkTaskVotersResponse]
-	createTaskNote     *connect.Client[v1.CreateTaskNoteRequest, v1.CreateTaskNoteResponse]
-	listTaskNotes      *connect.Client[v1.ListTaskNotesRequest, v1.ListTaskNotesResponse]
+	createTask          *connect.Client[v1.CreateTaskRequest, v1.CreateTaskResponse]
+	getTask             *connect.Client[v1.GetTaskRequest, v1.GetTaskResponse]
+	listTasks           *connect.Client[v1.ListTasksRequest, v1.ListTasksResponse]
+	updateTaskStatus    *connect.Client[v1.UpdateTaskStatusRequest, v1.UpdateTaskStatusResponse]
+	deleteTask          *connect.Client[v1.DeleteTaskRequest, v1.DeleteTaskResponse]
+	assignTask          *connect.Client[v1.AssignTaskRequest, v1.AssignTaskResponse]
+	unassignTask        *connect.Client[v1.UnassignTaskRequest, v1.UnassignTaskResponse]
+	getTaskAssignments  *connect.Client[v1.GetTaskAssignmentsRequest, v1.GetTaskAssignmentsResponse]
+	linkTaskVoters      *connect.Client[v1.LinkTaskVotersRequest, v1.LinkTaskVotersResponse]
+	createTaskNote      *connect.Client[v1.CreateTaskNoteRequest, v1.CreateTaskNoteResponse]
+	listTaskNotes       *connect.Client[v1.ListTaskNotesRequest, v1.ListTaskNotesResponse]
+	registerDeviceToken *connect.Client[v1.RegisterDeviceTokenRequest, v1.RegisterDeviceTokenResponse]
 }
 
 // CreateTask calls navigators.v1.TaskService.CreateTask.
@@ -239,6 +251,11 @@ func (c *taskServiceClient) ListTaskNotes(ctx context.Context, req *connect.Requ
 	return c.listTaskNotes.CallUnary(ctx, req)
 }
 
+// RegisterDeviceToken calls navigators.v1.TaskService.RegisterDeviceToken.
+func (c *taskServiceClient) RegisterDeviceToken(ctx context.Context, req *connect.Request[v1.RegisterDeviceTokenRequest]) (*connect.Response[v1.RegisterDeviceTokenResponse], error) {
+	return c.registerDeviceToken.CallUnary(ctx, req)
+}
+
 // TaskServiceHandler is an implementation of the navigators.v1.TaskService service.
 type TaskServiceHandler interface {
 	// CreateTask creates a new task.
@@ -263,6 +280,8 @@ type TaskServiceHandler interface {
 	CreateTaskNote(context.Context, *connect.Request[v1.CreateTaskNoteRequest]) (*connect.Response[v1.CreateTaskNoteResponse], error)
 	// ListTaskNotes returns notes for a task.
 	ListTaskNotes(context.Context, *connect.Request[v1.ListTaskNotesRequest]) (*connect.Response[v1.ListTaskNotesResponse], error)
+	// RegisterDeviceToken registers a device's FCM token for push notifications.
+	RegisterDeviceToken(context.Context, *connect.Request[v1.RegisterDeviceTokenRequest]) (*connect.Response[v1.RegisterDeviceTokenResponse], error)
 }
 
 // NewTaskServiceHandler builds an HTTP handler from the service implementation. It returns the path
@@ -338,6 +357,12 @@ func NewTaskServiceHandler(svc TaskServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(taskServiceMethods.ByName("ListTaskNotes")),
 		connect.WithHandlerOptions(opts...),
 	)
+	taskServiceRegisterDeviceTokenHandler := connect.NewUnaryHandler(
+		TaskServiceRegisterDeviceTokenProcedure,
+		svc.RegisterDeviceToken,
+		connect.WithSchema(taskServiceMethods.ByName("RegisterDeviceToken")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/navigators.v1.TaskService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case TaskServiceCreateTaskProcedure:
@@ -362,6 +387,8 @@ func NewTaskServiceHandler(svc TaskServiceHandler, opts ...connect.HandlerOption
 			taskServiceCreateTaskNoteHandler.ServeHTTP(w, r)
 		case TaskServiceListTaskNotesProcedure:
 			taskServiceListTaskNotesHandler.ServeHTTP(w, r)
+		case TaskServiceRegisterDeviceTokenProcedure:
+			taskServiceRegisterDeviceTokenHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -413,4 +440,8 @@ func (UnimplementedTaskServiceHandler) CreateTaskNote(context.Context, *connect.
 
 func (UnimplementedTaskServiceHandler) ListTaskNotes(context.Context, *connect.Request[v1.ListTaskNotesRequest]) (*connect.Response[v1.ListTaskNotesResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.TaskService.ListTaskNotes is not implemented"))
+}
+
+func (UnimplementedTaskServiceHandler) RegisterDeviceToken(context.Context, *connect.Request[v1.RegisterDeviceTokenRequest]) (*connect.Response[v1.RegisterDeviceTokenResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.TaskService.RegisterDeviceToken is not implemented"))
 }
