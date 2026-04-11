@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-04-10)
 
 **Core value:** Navigators can go into the field with a complete voter list, map, and outreach tools -- work entirely offline in rural Maine -- and have every interaction automatically sync back to give leadership real-time visibility into grassroots organizing efforts.
-**Current focus:** Voter Data Pipeline (Objective 2)
+**Current focus:** Turf Management + Maps (Objective 3)
 
 ## Current Position
 
-**Objective:** 2 of 10 (Voter Data Pipeline)
-**Current Job:** 3
+**Objective:** 3 of 10 (Turf Management + Maps)
+**Current Job:** 2
 **Total Jobs in Objective:** 3
-**Status:** Objective 02 complete — verified and approved
+**Status:** Ready to execute
 **Last Activity:** 2026-04-11
 
 Progress: [##........] 13%
@@ -36,6 +36,7 @@ Progress: [##........] 13%
 | Objective 02 P01 | 8min | 2 tasks | 18 files |
 | Objective 02 P02 | 8min | 2 tasks | 19 files |
 | Objective 02 P03 | 9min | 2 tasks | 22 files |
+| Objective 03 P01 | 7min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -64,6 +65,9 @@ Recent decisions affecting current work:
 - [Objective 02]: Suppression RPCs added to VoterService (not separate proto service) for cohesive voter domain
 - [Objective 02]: IsVoterSuppressed fails closed (returns true on error) -- legal requirement for outreach gating
 - [Objective 02]: Flutter services use ConnectRPC JSON protocol (POST with JSON body) for cross-platform simplicity
+- [Objective 03]: sqlc spatial columns return interface{} -- use toFloat64 helper for safe type assertion
+- [Objective 03]: Walk list uses Go-side O(n^2) haversine greedy nearest-neighbor (correct for 100-2000 voters)
+- [Objective 03]: GetVotersInTurf and GetVoterDensityGrid use raw pgxpool (not sqlc) for complex spatial JOINs
 
 ### Pending Todos
 
@@ -77,12 +81,13 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-04-10
-Stopped at: Completed 02-03-TRD.md - Objective 02 fully verified
+Last session: 2026-04-11
+Stopped at: Completed 03-01-TRD.md
 Resume file: None
 
 ## History
 
+- 2026-04-11: Completed 03-01-TRD (turf spatial backend: GeoJSON boundary CRUD, voters-in-turf, walk list, stats, density grid, contact_logs)
 - 2026-04-10: Completed 02-03-TRD (voter profile, suppression list, Flutter UI -- checkpoint approved, all gates pass)
 - 2026-04-10: Completed 02-02-TRD (geocode service, search/filter, tags)
 - 2026-04-10: Completed 02-01-TRD (voter data model, import pipeline: voters table with PostGIS/pg_trgm, CVR/L2 parsers, CopyFrom staging, UPSERT merge)

@@ -34,13 +34,13 @@ Requirements for initial release. Each maps to roadmap objectives.
 
 ### Turf Management & Mapping
 
-- [ ] **TURF-01**: Admin can draw turf polygon boundaries on interactive map
-- [ ] **TURF-02**: Admin can assign turfs to Navigators
-- [ ] **TURF-03**: System auto-populates voter list for each turf using PostGIS spatial queries
+- [x] **TURF-01**: Admin can draw turf polygon boundaries on interactive map
+- [x] **TURF-02**: Admin can assign turfs to Navigators
+- [x] **TURF-03**: System auto-populates voter list for each turf using PostGIS spatial queries
 - [ ] **TURF-04**: User can view voters as clustered pins on map
 - [ ] **TURF-05**: Navigator can download offline map tiles for assigned turf via FMTC
-- [ ] **TURF-06**: System generates route-optimized walk lists within turfs (nearest-neighbor)
-- [ ] **TURF-07**: System tracks turf completion progress (% voters contacted)
+- [x] **TURF-06**: System generates route-optimized walk lists within turfs (nearest-neighbor)
+- [x] **TURF-07**: System tracks turf completion progress (% voters contacted)
 - [ ] **TURF-08**: Admin can view geographic heat maps of contact density and support levels
 
 ### Offline & Sync
@@ -181,13 +181,13 @@ Deferred to future release. Tracked but not in current roadmap.
 | VOTER-08 | Objective 2 | Complete |
 | VOTER-09 | Objective 2 | Complete |
 | VOTER-10 | Objective 2 | Complete |
-| TURF-01 | Objective 3 | Pending |
-| TURF-02 | Objective 3 | Pending |
-| TURF-03 | Objective 3 | Pending |
+| TURF-01 | Objective 3 | Complete |
+| TURF-02 | Objective 3 | Complete |
+| TURF-03 | Objective 3 | Complete |
 | TURF-04 | Objective 3 | Pending |
 | TURF-05 | Objective 3 | Pending |
-| TURF-06 | Objective 3 | Pending |
-| TURF-07 | Objective 3 | Pending |
+| TURF-06 | Objective 3 | Complete |
+| TURF-07 | Objective 3 | Complete |
 | TURF-08 | Objective 3 | Pending |
 | SYNC-01 | Objective 4 | Pending |
 | SYNC-02 | Objective 4 | Pending |
