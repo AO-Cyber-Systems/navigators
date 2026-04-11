@@ -23,6 +23,8 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/pgx/v5"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
+	"github.com/minio/minio-go/v7"
+	"github.com/minio/minio-go/v7/pkg/credentials"
 
 	navigators "navigators-go"
 	"navigators-go/gen/go/navigators/v1/navigatorsv1connect"
@@ -110,9 +112,6 @@ func main() {
 	// --- sqlc queries for navigators domain ---
 	navQueries := db.New(pgBackend.Pool())
 
-	// --- Turf-scoped filter (used by voter data services) ---
-	_ = navpkg.NewTurfScopedFilter(navQueries) // available for future voter data services
-
 	// --- Audit service ---
 	navAuditService := navpkg.NewAuditService(navQueries, auditLogger)
 
@@ -138,6 +137,37 @@ func main() {
 	teamHandler := navpkg.NewTeamHandler(navQueries)
 	teamPath, teamHTTPHandler := navigatorsv1connect.NewTeamServiceHandler(teamHandler, interceptors)
 	mux.Handle(teamPath, teamHTTPHandler)
+
+	// --- MinIO client for voter file imports ---
+	minioClient, err := minio.New(cfg.MinIOEndpoint, &minio.Options{
+		Creds:  credentials.NewStaticV4(cfg.MinIOAccessKey, cfg.MinIOSecretKey, ""),
+		Secure: cfg.MinIOUseSSL,
+		Region: cfg.MinIORegion,
+	})
+	if err != nil {
+		log.Fatalf("minio client: %v", err)
+	}
+
+	// Ensure voter-imports bucket exists
+	voterImportsBucket := "voter-imports"
+	exists, err := minioClient.BucketExists(ctx, voterImportsBucket)
+	if err != nil {
+		log.Fatalf("check voter-imports bucket: %v", err)
+	}
+	if !exists {
+		if err := minioClient.MakeBucket(ctx, voterImportsBucket, minio.MakeBucketOptions{Region: cfg.MinIORegion}); err != nil {
+			log.Fatalf("create voter-imports bucket: %v", err)
+		}
+		slog.Info("created voter-imports bucket")
+	}
+
+	// --- Voter import service ---
+	turfScopedFilter := navpkg.NewTurfScopedFilter(navQueries)
+	_ = turfScopedFilter // available for future voter query services
+	importService := navpkg.NewImportService(navQueries, pgBackend.Pool(), minioClient, voterImportsBucket, navAuditService)
+	importHandler := navpkg.NewImportHandler(importService)
+	importPath, importHTTPHandler := navigatorsv1connect.NewVoterImportServiceHandler(importHandler, interceptors)
+	mux.Handle(importPath, importHTTPHandler)
 
 	// --- Session timeout checker ---
 	// Check every 5 minutes, revoke tokens inactive for 30 minutes.

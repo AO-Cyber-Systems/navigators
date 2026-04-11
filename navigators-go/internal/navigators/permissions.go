@@ -83,6 +83,12 @@ func NavigatorsProcedurePermissions() map[string]server.Permission {
 		"/navigators.v1.TeamService/AssignNavigatorToTeam":   {Feature: "teams", Action: "manage"},
 		"/navigators.v1.TeamService/RemoveNavigatorFromTeam": {Feature: "teams", Action: "manage"},
 		"/navigators.v1.TeamService/GetTeamNavigators":       {Feature: "teams", Action: "view"},
+
+		// Voter import management (admin only)
+		"/navigators.v1.VoterImportService/StartImport":      {Feature: "voters", Action: "admin"},
+		"/navigators.v1.VoterImportService/ConfirmUpload":    {Feature: "voters", Action: "admin"},
+		"/navigators.v1.VoterImportService/GetImportStatus":  {Feature: "voters", Action: "admin"},
+		"/navigators.v1.VoterImportService/ListImportJobs":   {Feature: "voters", Action: "admin"},
 	}
 }
 
