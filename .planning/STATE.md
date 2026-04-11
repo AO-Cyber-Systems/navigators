@@ -5,12 +5,12 @@
 See: .planning/PROJECT.md (updated 2026-04-10)
 
 **Core value:** Navigators can go into the field with a complete voter list, map, and outreach tools -- work entirely offline in rural Maine -- and have every interaction automatically sync back to give leadership real-time visibility into grassroots organizing efforts.
-**Current focus:** Door Knocking & Contact Log (Objective 5)
+**Current focus:** SMS Integration (Objective 6)
 
 ## Current Position
 
-**Objective:** 5 of 10 (Door Knocking & Contact Log)
-**Current Job:** 3
+**Objective:** 6 of 10 (SMS Integration)
+**Current Job:** 2
 **Total Jobs in Objective:** 3
 **Status:** Ready to execute
 **Last Activity:** 2026-04-11
@@ -45,6 +45,7 @@ Progress: [##........] 13%
 | Objective 05 P01 | 11min | 2 tasks | 27 files |
 | Objective 05 P02 | 12min | 2 tasks | 9 files |
 | Objective 05 P03 | 5min | 2 tasks | 5 files |
+| Objective 06 P01 | 12min | 2 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -98,6 +99,9 @@ Recent decisions affecting current work:
 - [Objective 05]: Custom StreamController merging instead of rxdart for combining Drift watch streams
 - [Objective 05]: Custom timeline ListView instead of EdenTimeline (does not exist in eden-ui-flutter)
 - [Objective 05]: Optional turfId parameter on VoterDetailScreen for notes context
+- [Objective 06]: NATS connection failure is non-fatal: SMS features degrade but server starts
+- [Objective 06]: Single-company (MaineGOP) assumption for inbound webhook voter lookup in v1
+- [Objective 06]: Company admin user for opt-out FK: GetCompanyAdminUserID for suppression_list.added_by
 
 ### Pending Todos
 
@@ -112,11 +116,12 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-04-11
-Stopped at: Completed 05-01-TRD.md
+Stopped at: Completed 06-01-TRD.md
 Resume file: None
 
 ## History
 
+- 2026-04-11: Completed 06-01-TRD (SMS infrastructure: migration 013, Twilio SDK, P2P send, webhooks, NATS workers, compliance)
 - 2026-04-11: Completed 05-01-TRD (Door knocking data layer: migration 012, survey/notes services, sync endpoints, Drift tables/DAOs)
 - 2026-04-11: Completed 04-03-TRD (Sync status UI, offline-first screens, turf reassignment -- checkpoint approved, Objective 04 complete)
 - 2026-04-11: Completed 04-02-TRD (Push sync engine, transactional outbox, PushSyncBatch RPC, LWW conflict resolution, WorkManager+connectivity scheduling)
