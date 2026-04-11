@@ -4,6 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import 'features/import/import_screen.dart';
+import 'features/map/turf_map_screen.dart';
 import 'features/voters/voter_list_screen.dart';
 
 class NavigatorsApp extends StatelessWidget {
@@ -61,6 +62,11 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
         icon: Icons.people_outline,
         activeIcon: Icons.people,
       ),
+      const _TabItem(
+        label: 'Map',
+        icon: Icons.map_outlined,
+        activeIcon: Icons.map,
+      ),
       if (isAdmin)
         const _TabItem(
           label: 'Import',
@@ -80,6 +86,7 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
         children: [
           _buildHomeTab(auth),
           const VoterListScreen(),
+          const TurfMapScreen(),
           if (isAdmin) const ImportScreen(),
         ],
       ),
