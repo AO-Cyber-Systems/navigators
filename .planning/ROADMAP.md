@@ -184,11 +184,11 @@ Jobs:
   2. Admin or Super Navigator can create events (canvass events, phone banks) with Navigators RSVPing and checking in
   3. System tracks event attendance and provides opt-in leaderboards with engagement metrics
   4. In-app training materials and best practices guides are accessible to all Navigators
-**TRDs:** 3 plans in 3 waves
+**TRDs:** 2 plans in 2 waves
 
 Jobs:
-- [ ] 10-01: TBD
-- [ ] 10-02: TBD
+- [ ] 10-01-TRD.md — Onboarding + events backend (migration 016, protos, Go services/handlers, NATS event worker, leaderboard queries, training MinIO, sync endpoints)
+- [ ] 10-02-TRD.md — Flutter onboarding wizard + event screens + leaderboard + training viewer + app.dart integration
 
 ## Progress
 
@@ -207,4 +207,4 @@ Jobs:
 
 ---
 *Roadmap created: 2026-04-10*
-*Last updated: 2026-04-11 — Objective 9 planned*
+*Last updated: 2026-04-11 — Objective 10 planned*
