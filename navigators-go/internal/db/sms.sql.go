@@ -14,6 +14,18 @@ import (
 	"github.com/jackc/pgx/v5/pgtype"
 )
 
+const countCampaignVoterTargets = `-- name: CountCampaignVoterTargets :one
+SELECT COUNT(*) FROM voters
+WHERE company_id = $1 AND phone != ''
+`
+
+func (q *Queries) CountCampaignVoterTargets(ctx context.Context, companyID uuid.UUID) (int64, error) {
+	row := q.db.QueryRow(ctx, countCampaignVoterTargets, companyID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const countConversationMessages = `-- name: CountConversationMessages :one
 SELECT COUNT(*) FROM sms_messages
 WHERE company_id = $1 AND voter_id = $2
@@ -108,6 +120,60 @@ type DeleteSMSTemplateParams struct {
 func (q *Queries) DeleteSMSTemplate(ctx context.Context, arg DeleteSMSTemplateParams) error {
 	_, err := q.db.Exec(ctx, deleteSMSTemplate, arg.ID, arg.CompanyID)
 	return err
+}
+
+const getCampaignVoterTargets = `-- name: GetCampaignVoterTargets :many
+SELECT id, phone, first_name, last_name, res_city, state_house_district, party
+FROM voters
+WHERE company_id = $1 AND phone != ''
+ORDER BY last_name, first_name
+LIMIT $2 OFFSET $3
+`
+
+type GetCampaignVoterTargetsParams struct {
+	CompanyID uuid.UUID `json:"company_id"`
+	Limit     int32     `json:"limit"`
+	Offset    int32     `json:"offset"`
+}
+
+type GetCampaignVoterTargetsRow struct {
+	ID                 uuid.UUID `json:"id"`
+	Phone              string    `json:"phone"`
+	FirstName          string    `json:"first_name"`
+	LastName           string    `json:"last_name"`
+	ResCity            string    `json:"res_city"`
+	StateHouseDistrict string    `json:"state_house_district"`
+	Party              string    `json:"party"`
+}
+
+// Returns voter IDs and phone numbers matching segment filters for campaign sends.
+// Uses simple company-wide query; segment filtering done in Go for flexibility.
+func (q *Queries) GetCampaignVoterTargets(ctx context.Context, arg GetCampaignVoterTargetsParams) ([]GetCampaignVoterTargetsRow, error) {
+	rows, err := q.db.Query(ctx, getCampaignVoterTargets, arg.CompanyID, arg.Limit, arg.Offset)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetCampaignVoterTargetsRow{}
+	for rows.Next() {
+		var i GetCampaignVoterTargetsRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.Phone,
+			&i.FirstName,
+			&i.LastName,
+			&i.ResCity,
+			&i.StateHouseDistrict,
+			&i.Party,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const getCompanyAdminUserID = `-- name: GetCompanyAdminUserID :one
@@ -645,6 +711,21 @@ type UpdateCampaignStatusParams struct {
 
 func (q *Queries) UpdateCampaignStatus(ctx context.Context, arg UpdateCampaignStatusParams) error {
 	_, err := q.db.Exec(ctx, updateCampaignStatus, arg.ID, arg.CompanyID, arg.Status)
+	return err
+}
+
+const updateCampaignTotalRecipients = `-- name: UpdateCampaignTotalRecipients :exec
+UPDATE sms_campaigns SET total_recipients = $2, updated_at = now()
+WHERE id = $1
+`
+
+type UpdateCampaignTotalRecipientsParams struct {
+	ID              uuid.UUID `json:"id"`
+	TotalRecipients int32     `json:"total_recipients"`
+}
+
+func (q *Queries) UpdateCampaignTotalRecipients(ctx context.Context, arg UpdateCampaignTotalRecipientsParams) error {
+	_, err := q.db.Exec(ctx, updateCampaignTotalRecipients, arg.ID, arg.TotalRecipients)
 	return err
 }
 

@@ -99,6 +99,23 @@ WHERE id = $1;
 UPDATE sms_campaigns SET failed_count = failed_count + 1, updated_at = now()
 WHERE id = $1;
 
+-- name: UpdateCampaignTotalRecipients :exec
+UPDATE sms_campaigns SET total_recipients = $2, updated_at = now()
+WHERE id = $1;
+
+-- name: GetCampaignVoterTargets :many
+-- Returns voter IDs and phone numbers matching segment filters for campaign sends.
+-- Uses simple company-wide query; segment filtering done in Go for flexibility.
+SELECT id, phone, first_name, last_name, res_city, state_house_district, party
+FROM voters
+WHERE company_id = $1 AND phone != ''
+ORDER BY last_name, first_name
+LIMIT $2 OFFSET $3;
+
+-- name: CountCampaignVoterTargets :one
+SELECT COUNT(*) FROM voters
+WHERE company_id = $1 AND phone != '';
+
 -- name: ListSMSCampaigns :many
 SELECT * FROM sms_campaigns
 WHERE company_id = $1
