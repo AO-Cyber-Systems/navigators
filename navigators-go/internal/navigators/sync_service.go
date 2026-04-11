@@ -4,19 +4,30 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"log/slog"
 	"time"
 
 	"github.com/google/uuid"
 	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
+	"github.com/nats-io/nats.go/jetstream"
 
 	"navigators-go/internal/db"
 )
+
+// ContactLogCreatedEvent is published to NATS when a contact log is created via sync.
+type ContactLogCreatedEvent struct {
+	CompanyID string `json:"company_id"`
+	VoterID   string `json:"voter_id"`
+	TurfID    string `json:"turf_id"`
+	UserID    string `json:"user_id"`
+}
 
 // SyncService provides sync query operations scoped to user's turfs.
 type SyncService struct {
 	queries           *db.Queries
 	pool              *pgxpool.Pool
+	js                jetstream.JetStream // nil if NATS unavailable
 	turfFilter        *TurfScopedFilter
 	surveyService     *SurveyService
 	voterNotesService *VoterNotesService
@@ -25,10 +36,11 @@ type SyncService struct {
 }
 
 // NewSyncService creates a new SyncService.
-func NewSyncService(queries *db.Queries, pool *pgxpool.Pool, turfFilter *TurfScopedFilter, surveyService *SurveyService, voterNotesService *VoterNotesService, callScriptService *CallScriptService, taskService *TaskService) *SyncService {
+func NewSyncService(queries *db.Queries, pool *pgxpool.Pool, js jetstream.JetStream, turfFilter *TurfScopedFilter, surveyService *SurveyService, voterNotesService *VoterNotesService, callScriptService *CallScriptService, taskService *TaskService) *SyncService {
 	return &SyncService{
 		queries:           queries,
 		pool:              pool,
+		js:                js,
 		turfFilter:        turfFilter,
 		surveyService:     surveyService,
 		voterNotesService: voterNotesService,
@@ -319,7 +331,7 @@ func (s *SyncService) processContactLog(ctx context.Context, companyID, userID u
 		}
 	}
 
-	return s.queries.UpsertContactLogFromSync(ctx, db.UpsertContactLogFromSyncParams{
+	if err := s.queries.UpsertContactLogFromSync(ctx, db.UpsertContactLogFromSyncParams{
 		ID:          clID,
 		CompanyID:   companyID,
 		VoterID:     voterID,
@@ -331,7 +343,29 @@ func (s *SyncService) processContactLog(ctx context.Context, companyID, userID u
 		DoorStatus:  payload.DoorStatus,
 		Sentiment:   payload.Sentiment,
 		CreatedAt:   createdAt,
-	})
+	}); err != nil {
+		return err
+	}
+
+	// Publish contact_log.created event to NATS for task auto-progress
+	if s.js != nil {
+		turfIDStr := ""
+		if turfID.Valid {
+			turfIDStr = uuid.UUID(turfID.Bytes).String()
+		}
+		event := ContactLogCreatedEvent{
+			CompanyID: companyID.String(),
+			VoterID:   voterID.String(),
+			TurfID:    turfIDStr,
+			UserID:    userID.String(),
+		}
+		data, _ := json.Marshal(event)
+		if _, pubErr := s.js.Publish(ctx, "navigators.contact_log.created", data); pubErr != nil {
+			slog.Warn("failed to publish contact_log.created event", "error", pubErr, "voter_id", voterID)
+		}
+	}
+
+	return nil
 }
 
 // processVoterMetadata updates voter metadata using LWW (last-write-wins).

@@ -24,10 +24,13 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/pgx/v5"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
+	firebase "firebase.google.com/go/v4"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/nats-io/nats.go"
 	"github.com/nats-io/nats.go/jetstream"
+
+	"github.com/aocybersystems/eden-platform-go/platform/notification"
 
 	navigators "navigators-go"
 	"navigators-go/gen/go/navigators/v1/navigatorsv1connect"
@@ -189,23 +192,6 @@ func main() {
 	voterPath, voterHTTPHandler := navigatorsv1connect.NewVoterServiceHandler(voterHandler, interceptors)
 	mux.Handle(voterPath, voterHTTPHandler)
 
-	// --- Survey + Notes + Call Script + Task services ---
-	surveyService := navpkg.NewSurveyService(navQueries, pgBackend.Pool())
-	voterNotesService := navpkg.NewVoterNotesService(navQueries, pgBackend.Pool())
-	callScriptService := navpkg.NewCallScriptService(navQueries, pgBackend.Pool())
-	taskService := navpkg.NewTaskService(navQueries, pgBackend.Pool())
-
-	// --- Task handler ---
-	taskHandler := navpkg.NewTaskHandler(taskService)
-	taskPath, taskHTTPHandler := navigatorsv1connect.NewTaskServiceHandler(taskHandler, interceptors)
-	mux.Handle(taskPath, taskHTTPHandler)
-
-	// --- Sync service ---
-	syncService := navpkg.NewSyncService(navQueries, pgBackend.Pool(), turfScopedFilter, surveyService, voterNotesService, callScriptService, taskService)
-	syncHandler := navpkg.NewSyncHandler(syncService)
-	syncPath, syncHTTPHandler := navigatorsv1connect.NewSyncServiceHandler(syncHandler, interceptors)
-	mux.Handle(syncPath, syncHTTPHandler)
-
 	// --- NATS connection ---
 	natsURL := os.Getenv("NATS_URL")
 	if natsURL == "" {
@@ -225,6 +211,23 @@ func main() {
 			slog.Warn("NATS JetStream init failed, SMS features degraded", "error", err)
 		}
 	}
+
+	// --- Survey + Notes + Call Script + Task services ---
+	surveyService := navpkg.NewSurveyService(navQueries, pgBackend.Pool())
+	voterNotesService := navpkg.NewVoterNotesService(navQueries, pgBackend.Pool())
+	callScriptService := navpkg.NewCallScriptService(navQueries, pgBackend.Pool())
+	taskService := navpkg.NewTaskService(navQueries, pgBackend.Pool())
+
+	// --- Task handler ---
+	taskHandler := navpkg.NewTaskHandler(taskService)
+	taskPath, taskHTTPHandler := navigatorsv1connect.NewTaskServiceHandler(taskHandler, interceptors)
+	mux.Handle(taskPath, taskHTTPHandler)
+
+	// --- Sync service ---
+	syncService := navpkg.NewSyncService(navQueries, pgBackend.Pool(), js, turfScopedFilter, surveyService, voterNotesService, callScriptService, taskService)
+	syncHandler := navpkg.NewSyncHandler(syncService)
+	syncPath, syncHTTPHandler := navigatorsv1connect.NewSyncServiceHandler(syncHandler, interceptors)
+	mux.Handle(syncPath, syncHTTPHandler)
 
 	// --- Twilio config ---
 	twilioAccountSid := os.Getenv("TWILIO_ACCOUNT_SID")
@@ -251,6 +254,31 @@ func main() {
 			slog.Warn("SMS NATS worker failed to start", "error", err)
 		} else {
 			defer smsWorker.Stop()
+		}
+	}
+
+	// --- Firebase Admin SDK (graceful degradation) ---
+	var fcmDispatcher notification.Dispatcher
+	firebaseApp, err := firebase.NewApp(ctx, nil)
+	if err != nil {
+		slog.Warn("Firebase init failed, push notifications disabled", "error", err)
+	} else {
+		fcmDisp, fcmErr := navpkg.NewFCMDispatcher(firebaseApp, pgBackend.Pool())
+		if fcmErr != nil {
+			slog.Warn("FCM dispatcher init failed, push notifications disabled", "error", fcmErr)
+		} else {
+			fcmDispatcher = fcmDisp
+			slog.Info("Firebase push notifications enabled")
+		}
+	}
+
+	// --- Task NATS worker ---
+	if js != nil {
+		taskWorker := navpkg.NewTaskWorker(js, navQueries, pgBackend.Pool(), fcmDispatcher)
+		if err := taskWorker.Start(ctx); err != nil {
+			slog.Warn("Task NATS worker failed to start", "error", err)
+		} else {
+			defer taskWorker.Stop()
 		}
 	}
 

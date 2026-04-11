@@ -138,3 +138,17 @@ FROM task_notes
 WHERE company_id = $1 AND created_at > $2
 ORDER BY created_at ASC
 LIMIT $3;
+
+-- name: GetTasksDueSoon :many
+-- Get tasks with due dates within the next 24 hours, grouped with assignee IDs.
+SELECT t.id, t.company_id, t.title, t.due_date, array_agg(ta.user_id)::uuid[] as assignee_ids
+FROM tasks t
+JOIN task_assignments ta ON ta.task_id = t.id
+WHERE t.status IN ('open', 'in_progress')
+  AND t.due_date IS NOT NULL
+  AND t.due_date BETWEEN now() AND now() + interval '24 hours'
+GROUP BY t.id;
+
+-- name: GetTaskAssigneeUserIDs :many
+-- Get all assignee user IDs for a task.
+SELECT user_id FROM task_assignments WHERE task_id = $1;

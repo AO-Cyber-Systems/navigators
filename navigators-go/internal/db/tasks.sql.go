@@ -191,6 +191,31 @@ func (q *Queries) GetTask(ctx context.Context, arg GetTaskParams) (Task, error) 
 	return i, err
 }
 
+const getTaskAssigneeUserIDs = `-- name: GetTaskAssigneeUserIDs :many
+SELECT user_id FROM task_assignments WHERE task_id = $1
+`
+
+// Get all assignee user IDs for a task.
+func (q *Queries) GetTaskAssigneeUserIDs(ctx context.Context, taskID uuid.UUID) ([]uuid.UUID, error) {
+	rows, err := q.db.Query(ctx, getTaskAssigneeUserIDs, taskID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []uuid.UUID{}
+	for rows.Next() {
+		var user_id uuid.UUID
+		if err := rows.Scan(&user_id); err != nil {
+			return nil, err
+		}
+		items = append(items, user_id)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const getTaskAssignments = `-- name: GetTaskAssignments :many
 SELECT ta.id, ta.task_id, ta.user_id, ta.assigned_by, ta.assigned_at,
        u.display_name as user_display_name
@@ -253,6 +278,51 @@ func (q *Queries) GetTaskVoterCount(ctx context.Context, taskID uuid.UUID) (GetT
 	var i GetTaskVoterCountRow
 	err := row.Scan(&i.Total, &i.Contacted)
 	return i, err
+}
+
+const getTasksDueSoon = `-- name: GetTasksDueSoon :many
+SELECT t.id, t.company_id, t.title, t.due_date, array_agg(ta.user_id)::uuid[] as assignee_ids
+FROM tasks t
+JOIN task_assignments ta ON ta.task_id = t.id
+WHERE t.status IN ('open', 'in_progress')
+  AND t.due_date IS NOT NULL
+  AND t.due_date BETWEEN now() AND now() + interval '24 hours'
+GROUP BY t.id
+`
+
+type GetTasksDueSoonRow struct {
+	ID          uuid.UUID          `json:"id"`
+	CompanyID   uuid.UUID          `json:"company_id"`
+	Title       string             `json:"title"`
+	DueDate     pgtype.Timestamptz `json:"due_date"`
+	AssigneeIds []uuid.UUID        `json:"assignee_ids"`
+}
+
+// Get tasks with due dates within the next 24 hours, grouped with assignee IDs.
+func (q *Queries) GetTasksDueSoon(ctx context.Context) ([]GetTasksDueSoonRow, error) {
+	rows, err := q.db.Query(ctx, getTasksDueSoon)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetTasksDueSoonRow{}
+	for rows.Next() {
+		var i GetTasksDueSoonRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.CompanyID,
+			&i.Title,
+			&i.DueDate,
+			&i.AssigneeIds,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
 }
 
 const getTasksLinkedToVoter = `-- name: GetTasksLinkedToVoter :many
