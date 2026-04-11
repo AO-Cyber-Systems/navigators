@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-04-10)
 ## Current Position
 
 **Objective:** 7 of 10 (Phone Calls & Scripts)
-**Current Job:** 1
+**Current Job:** 2
 **Total Jobs in Objective:** 2
-**Status:** In progress
+**Status:** Ready to execute
 **Last Activity:** 2026-04-11
 
 Progress: [##........] 13%
@@ -49,6 +49,7 @@ Progress: [##........] 13%
 | Objective 06 P02 | 8min | 2 tasks | 10 files |
 | Objective 06-sms-integration P03 | 6min | 2 tasks | 9 files |
 | Objective 07 P01 | 6min | 2 tasks | 19 files |
+| Objective 07 P02 | 7min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -114,6 +115,9 @@ Recent decisions affecting current work:
 - [Objective 07]: Call scripts use TEXT content (not JSONB) with {{variable}} interpolation at display time
 - [Objective 07]: door_status CHECK extended with voicemail/no_answer/busy for phone dispositions; answered/refused shared
 - [Objective 07]: PullCallScriptsUpdated returns all scripts (not just active) so client detects deactivations during sync
+- [Objective 07]: CallScriptManagerScreen is read-only (view synced scripts) since no ConnectRPC handler for create/update exists yet
+- [Objective 07]: Phone call screen launches dialer immediately on open, does not gate flow on dialer success
+- [Objective 07]: Phone flow has 4 steps (calling, disposition, sentiment, notes) with calling step showing script before disposition
 
 ### Pending Todos
 

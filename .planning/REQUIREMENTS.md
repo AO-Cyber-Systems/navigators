@@ -66,10 +66,10 @@ Requirements for initial release. Each maps to roadmap objectives.
 
 ### Phone Calls
 
-- [ ] **CALL-01**: Navigator can initiate call to voter via native phone dialer (click-to-call)
-- [ ] **CALL-02**: Navigator completes post-call disposition form (answered/voicemail/no answer/refused)
+- [x] **CALL-01**: Navigator can initiate call to voter via native phone dialer (click-to-call)
+- [x] **CALL-02**: Navigator completes post-call disposition form (answered/voicemail/no answer/refused)
 - [x] **CALL-03**: Admin can create call scripts displayed to Navigator during calls
-- [ ] **CALL-04**: Call disposition includes voter sentiment and free-text notes
+- [x] **CALL-04**: Call disposition includes voter sentiment and free-text notes
 
 ### Door Knocking
 
@@ -213,10 +213,10 @@ Deferred to future release. Tracked but not in current roadmap.
 | SMS-06 | Objective 6 | Complete |
 | SMS-07 | Objective 6 | Complete |
 | SMS-08 | Objective 6 | Complete |
-| CALL-01 | Objective 7 | Pending |
-| CALL-02 | Objective 7 | Pending |
+| CALL-01 | Objective 7 | Complete |
+| CALL-02 | Objective 7 | Complete |
 | CALL-03 | Objective 7 | Complete |
-| CALL-04 | Objective 7 | Pending |
+| CALL-04 | Objective 7 | Complete |
 | TASK-01 | Objective 8 | Pending |
 | TASK-02 | Objective 8 | Pending |
 | TASK-03 | Objective 8 | Pending |
