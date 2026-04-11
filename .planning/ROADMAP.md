@@ -12,7 +12,7 @@ Navigators goes from foundation to field-ready in 10 objectives. The first four 
 - [x] **Objective 2: Voter Data Pipeline** - Import, geocode, deduplicate, search, and display voter records
 - [x] **Objective 3: Turf Management + Maps** - Draw turfs, assign Navigators, display voters on interactive maps
 - [x] **Objective 4: Offline Sync Engine** - Download, work offline, and sync back with conflict resolution
-- [ ] **Objective 5: Door Knocking + Contact Log** - Walk lists, at-the-door surveys, notes, and unified contact timeline
+- [x] **Objective 5: Door Knocking + Contact Log** - Walk lists, at-the-door surveys, notes, and unified contact timeline
 - [ ] **Objective 6: SMS Integration** - P2P texting, A2P broadcasts, templates, opt-out handling, and 10DLC
 - [ ] **Objective 7: Phone Calls + Scripts** - Click-to-call, post-call dispositions, and call scripts
 - [ ] **Objective 8: Tasks + Collaboration** - Task CRUD, auto-progress, push notifications
@@ -119,9 +119,9 @@ Jobs:
 **TRDs:** 3 plans in 3 waves
 
 Jobs:
-- [ ] 06-01: TBD
-- [ ] 06-02: TBD
-- [ ] 06-03: TBD
+- [ ] 06-01-TRD.md — SMS data model + Twilio provider + P2P texting + webhooks + NATS workers + opt-out processing
+- [ ] 06-02-TRD.md — Message templates + A2P broadcast campaigns + 10DLC gating + campaign batch worker
+- [ ] 06-03-TRD.md — Flutter SMS UI (conversations, compose, templates, campaigns) + app navigation
 
 > **Parallel opportunity:** Objective 6 depends on Objective 1 (auth, RBAC, suppression list), NOT on Objectives 2-5.
 > SMS does not require turf management or offline sync to function. Objectives 5 and 6 can execute
@@ -207,4 +207,4 @@ Jobs:
 
 ---
 *Roadmap created: 2026-04-10*
-*Last updated: 2026-04-10 — Objective 5 planned*
+*Last updated: 2026-04-10 — Objective 6 planned*
