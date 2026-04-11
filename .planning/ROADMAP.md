@@ -10,7 +10,7 @@ Navigators goes from foundation to field-ready in 10 objectives. The first four 
 
 - [x] **Objective 1: Foundation + Auth** - Backend skeleton with auth, RBAC, audit logging, and infrastructure services
 - [x] **Objective 2: Voter Data Pipeline** - Import, geocode, deduplicate, search, and display voter records
-- [ ] **Objective 3: Turf Management + Maps** - Draw turfs, assign Navigators, display voters on interactive maps
+- [x] **Objective 3: Turf Management + Maps** - Draw turfs, assign Navigators, display voters on interactive maps
 - [ ] **Objective 4: Offline Sync Engine** - Download, work offline, and sync back with conflict resolution
 - [ ] **Objective 5: Door Knocking + Contact Log** - Walk lists, at-the-door surveys, notes, and unified contact timeline
 - [ ] **Objective 6: SMS Integration** - P2P texting, A2P broadcasts, templates, opt-out handling, and 10DLC
@@ -85,9 +85,9 @@ Jobs:
 **TRDs:** 3 plans in 3 waves
 
 Jobs:
-- [ ] 04-01: TBD
-- [ ] 04-02: TBD
-- [ ] 04-03: TBD
+- [ ] 04-01-TRD.md — Drift local DB + encryption + tables + DAOs + server pull sync endpoints
+- [ ] 04-02-TRD.md — Operation log + push sync engine + conflict resolution + background scheduling
+- [ ] 04-03-TRD.md — Sync status UI + forced sync + offline-first screens + turf reassignment
 
 ### Objective 5: Door Knocking + Contact Log
 **Goal**: Navigators can walk their turf with an ordered list, knock doors, record survey responses and notes offline, and see a unified contact timeline per voter
