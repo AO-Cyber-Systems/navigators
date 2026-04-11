@@ -3,29 +3,67 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../services/voter_service.dart';
+import 'contact_timeline_widget.dart';
+import 'voter_notes_tab.dart';
 
-/// Full voter profile display screen.
+/// Full voter profile display screen with tabbed layout.
+///
+/// Three tabs:
+/// - **Profile**: existing voter info (personal, address, registration, districts, voting history, tags)
+/// - **Timeline**: unified contact timeline (door knocks, notes, survey responses)
+/// - **Notes**: voter notes with visibility badges and add-note capability
 class VoterDetailScreen extends ConsumerWidget {
   final String voterId;
 
-  const VoterDetailScreen({super.key, required this.voterId});
+  /// Optional turf ID for context (enables add-note on Notes tab).
+  final String? turfId;
+
+  const VoterDetailScreen({
+    super.key,
+    required this.voterId,
+    this.turfId,
+  });
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final voterAsync = ref.watch(voterDetailProvider(voterId));
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Voter Profile')),
-      body: voterAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => Center(
+    return voterAsync.when(
+      loading: () => Scaffold(
+        appBar: AppBar(title: const Text('Voter Profile')),
+        body: const Center(child: CircularProgressIndicator()),
+      ),
+      error: (error, _) => Scaffold(
+        appBar: AppBar(title: const Text('Voter Profile')),
+        body: Center(
           child: EdenEmptyState(
             title: 'Error loading voter',
             description: error.toString(),
             icon: Icons.error_outline,
           ),
         ),
-        data: (voter) => _VoterProfileBody(voter: voter),
+      ),
+      data: (voter) => DefaultTabController(
+        length: 3,
+        child: Scaffold(
+          appBar: AppBar(
+            title: Text(voter.fullName),
+            bottom: const TabBar(
+              tabs: [
+                Tab(icon: Icon(Icons.person), text: 'Profile'),
+                Tab(icon: Icon(Icons.timeline), text: 'Timeline'),
+                Tab(icon: Icon(Icons.note), text: 'Notes'),
+              ],
+            ),
+          ),
+          body: TabBarView(
+            children: [
+              _VoterProfileBody(voter: voter),
+              ContactTimelineWidget(voterId: voterId),
+              VoterNotesTab(voterId: voterId, turfId: turfId),
+            ],
+          ),
+        ),
       ),
     );
   }
