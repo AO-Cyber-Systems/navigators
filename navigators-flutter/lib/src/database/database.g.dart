@@ -1207,6 +1207,29 @@ class $ContactLogsTable extends ContactLogs
     requiredDuringInsert: false,
     defaultValue: const Constant(''),
   );
+  static const VerificationMeta _doorStatusMeta = const VerificationMeta(
+    'doorStatus',
+  );
+  @override
+  late final GeneratedColumn<String> doorStatus = GeneratedColumn<String>(
+    'door_status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _sentimentMeta = const VerificationMeta(
+    'sentiment',
+  );
+  @override
+  late final GeneratedColumn<int> sentiment = GeneratedColumn<int>(
+    'sentiment',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
   static const VerificationMeta _createdAtMeta = const VerificationMeta(
     'createdAt',
   );
@@ -1238,6 +1261,8 @@ class $ContactLogsTable extends ContactLogs
     contactType,
     outcome,
     notes,
+    doorStatus,
+    sentiment,
     createdAt,
     syncedAt,
   ];
@@ -1307,6 +1332,18 @@ class $ContactLogsTable extends ContactLogs
         notes.isAcceptableOrUnknown(data['notes']!, _notesMeta),
       );
     }
+    if (data.containsKey('door_status')) {
+      context.handle(
+        _doorStatusMeta,
+        doorStatus.isAcceptableOrUnknown(data['door_status']!, _doorStatusMeta),
+      );
+    }
+    if (data.containsKey('sentiment')) {
+      context.handle(
+        _sentimentMeta,
+        sentiment.isAcceptableOrUnknown(data['sentiment']!, _sentimentMeta),
+      );
+    }
     if (data.containsKey('created_at')) {
       context.handle(
         _createdAtMeta,
@@ -1358,6 +1395,14 @@ class $ContactLogsTable extends ContactLogs
         DriftSqlType.string,
         data['${effectivePrefix}notes'],
       )!,
+      doorStatus: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}door_status'],
+      )!,
+      sentiment: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sentiment'],
+      ),
       createdAt: attachedDatabase.typeMapping.read(
         DriftSqlType.dateTime,
         data['${effectivePrefix}created_at'],
@@ -1383,6 +1428,8 @@ class ContactLog extends DataClass implements Insertable<ContactLog> {
   final String contactType;
   final String outcome;
   final String notes;
+  final String doorStatus;
+  final int? sentiment;
   final DateTime createdAt;
   final DateTime? syncedAt;
   const ContactLog({
@@ -1393,6 +1440,8 @@ class ContactLog extends DataClass implements Insertable<ContactLog> {
     required this.contactType,
     required this.outcome,
     required this.notes,
+    required this.doorStatus,
+    this.sentiment,
     required this.createdAt,
     this.syncedAt,
   });
@@ -1406,6 +1455,10 @@ class ContactLog extends DataClass implements Insertable<ContactLog> {
     map['contact_type'] = Variable<String>(contactType);
     map['outcome'] = Variable<String>(outcome);
     map['notes'] = Variable<String>(notes);
+    map['door_status'] = Variable<String>(doorStatus);
+    if (!nullToAbsent || sentiment != null) {
+      map['sentiment'] = Variable<int>(sentiment);
+    }
     map['created_at'] = Variable<DateTime>(createdAt);
     if (!nullToAbsent || syncedAt != null) {
       map['synced_at'] = Variable<DateTime>(syncedAt);
@@ -1422,6 +1475,10 @@ class ContactLog extends DataClass implements Insertable<ContactLog> {
       contactType: Value(contactType),
       outcome: Value(outcome),
       notes: Value(notes),
+      doorStatus: Value(doorStatus),
+      sentiment: sentiment == null && nullToAbsent
+          ? const Value.absent()
+          : Value(sentiment),
       createdAt: Value(createdAt),
       syncedAt: syncedAt == null && nullToAbsent
           ? const Value.absent()
@@ -1442,6 +1499,8 @@ class ContactLog extends DataClass implements Insertable<ContactLog> {
       contactType: serializer.fromJson<String>(json['contactType']),
       outcome: serializer.fromJson<String>(json['outcome']),
       notes: serializer.fromJson<String>(json['notes']),
+      doorStatus: serializer.fromJson<String>(json['doorStatus']),
+      sentiment: serializer.fromJson<int?>(json['sentiment']),
       createdAt: serializer.fromJson<DateTime>(json['createdAt']),
       syncedAt: serializer.fromJson<DateTime?>(json['syncedAt']),
     );
@@ -1457,6 +1516,8 @@ class ContactLog extends DataClass implements Insertable<ContactLog> {
       'contactType': serializer.toJson<String>(contactType),
       'outcome': serializer.toJson<String>(outcome),
       'notes': serializer.toJson<String>(notes),
+      'doorStatus': serializer.toJson<String>(doorStatus),
+      'sentiment': serializer.toJson<int?>(sentiment),
       'createdAt': serializer.toJson<DateTime>(createdAt),
       'syncedAt': serializer.toJson<DateTime?>(syncedAt),
     };
@@ -1470,6 +1531,8 @@ class ContactLog extends DataClass implements Insertable<ContactLog> {
     String? contactType,
     String? outcome,
     String? notes,
+    String? doorStatus,
+    Value<int?> sentiment = const Value.absent(),
     DateTime? createdAt,
     Value<DateTime?> syncedAt = const Value.absent(),
   }) => ContactLog(
@@ -1480,6 +1543,8 @@ class ContactLog extends DataClass implements Insertable<ContactLog> {
     contactType: contactType ?? this.contactType,
     outcome: outcome ?? this.outcome,
     notes: notes ?? this.notes,
+    doorStatus: doorStatus ?? this.doorStatus,
+    sentiment: sentiment.present ? sentiment.value : this.sentiment,
     createdAt: createdAt ?? this.createdAt,
     syncedAt: syncedAt.present ? syncedAt.value : this.syncedAt,
   );
@@ -1494,6 +1559,10 @@ class ContactLog extends DataClass implements Insertable<ContactLog> {
           : this.contactType,
       outcome: data.outcome.present ? data.outcome.value : this.outcome,
       notes: data.notes.present ? data.notes.value : this.notes,
+      doorStatus: data.doorStatus.present
+          ? data.doorStatus.value
+          : this.doorStatus,
+      sentiment: data.sentiment.present ? data.sentiment.value : this.sentiment,
       createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
       syncedAt: data.syncedAt.present ? data.syncedAt.value : this.syncedAt,
     );
@@ -1509,6 +1578,8 @@ class ContactLog extends DataClass implements Insertable<ContactLog> {
           ..write('contactType: $contactType, ')
           ..write('outcome: $outcome, ')
           ..write('notes: $notes, ')
+          ..write('doorStatus: $doorStatus, ')
+          ..write('sentiment: $sentiment, ')
           ..write('createdAt: $createdAt, ')
           ..write('syncedAt: $syncedAt')
           ..write(')'))
@@ -1524,6 +1595,8 @@ class ContactLog extends DataClass implements Insertable<ContactLog> {
     contactType,
     outcome,
     notes,
+    doorStatus,
+    sentiment,
     createdAt,
     syncedAt,
   );
@@ -1538,6 +1611,8 @@ class ContactLog extends DataClass implements Insertable<ContactLog> {
           other.contactType == this.contactType &&
           other.outcome == this.outcome &&
           other.notes == this.notes &&
+          other.doorStatus == this.doorStatus &&
+          other.sentiment == this.sentiment &&
           other.createdAt == this.createdAt &&
           other.syncedAt == this.syncedAt);
 }
@@ -1550,6 +1625,8 @@ class ContactLogsCompanion extends UpdateCompanion<ContactLog> {
   final Value<String> contactType;
   final Value<String> outcome;
   final Value<String> notes;
+  final Value<String> doorStatus;
+  final Value<int?> sentiment;
   final Value<DateTime> createdAt;
   final Value<DateTime?> syncedAt;
   final Value<int> rowid;
@@ -1561,6 +1638,8 @@ class ContactLogsCompanion extends UpdateCompanion<ContactLog> {
     this.contactType = const Value.absent(),
     this.outcome = const Value.absent(),
     this.notes = const Value.absent(),
+    this.doorStatus = const Value.absent(),
+    this.sentiment = const Value.absent(),
     this.createdAt = const Value.absent(),
     this.syncedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -1573,6 +1652,8 @@ class ContactLogsCompanion extends UpdateCompanion<ContactLog> {
     required String contactType,
     required String outcome,
     this.notes = const Value.absent(),
+    this.doorStatus = const Value.absent(),
+    this.sentiment = const Value.absent(),
     required DateTime createdAt,
     this.syncedAt = const Value.absent(),
     this.rowid = const Value.absent(),
@@ -1591,6 +1672,8 @@ class ContactLogsCompanion extends UpdateCompanion<ContactLog> {
     Expression<String>? contactType,
     Expression<String>? outcome,
     Expression<String>? notes,
+    Expression<String>? doorStatus,
+    Expression<int>? sentiment,
     Expression<DateTime>? createdAt,
     Expression<DateTime>? syncedAt,
     Expression<int>? rowid,
@@ -1603,6 +1686,8 @@ class ContactLogsCompanion extends UpdateCompanion<ContactLog> {
       if (contactType != null) 'contact_type': contactType,
       if (outcome != null) 'outcome': outcome,
       if (notes != null) 'notes': notes,
+      if (doorStatus != null) 'door_status': doorStatus,
+      if (sentiment != null) 'sentiment': sentiment,
       if (createdAt != null) 'created_at': createdAt,
       if (syncedAt != null) 'synced_at': syncedAt,
       if (rowid != null) 'rowid': rowid,
@@ -1617,6 +1702,8 @@ class ContactLogsCompanion extends UpdateCompanion<ContactLog> {
     Value<String>? contactType,
     Value<String>? outcome,
     Value<String>? notes,
+    Value<String>? doorStatus,
+    Value<int?>? sentiment,
     Value<DateTime>? createdAt,
     Value<DateTime?>? syncedAt,
     Value<int>? rowid,
@@ -1629,6 +1716,8 @@ class ContactLogsCompanion extends UpdateCompanion<ContactLog> {
       contactType: contactType ?? this.contactType,
       outcome: outcome ?? this.outcome,
       notes: notes ?? this.notes,
+      doorStatus: doorStatus ?? this.doorStatus,
+      sentiment: sentiment ?? this.sentiment,
       createdAt: createdAt ?? this.createdAt,
       syncedAt: syncedAt ?? this.syncedAt,
       rowid: rowid ?? this.rowid,
@@ -1659,6 +1748,12 @@ class ContactLogsCompanion extends UpdateCompanion<ContactLog> {
     if (notes.present) {
       map['notes'] = Variable<String>(notes.value);
     }
+    if (doorStatus.present) {
+      map['door_status'] = Variable<String>(doorStatus.value);
+    }
+    if (sentiment.present) {
+      map['sentiment'] = Variable<int>(sentiment.value);
+    }
     if (createdAt.present) {
       map['created_at'] = Variable<DateTime>(createdAt.value);
     }
@@ -1681,6 +1776,8 @@ class ContactLogsCompanion extends UpdateCompanion<ContactLog> {
           ..write('contactType: $contactType, ')
           ..write('outcome: $outcome, ')
           ..write('notes: $notes, ')
+          ..write('doorStatus: $doorStatus, ')
+          ..write('sentiment: $sentiment, ')
           ..write('createdAt: $createdAt, ')
           ..write('syncedAt: $syncedAt, ')
           ..write('rowid: $rowid')
@@ -2792,6 +2889,1740 @@ class TurfAssignmentsCompanion extends UpdateCompanion<TurfAssignment> {
   }
 }
 
+class $SurveyFormsTable extends SurveyForms
+    with TableInfo<$SurveyFormsTable, SurveyForm> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SurveyFormsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _companyIdMeta = const VerificationMeta(
+    'companyId',
+  );
+  @override
+  late final GeneratedColumn<String> companyId = GeneratedColumn<String>(
+    'company_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _schemaMeta = const VerificationMeta('schema');
+  @override
+  late final GeneratedColumn<String> schema = GeneratedColumn<String>(
+    'schema',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _versionMeta = const VerificationMeta(
+    'version',
+  );
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+    'version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    companyId,
+    title,
+    description,
+    schema,
+    version,
+    isActive,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'survey_forms';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SurveyForm> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('company_id')) {
+      context.handle(
+        _companyIdMeta,
+        companyId.isAcceptableOrUnknown(data['company_id']!, _companyIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_companyIdMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('schema')) {
+      context.handle(
+        _schemaMeta,
+        schema.isAcceptableOrUnknown(data['schema']!, _schemaMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_schemaMeta);
+    }
+    if (data.containsKey('version')) {
+      context.handle(
+        _versionMeta,
+        version.isAcceptableOrUnknown(data['version']!, _versionMeta),
+      );
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SurveyForm map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SurveyForm(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      companyId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}company_id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      schema: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}schema'],
+      )!,
+      version: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}version'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $SurveyFormsTable createAlias(String alias) {
+    return $SurveyFormsTable(attachedDatabase, alias);
+  }
+}
+
+class SurveyForm extends DataClass implements Insertable<SurveyForm> {
+  final String id;
+  final String companyId;
+  final String title;
+  final String description;
+  final String schema;
+  final int version;
+  final bool isActive;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const SurveyForm({
+    required this.id,
+    required this.companyId,
+    required this.title,
+    required this.description,
+    required this.schema,
+    required this.version,
+    required this.isActive,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['company_id'] = Variable<String>(companyId);
+    map['title'] = Variable<String>(title);
+    map['description'] = Variable<String>(description);
+    map['schema'] = Variable<String>(schema);
+    map['version'] = Variable<int>(version);
+    map['is_active'] = Variable<bool>(isActive);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  SurveyFormsCompanion toCompanion(bool nullToAbsent) {
+    return SurveyFormsCompanion(
+      id: Value(id),
+      companyId: Value(companyId),
+      title: Value(title),
+      description: Value(description),
+      schema: Value(schema),
+      version: Value(version),
+      isActive: Value(isActive),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory SurveyForm.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SurveyForm(
+      id: serializer.fromJson<String>(json['id']),
+      companyId: serializer.fromJson<String>(json['companyId']),
+      title: serializer.fromJson<String>(json['title']),
+      description: serializer.fromJson<String>(json['description']),
+      schema: serializer.fromJson<String>(json['schema']),
+      version: serializer.fromJson<int>(json['version']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'companyId': serializer.toJson<String>(companyId),
+      'title': serializer.toJson<String>(title),
+      'description': serializer.toJson<String>(description),
+      'schema': serializer.toJson<String>(schema),
+      'version': serializer.toJson<int>(version),
+      'isActive': serializer.toJson<bool>(isActive),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  SurveyForm copyWith({
+    String? id,
+    String? companyId,
+    String? title,
+    String? description,
+    String? schema,
+    int? version,
+    bool? isActive,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => SurveyForm(
+    id: id ?? this.id,
+    companyId: companyId ?? this.companyId,
+    title: title ?? this.title,
+    description: description ?? this.description,
+    schema: schema ?? this.schema,
+    version: version ?? this.version,
+    isActive: isActive ?? this.isActive,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  SurveyForm copyWithCompanion(SurveyFormsCompanion data) {
+    return SurveyForm(
+      id: data.id.present ? data.id.value : this.id,
+      companyId: data.companyId.present ? data.companyId.value : this.companyId,
+      title: data.title.present ? data.title.value : this.title,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      schema: data.schema.present ? data.schema.value : this.schema,
+      version: data.version.present ? data.version.value : this.version,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SurveyForm(')
+          ..write('id: $id, ')
+          ..write('companyId: $companyId, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('schema: $schema, ')
+          ..write('version: $version, ')
+          ..write('isActive: $isActive, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    companyId,
+    title,
+    description,
+    schema,
+    version,
+    isActive,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SurveyForm &&
+          other.id == this.id &&
+          other.companyId == this.companyId &&
+          other.title == this.title &&
+          other.description == this.description &&
+          other.schema == this.schema &&
+          other.version == this.version &&
+          other.isActive == this.isActive &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class SurveyFormsCompanion extends UpdateCompanion<SurveyForm> {
+  final Value<String> id;
+  final Value<String> companyId;
+  final Value<String> title;
+  final Value<String> description;
+  final Value<String> schema;
+  final Value<int> version;
+  final Value<bool> isActive;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const SurveyFormsCompanion({
+    this.id = const Value.absent(),
+    this.companyId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.description = const Value.absent(),
+    this.schema = const Value.absent(),
+    this.version = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SurveyFormsCompanion.insert({
+    required String id,
+    required String companyId,
+    required String title,
+    this.description = const Value.absent(),
+    required String schema,
+    this.version = const Value.absent(),
+    this.isActive = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       companyId = Value(companyId),
+       title = Value(title),
+       schema = Value(schema),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<SurveyForm> custom({
+    Expression<String>? id,
+    Expression<String>? companyId,
+    Expression<String>? title,
+    Expression<String>? description,
+    Expression<String>? schema,
+    Expression<int>? version,
+    Expression<bool>? isActive,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (companyId != null) 'company_id': companyId,
+      if (title != null) 'title': title,
+      if (description != null) 'description': description,
+      if (schema != null) 'schema': schema,
+      if (version != null) 'version': version,
+      if (isActive != null) 'is_active': isActive,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SurveyFormsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? companyId,
+    Value<String>? title,
+    Value<String>? description,
+    Value<String>? schema,
+    Value<int>? version,
+    Value<bool>? isActive,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return SurveyFormsCompanion(
+      id: id ?? this.id,
+      companyId: companyId ?? this.companyId,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      schema: schema ?? this.schema,
+      version: version ?? this.version,
+      isActive: isActive ?? this.isActive,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (companyId.present) {
+      map['company_id'] = Variable<String>(companyId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (schema.present) {
+      map['schema'] = Variable<String>(schema.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SurveyFormsCompanion(')
+          ..write('id: $id, ')
+          ..write('companyId: $companyId, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('schema: $schema, ')
+          ..write('version: $version, ')
+          ..write('isActive: $isActive, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $SurveyResponsesTable extends SurveyResponses
+    with TableInfo<$SurveyResponsesTable, SurveyResponse> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $SurveyResponsesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _formIdMeta = const VerificationMeta('formId');
+  @override
+  late final GeneratedColumn<String> formId = GeneratedColumn<String>(
+    'form_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _formVersionMeta = const VerificationMeta(
+    'formVersion',
+  );
+  @override
+  late final GeneratedColumn<int> formVersion = GeneratedColumn<int>(
+    'form_version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _voterIdMeta = const VerificationMeta(
+    'voterId',
+  );
+  @override
+  late final GeneratedColumn<String> voterId = GeneratedColumn<String>(
+    'voter_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+    'user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _turfIdMeta = const VerificationMeta('turfId');
+  @override
+  late final GeneratedColumn<String> turfId = GeneratedColumn<String>(
+    'turf_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contactLogIdMeta = const VerificationMeta(
+    'contactLogId',
+  );
+  @override
+  late final GeneratedColumn<String> contactLogId = GeneratedColumn<String>(
+    'contact_log_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _responsesJsonMeta = const VerificationMeta(
+    'responsesJson',
+  );
+  @override
+  late final GeneratedColumn<String> responsesJson = GeneratedColumn<String>(
+    'responses_json',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _syncedAtMeta = const VerificationMeta(
+    'syncedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> syncedAt = GeneratedColumn<DateTime>(
+    'synced_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    formId,
+    formVersion,
+    voterId,
+    userId,
+    turfId,
+    contactLogId,
+    responsesJson,
+    createdAt,
+    syncedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'survey_responses';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<SurveyResponse> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('form_id')) {
+      context.handle(
+        _formIdMeta,
+        formId.isAcceptableOrUnknown(data['form_id']!, _formIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_formIdMeta);
+    }
+    if (data.containsKey('form_version')) {
+      context.handle(
+        _formVersionMeta,
+        formVersion.isAcceptableOrUnknown(
+          data['form_version']!,
+          _formVersionMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_formVersionMeta);
+    }
+    if (data.containsKey('voter_id')) {
+      context.handle(
+        _voterIdMeta,
+        voterId.isAcceptableOrUnknown(data['voter_id']!, _voterIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_voterIdMeta);
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
+    if (data.containsKey('turf_id')) {
+      context.handle(
+        _turfIdMeta,
+        turfId.isAcceptableOrUnknown(data['turf_id']!, _turfIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_turfIdMeta);
+    }
+    if (data.containsKey('contact_log_id')) {
+      context.handle(
+        _contactLogIdMeta,
+        contactLogId.isAcceptableOrUnknown(
+          data['contact_log_id']!,
+          _contactLogIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('responses_json')) {
+      context.handle(
+        _responsesJsonMeta,
+        responsesJson.isAcceptableOrUnknown(
+          data['responses_json']!,
+          _responsesJsonMeta,
+        ),
+      );
+    } else if (isInserting) {
+      context.missing(_responsesJsonMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('synced_at')) {
+      context.handle(
+        _syncedAtMeta,
+        syncedAt.isAcceptableOrUnknown(data['synced_at']!, _syncedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  SurveyResponse map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return SurveyResponse(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      formId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}form_id'],
+      )!,
+      formVersion: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}form_version'],
+      )!,
+      voterId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}voter_id'],
+      )!,
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_id'],
+      )!,
+      turfId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}turf_id'],
+      )!,
+      contactLogId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}contact_log_id'],
+      ),
+      responsesJson: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}responses_json'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      syncedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}synced_at'],
+      ),
+    );
+  }
+
+  @override
+  $SurveyResponsesTable createAlias(String alias) {
+    return $SurveyResponsesTable(attachedDatabase, alias);
+  }
+}
+
+class SurveyResponse extends DataClass implements Insertable<SurveyResponse> {
+  final String id;
+  final String formId;
+  final int formVersion;
+  final String voterId;
+  final String userId;
+  final String turfId;
+  final String? contactLogId;
+  final String responsesJson;
+  final DateTime createdAt;
+  final DateTime? syncedAt;
+  const SurveyResponse({
+    required this.id,
+    required this.formId,
+    required this.formVersion,
+    required this.voterId,
+    required this.userId,
+    required this.turfId,
+    this.contactLogId,
+    required this.responsesJson,
+    required this.createdAt,
+    this.syncedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['form_id'] = Variable<String>(formId);
+    map['form_version'] = Variable<int>(formVersion);
+    map['voter_id'] = Variable<String>(voterId);
+    map['user_id'] = Variable<String>(userId);
+    map['turf_id'] = Variable<String>(turfId);
+    if (!nullToAbsent || contactLogId != null) {
+      map['contact_log_id'] = Variable<String>(contactLogId);
+    }
+    map['responses_json'] = Variable<String>(responsesJson);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || syncedAt != null) {
+      map['synced_at'] = Variable<DateTime>(syncedAt);
+    }
+    return map;
+  }
+
+  SurveyResponsesCompanion toCompanion(bool nullToAbsent) {
+    return SurveyResponsesCompanion(
+      id: Value(id),
+      formId: Value(formId),
+      formVersion: Value(formVersion),
+      voterId: Value(voterId),
+      userId: Value(userId),
+      turfId: Value(turfId),
+      contactLogId: contactLogId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(contactLogId),
+      responsesJson: Value(responsesJson),
+      createdAt: Value(createdAt),
+      syncedAt: syncedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncedAt),
+    );
+  }
+
+  factory SurveyResponse.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return SurveyResponse(
+      id: serializer.fromJson<String>(json['id']),
+      formId: serializer.fromJson<String>(json['formId']),
+      formVersion: serializer.fromJson<int>(json['formVersion']),
+      voterId: serializer.fromJson<String>(json['voterId']),
+      userId: serializer.fromJson<String>(json['userId']),
+      turfId: serializer.fromJson<String>(json['turfId']),
+      contactLogId: serializer.fromJson<String?>(json['contactLogId']),
+      responsesJson: serializer.fromJson<String>(json['responsesJson']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      syncedAt: serializer.fromJson<DateTime?>(json['syncedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'formId': serializer.toJson<String>(formId),
+      'formVersion': serializer.toJson<int>(formVersion),
+      'voterId': serializer.toJson<String>(voterId),
+      'userId': serializer.toJson<String>(userId),
+      'turfId': serializer.toJson<String>(turfId),
+      'contactLogId': serializer.toJson<String?>(contactLogId),
+      'responsesJson': serializer.toJson<String>(responsesJson),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'syncedAt': serializer.toJson<DateTime?>(syncedAt),
+    };
+  }
+
+  SurveyResponse copyWith({
+    String? id,
+    String? formId,
+    int? formVersion,
+    String? voterId,
+    String? userId,
+    String? turfId,
+    Value<String?> contactLogId = const Value.absent(),
+    String? responsesJson,
+    DateTime? createdAt,
+    Value<DateTime?> syncedAt = const Value.absent(),
+  }) => SurveyResponse(
+    id: id ?? this.id,
+    formId: formId ?? this.formId,
+    formVersion: formVersion ?? this.formVersion,
+    voterId: voterId ?? this.voterId,
+    userId: userId ?? this.userId,
+    turfId: turfId ?? this.turfId,
+    contactLogId: contactLogId.present ? contactLogId.value : this.contactLogId,
+    responsesJson: responsesJson ?? this.responsesJson,
+    createdAt: createdAt ?? this.createdAt,
+    syncedAt: syncedAt.present ? syncedAt.value : this.syncedAt,
+  );
+  SurveyResponse copyWithCompanion(SurveyResponsesCompanion data) {
+    return SurveyResponse(
+      id: data.id.present ? data.id.value : this.id,
+      formId: data.formId.present ? data.formId.value : this.formId,
+      formVersion: data.formVersion.present
+          ? data.formVersion.value
+          : this.formVersion,
+      voterId: data.voterId.present ? data.voterId.value : this.voterId,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      turfId: data.turfId.present ? data.turfId.value : this.turfId,
+      contactLogId: data.contactLogId.present
+          ? data.contactLogId.value
+          : this.contactLogId,
+      responsesJson: data.responsesJson.present
+          ? data.responsesJson.value
+          : this.responsesJson,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      syncedAt: data.syncedAt.present ? data.syncedAt.value : this.syncedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SurveyResponse(')
+          ..write('id: $id, ')
+          ..write('formId: $formId, ')
+          ..write('formVersion: $formVersion, ')
+          ..write('voterId: $voterId, ')
+          ..write('userId: $userId, ')
+          ..write('turfId: $turfId, ')
+          ..write('contactLogId: $contactLogId, ')
+          ..write('responsesJson: $responsesJson, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('syncedAt: $syncedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    formId,
+    formVersion,
+    voterId,
+    userId,
+    turfId,
+    contactLogId,
+    responsesJson,
+    createdAt,
+    syncedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is SurveyResponse &&
+          other.id == this.id &&
+          other.formId == this.formId &&
+          other.formVersion == this.formVersion &&
+          other.voterId == this.voterId &&
+          other.userId == this.userId &&
+          other.turfId == this.turfId &&
+          other.contactLogId == this.contactLogId &&
+          other.responsesJson == this.responsesJson &&
+          other.createdAt == this.createdAt &&
+          other.syncedAt == this.syncedAt);
+}
+
+class SurveyResponsesCompanion extends UpdateCompanion<SurveyResponse> {
+  final Value<String> id;
+  final Value<String> formId;
+  final Value<int> formVersion;
+  final Value<String> voterId;
+  final Value<String> userId;
+  final Value<String> turfId;
+  final Value<String?> contactLogId;
+  final Value<String> responsesJson;
+  final Value<DateTime> createdAt;
+  final Value<DateTime?> syncedAt;
+  final Value<int> rowid;
+  const SurveyResponsesCompanion({
+    this.id = const Value.absent(),
+    this.formId = const Value.absent(),
+    this.formVersion = const Value.absent(),
+    this.voterId = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.turfId = const Value.absent(),
+    this.contactLogId = const Value.absent(),
+    this.responsesJson = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.syncedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  SurveyResponsesCompanion.insert({
+    required String id,
+    required String formId,
+    required int formVersion,
+    required String voterId,
+    required String userId,
+    required String turfId,
+    this.contactLogId = const Value.absent(),
+    required String responsesJson,
+    required DateTime createdAt,
+    this.syncedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       formId = Value(formId),
+       formVersion = Value(formVersion),
+       voterId = Value(voterId),
+       userId = Value(userId),
+       turfId = Value(turfId),
+       responsesJson = Value(responsesJson),
+       createdAt = Value(createdAt);
+  static Insertable<SurveyResponse> custom({
+    Expression<String>? id,
+    Expression<String>? formId,
+    Expression<int>? formVersion,
+    Expression<String>? voterId,
+    Expression<String>? userId,
+    Expression<String>? turfId,
+    Expression<String>? contactLogId,
+    Expression<String>? responsesJson,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? syncedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (formId != null) 'form_id': formId,
+      if (formVersion != null) 'form_version': formVersion,
+      if (voterId != null) 'voter_id': voterId,
+      if (userId != null) 'user_id': userId,
+      if (turfId != null) 'turf_id': turfId,
+      if (contactLogId != null) 'contact_log_id': contactLogId,
+      if (responsesJson != null) 'responses_json': responsesJson,
+      if (createdAt != null) 'created_at': createdAt,
+      if (syncedAt != null) 'synced_at': syncedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  SurveyResponsesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? formId,
+    Value<int>? formVersion,
+    Value<String>? voterId,
+    Value<String>? userId,
+    Value<String>? turfId,
+    Value<String?>? contactLogId,
+    Value<String>? responsesJson,
+    Value<DateTime>? createdAt,
+    Value<DateTime?>? syncedAt,
+    Value<int>? rowid,
+  }) {
+    return SurveyResponsesCompanion(
+      id: id ?? this.id,
+      formId: formId ?? this.formId,
+      formVersion: formVersion ?? this.formVersion,
+      voterId: voterId ?? this.voterId,
+      userId: userId ?? this.userId,
+      turfId: turfId ?? this.turfId,
+      contactLogId: contactLogId ?? this.contactLogId,
+      responsesJson: responsesJson ?? this.responsesJson,
+      createdAt: createdAt ?? this.createdAt,
+      syncedAt: syncedAt ?? this.syncedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (formId.present) {
+      map['form_id'] = Variable<String>(formId.value);
+    }
+    if (formVersion.present) {
+      map['form_version'] = Variable<int>(formVersion.value);
+    }
+    if (voterId.present) {
+      map['voter_id'] = Variable<String>(voterId.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (turfId.present) {
+      map['turf_id'] = Variable<String>(turfId.value);
+    }
+    if (contactLogId.present) {
+      map['contact_log_id'] = Variable<String>(contactLogId.value);
+    }
+    if (responsesJson.present) {
+      map['responses_json'] = Variable<String>(responsesJson.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (syncedAt.present) {
+      map['synced_at'] = Variable<DateTime>(syncedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('SurveyResponsesCompanion(')
+          ..write('id: $id, ')
+          ..write('formId: $formId, ')
+          ..write('formVersion: $formVersion, ')
+          ..write('voterId: $voterId, ')
+          ..write('userId: $userId, ')
+          ..write('turfId: $turfId, ')
+          ..write('contactLogId: $contactLogId, ')
+          ..write('responsesJson: $responsesJson, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('syncedAt: $syncedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $VoterNotesTable extends VoterNotes
+    with TableInfo<$VoterNotesTable, VoterNote> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $VoterNotesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _voterIdMeta = const VerificationMeta(
+    'voterId',
+  );
+  @override
+  late final GeneratedColumn<String> voterId = GeneratedColumn<String>(
+    'voter_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+    'user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _turfIdMeta = const VerificationMeta('turfId');
+  @override
+  late final GeneratedColumn<String> turfId = GeneratedColumn<String>(
+    'turf_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contentMeta = const VerificationMeta(
+    'content',
+  );
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+    'content',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _visibilityMeta = const VerificationMeta(
+    'visibility',
+  );
+  @override
+  late final GeneratedColumn<String> visibility = GeneratedColumn<String>(
+    'visibility',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('team'),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _syncedAtMeta = const VerificationMeta(
+    'syncedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> syncedAt = GeneratedColumn<DateTime>(
+    'synced_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    voterId,
+    userId,
+    turfId,
+    content,
+    visibility,
+    createdAt,
+    updatedAt,
+    syncedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'voter_notes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<VoterNote> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('voter_id')) {
+      context.handle(
+        _voterIdMeta,
+        voterId.isAcceptableOrUnknown(data['voter_id']!, _voterIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_voterIdMeta);
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
+    if (data.containsKey('turf_id')) {
+      context.handle(
+        _turfIdMeta,
+        turfId.isAcceptableOrUnknown(data['turf_id']!, _turfIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_turfIdMeta);
+    }
+    if (data.containsKey('content')) {
+      context.handle(
+        _contentMeta,
+        content.isAcceptableOrUnknown(data['content']!, _contentMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_contentMeta);
+    }
+    if (data.containsKey('visibility')) {
+      context.handle(
+        _visibilityMeta,
+        visibility.isAcceptableOrUnknown(data['visibility']!, _visibilityMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('synced_at')) {
+      context.handle(
+        _syncedAtMeta,
+        syncedAt.isAcceptableOrUnknown(data['synced_at']!, _syncedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  VoterNote map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return VoterNote(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      voterId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}voter_id'],
+      )!,
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_id'],
+      )!,
+      turfId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}turf_id'],
+      )!,
+      content: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content'],
+      )!,
+      visibility: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}visibility'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      syncedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}synced_at'],
+      ),
+    );
+  }
+
+  @override
+  $VoterNotesTable createAlias(String alias) {
+    return $VoterNotesTable(attachedDatabase, alias);
+  }
+}
+
+class VoterNote extends DataClass implements Insertable<VoterNote> {
+  final String id;
+  final String voterId;
+  final String userId;
+  final String turfId;
+  final String content;
+  final String visibility;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? syncedAt;
+  const VoterNote({
+    required this.id,
+    required this.voterId,
+    required this.userId,
+    required this.turfId,
+    required this.content,
+    required this.visibility,
+    required this.createdAt,
+    required this.updatedAt,
+    this.syncedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['voter_id'] = Variable<String>(voterId);
+    map['user_id'] = Variable<String>(userId);
+    map['turf_id'] = Variable<String>(turfId);
+    map['content'] = Variable<String>(content);
+    map['visibility'] = Variable<String>(visibility);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || syncedAt != null) {
+      map['synced_at'] = Variable<DateTime>(syncedAt);
+    }
+    return map;
+  }
+
+  VoterNotesCompanion toCompanion(bool nullToAbsent) {
+    return VoterNotesCompanion(
+      id: Value(id),
+      voterId: Value(voterId),
+      userId: Value(userId),
+      turfId: Value(turfId),
+      content: Value(content),
+      visibility: Value(visibility),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      syncedAt: syncedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncedAt),
+    );
+  }
+
+  factory VoterNote.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return VoterNote(
+      id: serializer.fromJson<String>(json['id']),
+      voterId: serializer.fromJson<String>(json['voterId']),
+      userId: serializer.fromJson<String>(json['userId']),
+      turfId: serializer.fromJson<String>(json['turfId']),
+      content: serializer.fromJson<String>(json['content']),
+      visibility: serializer.fromJson<String>(json['visibility']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      syncedAt: serializer.fromJson<DateTime?>(json['syncedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'voterId': serializer.toJson<String>(voterId),
+      'userId': serializer.toJson<String>(userId),
+      'turfId': serializer.toJson<String>(turfId),
+      'content': serializer.toJson<String>(content),
+      'visibility': serializer.toJson<String>(visibility),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'syncedAt': serializer.toJson<DateTime?>(syncedAt),
+    };
+  }
+
+  VoterNote copyWith({
+    String? id,
+    String? voterId,
+    String? userId,
+    String? turfId,
+    String? content,
+    String? visibility,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> syncedAt = const Value.absent(),
+  }) => VoterNote(
+    id: id ?? this.id,
+    voterId: voterId ?? this.voterId,
+    userId: userId ?? this.userId,
+    turfId: turfId ?? this.turfId,
+    content: content ?? this.content,
+    visibility: visibility ?? this.visibility,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    syncedAt: syncedAt.present ? syncedAt.value : this.syncedAt,
+  );
+  VoterNote copyWithCompanion(VoterNotesCompanion data) {
+    return VoterNote(
+      id: data.id.present ? data.id.value : this.id,
+      voterId: data.voterId.present ? data.voterId.value : this.voterId,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      turfId: data.turfId.present ? data.turfId.value : this.turfId,
+      content: data.content.present ? data.content.value : this.content,
+      visibility: data.visibility.present
+          ? data.visibility.value
+          : this.visibility,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      syncedAt: data.syncedAt.present ? data.syncedAt.value : this.syncedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VoterNote(')
+          ..write('id: $id, ')
+          ..write('voterId: $voterId, ')
+          ..write('userId: $userId, ')
+          ..write('turfId: $turfId, ')
+          ..write('content: $content, ')
+          ..write('visibility: $visibility, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('syncedAt: $syncedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    voterId,
+    userId,
+    turfId,
+    content,
+    visibility,
+    createdAt,
+    updatedAt,
+    syncedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is VoterNote &&
+          other.id == this.id &&
+          other.voterId == this.voterId &&
+          other.userId == this.userId &&
+          other.turfId == this.turfId &&
+          other.content == this.content &&
+          other.visibility == this.visibility &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.syncedAt == this.syncedAt);
+}
+
+class VoterNotesCompanion extends UpdateCompanion<VoterNote> {
+  final Value<String> id;
+  final Value<String> voterId;
+  final Value<String> userId;
+  final Value<String> turfId;
+  final Value<String> content;
+  final Value<String> visibility;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> syncedAt;
+  final Value<int> rowid;
+  const VoterNotesCompanion({
+    this.id = const Value.absent(),
+    this.voterId = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.turfId = const Value.absent(),
+    this.content = const Value.absent(),
+    this.visibility = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.syncedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  VoterNotesCompanion.insert({
+    required String id,
+    required String voterId,
+    required String userId,
+    required String turfId,
+    required String content,
+    this.visibility = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.syncedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       voterId = Value(voterId),
+       userId = Value(userId),
+       turfId = Value(turfId),
+       content = Value(content),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<VoterNote> custom({
+    Expression<String>? id,
+    Expression<String>? voterId,
+    Expression<String>? userId,
+    Expression<String>? turfId,
+    Expression<String>? content,
+    Expression<String>? visibility,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? syncedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (voterId != null) 'voter_id': voterId,
+      if (userId != null) 'user_id': userId,
+      if (turfId != null) 'turf_id': turfId,
+      if (content != null) 'content': content,
+      if (visibility != null) 'visibility': visibility,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (syncedAt != null) 'synced_at': syncedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  VoterNotesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? voterId,
+    Value<String>? userId,
+    Value<String>? turfId,
+    Value<String>? content,
+    Value<String>? visibility,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? syncedAt,
+    Value<int>? rowid,
+  }) {
+    return VoterNotesCompanion(
+      id: id ?? this.id,
+      voterId: voterId ?? this.voterId,
+      userId: userId ?? this.userId,
+      turfId: turfId ?? this.turfId,
+      content: content ?? this.content,
+      visibility: visibility ?? this.visibility,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      syncedAt: syncedAt ?? this.syncedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (voterId.present) {
+      map['voter_id'] = Variable<String>(voterId.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (turfId.present) {
+      map['turf_id'] = Variable<String>(turfId.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (visibility.present) {
+      map['visibility'] = Variable<String>(visibility.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (syncedAt.present) {
+      map['synced_at'] = Variable<DateTime>(syncedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('VoterNotesCompanion(')
+          ..write('id: $id, ')
+          ..write('voterId: $voterId, ')
+          ..write('userId: $userId, ')
+          ..write('turfId: $turfId, ')
+          ..write('content: $content, ')
+          ..write('visibility: $visibility, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('syncedAt: $syncedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$NavigatorsDatabase extends GeneratedDatabase {
   _$NavigatorsDatabase(QueryExecutor e) : super(e);
   $NavigatorsDatabaseManager get managers => $NavigatorsDatabaseManager(this);
@@ -2802,9 +4633,18 @@ abstract class _$NavigatorsDatabase extends GeneratedDatabase {
   late final $TurfAssignmentsTable turfAssignments = $TurfAssignmentsTable(
     this,
   );
+  late final $SurveyFormsTable surveyForms = $SurveyFormsTable(this);
+  late final $SurveyResponsesTable surveyResponses = $SurveyResponsesTable(
+    this,
+  );
+  late final $VoterNotesTable voterNotes = $VoterNotesTable(this);
   late final VoterDao voterDao = VoterDao(this as NavigatorsDatabase);
   late final SyncDao syncDao = SyncDao(this as NavigatorsDatabase);
   late final ContactLogDao contactLogDao = ContactLogDao(
+    this as NavigatorsDatabase,
+  );
+  late final SurveyDao surveyDao = SurveyDao(this as NavigatorsDatabase);
+  late final VoterNoteDao voterNoteDao = VoterNoteDao(
     this as NavigatorsDatabase,
   );
   @override
@@ -2817,6 +4657,9 @@ abstract class _$NavigatorsDatabase extends GeneratedDatabase {
     syncOperations,
     syncCursors,
     turfAssignments,
+    surveyForms,
+    surveyResponses,
+    voterNotes,
   ];
 }
 
@@ -3341,6 +5184,8 @@ typedef $$ContactLogsTableCreateCompanionBuilder =
       required String contactType,
       required String outcome,
       Value<String> notes,
+      Value<String> doorStatus,
+      Value<int?> sentiment,
       required DateTime createdAt,
       Value<DateTime?> syncedAt,
       Value<int> rowid,
@@ -3354,6 +5199,8 @@ typedef $$ContactLogsTableUpdateCompanionBuilder =
       Value<String> contactType,
       Value<String> outcome,
       Value<String> notes,
+      Value<String> doorStatus,
+      Value<int?> sentiment,
       Value<DateTime> createdAt,
       Value<DateTime?> syncedAt,
       Value<int> rowid,
@@ -3400,6 +5247,16 @@ class $$ContactLogsTableFilterComposer
 
   ColumnFilters<String> get notes => $composableBuilder(
     column: $table.notes,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get doorStatus => $composableBuilder(
+    column: $table.doorStatus,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sentiment => $composableBuilder(
+    column: $table.sentiment,
     builder: (column) => ColumnFilters(column),
   );
 
@@ -3458,6 +5315,16 @@ class $$ContactLogsTableOrderingComposer
     builder: (column) => ColumnOrderings(column),
   );
 
+  ColumnOrderings<String> get doorStatus => $composableBuilder(
+    column: $table.doorStatus,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sentiment => $composableBuilder(
+    column: $table.sentiment,
+    builder: (column) => ColumnOrderings(column),
+  );
+
   ColumnOrderings<DateTime> get createdAt => $composableBuilder(
     column: $table.createdAt,
     builder: (column) => ColumnOrderings(column),
@@ -3500,6 +5367,14 @@ class $$ContactLogsTableAnnotationComposer
 
   GeneratedColumn<String> get notes =>
       $composableBuilder(column: $table.notes, builder: (column) => column);
+
+  GeneratedColumn<String> get doorStatus => $composableBuilder(
+    column: $table.doorStatus,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sentiment =>
+      $composableBuilder(column: $table.sentiment, builder: (column) => column);
 
   GeneratedColumn<DateTime> get createdAt =>
       $composableBuilder(column: $table.createdAt, builder: (column) => column);
@@ -3548,6 +5423,8 @@ class $$ContactLogsTableTableManager
                 Value<String> contactType = const Value.absent(),
                 Value<String> outcome = const Value.absent(),
                 Value<String> notes = const Value.absent(),
+                Value<String> doorStatus = const Value.absent(),
+                Value<int?> sentiment = const Value.absent(),
                 Value<DateTime> createdAt = const Value.absent(),
                 Value<DateTime?> syncedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -3559,6 +5436,8 @@ class $$ContactLogsTableTableManager
                 contactType: contactType,
                 outcome: outcome,
                 notes: notes,
+                doorStatus: doorStatus,
+                sentiment: sentiment,
                 createdAt: createdAt,
                 syncedAt: syncedAt,
                 rowid: rowid,
@@ -3572,6 +5451,8 @@ class $$ContactLogsTableTableManager
                 required String contactType,
                 required String outcome,
                 Value<String> notes = const Value.absent(),
+                Value<String> doorStatus = const Value.absent(),
+                Value<int?> sentiment = const Value.absent(),
                 required DateTime createdAt,
                 Value<DateTime?> syncedAt = const Value.absent(),
                 Value<int> rowid = const Value.absent(),
@@ -3583,6 +5464,8 @@ class $$ContactLogsTableTableManager
                 contactType: contactType,
                 outcome: outcome,
                 notes: notes,
+                doorStatus: doorStatus,
+                sentiment: sentiment,
                 createdAt: createdAt,
                 syncedAt: syncedAt,
                 rowid: rowid,
@@ -4242,6 +6125,875 @@ typedef $$TurfAssignmentsTableProcessedTableManager =
       TurfAssignment,
       PrefetchHooks Function()
     >;
+typedef $$SurveyFormsTableCreateCompanionBuilder =
+    SurveyFormsCompanion Function({
+      required String id,
+      required String companyId,
+      required String title,
+      Value<String> description,
+      required String schema,
+      Value<int> version,
+      Value<bool> isActive,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$SurveyFormsTableUpdateCompanionBuilder =
+    SurveyFormsCompanion Function({
+      Value<String> id,
+      Value<String> companyId,
+      Value<String> title,
+      Value<String> description,
+      Value<String> schema,
+      Value<int> version,
+      Value<bool> isActive,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$SurveyFormsTableFilterComposer
+    extends Composer<_$NavigatorsDatabase, $SurveyFormsTable> {
+  $$SurveyFormsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get companyId => $composableBuilder(
+    column: $table.companyId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get schema => $composableBuilder(
+    column: $table.schema,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SurveyFormsTableOrderingComposer
+    extends Composer<_$NavigatorsDatabase, $SurveyFormsTable> {
+  $$SurveyFormsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get companyId => $composableBuilder(
+    column: $table.companyId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get schema => $composableBuilder(
+    column: $table.schema,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SurveyFormsTableAnnotationComposer
+    extends Composer<_$NavigatorsDatabase, $SurveyFormsTable> {
+  $$SurveyFormsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get companyId =>
+      $composableBuilder(column: $table.companyId, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get schema =>
+      $composableBuilder(column: $table.schema, builder: (column) => column);
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$SurveyFormsTableTableManager
+    extends
+        RootTableManager<
+          _$NavigatorsDatabase,
+          $SurveyFormsTable,
+          SurveyForm,
+          $$SurveyFormsTableFilterComposer,
+          $$SurveyFormsTableOrderingComposer,
+          $$SurveyFormsTableAnnotationComposer,
+          $$SurveyFormsTableCreateCompanionBuilder,
+          $$SurveyFormsTableUpdateCompanionBuilder,
+          (
+            SurveyForm,
+            BaseReferences<_$NavigatorsDatabase, $SurveyFormsTable, SurveyForm>,
+          ),
+          SurveyForm,
+          PrefetchHooks Function()
+        > {
+  $$SurveyFormsTableTableManager(
+    _$NavigatorsDatabase db,
+    $SurveyFormsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SurveyFormsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SurveyFormsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SurveyFormsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> companyId = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String> schema = const Value.absent(),
+                Value<int> version = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SurveyFormsCompanion(
+                id: id,
+                companyId: companyId,
+                title: title,
+                description: description,
+                schema: schema,
+                version: version,
+                isActive: isActive,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String companyId,
+                required String title,
+                Value<String> description = const Value.absent(),
+                required String schema,
+                Value<int> version = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => SurveyFormsCompanion.insert(
+                id: id,
+                companyId: companyId,
+                title: title,
+                description: description,
+                schema: schema,
+                version: version,
+                isActive: isActive,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SurveyFormsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$NavigatorsDatabase,
+      $SurveyFormsTable,
+      SurveyForm,
+      $$SurveyFormsTableFilterComposer,
+      $$SurveyFormsTableOrderingComposer,
+      $$SurveyFormsTableAnnotationComposer,
+      $$SurveyFormsTableCreateCompanionBuilder,
+      $$SurveyFormsTableUpdateCompanionBuilder,
+      (
+        SurveyForm,
+        BaseReferences<_$NavigatorsDatabase, $SurveyFormsTable, SurveyForm>,
+      ),
+      SurveyForm,
+      PrefetchHooks Function()
+    >;
+typedef $$SurveyResponsesTableCreateCompanionBuilder =
+    SurveyResponsesCompanion Function({
+      required String id,
+      required String formId,
+      required int formVersion,
+      required String voterId,
+      required String userId,
+      required String turfId,
+      Value<String?> contactLogId,
+      required String responsesJson,
+      required DateTime createdAt,
+      Value<DateTime?> syncedAt,
+      Value<int> rowid,
+    });
+typedef $$SurveyResponsesTableUpdateCompanionBuilder =
+    SurveyResponsesCompanion Function({
+      Value<String> id,
+      Value<String> formId,
+      Value<int> formVersion,
+      Value<String> voterId,
+      Value<String> userId,
+      Value<String> turfId,
+      Value<String?> contactLogId,
+      Value<String> responsesJson,
+      Value<DateTime> createdAt,
+      Value<DateTime?> syncedAt,
+      Value<int> rowid,
+    });
+
+class $$SurveyResponsesTableFilterComposer
+    extends Composer<_$NavigatorsDatabase, $SurveyResponsesTable> {
+  $$SurveyResponsesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get formId => $composableBuilder(
+    column: $table.formId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get formVersion => $composableBuilder(
+    column: $table.formVersion,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get voterId => $composableBuilder(
+    column: $table.voterId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get turfId => $composableBuilder(
+    column: $table.turfId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contactLogId => $composableBuilder(
+    column: $table.contactLogId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get responsesJson => $composableBuilder(
+    column: $table.responsesJson,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get syncedAt => $composableBuilder(
+    column: $table.syncedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$SurveyResponsesTableOrderingComposer
+    extends Composer<_$NavigatorsDatabase, $SurveyResponsesTable> {
+  $$SurveyResponsesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get formId => $composableBuilder(
+    column: $table.formId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get formVersion => $composableBuilder(
+    column: $table.formVersion,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get voterId => $composableBuilder(
+    column: $table.voterId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get turfId => $composableBuilder(
+    column: $table.turfId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get contactLogId => $composableBuilder(
+    column: $table.contactLogId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get responsesJson => $composableBuilder(
+    column: $table.responsesJson,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get syncedAt => $composableBuilder(
+    column: $table.syncedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$SurveyResponsesTableAnnotationComposer
+    extends Composer<_$NavigatorsDatabase, $SurveyResponsesTable> {
+  $$SurveyResponsesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get formId =>
+      $composableBuilder(column: $table.formId, builder: (column) => column);
+
+  GeneratedColumn<int> get formVersion => $composableBuilder(
+    column: $table.formVersion,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get voterId =>
+      $composableBuilder(column: $table.voterId, builder: (column) => column);
+
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<String> get turfId =>
+      $composableBuilder(column: $table.turfId, builder: (column) => column);
+
+  GeneratedColumn<String> get contactLogId => $composableBuilder(
+    column: $table.contactLogId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get responsesJson => $composableBuilder(
+    column: $table.responsesJson,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get syncedAt =>
+      $composableBuilder(column: $table.syncedAt, builder: (column) => column);
+}
+
+class $$SurveyResponsesTableTableManager
+    extends
+        RootTableManager<
+          _$NavigatorsDatabase,
+          $SurveyResponsesTable,
+          SurveyResponse,
+          $$SurveyResponsesTableFilterComposer,
+          $$SurveyResponsesTableOrderingComposer,
+          $$SurveyResponsesTableAnnotationComposer,
+          $$SurveyResponsesTableCreateCompanionBuilder,
+          $$SurveyResponsesTableUpdateCompanionBuilder,
+          (
+            SurveyResponse,
+            BaseReferences<
+              _$NavigatorsDatabase,
+              $SurveyResponsesTable,
+              SurveyResponse
+            >,
+          ),
+          SurveyResponse,
+          PrefetchHooks Function()
+        > {
+  $$SurveyResponsesTableTableManager(
+    _$NavigatorsDatabase db,
+    $SurveyResponsesTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$SurveyResponsesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$SurveyResponsesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$SurveyResponsesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> formId = const Value.absent(),
+                Value<int> formVersion = const Value.absent(),
+                Value<String> voterId = const Value.absent(),
+                Value<String> userId = const Value.absent(),
+                Value<String> turfId = const Value.absent(),
+                Value<String?> contactLogId = const Value.absent(),
+                Value<String> responsesJson = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime?> syncedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SurveyResponsesCompanion(
+                id: id,
+                formId: formId,
+                formVersion: formVersion,
+                voterId: voterId,
+                userId: userId,
+                turfId: turfId,
+                contactLogId: contactLogId,
+                responsesJson: responsesJson,
+                createdAt: createdAt,
+                syncedAt: syncedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String formId,
+                required int formVersion,
+                required String voterId,
+                required String userId,
+                required String turfId,
+                Value<String?> contactLogId = const Value.absent(),
+                required String responsesJson,
+                required DateTime createdAt,
+                Value<DateTime?> syncedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => SurveyResponsesCompanion.insert(
+                id: id,
+                formId: formId,
+                formVersion: formVersion,
+                voterId: voterId,
+                userId: userId,
+                turfId: turfId,
+                contactLogId: contactLogId,
+                responsesJson: responsesJson,
+                createdAt: createdAt,
+                syncedAt: syncedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$SurveyResponsesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$NavigatorsDatabase,
+      $SurveyResponsesTable,
+      SurveyResponse,
+      $$SurveyResponsesTableFilterComposer,
+      $$SurveyResponsesTableOrderingComposer,
+      $$SurveyResponsesTableAnnotationComposer,
+      $$SurveyResponsesTableCreateCompanionBuilder,
+      $$SurveyResponsesTableUpdateCompanionBuilder,
+      (
+        SurveyResponse,
+        BaseReferences<
+          _$NavigatorsDatabase,
+          $SurveyResponsesTable,
+          SurveyResponse
+        >,
+      ),
+      SurveyResponse,
+      PrefetchHooks Function()
+    >;
+typedef $$VoterNotesTableCreateCompanionBuilder =
+    VoterNotesCompanion Function({
+      required String id,
+      required String voterId,
+      required String userId,
+      required String turfId,
+      required String content,
+      Value<String> visibility,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<DateTime?> syncedAt,
+      Value<int> rowid,
+    });
+typedef $$VoterNotesTableUpdateCompanionBuilder =
+    VoterNotesCompanion Function({
+      Value<String> id,
+      Value<String> voterId,
+      Value<String> userId,
+      Value<String> turfId,
+      Value<String> content,
+      Value<String> visibility,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> syncedAt,
+      Value<int> rowid,
+    });
+
+class $$VoterNotesTableFilterComposer
+    extends Composer<_$NavigatorsDatabase, $VoterNotesTable> {
+  $$VoterNotesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get voterId => $composableBuilder(
+    column: $table.voterId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get turfId => $composableBuilder(
+    column: $table.turfId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get visibility => $composableBuilder(
+    column: $table.visibility,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get syncedAt => $composableBuilder(
+    column: $table.syncedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$VoterNotesTableOrderingComposer
+    extends Composer<_$NavigatorsDatabase, $VoterNotesTable> {
+  $$VoterNotesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get voterId => $composableBuilder(
+    column: $table.voterId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get turfId => $composableBuilder(
+    column: $table.turfId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get visibility => $composableBuilder(
+    column: $table.visibility,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get syncedAt => $composableBuilder(
+    column: $table.syncedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$VoterNotesTableAnnotationComposer
+    extends Composer<_$NavigatorsDatabase, $VoterNotesTable> {
+  $$VoterNotesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get voterId =>
+      $composableBuilder(column: $table.voterId, builder: (column) => column);
+
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<String> get turfId =>
+      $composableBuilder(column: $table.turfId, builder: (column) => column);
+
+  GeneratedColumn<String> get content =>
+      $composableBuilder(column: $table.content, builder: (column) => column);
+
+  GeneratedColumn<String> get visibility => $composableBuilder(
+    column: $table.visibility,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get syncedAt =>
+      $composableBuilder(column: $table.syncedAt, builder: (column) => column);
+}
+
+class $$VoterNotesTableTableManager
+    extends
+        RootTableManager<
+          _$NavigatorsDatabase,
+          $VoterNotesTable,
+          VoterNote,
+          $$VoterNotesTableFilterComposer,
+          $$VoterNotesTableOrderingComposer,
+          $$VoterNotesTableAnnotationComposer,
+          $$VoterNotesTableCreateCompanionBuilder,
+          $$VoterNotesTableUpdateCompanionBuilder,
+          (
+            VoterNote,
+            BaseReferences<_$NavigatorsDatabase, $VoterNotesTable, VoterNote>,
+          ),
+          VoterNote,
+          PrefetchHooks Function()
+        > {
+  $$VoterNotesTableTableManager(_$NavigatorsDatabase db, $VoterNotesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$VoterNotesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$VoterNotesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$VoterNotesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> voterId = const Value.absent(),
+                Value<String> userId = const Value.absent(),
+                Value<String> turfId = const Value.absent(),
+                Value<String> content = const Value.absent(),
+                Value<String> visibility = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> syncedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VoterNotesCompanion(
+                id: id,
+                voterId: voterId,
+                userId: userId,
+                turfId: turfId,
+                content: content,
+                visibility: visibility,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                syncedAt: syncedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String voterId,
+                required String userId,
+                required String turfId,
+                required String content,
+                Value<String> visibility = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> syncedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => VoterNotesCompanion.insert(
+                id: id,
+                voterId: voterId,
+                userId: userId,
+                turfId: turfId,
+                content: content,
+                visibility: visibility,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                syncedAt: syncedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$VoterNotesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$NavigatorsDatabase,
+      $VoterNotesTable,
+      VoterNote,
+      $$VoterNotesTableFilterComposer,
+      $$VoterNotesTableOrderingComposer,
+      $$VoterNotesTableAnnotationComposer,
+      $$VoterNotesTableCreateCompanionBuilder,
+      $$VoterNotesTableUpdateCompanionBuilder,
+      (
+        VoterNote,
+        BaseReferences<_$NavigatorsDatabase, $VoterNotesTable, VoterNote>,
+      ),
+      VoterNote,
+      PrefetchHooks Function()
+    >;
 
 class $NavigatorsDatabaseManager {
   final _$NavigatorsDatabase _db;
@@ -4256,4 +7008,10 @@ class $NavigatorsDatabaseManager {
       $$SyncCursorsTableTableManager(_db, _db.syncCursors);
   $$TurfAssignmentsTableTableManager get turfAssignments =>
       $$TurfAssignmentsTableTableManager(_db, _db.turfAssignments);
+  $$SurveyFormsTableTableManager get surveyForms =>
+      $$SurveyFormsTableTableManager(_db, _db.surveyForms);
+  $$SurveyResponsesTableTableManager get surveyResponses =>
+      $$SurveyResponsesTableTableManager(_db, _db.surveyResponses);
+  $$VoterNotesTableTableManager get voterNotes =>
+      $$VoterNotesTableTableManager(_db, _db.voterNotes);
 }

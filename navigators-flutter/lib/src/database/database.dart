@@ -8,9 +8,14 @@ import 'tables/contact_logs.dart';
 import 'tables/sync_operations.dart';
 import 'tables/sync_cursors.dart';
 import 'tables/turf_assignments.dart';
+import 'tables/survey_forms.dart';
+import 'tables/survey_responses.dart';
+import 'tables/voter_notes.dart';
 import 'daos/voter_dao.dart';
 import 'daos/sync_dao.dart';
 import 'daos/contact_log_dao.dart';
+import 'daos/survey_dao.dart';
+import 'daos/voter_note_dao.dart';
 
 part 'database.g.dart';
 
@@ -21,18 +26,23 @@ part 'database.g.dart';
     SyncOperations,
     SyncCursors,
     TurfAssignments,
+    SurveyForms,
+    SurveyResponses,
+    VoterNotes,
   ],
   daos: [
     VoterDao,
     SyncDao,
     ContactLogDao,
+    SurveyDao,
+    VoterNoteDao,
   ],
 )
 class NavigatorsDatabase extends _$NavigatorsDatabase {
   NavigatorsDatabase(super.e);
 
   @override
-  int get schemaVersion => 1;
+  int get schemaVersion => 2;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -40,7 +50,13 @@ class NavigatorsDatabase extends _$NavigatorsDatabase {
           await m.createAll();
         },
         onUpgrade: (m, from, to) async {
-          // Step-by-step migrations will go here as schema evolves
+          if (from < 2) {
+            await m.createTable(surveyForms);
+            await m.createTable(surveyResponses);
+            await m.createTable(voterNotes);
+            await m.addColumn(contactLogs, contactLogs.doorStatus);
+            await m.addColumn(contactLogs, contactLogs.sentiment);
+          }
         },
         beforeOpen: (details) async {
           // Enable WAL mode for better concurrent read/write performance

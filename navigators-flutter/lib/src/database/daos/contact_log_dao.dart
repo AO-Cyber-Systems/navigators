@@ -39,6 +39,8 @@ class ContactLogDao extends DatabaseAccessor<NavigatorsDatabase>
         'contact_type': log.contactType.value,
         'outcome': log.outcome.value,
         'notes': log.notes.value,
+        'door_status': log.doorStatus.value,
+        'sentiment': log.sentiment.value,
         'created_at': log.createdAt.value.toIso8601String(),
       },
     );
@@ -50,6 +52,27 @@ class ContactLogDao extends DatabaseAccessor<NavigatorsDatabase>
           ..where((t) => t.voterId.equals(voterId))
           ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
         .watch();
+  }
+
+  /// Watch door knock contact logs for a voter, newest first.
+  Stream<List<ContactLog>> watchDoorKnockHistoryForVoter(String voterId) {
+    return (select(contactLogs)
+          ..where((t) =>
+              t.voterId.equals(voterId) &
+              t.contactType.equals('door_knock'))
+          ..orderBy([(t) => OrderingTerm.desc(t.createdAt)]))
+        .watch();
+  }
+
+  /// Get count of door knock type logs for a voter.
+  Future<int> getDoorKnockCountForVoter(String voterId) async {
+    final count = contactLogs.id.count();
+    final query = selectOnly(contactLogs)
+      ..addColumns([count])
+      ..where(contactLogs.voterId.equals(voterId) &
+          contactLogs.contactType.equals('door_knock'));
+    final result = await query.getSingle();
+    return result.read(count) ?? 0;
   }
 
   /// Get all contact logs that have not been synced to server.
