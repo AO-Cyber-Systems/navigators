@@ -54,6 +54,21 @@ const (
 	VoterServiceSearchVotersProcedure = "/navigators.v1.VoterService/SearchVoters"
 	// VoterServiceListVotersProcedure is the fully-qualified name of the VoterService's ListVoters RPC.
 	VoterServiceListVotersProcedure = "/navigators.v1.VoterService/ListVoters"
+	// VoterServiceCreateTagProcedure is the fully-qualified name of the VoterService's CreateTag RPC.
+	VoterServiceCreateTagProcedure = "/navigators.v1.VoterService/CreateTag"
+	// VoterServiceListTagsProcedure is the fully-qualified name of the VoterService's ListTags RPC.
+	VoterServiceListTagsProcedure = "/navigators.v1.VoterService/ListTags"
+	// VoterServiceDeleteTagProcedure is the fully-qualified name of the VoterService's DeleteTag RPC.
+	VoterServiceDeleteTagProcedure = "/navigators.v1.VoterService/DeleteTag"
+	// VoterServiceAssignTagToVoterProcedure is the fully-qualified name of the VoterService's
+	// AssignTagToVoter RPC.
+	VoterServiceAssignTagToVoterProcedure = "/navigators.v1.VoterService/AssignTagToVoter"
+	// VoterServiceRemoveTagFromVoterProcedure is the fully-qualified name of the VoterService's
+	// RemoveTagFromVoter RPC.
+	VoterServiceRemoveTagFromVoterProcedure = "/navigators.v1.VoterService/RemoveTagFromVoter"
+	// VoterServiceGetVoterTagsProcedure is the fully-qualified name of the VoterService's GetVoterTags
+	// RPC.
+	VoterServiceGetVoterTagsProcedure = "/navigators.v1.VoterService/GetVoterTags"
 )
 
 // VoterImportServiceClient is a client for the navigators.v1.VoterImportService service.
@@ -220,6 +235,18 @@ type VoterServiceClient interface {
 	SearchVoters(context.Context, *connect.Request[v1.SearchVotersRequest]) (*connect.Response[v1.SearchVotersResponse], error)
 	// ListVoters returns a filtered, paginated list of voters.
 	ListVoters(context.Context, *connect.Request[v1.ListVotersRequest]) (*connect.Response[v1.ListVotersResponse], error)
+	// CreateTag creates a new voter tag.
+	CreateTag(context.Context, *connect.Request[v1.CreateTagRequest]) (*connect.Response[v1.CreateTagResponse], error)
+	// ListTags returns all tags for the company.
+	ListTags(context.Context, *connect.Request[v1.ListTagsRequest]) (*connect.Response[v1.ListTagsResponse], error)
+	// DeleteTag removes a voter tag.
+	DeleteTag(context.Context, *connect.Request[v1.DeleteTagRequest]) (*connect.Response[v1.DeleteTagResponse], error)
+	// AssignTagToVoter assigns a tag to a voter.
+	AssignTagToVoter(context.Context, *connect.Request[v1.AssignTagToVoterRequest]) (*connect.Response[v1.AssignTagToVoterResponse], error)
+	// RemoveTagFromVoter removes a tag from a voter.
+	RemoveTagFromVoter(context.Context, *connect.Request[v1.RemoveTagFromVoterRequest]) (*connect.Response[v1.RemoveTagFromVoterResponse], error)
+	// GetVoterTags returns all tags assigned to a voter.
+	GetVoterTags(context.Context, *connect.Request[v1.GetVoterTagsRequest]) (*connect.Response[v1.GetVoterTagsResponse], error)
 }
 
 // NewVoterServiceClient constructs a client for the navigators.v1.VoterService service. By default,
@@ -251,14 +278,56 @@ func NewVoterServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 			connect.WithSchema(voterServiceMethods.ByName("ListVoters")),
 			connect.WithClientOptions(opts...),
 		),
+		createTag: connect.NewClient[v1.CreateTagRequest, v1.CreateTagResponse](
+			httpClient,
+			baseURL+VoterServiceCreateTagProcedure,
+			connect.WithSchema(voterServiceMethods.ByName("CreateTag")),
+			connect.WithClientOptions(opts...),
+		),
+		listTags: connect.NewClient[v1.ListTagsRequest, v1.ListTagsResponse](
+			httpClient,
+			baseURL+VoterServiceListTagsProcedure,
+			connect.WithSchema(voterServiceMethods.ByName("ListTags")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteTag: connect.NewClient[v1.DeleteTagRequest, v1.DeleteTagResponse](
+			httpClient,
+			baseURL+VoterServiceDeleteTagProcedure,
+			connect.WithSchema(voterServiceMethods.ByName("DeleteTag")),
+			connect.WithClientOptions(opts...),
+		),
+		assignTagToVoter: connect.NewClient[v1.AssignTagToVoterRequest, v1.AssignTagToVoterResponse](
+			httpClient,
+			baseURL+VoterServiceAssignTagToVoterProcedure,
+			connect.WithSchema(voterServiceMethods.ByName("AssignTagToVoter")),
+			connect.WithClientOptions(opts...),
+		),
+		removeTagFromVoter: connect.NewClient[v1.RemoveTagFromVoterRequest, v1.RemoveTagFromVoterResponse](
+			httpClient,
+			baseURL+VoterServiceRemoveTagFromVoterProcedure,
+			connect.WithSchema(voterServiceMethods.ByName("RemoveTagFromVoter")),
+			connect.WithClientOptions(opts...),
+		),
+		getVoterTags: connect.NewClient[v1.GetVoterTagsRequest, v1.GetVoterTagsResponse](
+			httpClient,
+			baseURL+VoterServiceGetVoterTagsProcedure,
+			connect.WithSchema(voterServiceMethods.ByName("GetVoterTags")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // voterServiceClient implements VoterServiceClient.
 type voterServiceClient struct {
-	getVoter     *connect.Client[v1.GetVoterRequest, v1.GetVoterResponse]
-	searchVoters *connect.Client[v1.SearchVotersRequest, v1.SearchVotersResponse]
-	listVoters   *connect.Client[v1.ListVotersRequest, v1.ListVotersResponse]
+	getVoter           *connect.Client[v1.GetVoterRequest, v1.GetVoterResponse]
+	searchVoters       *connect.Client[v1.SearchVotersRequest, v1.SearchVotersResponse]
+	listVoters         *connect.Client[v1.ListVotersRequest, v1.ListVotersResponse]
+	createTag          *connect.Client[v1.CreateTagRequest, v1.CreateTagResponse]
+	listTags           *connect.Client[v1.ListTagsRequest, v1.ListTagsResponse]
+	deleteTag          *connect.Client[v1.DeleteTagRequest, v1.DeleteTagResponse]
+	assignTagToVoter   *connect.Client[v1.AssignTagToVoterRequest, v1.AssignTagToVoterResponse]
+	removeTagFromVoter *connect.Client[v1.RemoveTagFromVoterRequest, v1.RemoveTagFromVoterResponse]
+	getVoterTags       *connect.Client[v1.GetVoterTagsRequest, v1.GetVoterTagsResponse]
 }
 
 // GetVoter calls navigators.v1.VoterService.GetVoter.
@@ -276,6 +345,36 @@ func (c *voterServiceClient) ListVoters(ctx context.Context, req *connect.Reques
 	return c.listVoters.CallUnary(ctx, req)
 }
 
+// CreateTag calls navigators.v1.VoterService.CreateTag.
+func (c *voterServiceClient) CreateTag(ctx context.Context, req *connect.Request[v1.CreateTagRequest]) (*connect.Response[v1.CreateTagResponse], error) {
+	return c.createTag.CallUnary(ctx, req)
+}
+
+// ListTags calls navigators.v1.VoterService.ListTags.
+func (c *voterServiceClient) ListTags(ctx context.Context, req *connect.Request[v1.ListTagsRequest]) (*connect.Response[v1.ListTagsResponse], error) {
+	return c.listTags.CallUnary(ctx, req)
+}
+
+// DeleteTag calls navigators.v1.VoterService.DeleteTag.
+func (c *voterServiceClient) DeleteTag(ctx context.Context, req *connect.Request[v1.DeleteTagRequest]) (*connect.Response[v1.DeleteTagResponse], error) {
+	return c.deleteTag.CallUnary(ctx, req)
+}
+
+// AssignTagToVoter calls navigators.v1.VoterService.AssignTagToVoter.
+func (c *voterServiceClient) AssignTagToVoter(ctx context.Context, req *connect.Request[v1.AssignTagToVoterRequest]) (*connect.Response[v1.AssignTagToVoterResponse], error) {
+	return c.assignTagToVoter.CallUnary(ctx, req)
+}
+
+// RemoveTagFromVoter calls navigators.v1.VoterService.RemoveTagFromVoter.
+func (c *voterServiceClient) RemoveTagFromVoter(ctx context.Context, req *connect.Request[v1.RemoveTagFromVoterRequest]) (*connect.Response[v1.RemoveTagFromVoterResponse], error) {
+	return c.removeTagFromVoter.CallUnary(ctx, req)
+}
+
+// GetVoterTags calls navigators.v1.VoterService.GetVoterTags.
+func (c *voterServiceClient) GetVoterTags(ctx context.Context, req *connect.Request[v1.GetVoterTagsRequest]) (*connect.Response[v1.GetVoterTagsResponse], error) {
+	return c.getVoterTags.CallUnary(ctx, req)
+}
+
 // VoterServiceHandler is an implementation of the navigators.v1.VoterService service.
 type VoterServiceHandler interface {
 	// GetVoter returns a single voter by ID.
@@ -284,6 +383,18 @@ type VoterServiceHandler interface {
 	SearchVoters(context.Context, *connect.Request[v1.SearchVotersRequest]) (*connect.Response[v1.SearchVotersResponse], error)
 	// ListVoters returns a filtered, paginated list of voters.
 	ListVoters(context.Context, *connect.Request[v1.ListVotersRequest]) (*connect.Response[v1.ListVotersResponse], error)
+	// CreateTag creates a new voter tag.
+	CreateTag(context.Context, *connect.Request[v1.CreateTagRequest]) (*connect.Response[v1.CreateTagResponse], error)
+	// ListTags returns all tags for the company.
+	ListTags(context.Context, *connect.Request[v1.ListTagsRequest]) (*connect.Response[v1.ListTagsResponse], error)
+	// DeleteTag removes a voter tag.
+	DeleteTag(context.Context, *connect.Request[v1.DeleteTagRequest]) (*connect.Response[v1.DeleteTagResponse], error)
+	// AssignTagToVoter assigns a tag to a voter.
+	AssignTagToVoter(context.Context, *connect.Request[v1.AssignTagToVoterRequest]) (*connect.Response[v1.AssignTagToVoterResponse], error)
+	// RemoveTagFromVoter removes a tag from a voter.
+	RemoveTagFromVoter(context.Context, *connect.Request[v1.RemoveTagFromVoterRequest]) (*connect.Response[v1.RemoveTagFromVoterResponse], error)
+	// GetVoterTags returns all tags assigned to a voter.
+	GetVoterTags(context.Context, *connect.Request[v1.GetVoterTagsRequest]) (*connect.Response[v1.GetVoterTagsResponse], error)
 }
 
 // NewVoterServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -311,6 +422,42 @@ func NewVoterServiceHandler(svc VoterServiceHandler, opts ...connect.HandlerOpti
 		connect.WithSchema(voterServiceMethods.ByName("ListVoters")),
 		connect.WithHandlerOptions(opts...),
 	)
+	voterServiceCreateTagHandler := connect.NewUnaryHandler(
+		VoterServiceCreateTagProcedure,
+		svc.CreateTag,
+		connect.WithSchema(voterServiceMethods.ByName("CreateTag")),
+		connect.WithHandlerOptions(opts...),
+	)
+	voterServiceListTagsHandler := connect.NewUnaryHandler(
+		VoterServiceListTagsProcedure,
+		svc.ListTags,
+		connect.WithSchema(voterServiceMethods.ByName("ListTags")),
+		connect.WithHandlerOptions(opts...),
+	)
+	voterServiceDeleteTagHandler := connect.NewUnaryHandler(
+		VoterServiceDeleteTagProcedure,
+		svc.DeleteTag,
+		connect.WithSchema(voterServiceMethods.ByName("DeleteTag")),
+		connect.WithHandlerOptions(opts...),
+	)
+	voterServiceAssignTagToVoterHandler := connect.NewUnaryHandler(
+		VoterServiceAssignTagToVoterProcedure,
+		svc.AssignTagToVoter,
+		connect.WithSchema(voterServiceMethods.ByName("AssignTagToVoter")),
+		connect.WithHandlerOptions(opts...),
+	)
+	voterServiceRemoveTagFromVoterHandler := connect.NewUnaryHandler(
+		VoterServiceRemoveTagFromVoterProcedure,
+		svc.RemoveTagFromVoter,
+		connect.WithSchema(voterServiceMethods.ByName("RemoveTagFromVoter")),
+		connect.WithHandlerOptions(opts...),
+	)
+	voterServiceGetVoterTagsHandler := connect.NewUnaryHandler(
+		VoterServiceGetVoterTagsProcedure,
+		svc.GetVoterTags,
+		connect.WithSchema(voterServiceMethods.ByName("GetVoterTags")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/navigators.v1.VoterService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case VoterServiceGetVoterProcedure:
@@ -319,6 +466,18 @@ func NewVoterServiceHandler(svc VoterServiceHandler, opts ...connect.HandlerOpti
 			voterServiceSearchVotersHandler.ServeHTTP(w, r)
 		case VoterServiceListVotersProcedure:
 			voterServiceListVotersHandler.ServeHTTP(w, r)
+		case VoterServiceCreateTagProcedure:
+			voterServiceCreateTagHandler.ServeHTTP(w, r)
+		case VoterServiceListTagsProcedure:
+			voterServiceListTagsHandler.ServeHTTP(w, r)
+		case VoterServiceDeleteTagProcedure:
+			voterServiceDeleteTagHandler.ServeHTTP(w, r)
+		case VoterServiceAssignTagToVoterProcedure:
+			voterServiceAssignTagToVoterHandler.ServeHTTP(w, r)
+		case VoterServiceRemoveTagFromVoterProcedure:
+			voterServiceRemoveTagFromVoterHandler.ServeHTTP(w, r)
+		case VoterServiceGetVoterTagsProcedure:
+			voterServiceGetVoterTagsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -338,4 +497,28 @@ func (UnimplementedVoterServiceHandler) SearchVoters(context.Context, *connect.R
 
 func (UnimplementedVoterServiceHandler) ListVoters(context.Context, *connect.Request[v1.ListVotersRequest]) (*connect.Response[v1.ListVotersResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.VoterService.ListVoters is not implemented"))
+}
+
+func (UnimplementedVoterServiceHandler) CreateTag(context.Context, *connect.Request[v1.CreateTagRequest]) (*connect.Response[v1.CreateTagResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.VoterService.CreateTag is not implemented"))
+}
+
+func (UnimplementedVoterServiceHandler) ListTags(context.Context, *connect.Request[v1.ListTagsRequest]) (*connect.Response[v1.ListTagsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.VoterService.ListTags is not implemented"))
+}
+
+func (UnimplementedVoterServiceHandler) DeleteTag(context.Context, *connect.Request[v1.DeleteTagRequest]) (*connect.Response[v1.DeleteTagResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.VoterService.DeleteTag is not implemented"))
+}
+
+func (UnimplementedVoterServiceHandler) AssignTagToVoter(context.Context, *connect.Request[v1.AssignTagToVoterRequest]) (*connect.Response[v1.AssignTagToVoterResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.VoterService.AssignTagToVoter is not implemented"))
+}
+
+func (UnimplementedVoterServiceHandler) RemoveTagFromVoter(context.Context, *connect.Request[v1.RemoveTagFromVoterRequest]) (*connect.Response[v1.RemoveTagFromVoterResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.VoterService.RemoveTagFromVoter is not implemented"))
+}
+
+func (UnimplementedVoterServiceHandler) GetVoterTags(context.Context, *connect.Request[v1.GetVoterTagsRequest]) (*connect.Response[v1.GetVoterTagsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.VoterService.GetVoterTags is not implemented"))
 }

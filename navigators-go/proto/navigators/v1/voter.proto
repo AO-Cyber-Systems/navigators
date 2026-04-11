@@ -19,7 +19,7 @@ service VoterImportService {
   rpc ListImportJobs(ListImportJobsRequest) returns (ListImportJobsResponse);
 }
 
-// VoterService handles voter data queries (handlers built in TRD 02-02).
+// VoterService handles voter data queries and tag management.
 service VoterService {
   // GetVoter returns a single voter by ID.
   rpc GetVoter(GetVoterRequest) returns (GetVoterResponse);
@@ -29,6 +29,24 @@ service VoterService {
 
   // ListVoters returns a filtered, paginated list of voters.
   rpc ListVoters(ListVotersRequest) returns (ListVotersResponse);
+
+  // CreateTag creates a new voter tag.
+  rpc CreateTag(CreateTagRequest) returns (CreateTagResponse);
+
+  // ListTags returns all tags for the company.
+  rpc ListTags(ListTagsRequest) returns (ListTagsResponse);
+
+  // DeleteTag removes a voter tag.
+  rpc DeleteTag(DeleteTagRequest) returns (DeleteTagResponse);
+
+  // AssignTagToVoter assigns a tag to a voter.
+  rpc AssignTagToVoter(AssignTagToVoterRequest) returns (AssignTagToVoterResponse);
+
+  // RemoveTagFromVoter removes a tag from a voter.
+  rpc RemoveTagFromVoter(RemoveTagFromVoterRequest) returns (RemoveTagFromVoterResponse);
+
+  // GetVoterTags returns all tags assigned to a voter.
+  rpc GetVoterTags(GetVoterTagsRequest) returns (GetVoterTagsResponse);
 }
 
 // --- Import Messages ---
@@ -191,4 +209,57 @@ message VoterSummary {
   string res_zip = 7;
   string municipality = 8;
   int32 year_of_birth = 9;
+}
+
+// --- Tag Messages ---
+
+message VoterTag {
+  string id = 1;
+  string name = 2;
+  string color = 3;
+  string created_by = 4;
+  string created_at = 5;
+}
+
+message CreateTagRequest {
+  string name = 1;
+  string color = 2;
+}
+
+message CreateTagResponse {
+  VoterTag tag = 1;
+}
+
+message ListTagsRequest {}
+
+message ListTagsResponse {
+  repeated VoterTag tags = 1;
+}
+
+message DeleteTagRequest {
+  string tag_id = 1;
+}
+
+message DeleteTagResponse {}
+
+message AssignTagToVoterRequest {
+  string voter_id = 1;
+  string tag_id = 2;
+}
+
+message AssignTagToVoterResponse {}
+
+message RemoveTagFromVoterRequest {
+  string voter_id = 1;
+  string tag_id = 2;
+}
+
+message RemoveTagFromVoterResponse {}
+
+message GetVoterTagsRequest {
+  string voter_id = 1;
+}
+
+message GetVoterTagsResponse {
+  repeated VoterTag tags = 1;
 }

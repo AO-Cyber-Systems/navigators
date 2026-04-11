@@ -1408,6 +1408,602 @@ func (x *VoterSummary) GetYearOfBirth() int32 {
 	return 0
 }
 
+type VoterTag struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Color         string                 `protobuf:"bytes,3,opt,name=color,proto3" json:"color,omitempty"`
+	CreatedBy     string                 `protobuf:"bytes,4,opt,name=created_by,json=createdBy,proto3" json:"created_by,omitempty"`
+	CreatedAt     string                 `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *VoterTag) Reset() {
+	*x = VoterTag{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VoterTag) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VoterTag) ProtoMessage() {}
+
+func (x *VoterTag) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VoterTag.ProtoReflect.Descriptor instead.
+func (*VoterTag) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *VoterTag) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *VoterTag) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *VoterTag) GetColor() string {
+	if x != nil {
+		return x.Color
+	}
+	return ""
+}
+
+func (x *VoterTag) GetCreatedBy() string {
+	if x != nil {
+		return x.CreatedBy
+	}
+	return ""
+}
+
+func (x *VoterTag) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
+type CreateTagRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Color         string                 `protobuf:"bytes,2,opt,name=color,proto3" json:"color,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateTagRequest) Reset() {
+	*x = CreateTagRequest{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateTagRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateTagRequest) ProtoMessage() {}
+
+func (x *CreateTagRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateTagRequest.ProtoReflect.Descriptor instead.
+func (*CreateTagRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *CreateTagRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CreateTagRequest) GetColor() string {
+	if x != nil {
+		return x.Color
+	}
+	return ""
+}
+
+type CreateTagResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Tag           *VoterTag              `protobuf:"bytes,1,opt,name=tag,proto3" json:"tag,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateTagResponse) Reset() {
+	*x = CreateTagResponse{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateTagResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateTagResponse) ProtoMessage() {}
+
+func (x *CreateTagResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateTagResponse.ProtoReflect.Descriptor instead.
+func (*CreateTagResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *CreateTagResponse) GetTag() *VoterTag {
+	if x != nil {
+		return x.Tag
+	}
+	return nil
+}
+
+type ListTagsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListTagsRequest) Reset() {
+	*x = ListTagsRequest{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListTagsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListTagsRequest) ProtoMessage() {}
+
+func (x *ListTagsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListTagsRequest.ProtoReflect.Descriptor instead.
+func (*ListTagsRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{21}
+}
+
+type ListTagsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Tags          []*VoterTag            `protobuf:"bytes,1,rep,name=tags,proto3" json:"tags,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListTagsResponse) Reset() {
+	*x = ListTagsResponse{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListTagsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListTagsResponse) ProtoMessage() {}
+
+func (x *ListTagsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListTagsResponse.ProtoReflect.Descriptor instead.
+func (*ListTagsResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *ListTagsResponse) GetTags() []*VoterTag {
+	if x != nil {
+		return x.Tags
+	}
+	return nil
+}
+
+type DeleteTagRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TagId         string                 `protobuf:"bytes,1,opt,name=tag_id,json=tagId,proto3" json:"tag_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteTagRequest) Reset() {
+	*x = DeleteTagRequest{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteTagRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteTagRequest) ProtoMessage() {}
+
+func (x *DeleteTagRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteTagRequest.ProtoReflect.Descriptor instead.
+func (*DeleteTagRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *DeleteTagRequest) GetTagId() string {
+	if x != nil {
+		return x.TagId
+	}
+	return ""
+}
+
+type DeleteTagResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteTagResponse) Reset() {
+	*x = DeleteTagResponse{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteTagResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteTagResponse) ProtoMessage() {}
+
+func (x *DeleteTagResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteTagResponse.ProtoReflect.Descriptor instead.
+func (*DeleteTagResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{24}
+}
+
+type AssignTagToVoterRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VoterId       string                 `protobuf:"bytes,1,opt,name=voter_id,json=voterId,proto3" json:"voter_id,omitempty"`
+	TagId         string                 `protobuf:"bytes,2,opt,name=tag_id,json=tagId,proto3" json:"tag_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AssignTagToVoterRequest) Reset() {
+	*x = AssignTagToVoterRequest{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AssignTagToVoterRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AssignTagToVoterRequest) ProtoMessage() {}
+
+func (x *AssignTagToVoterRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AssignTagToVoterRequest.ProtoReflect.Descriptor instead.
+func (*AssignTagToVoterRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *AssignTagToVoterRequest) GetVoterId() string {
+	if x != nil {
+		return x.VoterId
+	}
+	return ""
+}
+
+func (x *AssignTagToVoterRequest) GetTagId() string {
+	if x != nil {
+		return x.TagId
+	}
+	return ""
+}
+
+type AssignTagToVoterResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AssignTagToVoterResponse) Reset() {
+	*x = AssignTagToVoterResponse{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AssignTagToVoterResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AssignTagToVoterResponse) ProtoMessage() {}
+
+func (x *AssignTagToVoterResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AssignTagToVoterResponse.ProtoReflect.Descriptor instead.
+func (*AssignTagToVoterResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{26}
+}
+
+type RemoveTagFromVoterRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VoterId       string                 `protobuf:"bytes,1,opt,name=voter_id,json=voterId,proto3" json:"voter_id,omitempty"`
+	TagId         string                 `protobuf:"bytes,2,opt,name=tag_id,json=tagId,proto3" json:"tag_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RemoveTagFromVoterRequest) Reset() {
+	*x = RemoveTagFromVoterRequest{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[27]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RemoveTagFromVoterRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoveTagFromVoterRequest) ProtoMessage() {}
+
+func (x *RemoveTagFromVoterRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[27]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoveTagFromVoterRequest.ProtoReflect.Descriptor instead.
+func (*RemoveTagFromVoterRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *RemoveTagFromVoterRequest) GetVoterId() string {
+	if x != nil {
+		return x.VoterId
+	}
+	return ""
+}
+
+func (x *RemoveTagFromVoterRequest) GetTagId() string {
+	if x != nil {
+		return x.TagId
+	}
+	return ""
+}
+
+type RemoveTagFromVoterResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RemoveTagFromVoterResponse) Reset() {
+	*x = RemoveTagFromVoterResponse{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[28]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RemoveTagFromVoterResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoveTagFromVoterResponse) ProtoMessage() {}
+
+func (x *RemoveTagFromVoterResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[28]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoveTagFromVoterResponse.ProtoReflect.Descriptor instead.
+func (*RemoveTagFromVoterResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{28}
+}
+
+type GetVoterTagsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VoterId       string                 `protobuf:"bytes,1,opt,name=voter_id,json=voterId,proto3" json:"voter_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetVoterTagsRequest) Reset() {
+	*x = GetVoterTagsRequest{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[29]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetVoterTagsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetVoterTagsRequest) ProtoMessage() {}
+
+func (x *GetVoterTagsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[29]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetVoterTagsRequest.ProtoReflect.Descriptor instead.
+func (*GetVoterTagsRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{29}
+}
+
+func (x *GetVoterTagsRequest) GetVoterId() string {
+	if x != nil {
+		return x.VoterId
+	}
+	return ""
+}
+
+type GetVoterTagsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Tags          []*VoterTag            `protobuf:"bytes,1,rep,name=tags,proto3" json:"tags,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetVoterTagsResponse) Reset() {
+	*x = GetVoterTagsResponse{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[30]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetVoterTagsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetVoterTagsResponse) ProtoMessage() {}
+
+func (x *GetVoterTagsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[30]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetVoterTagsResponse.ProtoReflect.Descriptor instead.
+func (*GetVoterTagsResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{30}
+}
+
+func (x *GetVoterTagsResponse) GetTags() []*VoterTag {
+	if x != nil {
+		return x.Tags
+	}
+	return nil
+}
+
 var File_navigators_v1_voter_proto protoreflect.FileDescriptor
 
 const file_navigators_v1_voter_proto_rawDesc = "" +
@@ -1543,17 +2139,54 @@ const file_navigators_v1_voter_proto_rawDesc = "" +
 	"\bres_city\x18\x06 \x01(\tR\aresCity\x12\x17\n" +
 	"\ares_zip\x18\a \x01(\tR\x06resZip\x12\"\n" +
 	"\fmunicipality\x18\b \x01(\tR\fmunicipality\x12\"\n" +
-	"\ryear_of_birth\x18\t \x01(\x05R\vyearOfBirth2\x87\x03\n" +
+	"\ryear_of_birth\x18\t \x01(\x05R\vyearOfBirth\"\x82\x01\n" +
+	"\bVoterTag\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x14\n" +
+	"\x05color\x18\x03 \x01(\tR\x05color\x12\x1d\n" +
+	"\n" +
+	"created_by\x18\x04 \x01(\tR\tcreatedBy\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\x05 \x01(\tR\tcreatedAt\"<\n" +
+	"\x10CreateTagRequest\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x14\n" +
+	"\x05color\x18\x02 \x01(\tR\x05color\">\n" +
+	"\x11CreateTagResponse\x12)\n" +
+	"\x03tag\x18\x01 \x01(\v2\x17.navigators.v1.VoterTagR\x03tag\"\x11\n" +
+	"\x0fListTagsRequest\"?\n" +
+	"\x10ListTagsResponse\x12+\n" +
+	"\x04tags\x18\x01 \x03(\v2\x17.navigators.v1.VoterTagR\x04tags\")\n" +
+	"\x10DeleteTagRequest\x12\x15\n" +
+	"\x06tag_id\x18\x01 \x01(\tR\x05tagId\"\x13\n" +
+	"\x11DeleteTagResponse\"K\n" +
+	"\x17AssignTagToVoterRequest\x12\x19\n" +
+	"\bvoter_id\x18\x01 \x01(\tR\avoterId\x12\x15\n" +
+	"\x06tag_id\x18\x02 \x01(\tR\x05tagId\"\x1a\n" +
+	"\x18AssignTagToVoterResponse\"M\n" +
+	"\x19RemoveTagFromVoterRequest\x12\x19\n" +
+	"\bvoter_id\x18\x01 \x01(\tR\avoterId\x12\x15\n" +
+	"\x06tag_id\x18\x02 \x01(\tR\x05tagId\"\x1c\n" +
+	"\x1aRemoveTagFromVoterResponse\"0\n" +
+	"\x13GetVoterTagsRequest\x12\x19\n" +
+	"\bvoter_id\x18\x01 \x01(\tR\avoterId\"C\n" +
+	"\x14GetVoterTagsResponse\x12+\n" +
+	"\x04tags\x18\x01 \x03(\v2\x17.navigators.v1.VoterTagR\x04tags2\x87\x03\n" +
 	"\x12VoterImportService\x12T\n" +
 	"\vStartImport\x12!.navigators.v1.StartImportRequest\x1a\".navigators.v1.StartImportResponse\x12Z\n" +
 	"\rConfirmUpload\x12#.navigators.v1.ConfirmUploadRequest\x1a$.navigators.v1.ConfirmUploadResponse\x12`\n" +
 	"\x0fGetImportStatus\x12%.navigators.v1.GetImportStatusRequest\x1a&.navigators.v1.GetImportStatusResponse\x12]\n" +
-	"\x0eListImportJobs\x12$.navigators.v1.ListImportJobsRequest\x1a%.navigators.v1.ListImportJobsResponse2\x87\x02\n" +
+	"\x0eListImportJobs\x12$.navigators.v1.ListImportJobsRequest\x1a%.navigators.v1.ListImportJobsResponse2\x9d\x06\n" +
 	"\fVoterService\x12K\n" +
 	"\bGetVoter\x12\x1e.navigators.v1.GetVoterRequest\x1a\x1f.navigators.v1.GetVoterResponse\x12W\n" +
 	"\fSearchVoters\x12\".navigators.v1.SearchVotersRequest\x1a#.navigators.v1.SearchVotersResponse\x12Q\n" +
 	"\n" +
-	"ListVoters\x12 .navigators.v1.ListVotersRequest\x1a!.navigators.v1.ListVotersResponseB1Z/navigators-go/gen/go/navigators/v1;navigatorsv1b\x06proto3"
+	"ListVoters\x12 .navigators.v1.ListVotersRequest\x1a!.navigators.v1.ListVotersResponse\x12N\n" +
+	"\tCreateTag\x12\x1f.navigators.v1.CreateTagRequest\x1a .navigators.v1.CreateTagResponse\x12K\n" +
+	"\bListTags\x12\x1e.navigators.v1.ListTagsRequest\x1a\x1f.navigators.v1.ListTagsResponse\x12N\n" +
+	"\tDeleteTag\x12\x1f.navigators.v1.DeleteTagRequest\x1a .navigators.v1.DeleteTagResponse\x12c\n" +
+	"\x10AssignTagToVoter\x12&.navigators.v1.AssignTagToVoterRequest\x1a'.navigators.v1.AssignTagToVoterResponse\x12i\n" +
+	"\x12RemoveTagFromVoter\x12(.navigators.v1.RemoveTagFromVoterRequest\x1a).navigators.v1.RemoveTagFromVoterResponse\x12W\n" +
+	"\fGetVoterTags\x12\".navigators.v1.GetVoterTagsRequest\x1a#.navigators.v1.GetVoterTagsResponseB1Z/navigators-go/gen/go/navigators/v1;navigatorsv1b\x06proto3"
 
 var (
 	file_navigators_v1_voter_proto_rawDescOnce sync.Once
@@ -1567,26 +2200,39 @@ func file_navigators_v1_voter_proto_rawDescGZIP() []byte {
 	return file_navigators_v1_voter_proto_rawDescData
 }
 
-var file_navigators_v1_voter_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
+var file_navigators_v1_voter_proto_msgTypes = make([]protoimpl.MessageInfo, 31)
 var file_navigators_v1_voter_proto_goTypes = []any{
-	(*StartImportRequest)(nil),      // 0: navigators.v1.StartImportRequest
-	(*StartImportResponse)(nil),     // 1: navigators.v1.StartImportResponse
-	(*ConfirmUploadRequest)(nil),    // 2: navigators.v1.ConfirmUploadRequest
-	(*ConfirmUploadResponse)(nil),   // 3: navigators.v1.ConfirmUploadResponse
-	(*GetImportStatusRequest)(nil),  // 4: navigators.v1.GetImportStatusRequest
-	(*GetImportStatusResponse)(nil), // 5: navigators.v1.GetImportStatusResponse
-	(*ListImportJobsRequest)(nil),   // 6: navigators.v1.ListImportJobsRequest
-	(*ListImportJobsResponse)(nil),  // 7: navigators.v1.ListImportJobsResponse
-	(*ImportJob)(nil),               // 8: navigators.v1.ImportJob
-	(*GetVoterRequest)(nil),         // 9: navigators.v1.GetVoterRequest
-	(*GetVoterResponse)(nil),        // 10: navigators.v1.GetVoterResponse
-	(*SearchVotersRequest)(nil),     // 11: navigators.v1.SearchVotersRequest
-	(*SearchVotersResponse)(nil),    // 12: navigators.v1.SearchVotersResponse
-	(*ListVotersRequest)(nil),       // 13: navigators.v1.ListVotersRequest
-	(*ListVotersResponse)(nil),      // 14: navigators.v1.ListVotersResponse
-	(*VoterFilters)(nil),            // 15: navigators.v1.VoterFilters
-	(*Voter)(nil),                   // 16: navigators.v1.Voter
-	(*VoterSummary)(nil),            // 17: navigators.v1.VoterSummary
+	(*StartImportRequest)(nil),         // 0: navigators.v1.StartImportRequest
+	(*StartImportResponse)(nil),        // 1: navigators.v1.StartImportResponse
+	(*ConfirmUploadRequest)(nil),       // 2: navigators.v1.ConfirmUploadRequest
+	(*ConfirmUploadResponse)(nil),      // 3: navigators.v1.ConfirmUploadResponse
+	(*GetImportStatusRequest)(nil),     // 4: navigators.v1.GetImportStatusRequest
+	(*GetImportStatusResponse)(nil),    // 5: navigators.v1.GetImportStatusResponse
+	(*ListImportJobsRequest)(nil),      // 6: navigators.v1.ListImportJobsRequest
+	(*ListImportJobsResponse)(nil),     // 7: navigators.v1.ListImportJobsResponse
+	(*ImportJob)(nil),                  // 8: navigators.v1.ImportJob
+	(*GetVoterRequest)(nil),            // 9: navigators.v1.GetVoterRequest
+	(*GetVoterResponse)(nil),           // 10: navigators.v1.GetVoterResponse
+	(*SearchVotersRequest)(nil),        // 11: navigators.v1.SearchVotersRequest
+	(*SearchVotersResponse)(nil),       // 12: navigators.v1.SearchVotersResponse
+	(*ListVotersRequest)(nil),          // 13: navigators.v1.ListVotersRequest
+	(*ListVotersResponse)(nil),         // 14: navigators.v1.ListVotersResponse
+	(*VoterFilters)(nil),               // 15: navigators.v1.VoterFilters
+	(*Voter)(nil),                      // 16: navigators.v1.Voter
+	(*VoterSummary)(nil),               // 17: navigators.v1.VoterSummary
+	(*VoterTag)(nil),                   // 18: navigators.v1.VoterTag
+	(*CreateTagRequest)(nil),           // 19: navigators.v1.CreateTagRequest
+	(*CreateTagResponse)(nil),          // 20: navigators.v1.CreateTagResponse
+	(*ListTagsRequest)(nil),            // 21: navigators.v1.ListTagsRequest
+	(*ListTagsResponse)(nil),           // 22: navigators.v1.ListTagsResponse
+	(*DeleteTagRequest)(nil),           // 23: navigators.v1.DeleteTagRequest
+	(*DeleteTagResponse)(nil),          // 24: navigators.v1.DeleteTagResponse
+	(*AssignTagToVoterRequest)(nil),    // 25: navigators.v1.AssignTagToVoterRequest
+	(*AssignTagToVoterResponse)(nil),   // 26: navigators.v1.AssignTagToVoterResponse
+	(*RemoveTagFromVoterRequest)(nil),  // 27: navigators.v1.RemoveTagFromVoterRequest
+	(*RemoveTagFromVoterResponse)(nil), // 28: navigators.v1.RemoveTagFromVoterResponse
+	(*GetVoterTagsRequest)(nil),        // 29: navigators.v1.GetVoterTagsRequest
+	(*GetVoterTagsResponse)(nil),       // 30: navigators.v1.GetVoterTagsResponse
 }
 var file_navigators_v1_voter_proto_depIdxs = []int32{
 	8,  // 0: navigators.v1.GetImportStatusResponse.job:type_name -> navigators.v1.ImportJob
@@ -1595,25 +2241,40 @@ var file_navigators_v1_voter_proto_depIdxs = []int32{
 	17, // 3: navigators.v1.SearchVotersResponse.voters:type_name -> navigators.v1.VoterSummary
 	15, // 4: navigators.v1.ListVotersRequest.filters:type_name -> navigators.v1.VoterFilters
 	17, // 5: navigators.v1.ListVotersResponse.voters:type_name -> navigators.v1.VoterSummary
-	0,  // 6: navigators.v1.VoterImportService.StartImport:input_type -> navigators.v1.StartImportRequest
-	2,  // 7: navigators.v1.VoterImportService.ConfirmUpload:input_type -> navigators.v1.ConfirmUploadRequest
-	4,  // 8: navigators.v1.VoterImportService.GetImportStatus:input_type -> navigators.v1.GetImportStatusRequest
-	6,  // 9: navigators.v1.VoterImportService.ListImportJobs:input_type -> navigators.v1.ListImportJobsRequest
-	9,  // 10: navigators.v1.VoterService.GetVoter:input_type -> navigators.v1.GetVoterRequest
-	11, // 11: navigators.v1.VoterService.SearchVoters:input_type -> navigators.v1.SearchVotersRequest
-	13, // 12: navigators.v1.VoterService.ListVoters:input_type -> navigators.v1.ListVotersRequest
-	1,  // 13: navigators.v1.VoterImportService.StartImport:output_type -> navigators.v1.StartImportResponse
-	3,  // 14: navigators.v1.VoterImportService.ConfirmUpload:output_type -> navigators.v1.ConfirmUploadResponse
-	5,  // 15: navigators.v1.VoterImportService.GetImportStatus:output_type -> navigators.v1.GetImportStatusResponse
-	7,  // 16: navigators.v1.VoterImportService.ListImportJobs:output_type -> navigators.v1.ListImportJobsResponse
-	10, // 17: navigators.v1.VoterService.GetVoter:output_type -> navigators.v1.GetVoterResponse
-	12, // 18: navigators.v1.VoterService.SearchVoters:output_type -> navigators.v1.SearchVotersResponse
-	14, // 19: navigators.v1.VoterService.ListVoters:output_type -> navigators.v1.ListVotersResponse
-	13, // [13:20] is the sub-list for method output_type
-	6,  // [6:13] is the sub-list for method input_type
-	6,  // [6:6] is the sub-list for extension type_name
-	6,  // [6:6] is the sub-list for extension extendee
-	0,  // [0:6] is the sub-list for field type_name
+	18, // 6: navigators.v1.CreateTagResponse.tag:type_name -> navigators.v1.VoterTag
+	18, // 7: navigators.v1.ListTagsResponse.tags:type_name -> navigators.v1.VoterTag
+	18, // 8: navigators.v1.GetVoterTagsResponse.tags:type_name -> navigators.v1.VoterTag
+	0,  // 9: navigators.v1.VoterImportService.StartImport:input_type -> navigators.v1.StartImportRequest
+	2,  // 10: navigators.v1.VoterImportService.ConfirmUpload:input_type -> navigators.v1.ConfirmUploadRequest
+	4,  // 11: navigators.v1.VoterImportService.GetImportStatus:input_type -> navigators.v1.GetImportStatusRequest
+	6,  // 12: navigators.v1.VoterImportService.ListImportJobs:input_type -> navigators.v1.ListImportJobsRequest
+	9,  // 13: navigators.v1.VoterService.GetVoter:input_type -> navigators.v1.GetVoterRequest
+	11, // 14: navigators.v1.VoterService.SearchVoters:input_type -> navigators.v1.SearchVotersRequest
+	13, // 15: navigators.v1.VoterService.ListVoters:input_type -> navigators.v1.ListVotersRequest
+	19, // 16: navigators.v1.VoterService.CreateTag:input_type -> navigators.v1.CreateTagRequest
+	21, // 17: navigators.v1.VoterService.ListTags:input_type -> navigators.v1.ListTagsRequest
+	23, // 18: navigators.v1.VoterService.DeleteTag:input_type -> navigators.v1.DeleteTagRequest
+	25, // 19: navigators.v1.VoterService.AssignTagToVoter:input_type -> navigators.v1.AssignTagToVoterRequest
+	27, // 20: navigators.v1.VoterService.RemoveTagFromVoter:input_type -> navigators.v1.RemoveTagFromVoterRequest
+	29, // 21: navigators.v1.VoterService.GetVoterTags:input_type -> navigators.v1.GetVoterTagsRequest
+	1,  // 22: navigators.v1.VoterImportService.StartImport:output_type -> navigators.v1.StartImportResponse
+	3,  // 23: navigators.v1.VoterImportService.ConfirmUpload:output_type -> navigators.v1.ConfirmUploadResponse
+	5,  // 24: navigators.v1.VoterImportService.GetImportStatus:output_type -> navigators.v1.GetImportStatusResponse
+	7,  // 25: navigators.v1.VoterImportService.ListImportJobs:output_type -> navigators.v1.ListImportJobsResponse
+	10, // 26: navigators.v1.VoterService.GetVoter:output_type -> navigators.v1.GetVoterResponse
+	12, // 27: navigators.v1.VoterService.SearchVoters:output_type -> navigators.v1.SearchVotersResponse
+	14, // 28: navigators.v1.VoterService.ListVoters:output_type -> navigators.v1.ListVotersResponse
+	20, // 29: navigators.v1.VoterService.CreateTag:output_type -> navigators.v1.CreateTagResponse
+	22, // 30: navigators.v1.VoterService.ListTags:output_type -> navigators.v1.ListTagsResponse
+	24, // 31: navigators.v1.VoterService.DeleteTag:output_type -> navigators.v1.DeleteTagResponse
+	26, // 32: navigators.v1.VoterService.AssignTagToVoter:output_type -> navigators.v1.AssignTagToVoterResponse
+	28, // 33: navigators.v1.VoterService.RemoveTagFromVoter:output_type -> navigators.v1.RemoveTagFromVoterResponse
+	30, // 34: navigators.v1.VoterService.GetVoterTags:output_type -> navigators.v1.GetVoterTagsResponse
+	22, // [22:35] is the sub-list for method output_type
+	9,  // [9:22] is the sub-list for method input_type
+	9,  // [9:9] is the sub-list for extension type_name
+	9,  // [9:9] is the sub-list for extension extendee
+	0,  // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_navigators_v1_voter_proto_init() }
@@ -1627,7 +2288,7 @@ func file_navigators_v1_voter_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_navigators_v1_voter_proto_rawDesc), len(file_navigators_v1_voter_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   18,
+			NumMessages:   31,
 			NumExtensions: 0,
 			NumServices:   2,
 		},

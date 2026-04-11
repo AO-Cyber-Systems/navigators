@@ -288,6 +288,22 @@ type VoterAccessLog struct {
 	CreatedAt  time.Time       `json:"created_at"`
 }
 
+type VoterTag struct {
+	ID        uuid.UUID `json:"id"`
+	CompanyID uuid.UUID `json:"company_id"`
+	Name      string    `json:"name"`
+	Color     string    `json:"color"`
+	CreatedBy uuid.UUID `json:"created_by"`
+	CreatedAt time.Time `json:"created_at"`
+}
+
+type VoterTagAssignment struct {
+	VoterID    uuid.UUID `json:"voter_id"`
+	TagID      uuid.UUID `json:"tag_id"`
+	AssignedBy uuid.UUID `json:"assigned_by"`
+	AssignedAt time.Time `json:"assigned_at"`
+}
+
 type Webhook struct {
 	ID               uuid.UUID `json:"id"`
 	CompanyID        uuid.UUID `json:"company_id"`

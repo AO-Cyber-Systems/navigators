@@ -12,6 +12,24 @@ import (
 	"github.com/google/uuid"
 )
 
+const countSearchVoters = `-- name: CountSearchVoters :one
+SELECT COUNT(*) FROM voters
+WHERE company_id = $1
+  AND search_text % $2::text
+`
+
+type CountSearchVotersParams struct {
+	CompanyID uuid.UUID `json:"company_id"`
+	Query     string    `json:"query"`
+}
+
+func (q *Queries) CountSearchVoters(ctx context.Context, arg CountSearchVotersParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countSearchVoters, arg.CompanyID, arg.Query)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const countVotersByCompany = `-- name: CountVotersByCompany :one
 SELECT COUNT(*) FROM voters WHERE company_id = $1
 `
@@ -21,6 +39,152 @@ func (q *Queries) CountVotersByCompany(ctx context.Context, companyID uuid.UUID)
 	var count int64
 	err := row.Scan(&count)
 	return count, err
+}
+
+const countVotersByFilters = `-- name: CountVotersByFilters :one
+SELECT COUNT(*) FROM voters
+WHERE company_id = $1
+  AND ($2::text IS NULL OR party = $2)
+  AND ($3::text IS NULL OR status = $3)
+  AND ($4::text IS NULL OR congressional_district = $4)
+  AND ($5::text IS NULL OR state_senate_district = $5)
+  AND ($6::text IS NULL OR state_house_district = $6)
+  AND ($7::text IS NULL OR municipality = $7)
+  AND ($8::text IS NULL OR county = $8)
+  AND ($9::int IS NULL OR jsonb_array_length(voting_history) >= $9)
+`
+
+type CountVotersByFiltersParams struct {
+	CompanyID             uuid.UUID `json:"company_id"`
+	Party                 *string   `json:"party"`
+	VoterStatus           *string   `json:"voter_status"`
+	CongressionalDistrict *string   `json:"congressional_district"`
+	StateSenateDistrict   *string   `json:"state_senate_district"`
+	StateHouseDistrict    *string   `json:"state_house_district"`
+	Municipality          *string   `json:"municipality"`
+	County                *string   `json:"county"`
+	MinVoteCount          *int32    `json:"min_vote_count"`
+}
+
+func (q *Queries) CountVotersByFilters(ctx context.Context, arg CountVotersByFiltersParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countVotersByFilters,
+		arg.CompanyID,
+		arg.Party,
+		arg.VoterStatus,
+		arg.CongressionalDistrict,
+		arg.StateSenateDistrict,
+		arg.StateHouseDistrict,
+		arg.Municipality,
+		arg.County,
+		arg.MinVoteCount,
+	)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
+const getUngeocoded = `-- name: GetUngeocoded :many
+SELECT id, res_street_address, res_city, res_state, res_zip
+FROM voters
+WHERE company_id = $1 AND geocode_status = 'pending'
+ORDER BY created_at
+LIMIT $2
+`
+
+type GetUngeocodedParams struct {
+	CompanyID uuid.UUID `json:"company_id"`
+	Limit     int32     `json:"limit"`
+}
+
+type GetUngeocodedRow struct {
+	ID               uuid.UUID `json:"id"`
+	ResStreetAddress string    `json:"res_street_address"`
+	ResCity          string    `json:"res_city"`
+	ResState         string    `json:"res_state"`
+	ResZip           string    `json:"res_zip"`
+}
+
+func (q *Queries) GetUngeocoded(ctx context.Context, arg GetUngeocodedParams) ([]GetUngeocodedRow, error) {
+	rows, err := q.db.Query(ctx, getUngeocoded, arg.CompanyID, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetUngeocodedRow{}
+	for rows.Next() {
+		var i GetUngeocodedRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.ResStreetAddress,
+			&i.ResCity,
+			&i.ResState,
+			&i.ResZip,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getVoterByCompany = `-- name: GetVoterByCompany :one
+SELECT id, company_id, first_name, middle_name, last_name, suffix, year_of_birth, res_street_address, res_street_number, res_street_name, res_unit, res_city, res_state, res_zip, mail_street_address, mail_city, mail_state, mail_zip, party, status, registration_date, county, municipality, ward, precinct, congressional_district, state_senate_district, state_house_district, location, geocode_status, geocode_source, source_voter_id, source, dedup_key, voting_history, phone, email, search_text, created_at, updated_at FROM voters WHERE id = $1 AND company_id = $2
+`
+
+type GetVoterByCompanyParams struct {
+	ID        uuid.UUID `json:"id"`
+	CompanyID uuid.UUID `json:"company_id"`
+}
+
+func (q *Queries) GetVoterByCompany(ctx context.Context, arg GetVoterByCompanyParams) (Voter, error) {
+	row := q.db.QueryRow(ctx, getVoterByCompany, arg.ID, arg.CompanyID)
+	var i Voter
+	err := row.Scan(
+		&i.ID,
+		&i.CompanyID,
+		&i.FirstName,
+		&i.MiddleName,
+		&i.LastName,
+		&i.Suffix,
+		&i.YearOfBirth,
+		&i.ResStreetAddress,
+		&i.ResStreetNumber,
+		&i.ResStreetName,
+		&i.ResUnit,
+		&i.ResCity,
+		&i.ResState,
+		&i.ResZip,
+		&i.MailStreetAddress,
+		&i.MailCity,
+		&i.MailState,
+		&i.MailZip,
+		&i.Party,
+		&i.Status,
+		&i.RegistrationDate,
+		&i.County,
+		&i.Municipality,
+		&i.Ward,
+		&i.Precinct,
+		&i.CongressionalDistrict,
+		&i.StateSenateDistrict,
+		&i.StateHouseDistrict,
+		&i.Location,
+		&i.GeocodeStatus,
+		&i.GeocodeSource,
+		&i.SourceVoterID,
+		&i.Source,
+		&i.DedupKey,
+		&i.VotingHistory,
+		&i.Phone,
+		&i.Email,
+		&i.SearchText,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const getVoterByID = `-- name: GetVoterByID :one
@@ -256,5 +420,201 @@ func (q *Queries) InsertVoter(ctx context.Context, arg InsertVoterParams) error 
 		arg.Phone,
 		arg.Email,
 	)
+	return err
+}
+
+const listVotersByFilters = `-- name: ListVotersByFilters :many
+SELECT id, first_name, last_name, party, status, res_city, res_zip, municipality, year_of_birth
+FROM voters
+WHERE company_id = $1
+  AND ($2::text IS NULL OR party = $2)
+  AND ($3::text IS NULL OR status = $3)
+  AND ($4::text IS NULL OR congressional_district = $4)
+  AND ($5::text IS NULL OR state_senate_district = $5)
+  AND ($6::text IS NULL OR state_house_district = $6)
+  AND ($7::text IS NULL OR municipality = $7)
+  AND ($8::text IS NULL OR county = $8)
+  AND ($9::int IS NULL OR jsonb_array_length(voting_history) >= $9)
+ORDER BY last_name, first_name
+LIMIT $11 OFFSET $10
+`
+
+type ListVotersByFiltersParams struct {
+	CompanyID             uuid.UUID `json:"company_id"`
+	Party                 *string   `json:"party"`
+	VoterStatus           *string   `json:"voter_status"`
+	CongressionalDistrict *string   `json:"congressional_district"`
+	StateSenateDistrict   *string   `json:"state_senate_district"`
+	StateHouseDistrict    *string   `json:"state_house_district"`
+	Municipality          *string   `json:"municipality"`
+	County                *string   `json:"county"`
+	MinVoteCount          *int32    `json:"min_vote_count"`
+	Off                   int32     `json:"off"`
+	Lim                   int32     `json:"lim"`
+}
+
+type ListVotersByFiltersRow struct {
+	ID           uuid.UUID `json:"id"`
+	FirstName    string    `json:"first_name"`
+	LastName     string    `json:"last_name"`
+	Party        string    `json:"party"`
+	Status       string    `json:"status"`
+	ResCity      string    `json:"res_city"`
+	ResZip       string    `json:"res_zip"`
+	Municipality string    `json:"municipality"`
+	YearOfBirth  *int32    `json:"year_of_birth"`
+}
+
+func (q *Queries) ListVotersByFilters(ctx context.Context, arg ListVotersByFiltersParams) ([]ListVotersByFiltersRow, error) {
+	rows, err := q.db.Query(ctx, listVotersByFilters,
+		arg.CompanyID,
+		arg.Party,
+		arg.VoterStatus,
+		arg.CongressionalDistrict,
+		arg.StateSenateDistrict,
+		arg.StateHouseDistrict,
+		arg.Municipality,
+		arg.County,
+		arg.MinVoteCount,
+		arg.Off,
+		arg.Lim,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []ListVotersByFiltersRow{}
+	for rows.Next() {
+		var i ListVotersByFiltersRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.FirstName,
+			&i.LastName,
+			&i.Party,
+			&i.Status,
+			&i.ResCity,
+			&i.ResZip,
+			&i.Municipality,
+			&i.YearOfBirth,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const searchVoters = `-- name: SearchVoters :many
+SELECT id, first_name, last_name, party, status, res_city, res_zip, municipality, year_of_birth,
+       similarity(search_text, $1::text) AS score
+FROM voters
+WHERE company_id = $2
+  AND search_text % $1::text
+ORDER BY similarity(search_text, $1::text) DESC
+LIMIT $4 OFFSET $3
+`
+
+type SearchVotersParams struct {
+	Query     string    `json:"query"`
+	CompanyID uuid.UUID `json:"company_id"`
+	Off       int32     `json:"off"`
+	Lim       int32     `json:"lim"`
+}
+
+type SearchVotersRow struct {
+	ID           uuid.UUID `json:"id"`
+	FirstName    string    `json:"first_name"`
+	LastName     string    `json:"last_name"`
+	Party        string    `json:"party"`
+	Status       string    `json:"status"`
+	ResCity      string    `json:"res_city"`
+	ResZip       string    `json:"res_zip"`
+	Municipality string    `json:"municipality"`
+	YearOfBirth  *int32    `json:"year_of_birth"`
+	Score        float32   `json:"score"`
+}
+
+func (q *Queries) SearchVoters(ctx context.Context, arg SearchVotersParams) ([]SearchVotersRow, error) {
+	rows, err := q.db.Query(ctx, searchVoters,
+		arg.Query,
+		arg.CompanyID,
+		arg.Off,
+		arg.Lim,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []SearchVotersRow{}
+	for rows.Next() {
+		var i SearchVotersRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.FirstName,
+			&i.LastName,
+			&i.Party,
+			&i.Status,
+			&i.ResCity,
+			&i.ResZip,
+			&i.Municipality,
+			&i.YearOfBirth,
+			&i.Score,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const updateVoterGeocode = `-- name: UpdateVoterGeocode :exec
+UPDATE voters
+SET location = ST_SetSRID(ST_MakePoint($1::float8, $2::float8), 4326),
+    geocode_status = $3,
+    geocode_source = $4,
+    updated_at = now()
+WHERE id = $5
+`
+
+type UpdateVoterGeocodeParams struct {
+	Longitude     float64   `json:"longitude"`
+	Latitude      float64   `json:"latitude"`
+	GeocodeStatus string    `json:"geocode_status"`
+	GeocodeSource string    `json:"geocode_source"`
+	ID            uuid.UUID `json:"id"`
+}
+
+func (q *Queries) UpdateVoterGeocode(ctx context.Context, arg UpdateVoterGeocodeParams) error {
+	_, err := q.db.Exec(ctx, updateVoterGeocode,
+		arg.Longitude,
+		arg.Latitude,
+		arg.GeocodeStatus,
+		arg.GeocodeSource,
+		arg.ID,
+	)
+	return err
+}
+
+const updateVoterGeocodeFailure = `-- name: UpdateVoterGeocodeFailure :exec
+UPDATE voters
+SET geocode_status = 'failed',
+    geocode_source = $1,
+    updated_at = now()
+WHERE id = $2
+`
+
+type UpdateVoterGeocodeFailureParams struct {
+	GeocodeSource string    `json:"geocode_source"`
+	ID            uuid.UUID `json:"id"`
+}
+
+func (q *Queries) UpdateVoterGeocodeFailure(ctx context.Context, arg UpdateVoterGeocodeFailureParams) error {
+	_, err := q.db.Exec(ctx, updateVoterGeocodeFailure, arg.GeocodeSource, arg.ID)
 	return err
 }

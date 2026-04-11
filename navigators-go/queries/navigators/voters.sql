@@ -57,3 +57,69 @@ SELECT * FROM voters WHERE company_id = $1 AND source_voter_id = $2;
 
 -- name: CountVotersByCompany :one
 SELECT COUNT(*) FROM voters WHERE company_id = $1;
+
+-- name: GetVoterByCompany :one
+SELECT * FROM voters WHERE id = $1 AND company_id = $2;
+
+-- name: SearchVoters :many
+SELECT id, first_name, last_name, party, status, res_city, res_zip, municipality, year_of_birth,
+       similarity(search_text, @query::text) AS score
+FROM voters
+WHERE company_id = @company_id
+  AND search_text % @query::text
+ORDER BY similarity(search_text, @query::text) DESC
+LIMIT @lim OFFSET @off;
+
+-- name: CountSearchVoters :one
+SELECT COUNT(*) FROM voters
+WHERE company_id = @company_id
+  AND search_text % @query::text;
+
+-- name: ListVotersByFilters :many
+SELECT id, first_name, last_name, party, status, res_city, res_zip, municipality, year_of_birth
+FROM voters
+WHERE company_id = @company_id
+  AND (sqlc.narg('party')::text IS NULL OR party = sqlc.narg('party'))
+  AND (sqlc.narg('voter_status')::text IS NULL OR status = sqlc.narg('voter_status'))
+  AND (sqlc.narg('congressional_district')::text IS NULL OR congressional_district = sqlc.narg('congressional_district'))
+  AND (sqlc.narg('state_senate_district')::text IS NULL OR state_senate_district = sqlc.narg('state_senate_district'))
+  AND (sqlc.narg('state_house_district')::text IS NULL OR state_house_district = sqlc.narg('state_house_district'))
+  AND (sqlc.narg('municipality')::text IS NULL OR municipality = sqlc.narg('municipality'))
+  AND (sqlc.narg('county')::text IS NULL OR county = sqlc.narg('county'))
+  AND (sqlc.narg('min_vote_count')::int IS NULL OR jsonb_array_length(voting_history) >= sqlc.narg('min_vote_count'))
+ORDER BY last_name, first_name
+LIMIT @lim OFFSET @off;
+
+-- name: CountVotersByFilters :one
+SELECT COUNT(*) FROM voters
+WHERE company_id = @company_id
+  AND (sqlc.narg('party')::text IS NULL OR party = sqlc.narg('party'))
+  AND (sqlc.narg('voter_status')::text IS NULL OR status = sqlc.narg('voter_status'))
+  AND (sqlc.narg('congressional_district')::text IS NULL OR congressional_district = sqlc.narg('congressional_district'))
+  AND (sqlc.narg('state_senate_district')::text IS NULL OR state_senate_district = sqlc.narg('state_senate_district'))
+  AND (sqlc.narg('state_house_district')::text IS NULL OR state_house_district = sqlc.narg('state_house_district'))
+  AND (sqlc.narg('municipality')::text IS NULL OR municipality = sqlc.narg('municipality'))
+  AND (sqlc.narg('county')::text IS NULL OR county = sqlc.narg('county'))
+  AND (sqlc.narg('min_vote_count')::int IS NULL OR jsonb_array_length(voting_history) >= sqlc.narg('min_vote_count'));
+
+-- name: GetUngeocoded :many
+SELECT id, res_street_address, res_city, res_state, res_zip
+FROM voters
+WHERE company_id = $1 AND geocode_status = 'pending'
+ORDER BY created_at
+LIMIT $2;
+
+-- name: UpdateVoterGeocode :exec
+UPDATE voters
+SET location = ST_SetSRID(ST_MakePoint(@longitude::float8, @latitude::float8), 4326),
+    geocode_status = @geocode_status,
+    geocode_source = @geocode_source,
+    updated_at = now()
+WHERE id = @id;
+
+-- name: UpdateVoterGeocodeFailure :exec
+UPDATE voters
+SET geocode_status = 'failed',
+    geocode_source = @geocode_source,
+    updated_at = now()
+WHERE id = @id;
