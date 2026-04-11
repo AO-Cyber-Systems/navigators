@@ -352,6 +352,115 @@ class SyncClient {
     return totalPulled;
   }
 
+  /// Pull task updates since the given cursor.
+  Future<PullTasksResult> pullTasks({
+    required String sinceCursor,
+    int batchSize = 500,
+  }) async {
+    final result = await _post('PullTasks', {
+      'sinceCursor': sinceCursor,
+      'batchSize': batchSize,
+    });
+
+    final tasks = (result['tasks'] as List<dynamic>? ?? [])
+        .map((t) => SyncTaskData.fromJson(t as Map<String, dynamic>))
+        .toList();
+
+    final assignments =
+        (result['taskAssignments'] as List<dynamic>? ?? [])
+            .map((a) =>
+                SyncTaskAssignmentData.fromJson(a as Map<String, dynamic>))
+            .toList();
+
+    return PullTasksResult(
+      tasks: tasks,
+      taskAssignments: assignments,
+      nextCursor: result['nextCursor'] as String? ?? '',
+      hasMore: result['hasMore'] as bool? ?? false,
+    );
+  }
+
+  /// Pull task note updates since the given cursor.
+  Future<PullTaskNotesResult> pullTaskNotes({
+    required String sinceCursor,
+    int batchSize = 500,
+  }) async {
+    final result = await _post('PullTaskNotes', {
+      'sinceCursor': sinceCursor,
+      'batchSize': batchSize,
+    });
+
+    final notes = (result['taskNotes'] as List<dynamic>? ?? [])
+        .map((n) => SyncTaskNoteData.fromJson(n as Map<String, dynamic>))
+        .toList();
+
+    return PullTaskNotesResult(
+      taskNotes: notes,
+      nextCursor: result['nextCursor'] as String? ?? '',
+      hasMore: result['hasMore'] as bool? ?? false,
+    );
+  }
+
+  /// Pull all tasks, looping with cursor until complete.
+  Future<int> pullAllTasks(NavigatorsDatabase db) async {
+    final syncDao = db.syncDao;
+    final taskDao = db.taskDao;
+
+    final cursorRow = await syncDao.getCursor('tasks');
+    var cursor = cursorRow?.cursor ?? '';
+    var totalPulled = 0;
+
+    while (true) {
+      final result = await pullTasks(sinceCursor: cursor);
+      if (result.tasks.isEmpty) break;
+
+      final taskCompanions =
+          result.tasks.map((t) => t.toCompanion()).toList();
+      await taskDao.upsertTasks(taskCompanions);
+
+      if (result.taskAssignments.isNotEmpty) {
+        final assignmentCompanions =
+            result.taskAssignments.map((a) => a.toCompanion()).toList();
+        await taskDao.upsertTaskAssignments(assignmentCompanions);
+      }
+
+      totalPulled += result.tasks.length;
+      cursor = result.nextCursor;
+      await syncDao.updateCursor('tasks', cursor);
+
+      if (!result.hasMore) break;
+    }
+
+    return totalPulled;
+  }
+
+  /// Pull all task notes, looping with cursor until complete.
+  Future<int> pullAllTaskNotes(NavigatorsDatabase db) async {
+    final syncDao = db.syncDao;
+    final taskDao = db.taskDao;
+
+    final cursorRow = await syncDao.getCursor('task_notes');
+    var cursor = cursorRow?.cursor ?? '';
+    var totalPulled = 0;
+
+    while (true) {
+      final result = await pullTaskNotes(sinceCursor: cursor);
+      if (result.taskNotes.isEmpty) break;
+
+      final companions =
+          result.taskNotes.map((n) => n.toCompanion()).toList();
+      await taskDao.upsertTaskNotes(companions);
+
+      totalPulled += result.taskNotes.length;
+      cursor = result.nextCursor;
+      await syncDao.updateCursor('task_notes', cursor);
+
+      if (!result.hasMore) break;
+    }
+
+    return totalPulled;
+  }
+
   /// Pull all voter notes for given turfs, looping with cursor until complete.
   Future<int> pullAllVoterNotes(
     NavigatorsDatabase db,
@@ -866,6 +975,206 @@ class SyncCallScriptData {
       updatedAt: Value(
         updatedAt.isNotEmpty ? DateTime.parse(updatedAt) : DateTime.now(),
       ),
+    );
+  }
+}
+
+class PullTasksResult {
+  final List<SyncTaskData> tasks;
+  final List<SyncTaskAssignmentData> taskAssignments;
+  final String nextCursor;
+  final bool hasMore;
+
+  const PullTasksResult({
+    required this.tasks,
+    required this.taskAssignments,
+    required this.nextCursor,
+    required this.hasMore,
+  });
+}
+
+class PullTaskNotesResult {
+  final List<SyncTaskNoteData> taskNotes;
+  final String nextCursor;
+  final bool hasMore;
+
+  const PullTaskNotesResult({
+    required this.taskNotes,
+    required this.nextCursor,
+    required this.hasMore,
+  });
+}
+
+class SyncTaskData {
+  final String id;
+  final String companyId;
+  final String title;
+  final String description;
+  final String taskType;
+  final String priority;
+  final String status;
+  final String? dueDate;
+  final String? linkedEntityType;
+  final String? linkedEntityId;
+  final int progressPct;
+  final int totalCount;
+  final int completedCount;
+  final String createdBy;
+  final String createdAt;
+  final String updatedAt;
+
+  const SyncTaskData({
+    required this.id,
+    required this.companyId,
+    required this.title,
+    required this.description,
+    required this.taskType,
+    required this.priority,
+    required this.status,
+    this.dueDate,
+    this.linkedEntityType,
+    this.linkedEntityId,
+    required this.progressPct,
+    required this.totalCount,
+    required this.completedCount,
+    required this.createdBy,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  factory SyncTaskData.fromJson(Map<String, dynamic> json) {
+    return SyncTaskData(
+      id: json['id'] as String? ?? '',
+      companyId: json['companyId'] as String? ?? '',
+      title: json['title'] as String? ?? '',
+      description: json['description'] as String? ?? '',
+      taskType: json['taskType'] as String? ?? 'custom',
+      priority: json['priority'] as String? ?? 'medium',
+      status: json['status'] as String? ?? 'open',
+      dueDate: json['dueDate'] as String?,
+      linkedEntityType: json['linkedEntityType'] as String?,
+      linkedEntityId: json['linkedEntityId'] as String?,
+      progressPct: (json['progressPct'] as num?)?.toInt() ?? 0,
+      totalCount: (json['totalCount'] as num?)?.toInt() ?? 0,
+      completedCount: (json['completedCount'] as num?)?.toInt() ?? 0,
+      createdBy: json['createdBy'] as String? ?? '',
+      createdAt: json['createdAt'] as String? ?? '',
+      updatedAt: json['updatedAt'] as String? ?? '',
+    );
+  }
+
+  TasksCompanion toCompanion() {
+    return TasksCompanion(
+      id: Value(id),
+      companyId: Value(companyId),
+      title: Value(title),
+      description: Value(description),
+      taskType: Value(taskType),
+      priority: Value(priority),
+      status: Value(status),
+      dueDate: Value(
+        dueDate != null && dueDate!.isNotEmpty
+            ? DateTime.parse(dueDate!)
+            : null,
+      ),
+      linkedEntityType: Value(linkedEntityType),
+      linkedEntityId: Value(linkedEntityId),
+      progressPct: Value(progressPct),
+      totalCount: Value(totalCount),
+      completedCount: Value(completedCount),
+      createdBy: Value(createdBy),
+      createdAt: Value(
+        createdAt.isNotEmpty ? DateTime.parse(createdAt) : DateTime.now(),
+      ),
+      updatedAt: Value(
+        updatedAt.isNotEmpty ? DateTime.parse(updatedAt) : DateTime.now(),
+      ),
+      syncedAt: Value(DateTime.now()),
+    );
+  }
+}
+
+class SyncTaskAssignmentData {
+  final String id;
+  final String taskId;
+  final String userId;
+  final String assignedBy;
+  final String assignedAt;
+
+  const SyncTaskAssignmentData({
+    required this.id,
+    required this.taskId,
+    required this.userId,
+    required this.assignedBy,
+    required this.assignedAt,
+  });
+
+  factory SyncTaskAssignmentData.fromJson(Map<String, dynamic> json) {
+    return SyncTaskAssignmentData(
+      id: json['id'] as String? ?? '',
+      taskId: json['taskId'] as String? ?? '',
+      userId: json['userId'] as String? ?? '',
+      assignedBy: json['assignedBy'] as String? ?? '',
+      assignedAt: json['assignedAt'] as String? ?? '',
+    );
+  }
+
+  TaskAssignmentsCompanion toCompanion() {
+    return TaskAssignmentsCompanion(
+      id: Value(id),
+      taskId: Value(taskId),
+      userId: Value(userId),
+      assignedBy: Value(assignedBy),
+      assignedAt: Value(
+        assignedAt.isNotEmpty ? DateTime.parse(assignedAt) : DateTime.now(),
+      ),
+    );
+  }
+}
+
+class SyncTaskNoteData {
+  final String id;
+  final String companyId;
+  final String taskId;
+  final String userId;
+  final String content;
+  final String visibility;
+  final String createdAt;
+
+  const SyncTaskNoteData({
+    required this.id,
+    required this.companyId,
+    required this.taskId,
+    required this.userId,
+    required this.content,
+    required this.visibility,
+    required this.createdAt,
+  });
+
+  factory SyncTaskNoteData.fromJson(Map<String, dynamic> json) {
+    return SyncTaskNoteData(
+      id: json['id'] as String? ?? '',
+      companyId: json['companyId'] as String? ?? '',
+      taskId: json['taskId'] as String? ?? '',
+      userId: json['userId'] as String? ?? '',
+      content: json['content'] as String? ?? '',
+      visibility: json['visibility'] as String? ?? 'team',
+      createdAt: json['createdAt'] as String? ?? '',
+    );
+  }
+
+  TaskNotesCompanion toCompanion() {
+    return TaskNotesCompanion(
+      id: Value(id),
+      companyId: Value(companyId),
+      taskId: Value(taskId),
+      userId: Value(userId),
+      content: Value(content),
+      visibility: Value(visibility),
+      createdAt: Value(
+        createdAt.isNotEmpty ? DateTime.parse(createdAt) : DateTime.now(),
+      ),
+      syncedAt: Value(DateTime.now()),
     );
   }
 }

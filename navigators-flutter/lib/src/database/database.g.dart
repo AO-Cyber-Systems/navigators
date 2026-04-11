@@ -5130,6 +5130,1839 @@ class CallScriptsCompanion extends UpdateCompanion<CallScript> {
   }
 }
 
+class $TasksTable extends Tasks with TableInfo<$TasksTable, Task> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TasksTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _companyIdMeta = const VerificationMeta(
+    'companyId',
+  );
+  @override
+  late final GeneratedColumn<String> companyId = GeneratedColumn<String>(
+    'company_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _taskTypeMeta = const VerificationMeta(
+    'taskType',
+  );
+  @override
+  late final GeneratedColumn<String> taskType = GeneratedColumn<String>(
+    'task_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _priorityMeta = const VerificationMeta(
+    'priority',
+  );
+  @override
+  late final GeneratedColumn<String> priority = GeneratedColumn<String>(
+    'priority',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('medium'),
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('open'),
+  );
+  static const VerificationMeta _dueDateMeta = const VerificationMeta(
+    'dueDate',
+  );
+  @override
+  late final GeneratedColumn<DateTime> dueDate = GeneratedColumn<DateTime>(
+    'due_date',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _linkedEntityTypeMeta = const VerificationMeta(
+    'linkedEntityType',
+  );
+  @override
+  late final GeneratedColumn<String> linkedEntityType = GeneratedColumn<String>(
+    'linked_entity_type',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _linkedEntityIdMeta = const VerificationMeta(
+    'linkedEntityId',
+  );
+  @override
+  late final GeneratedColumn<String> linkedEntityId = GeneratedColumn<String>(
+    'linked_entity_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _progressPctMeta = const VerificationMeta(
+    'progressPct',
+  );
+  @override
+  late final GeneratedColumn<int> progressPct = GeneratedColumn<int>(
+    'progress_pct',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _totalCountMeta = const VerificationMeta(
+    'totalCount',
+  );
+  @override
+  late final GeneratedColumn<int> totalCount = GeneratedColumn<int>(
+    'total_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _completedCountMeta = const VerificationMeta(
+    'completedCount',
+  );
+  @override
+  late final GeneratedColumn<int> completedCount = GeneratedColumn<int>(
+    'completed_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdByMeta = const VerificationMeta(
+    'createdBy',
+  );
+  @override
+  late final GeneratedColumn<String> createdBy = GeneratedColumn<String>(
+    'created_by',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _syncedAtMeta = const VerificationMeta(
+    'syncedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> syncedAt = GeneratedColumn<DateTime>(
+    'synced_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    companyId,
+    title,
+    description,
+    taskType,
+    priority,
+    status,
+    dueDate,
+    linkedEntityType,
+    linkedEntityId,
+    progressPct,
+    totalCount,
+    completedCount,
+    createdBy,
+    createdAt,
+    updatedAt,
+    syncedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'tasks';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Task> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('company_id')) {
+      context.handle(
+        _companyIdMeta,
+        companyId.isAcceptableOrUnknown(data['company_id']!, _companyIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_companyIdMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('task_type')) {
+      context.handle(
+        _taskTypeMeta,
+        taskType.isAcceptableOrUnknown(data['task_type']!, _taskTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_taskTypeMeta);
+    }
+    if (data.containsKey('priority')) {
+      context.handle(
+        _priorityMeta,
+        priority.isAcceptableOrUnknown(data['priority']!, _priorityMeta),
+      );
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    if (data.containsKey('due_date')) {
+      context.handle(
+        _dueDateMeta,
+        dueDate.isAcceptableOrUnknown(data['due_date']!, _dueDateMeta),
+      );
+    }
+    if (data.containsKey('linked_entity_type')) {
+      context.handle(
+        _linkedEntityTypeMeta,
+        linkedEntityType.isAcceptableOrUnknown(
+          data['linked_entity_type']!,
+          _linkedEntityTypeMeta,
+        ),
+      );
+    }
+    if (data.containsKey('linked_entity_id')) {
+      context.handle(
+        _linkedEntityIdMeta,
+        linkedEntityId.isAcceptableOrUnknown(
+          data['linked_entity_id']!,
+          _linkedEntityIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('progress_pct')) {
+      context.handle(
+        _progressPctMeta,
+        progressPct.isAcceptableOrUnknown(
+          data['progress_pct']!,
+          _progressPctMeta,
+        ),
+      );
+    }
+    if (data.containsKey('total_count')) {
+      context.handle(
+        _totalCountMeta,
+        totalCount.isAcceptableOrUnknown(data['total_count']!, _totalCountMeta),
+      );
+    }
+    if (data.containsKey('completed_count')) {
+      context.handle(
+        _completedCountMeta,
+        completedCount.isAcceptableOrUnknown(
+          data['completed_count']!,
+          _completedCountMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_by')) {
+      context.handle(
+        _createdByMeta,
+        createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdByMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('synced_at')) {
+      context.handle(
+        _syncedAtMeta,
+        syncedAt.isAcceptableOrUnknown(data['synced_at']!, _syncedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Task map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Task(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      companyId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}company_id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      taskType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}task_type'],
+      )!,
+      priority: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}priority'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      dueDate: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}due_date'],
+      ),
+      linkedEntityType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}linked_entity_type'],
+      ),
+      linkedEntityId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}linked_entity_id'],
+      ),
+      progressPct: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}progress_pct'],
+      )!,
+      totalCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}total_count'],
+      )!,
+      completedCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}completed_count'],
+      )!,
+      createdBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_by'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      syncedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}synced_at'],
+      ),
+    );
+  }
+
+  @override
+  $TasksTable createAlias(String alias) {
+    return $TasksTable(attachedDatabase, alias);
+  }
+}
+
+class Task extends DataClass implements Insertable<Task> {
+  final String id;
+  final String companyId;
+  final String title;
+  final String description;
+  final String taskType;
+  final String priority;
+  final String status;
+  final DateTime? dueDate;
+  final String? linkedEntityType;
+  final String? linkedEntityId;
+  final int progressPct;
+  final int totalCount;
+  final int completedCount;
+  final String createdBy;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? syncedAt;
+  const Task({
+    required this.id,
+    required this.companyId,
+    required this.title,
+    required this.description,
+    required this.taskType,
+    required this.priority,
+    required this.status,
+    this.dueDate,
+    this.linkedEntityType,
+    this.linkedEntityId,
+    required this.progressPct,
+    required this.totalCount,
+    required this.completedCount,
+    required this.createdBy,
+    required this.createdAt,
+    required this.updatedAt,
+    this.syncedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['company_id'] = Variable<String>(companyId);
+    map['title'] = Variable<String>(title);
+    map['description'] = Variable<String>(description);
+    map['task_type'] = Variable<String>(taskType);
+    map['priority'] = Variable<String>(priority);
+    map['status'] = Variable<String>(status);
+    if (!nullToAbsent || dueDate != null) {
+      map['due_date'] = Variable<DateTime>(dueDate);
+    }
+    if (!nullToAbsent || linkedEntityType != null) {
+      map['linked_entity_type'] = Variable<String>(linkedEntityType);
+    }
+    if (!nullToAbsent || linkedEntityId != null) {
+      map['linked_entity_id'] = Variable<String>(linkedEntityId);
+    }
+    map['progress_pct'] = Variable<int>(progressPct);
+    map['total_count'] = Variable<int>(totalCount);
+    map['completed_count'] = Variable<int>(completedCount);
+    map['created_by'] = Variable<String>(createdBy);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || syncedAt != null) {
+      map['synced_at'] = Variable<DateTime>(syncedAt);
+    }
+    return map;
+  }
+
+  TasksCompanion toCompanion(bool nullToAbsent) {
+    return TasksCompanion(
+      id: Value(id),
+      companyId: Value(companyId),
+      title: Value(title),
+      description: Value(description),
+      taskType: Value(taskType),
+      priority: Value(priority),
+      status: Value(status),
+      dueDate: dueDate == null && nullToAbsent
+          ? const Value.absent()
+          : Value(dueDate),
+      linkedEntityType: linkedEntityType == null && nullToAbsent
+          ? const Value.absent()
+          : Value(linkedEntityType),
+      linkedEntityId: linkedEntityId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(linkedEntityId),
+      progressPct: Value(progressPct),
+      totalCount: Value(totalCount),
+      completedCount: Value(completedCount),
+      createdBy: Value(createdBy),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      syncedAt: syncedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncedAt),
+    );
+  }
+
+  factory Task.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Task(
+      id: serializer.fromJson<String>(json['id']),
+      companyId: serializer.fromJson<String>(json['companyId']),
+      title: serializer.fromJson<String>(json['title']),
+      description: serializer.fromJson<String>(json['description']),
+      taskType: serializer.fromJson<String>(json['taskType']),
+      priority: serializer.fromJson<String>(json['priority']),
+      status: serializer.fromJson<String>(json['status']),
+      dueDate: serializer.fromJson<DateTime?>(json['dueDate']),
+      linkedEntityType: serializer.fromJson<String?>(json['linkedEntityType']),
+      linkedEntityId: serializer.fromJson<String?>(json['linkedEntityId']),
+      progressPct: serializer.fromJson<int>(json['progressPct']),
+      totalCount: serializer.fromJson<int>(json['totalCount']),
+      completedCount: serializer.fromJson<int>(json['completedCount']),
+      createdBy: serializer.fromJson<String>(json['createdBy']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      syncedAt: serializer.fromJson<DateTime?>(json['syncedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'companyId': serializer.toJson<String>(companyId),
+      'title': serializer.toJson<String>(title),
+      'description': serializer.toJson<String>(description),
+      'taskType': serializer.toJson<String>(taskType),
+      'priority': serializer.toJson<String>(priority),
+      'status': serializer.toJson<String>(status),
+      'dueDate': serializer.toJson<DateTime?>(dueDate),
+      'linkedEntityType': serializer.toJson<String?>(linkedEntityType),
+      'linkedEntityId': serializer.toJson<String?>(linkedEntityId),
+      'progressPct': serializer.toJson<int>(progressPct),
+      'totalCount': serializer.toJson<int>(totalCount),
+      'completedCount': serializer.toJson<int>(completedCount),
+      'createdBy': serializer.toJson<String>(createdBy),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'syncedAt': serializer.toJson<DateTime?>(syncedAt),
+    };
+  }
+
+  Task copyWith({
+    String? id,
+    String? companyId,
+    String? title,
+    String? description,
+    String? taskType,
+    String? priority,
+    String? status,
+    Value<DateTime?> dueDate = const Value.absent(),
+    Value<String?> linkedEntityType = const Value.absent(),
+    Value<String?> linkedEntityId = const Value.absent(),
+    int? progressPct,
+    int? totalCount,
+    int? completedCount,
+    String? createdBy,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> syncedAt = const Value.absent(),
+  }) => Task(
+    id: id ?? this.id,
+    companyId: companyId ?? this.companyId,
+    title: title ?? this.title,
+    description: description ?? this.description,
+    taskType: taskType ?? this.taskType,
+    priority: priority ?? this.priority,
+    status: status ?? this.status,
+    dueDate: dueDate.present ? dueDate.value : this.dueDate,
+    linkedEntityType: linkedEntityType.present
+        ? linkedEntityType.value
+        : this.linkedEntityType,
+    linkedEntityId: linkedEntityId.present
+        ? linkedEntityId.value
+        : this.linkedEntityId,
+    progressPct: progressPct ?? this.progressPct,
+    totalCount: totalCount ?? this.totalCount,
+    completedCount: completedCount ?? this.completedCount,
+    createdBy: createdBy ?? this.createdBy,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    syncedAt: syncedAt.present ? syncedAt.value : this.syncedAt,
+  );
+  Task copyWithCompanion(TasksCompanion data) {
+    return Task(
+      id: data.id.present ? data.id.value : this.id,
+      companyId: data.companyId.present ? data.companyId.value : this.companyId,
+      title: data.title.present ? data.title.value : this.title,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      taskType: data.taskType.present ? data.taskType.value : this.taskType,
+      priority: data.priority.present ? data.priority.value : this.priority,
+      status: data.status.present ? data.status.value : this.status,
+      dueDate: data.dueDate.present ? data.dueDate.value : this.dueDate,
+      linkedEntityType: data.linkedEntityType.present
+          ? data.linkedEntityType.value
+          : this.linkedEntityType,
+      linkedEntityId: data.linkedEntityId.present
+          ? data.linkedEntityId.value
+          : this.linkedEntityId,
+      progressPct: data.progressPct.present
+          ? data.progressPct.value
+          : this.progressPct,
+      totalCount: data.totalCount.present
+          ? data.totalCount.value
+          : this.totalCount,
+      completedCount: data.completedCount.present
+          ? data.completedCount.value
+          : this.completedCount,
+      createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      syncedAt: data.syncedAt.present ? data.syncedAt.value : this.syncedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Task(')
+          ..write('id: $id, ')
+          ..write('companyId: $companyId, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('taskType: $taskType, ')
+          ..write('priority: $priority, ')
+          ..write('status: $status, ')
+          ..write('dueDate: $dueDate, ')
+          ..write('linkedEntityType: $linkedEntityType, ')
+          ..write('linkedEntityId: $linkedEntityId, ')
+          ..write('progressPct: $progressPct, ')
+          ..write('totalCount: $totalCount, ')
+          ..write('completedCount: $completedCount, ')
+          ..write('createdBy: $createdBy, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('syncedAt: $syncedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    companyId,
+    title,
+    description,
+    taskType,
+    priority,
+    status,
+    dueDate,
+    linkedEntityType,
+    linkedEntityId,
+    progressPct,
+    totalCount,
+    completedCount,
+    createdBy,
+    createdAt,
+    updatedAt,
+    syncedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Task &&
+          other.id == this.id &&
+          other.companyId == this.companyId &&
+          other.title == this.title &&
+          other.description == this.description &&
+          other.taskType == this.taskType &&
+          other.priority == this.priority &&
+          other.status == this.status &&
+          other.dueDate == this.dueDate &&
+          other.linkedEntityType == this.linkedEntityType &&
+          other.linkedEntityId == this.linkedEntityId &&
+          other.progressPct == this.progressPct &&
+          other.totalCount == this.totalCount &&
+          other.completedCount == this.completedCount &&
+          other.createdBy == this.createdBy &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.syncedAt == this.syncedAt);
+}
+
+class TasksCompanion extends UpdateCompanion<Task> {
+  final Value<String> id;
+  final Value<String> companyId;
+  final Value<String> title;
+  final Value<String> description;
+  final Value<String> taskType;
+  final Value<String> priority;
+  final Value<String> status;
+  final Value<DateTime?> dueDate;
+  final Value<String?> linkedEntityType;
+  final Value<String?> linkedEntityId;
+  final Value<int> progressPct;
+  final Value<int> totalCount;
+  final Value<int> completedCount;
+  final Value<String> createdBy;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> syncedAt;
+  final Value<int> rowid;
+  const TasksCompanion({
+    this.id = const Value.absent(),
+    this.companyId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.description = const Value.absent(),
+    this.taskType = const Value.absent(),
+    this.priority = const Value.absent(),
+    this.status = const Value.absent(),
+    this.dueDate = const Value.absent(),
+    this.linkedEntityType = const Value.absent(),
+    this.linkedEntityId = const Value.absent(),
+    this.progressPct = const Value.absent(),
+    this.totalCount = const Value.absent(),
+    this.completedCount = const Value.absent(),
+    this.createdBy = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.syncedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TasksCompanion.insert({
+    required String id,
+    required String companyId,
+    required String title,
+    this.description = const Value.absent(),
+    required String taskType,
+    this.priority = const Value.absent(),
+    this.status = const Value.absent(),
+    this.dueDate = const Value.absent(),
+    this.linkedEntityType = const Value.absent(),
+    this.linkedEntityId = const Value.absent(),
+    this.progressPct = const Value.absent(),
+    this.totalCount = const Value.absent(),
+    this.completedCount = const Value.absent(),
+    required String createdBy,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.syncedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       companyId = Value(companyId),
+       title = Value(title),
+       taskType = Value(taskType),
+       createdBy = Value(createdBy),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<Task> custom({
+    Expression<String>? id,
+    Expression<String>? companyId,
+    Expression<String>? title,
+    Expression<String>? description,
+    Expression<String>? taskType,
+    Expression<String>? priority,
+    Expression<String>? status,
+    Expression<DateTime>? dueDate,
+    Expression<String>? linkedEntityType,
+    Expression<String>? linkedEntityId,
+    Expression<int>? progressPct,
+    Expression<int>? totalCount,
+    Expression<int>? completedCount,
+    Expression<String>? createdBy,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? syncedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (companyId != null) 'company_id': companyId,
+      if (title != null) 'title': title,
+      if (description != null) 'description': description,
+      if (taskType != null) 'task_type': taskType,
+      if (priority != null) 'priority': priority,
+      if (status != null) 'status': status,
+      if (dueDate != null) 'due_date': dueDate,
+      if (linkedEntityType != null) 'linked_entity_type': linkedEntityType,
+      if (linkedEntityId != null) 'linked_entity_id': linkedEntityId,
+      if (progressPct != null) 'progress_pct': progressPct,
+      if (totalCount != null) 'total_count': totalCount,
+      if (completedCount != null) 'completed_count': completedCount,
+      if (createdBy != null) 'created_by': createdBy,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (syncedAt != null) 'synced_at': syncedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TasksCompanion copyWith({
+    Value<String>? id,
+    Value<String>? companyId,
+    Value<String>? title,
+    Value<String>? description,
+    Value<String>? taskType,
+    Value<String>? priority,
+    Value<String>? status,
+    Value<DateTime?>? dueDate,
+    Value<String?>? linkedEntityType,
+    Value<String?>? linkedEntityId,
+    Value<int>? progressPct,
+    Value<int>? totalCount,
+    Value<int>? completedCount,
+    Value<String>? createdBy,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? syncedAt,
+    Value<int>? rowid,
+  }) {
+    return TasksCompanion(
+      id: id ?? this.id,
+      companyId: companyId ?? this.companyId,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      taskType: taskType ?? this.taskType,
+      priority: priority ?? this.priority,
+      status: status ?? this.status,
+      dueDate: dueDate ?? this.dueDate,
+      linkedEntityType: linkedEntityType ?? this.linkedEntityType,
+      linkedEntityId: linkedEntityId ?? this.linkedEntityId,
+      progressPct: progressPct ?? this.progressPct,
+      totalCount: totalCount ?? this.totalCount,
+      completedCount: completedCount ?? this.completedCount,
+      createdBy: createdBy ?? this.createdBy,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      syncedAt: syncedAt ?? this.syncedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (companyId.present) {
+      map['company_id'] = Variable<String>(companyId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (taskType.present) {
+      map['task_type'] = Variable<String>(taskType.value);
+    }
+    if (priority.present) {
+      map['priority'] = Variable<String>(priority.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (dueDate.present) {
+      map['due_date'] = Variable<DateTime>(dueDate.value);
+    }
+    if (linkedEntityType.present) {
+      map['linked_entity_type'] = Variable<String>(linkedEntityType.value);
+    }
+    if (linkedEntityId.present) {
+      map['linked_entity_id'] = Variable<String>(linkedEntityId.value);
+    }
+    if (progressPct.present) {
+      map['progress_pct'] = Variable<int>(progressPct.value);
+    }
+    if (totalCount.present) {
+      map['total_count'] = Variable<int>(totalCount.value);
+    }
+    if (completedCount.present) {
+      map['completed_count'] = Variable<int>(completedCount.value);
+    }
+    if (createdBy.present) {
+      map['created_by'] = Variable<String>(createdBy.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (syncedAt.present) {
+      map['synced_at'] = Variable<DateTime>(syncedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TasksCompanion(')
+          ..write('id: $id, ')
+          ..write('companyId: $companyId, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('taskType: $taskType, ')
+          ..write('priority: $priority, ')
+          ..write('status: $status, ')
+          ..write('dueDate: $dueDate, ')
+          ..write('linkedEntityType: $linkedEntityType, ')
+          ..write('linkedEntityId: $linkedEntityId, ')
+          ..write('progressPct: $progressPct, ')
+          ..write('totalCount: $totalCount, ')
+          ..write('completedCount: $completedCount, ')
+          ..write('createdBy: $createdBy, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('syncedAt: $syncedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TaskAssignmentsTable extends TaskAssignments
+    with TableInfo<$TaskAssignmentsTable, TaskAssignment> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TaskAssignmentsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _taskIdMeta = const VerificationMeta('taskId');
+  @override
+  late final GeneratedColumn<String> taskId = GeneratedColumn<String>(
+    'task_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+    'user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _assignedByMeta = const VerificationMeta(
+    'assignedBy',
+  );
+  @override
+  late final GeneratedColumn<String> assignedBy = GeneratedColumn<String>(
+    'assigned_by',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _assignedAtMeta = const VerificationMeta(
+    'assignedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> assignedAt = GeneratedColumn<DateTime>(
+    'assigned_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    taskId,
+    userId,
+    assignedBy,
+    assignedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'task_assignments';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TaskAssignment> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('task_id')) {
+      context.handle(
+        _taskIdMeta,
+        taskId.isAcceptableOrUnknown(data['task_id']!, _taskIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_taskIdMeta);
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
+    if (data.containsKey('assigned_by')) {
+      context.handle(
+        _assignedByMeta,
+        assignedBy.isAcceptableOrUnknown(data['assigned_by']!, _assignedByMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_assignedByMeta);
+    }
+    if (data.containsKey('assigned_at')) {
+      context.handle(
+        _assignedAtMeta,
+        assignedAt.isAcceptableOrUnknown(data['assigned_at']!, _assignedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_assignedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TaskAssignment map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TaskAssignment(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      taskId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}task_id'],
+      )!,
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_id'],
+      )!,
+      assignedBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}assigned_by'],
+      )!,
+      assignedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}assigned_at'],
+      )!,
+    );
+  }
+
+  @override
+  $TaskAssignmentsTable createAlias(String alias) {
+    return $TaskAssignmentsTable(attachedDatabase, alias);
+  }
+}
+
+class TaskAssignment extends DataClass implements Insertable<TaskAssignment> {
+  final String id;
+  final String taskId;
+  final String userId;
+  final String assignedBy;
+  final DateTime assignedAt;
+  const TaskAssignment({
+    required this.id,
+    required this.taskId,
+    required this.userId,
+    required this.assignedBy,
+    required this.assignedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['task_id'] = Variable<String>(taskId);
+    map['user_id'] = Variable<String>(userId);
+    map['assigned_by'] = Variable<String>(assignedBy);
+    map['assigned_at'] = Variable<DateTime>(assignedAt);
+    return map;
+  }
+
+  TaskAssignmentsCompanion toCompanion(bool nullToAbsent) {
+    return TaskAssignmentsCompanion(
+      id: Value(id),
+      taskId: Value(taskId),
+      userId: Value(userId),
+      assignedBy: Value(assignedBy),
+      assignedAt: Value(assignedAt),
+    );
+  }
+
+  factory TaskAssignment.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TaskAssignment(
+      id: serializer.fromJson<String>(json['id']),
+      taskId: serializer.fromJson<String>(json['taskId']),
+      userId: serializer.fromJson<String>(json['userId']),
+      assignedBy: serializer.fromJson<String>(json['assignedBy']),
+      assignedAt: serializer.fromJson<DateTime>(json['assignedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'taskId': serializer.toJson<String>(taskId),
+      'userId': serializer.toJson<String>(userId),
+      'assignedBy': serializer.toJson<String>(assignedBy),
+      'assignedAt': serializer.toJson<DateTime>(assignedAt),
+    };
+  }
+
+  TaskAssignment copyWith({
+    String? id,
+    String? taskId,
+    String? userId,
+    String? assignedBy,
+    DateTime? assignedAt,
+  }) => TaskAssignment(
+    id: id ?? this.id,
+    taskId: taskId ?? this.taskId,
+    userId: userId ?? this.userId,
+    assignedBy: assignedBy ?? this.assignedBy,
+    assignedAt: assignedAt ?? this.assignedAt,
+  );
+  TaskAssignment copyWithCompanion(TaskAssignmentsCompanion data) {
+    return TaskAssignment(
+      id: data.id.present ? data.id.value : this.id,
+      taskId: data.taskId.present ? data.taskId.value : this.taskId,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      assignedBy: data.assignedBy.present
+          ? data.assignedBy.value
+          : this.assignedBy,
+      assignedAt: data.assignedAt.present
+          ? data.assignedAt.value
+          : this.assignedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaskAssignment(')
+          ..write('id: $id, ')
+          ..write('taskId: $taskId, ')
+          ..write('userId: $userId, ')
+          ..write('assignedBy: $assignedBy, ')
+          ..write('assignedAt: $assignedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(id, taskId, userId, assignedBy, assignedAt);
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TaskAssignment &&
+          other.id == this.id &&
+          other.taskId == this.taskId &&
+          other.userId == this.userId &&
+          other.assignedBy == this.assignedBy &&
+          other.assignedAt == this.assignedAt);
+}
+
+class TaskAssignmentsCompanion extends UpdateCompanion<TaskAssignment> {
+  final Value<String> id;
+  final Value<String> taskId;
+  final Value<String> userId;
+  final Value<String> assignedBy;
+  final Value<DateTime> assignedAt;
+  final Value<int> rowid;
+  const TaskAssignmentsCompanion({
+    this.id = const Value.absent(),
+    this.taskId = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.assignedBy = const Value.absent(),
+    this.assignedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TaskAssignmentsCompanion.insert({
+    required String id,
+    required String taskId,
+    required String userId,
+    required String assignedBy,
+    required DateTime assignedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       taskId = Value(taskId),
+       userId = Value(userId),
+       assignedBy = Value(assignedBy),
+       assignedAt = Value(assignedAt);
+  static Insertable<TaskAssignment> custom({
+    Expression<String>? id,
+    Expression<String>? taskId,
+    Expression<String>? userId,
+    Expression<String>? assignedBy,
+    Expression<DateTime>? assignedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (taskId != null) 'task_id': taskId,
+      if (userId != null) 'user_id': userId,
+      if (assignedBy != null) 'assigned_by': assignedBy,
+      if (assignedAt != null) 'assigned_at': assignedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TaskAssignmentsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? taskId,
+    Value<String>? userId,
+    Value<String>? assignedBy,
+    Value<DateTime>? assignedAt,
+    Value<int>? rowid,
+  }) {
+    return TaskAssignmentsCompanion(
+      id: id ?? this.id,
+      taskId: taskId ?? this.taskId,
+      userId: userId ?? this.userId,
+      assignedBy: assignedBy ?? this.assignedBy,
+      assignedAt: assignedAt ?? this.assignedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (taskId.present) {
+      map['task_id'] = Variable<String>(taskId.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (assignedBy.present) {
+      map['assigned_by'] = Variable<String>(assignedBy.value);
+    }
+    if (assignedAt.present) {
+      map['assigned_at'] = Variable<DateTime>(assignedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaskAssignmentsCompanion(')
+          ..write('id: $id, ')
+          ..write('taskId: $taskId, ')
+          ..write('userId: $userId, ')
+          ..write('assignedBy: $assignedBy, ')
+          ..write('assignedAt: $assignedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TaskNotesTable extends TaskNotes
+    with TableInfo<$TaskNotesTable, TaskNote> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TaskNotesTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _companyIdMeta = const VerificationMeta(
+    'companyId',
+  );
+  @override
+  late final GeneratedColumn<String> companyId = GeneratedColumn<String>(
+    'company_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _taskIdMeta = const VerificationMeta('taskId');
+  @override
+  late final GeneratedColumn<String> taskId = GeneratedColumn<String>(
+    'task_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+    'user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contentMeta = const VerificationMeta(
+    'content',
+  );
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+    'content',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _visibilityMeta = const VerificationMeta(
+    'visibility',
+  );
+  @override
+  late final GeneratedColumn<String> visibility = GeneratedColumn<String>(
+    'visibility',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('team'),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _syncedAtMeta = const VerificationMeta(
+    'syncedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> syncedAt = GeneratedColumn<DateTime>(
+    'synced_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    companyId,
+    taskId,
+    userId,
+    content,
+    visibility,
+    createdAt,
+    syncedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'task_notes';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TaskNote> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('company_id')) {
+      context.handle(
+        _companyIdMeta,
+        companyId.isAcceptableOrUnknown(data['company_id']!, _companyIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_companyIdMeta);
+    }
+    if (data.containsKey('task_id')) {
+      context.handle(
+        _taskIdMeta,
+        taskId.isAcceptableOrUnknown(data['task_id']!, _taskIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_taskIdMeta);
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
+    if (data.containsKey('content')) {
+      context.handle(
+        _contentMeta,
+        content.isAcceptableOrUnknown(data['content']!, _contentMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_contentMeta);
+    }
+    if (data.containsKey('visibility')) {
+      context.handle(
+        _visibilityMeta,
+        visibility.isAcceptableOrUnknown(data['visibility']!, _visibilityMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('synced_at')) {
+      context.handle(
+        _syncedAtMeta,
+        syncedAt.isAcceptableOrUnknown(data['synced_at']!, _syncedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TaskNote map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TaskNote(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      companyId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}company_id'],
+      )!,
+      taskId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}task_id'],
+      )!,
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_id'],
+      )!,
+      content: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content'],
+      )!,
+      visibility: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}visibility'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      syncedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}synced_at'],
+      ),
+    );
+  }
+
+  @override
+  $TaskNotesTable createAlias(String alias) {
+    return $TaskNotesTable(attachedDatabase, alias);
+  }
+}
+
+class TaskNote extends DataClass implements Insertable<TaskNote> {
+  final String id;
+  final String companyId;
+  final String taskId;
+  final String userId;
+  final String content;
+  final String visibility;
+  final DateTime createdAt;
+  final DateTime? syncedAt;
+  const TaskNote({
+    required this.id,
+    required this.companyId,
+    required this.taskId,
+    required this.userId,
+    required this.content,
+    required this.visibility,
+    required this.createdAt,
+    this.syncedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['company_id'] = Variable<String>(companyId);
+    map['task_id'] = Variable<String>(taskId);
+    map['user_id'] = Variable<String>(userId);
+    map['content'] = Variable<String>(content);
+    map['visibility'] = Variable<String>(visibility);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || syncedAt != null) {
+      map['synced_at'] = Variable<DateTime>(syncedAt);
+    }
+    return map;
+  }
+
+  TaskNotesCompanion toCompanion(bool nullToAbsent) {
+    return TaskNotesCompanion(
+      id: Value(id),
+      companyId: Value(companyId),
+      taskId: Value(taskId),
+      userId: Value(userId),
+      content: Value(content),
+      visibility: Value(visibility),
+      createdAt: Value(createdAt),
+      syncedAt: syncedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncedAt),
+    );
+  }
+
+  factory TaskNote.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TaskNote(
+      id: serializer.fromJson<String>(json['id']),
+      companyId: serializer.fromJson<String>(json['companyId']),
+      taskId: serializer.fromJson<String>(json['taskId']),
+      userId: serializer.fromJson<String>(json['userId']),
+      content: serializer.fromJson<String>(json['content']),
+      visibility: serializer.fromJson<String>(json['visibility']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      syncedAt: serializer.fromJson<DateTime?>(json['syncedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'companyId': serializer.toJson<String>(companyId),
+      'taskId': serializer.toJson<String>(taskId),
+      'userId': serializer.toJson<String>(userId),
+      'content': serializer.toJson<String>(content),
+      'visibility': serializer.toJson<String>(visibility),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'syncedAt': serializer.toJson<DateTime?>(syncedAt),
+    };
+  }
+
+  TaskNote copyWith({
+    String? id,
+    String? companyId,
+    String? taskId,
+    String? userId,
+    String? content,
+    String? visibility,
+    DateTime? createdAt,
+    Value<DateTime?> syncedAt = const Value.absent(),
+  }) => TaskNote(
+    id: id ?? this.id,
+    companyId: companyId ?? this.companyId,
+    taskId: taskId ?? this.taskId,
+    userId: userId ?? this.userId,
+    content: content ?? this.content,
+    visibility: visibility ?? this.visibility,
+    createdAt: createdAt ?? this.createdAt,
+    syncedAt: syncedAt.present ? syncedAt.value : this.syncedAt,
+  );
+  TaskNote copyWithCompanion(TaskNotesCompanion data) {
+    return TaskNote(
+      id: data.id.present ? data.id.value : this.id,
+      companyId: data.companyId.present ? data.companyId.value : this.companyId,
+      taskId: data.taskId.present ? data.taskId.value : this.taskId,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      content: data.content.present ? data.content.value : this.content,
+      visibility: data.visibility.present
+          ? data.visibility.value
+          : this.visibility,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      syncedAt: data.syncedAt.present ? data.syncedAt.value : this.syncedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaskNote(')
+          ..write('id: $id, ')
+          ..write('companyId: $companyId, ')
+          ..write('taskId: $taskId, ')
+          ..write('userId: $userId, ')
+          ..write('content: $content, ')
+          ..write('visibility: $visibility, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('syncedAt: $syncedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    companyId,
+    taskId,
+    userId,
+    content,
+    visibility,
+    createdAt,
+    syncedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TaskNote &&
+          other.id == this.id &&
+          other.companyId == this.companyId &&
+          other.taskId == this.taskId &&
+          other.userId == this.userId &&
+          other.content == this.content &&
+          other.visibility == this.visibility &&
+          other.createdAt == this.createdAt &&
+          other.syncedAt == this.syncedAt);
+}
+
+class TaskNotesCompanion extends UpdateCompanion<TaskNote> {
+  final Value<String> id;
+  final Value<String> companyId;
+  final Value<String> taskId;
+  final Value<String> userId;
+  final Value<String> content;
+  final Value<String> visibility;
+  final Value<DateTime> createdAt;
+  final Value<DateTime?> syncedAt;
+  final Value<int> rowid;
+  const TaskNotesCompanion({
+    this.id = const Value.absent(),
+    this.companyId = const Value.absent(),
+    this.taskId = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.content = const Value.absent(),
+    this.visibility = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.syncedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TaskNotesCompanion.insert({
+    required String id,
+    required String companyId,
+    required String taskId,
+    required String userId,
+    required String content,
+    this.visibility = const Value.absent(),
+    required DateTime createdAt,
+    this.syncedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       companyId = Value(companyId),
+       taskId = Value(taskId),
+       userId = Value(userId),
+       content = Value(content),
+       createdAt = Value(createdAt);
+  static Insertable<TaskNote> custom({
+    Expression<String>? id,
+    Expression<String>? companyId,
+    Expression<String>? taskId,
+    Expression<String>? userId,
+    Expression<String>? content,
+    Expression<String>? visibility,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? syncedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (companyId != null) 'company_id': companyId,
+      if (taskId != null) 'task_id': taskId,
+      if (userId != null) 'user_id': userId,
+      if (content != null) 'content': content,
+      if (visibility != null) 'visibility': visibility,
+      if (createdAt != null) 'created_at': createdAt,
+      if (syncedAt != null) 'synced_at': syncedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TaskNotesCompanion copyWith({
+    Value<String>? id,
+    Value<String>? companyId,
+    Value<String>? taskId,
+    Value<String>? userId,
+    Value<String>? content,
+    Value<String>? visibility,
+    Value<DateTime>? createdAt,
+    Value<DateTime?>? syncedAt,
+    Value<int>? rowid,
+  }) {
+    return TaskNotesCompanion(
+      id: id ?? this.id,
+      companyId: companyId ?? this.companyId,
+      taskId: taskId ?? this.taskId,
+      userId: userId ?? this.userId,
+      content: content ?? this.content,
+      visibility: visibility ?? this.visibility,
+      createdAt: createdAt ?? this.createdAt,
+      syncedAt: syncedAt ?? this.syncedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (companyId.present) {
+      map['company_id'] = Variable<String>(companyId.value);
+    }
+    if (taskId.present) {
+      map['task_id'] = Variable<String>(taskId.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (visibility.present) {
+      map['visibility'] = Variable<String>(visibility.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (syncedAt.present) {
+      map['synced_at'] = Variable<DateTime>(syncedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TaskNotesCompanion(')
+          ..write('id: $id, ')
+          ..write('companyId: $companyId, ')
+          ..write('taskId: $taskId, ')
+          ..write('userId: $userId, ')
+          ..write('content: $content, ')
+          ..write('visibility: $visibility, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('syncedAt: $syncedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$NavigatorsDatabase extends GeneratedDatabase {
   _$NavigatorsDatabase(QueryExecutor e) : super(e);
   $NavigatorsDatabaseManager get managers => $NavigatorsDatabaseManager(this);
@@ -5146,6 +6979,11 @@ abstract class _$NavigatorsDatabase extends GeneratedDatabase {
   );
   late final $VoterNotesTable voterNotes = $VoterNotesTable(this);
   late final $CallScriptsTable callScripts = $CallScriptsTable(this);
+  late final $TasksTable tasks = $TasksTable(this);
+  late final $TaskAssignmentsTable taskAssignments = $TaskAssignmentsTable(
+    this,
+  );
+  late final $TaskNotesTable taskNotes = $TaskNotesTable(this);
   late final VoterDao voterDao = VoterDao(this as NavigatorsDatabase);
   late final SyncDao syncDao = SyncDao(this as NavigatorsDatabase);
   late final ContactLogDao contactLogDao = ContactLogDao(
@@ -5158,6 +6996,7 @@ abstract class _$NavigatorsDatabase extends GeneratedDatabase {
   late final CallScriptDao callScriptDao = CallScriptDao(
     this as NavigatorsDatabase,
   );
+  late final TaskDao taskDao = TaskDao(this as NavigatorsDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -5172,6 +7011,9 @@ abstract class _$NavigatorsDatabase extends GeneratedDatabase {
     surveyResponses,
     voterNotes,
     callScripts,
+    tasks,
+    taskAssignments,
+    taskNotes,
   ];
 }
 
@@ -7765,6 +9607,913 @@ typedef $$CallScriptsTableProcessedTableManager =
       CallScript,
       PrefetchHooks Function()
     >;
+typedef $$TasksTableCreateCompanionBuilder =
+    TasksCompanion Function({
+      required String id,
+      required String companyId,
+      required String title,
+      Value<String> description,
+      required String taskType,
+      Value<String> priority,
+      Value<String> status,
+      Value<DateTime?> dueDate,
+      Value<String?> linkedEntityType,
+      Value<String?> linkedEntityId,
+      Value<int> progressPct,
+      Value<int> totalCount,
+      Value<int> completedCount,
+      required String createdBy,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<DateTime?> syncedAt,
+      Value<int> rowid,
+    });
+typedef $$TasksTableUpdateCompanionBuilder =
+    TasksCompanion Function({
+      Value<String> id,
+      Value<String> companyId,
+      Value<String> title,
+      Value<String> description,
+      Value<String> taskType,
+      Value<String> priority,
+      Value<String> status,
+      Value<DateTime?> dueDate,
+      Value<String?> linkedEntityType,
+      Value<String?> linkedEntityId,
+      Value<int> progressPct,
+      Value<int> totalCount,
+      Value<int> completedCount,
+      Value<String> createdBy,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> syncedAt,
+      Value<int> rowid,
+    });
+
+class $$TasksTableFilterComposer
+    extends Composer<_$NavigatorsDatabase, $TasksTable> {
+  $$TasksTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get companyId => $composableBuilder(
+    column: $table.companyId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get taskType => $composableBuilder(
+    column: $table.taskType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get dueDate => $composableBuilder(
+    column: $table.dueDate,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get linkedEntityType => $composableBuilder(
+    column: $table.linkedEntityType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get linkedEntityId => $composableBuilder(
+    column: $table.linkedEntityId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get progressPct => $composableBuilder(
+    column: $table.progressPct,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get totalCount => $composableBuilder(
+    column: $table.totalCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get completedCount => $composableBuilder(
+    column: $table.completedCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get syncedAt => $composableBuilder(
+    column: $table.syncedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$TasksTableOrderingComposer
+    extends Composer<_$NavigatorsDatabase, $TasksTable> {
+  $$TasksTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get companyId => $composableBuilder(
+    column: $table.companyId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get taskType => $composableBuilder(
+    column: $table.taskType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get priority => $composableBuilder(
+    column: $table.priority,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get dueDate => $composableBuilder(
+    column: $table.dueDate,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get linkedEntityType => $composableBuilder(
+    column: $table.linkedEntityType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get linkedEntityId => $composableBuilder(
+    column: $table.linkedEntityId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get progressPct => $composableBuilder(
+    column: $table.progressPct,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get totalCount => $composableBuilder(
+    column: $table.totalCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get completedCount => $composableBuilder(
+    column: $table.completedCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get syncedAt => $composableBuilder(
+    column: $table.syncedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TasksTableAnnotationComposer
+    extends Composer<_$NavigatorsDatabase, $TasksTable> {
+  $$TasksTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get companyId =>
+      $composableBuilder(column: $table.companyId, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get taskType =>
+      $composableBuilder(column: $table.taskType, builder: (column) => column);
+
+  GeneratedColumn<String> get priority =>
+      $composableBuilder(column: $table.priority, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get dueDate =>
+      $composableBuilder(column: $table.dueDate, builder: (column) => column);
+
+  GeneratedColumn<String> get linkedEntityType => $composableBuilder(
+    column: $table.linkedEntityType,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get linkedEntityId => $composableBuilder(
+    column: $table.linkedEntityId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get progressPct => $composableBuilder(
+    column: $table.progressPct,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get totalCount => $composableBuilder(
+    column: $table.totalCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get completedCount => $composableBuilder(
+    column: $table.completedCount,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get createdBy =>
+      $composableBuilder(column: $table.createdBy, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get syncedAt =>
+      $composableBuilder(column: $table.syncedAt, builder: (column) => column);
+}
+
+class $$TasksTableTableManager
+    extends
+        RootTableManager<
+          _$NavigatorsDatabase,
+          $TasksTable,
+          Task,
+          $$TasksTableFilterComposer,
+          $$TasksTableOrderingComposer,
+          $$TasksTableAnnotationComposer,
+          $$TasksTableCreateCompanionBuilder,
+          $$TasksTableUpdateCompanionBuilder,
+          (Task, BaseReferences<_$NavigatorsDatabase, $TasksTable, Task>),
+          Task,
+          PrefetchHooks Function()
+        > {
+  $$TasksTableTableManager(_$NavigatorsDatabase db, $TasksTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TasksTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TasksTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TasksTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> companyId = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String> taskType = const Value.absent(),
+                Value<String> priority = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<DateTime?> dueDate = const Value.absent(),
+                Value<String?> linkedEntityType = const Value.absent(),
+                Value<String?> linkedEntityId = const Value.absent(),
+                Value<int> progressPct = const Value.absent(),
+                Value<int> totalCount = const Value.absent(),
+                Value<int> completedCount = const Value.absent(),
+                Value<String> createdBy = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> syncedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TasksCompanion(
+                id: id,
+                companyId: companyId,
+                title: title,
+                description: description,
+                taskType: taskType,
+                priority: priority,
+                status: status,
+                dueDate: dueDate,
+                linkedEntityType: linkedEntityType,
+                linkedEntityId: linkedEntityId,
+                progressPct: progressPct,
+                totalCount: totalCount,
+                completedCount: completedCount,
+                createdBy: createdBy,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                syncedAt: syncedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String companyId,
+                required String title,
+                Value<String> description = const Value.absent(),
+                required String taskType,
+                Value<String> priority = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<DateTime?> dueDate = const Value.absent(),
+                Value<String?> linkedEntityType = const Value.absent(),
+                Value<String?> linkedEntityId = const Value.absent(),
+                Value<int> progressPct = const Value.absent(),
+                Value<int> totalCount = const Value.absent(),
+                Value<int> completedCount = const Value.absent(),
+                required String createdBy,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> syncedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TasksCompanion.insert(
+                id: id,
+                companyId: companyId,
+                title: title,
+                description: description,
+                taskType: taskType,
+                priority: priority,
+                status: status,
+                dueDate: dueDate,
+                linkedEntityType: linkedEntityType,
+                linkedEntityId: linkedEntityId,
+                progressPct: progressPct,
+                totalCount: totalCount,
+                completedCount: completedCount,
+                createdBy: createdBy,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                syncedAt: syncedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$TasksTableProcessedTableManager =
+    ProcessedTableManager<
+      _$NavigatorsDatabase,
+      $TasksTable,
+      Task,
+      $$TasksTableFilterComposer,
+      $$TasksTableOrderingComposer,
+      $$TasksTableAnnotationComposer,
+      $$TasksTableCreateCompanionBuilder,
+      $$TasksTableUpdateCompanionBuilder,
+      (Task, BaseReferences<_$NavigatorsDatabase, $TasksTable, Task>),
+      Task,
+      PrefetchHooks Function()
+    >;
+typedef $$TaskAssignmentsTableCreateCompanionBuilder =
+    TaskAssignmentsCompanion Function({
+      required String id,
+      required String taskId,
+      required String userId,
+      required String assignedBy,
+      required DateTime assignedAt,
+      Value<int> rowid,
+    });
+typedef $$TaskAssignmentsTableUpdateCompanionBuilder =
+    TaskAssignmentsCompanion Function({
+      Value<String> id,
+      Value<String> taskId,
+      Value<String> userId,
+      Value<String> assignedBy,
+      Value<DateTime> assignedAt,
+      Value<int> rowid,
+    });
+
+class $$TaskAssignmentsTableFilterComposer
+    extends Composer<_$NavigatorsDatabase, $TaskAssignmentsTable> {
+  $$TaskAssignmentsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get taskId => $composableBuilder(
+    column: $table.taskId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get assignedBy => $composableBuilder(
+    column: $table.assignedBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get assignedAt => $composableBuilder(
+    column: $table.assignedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$TaskAssignmentsTableOrderingComposer
+    extends Composer<_$NavigatorsDatabase, $TaskAssignmentsTable> {
+  $$TaskAssignmentsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get taskId => $composableBuilder(
+    column: $table.taskId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get assignedBy => $composableBuilder(
+    column: $table.assignedBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get assignedAt => $composableBuilder(
+    column: $table.assignedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TaskAssignmentsTableAnnotationComposer
+    extends Composer<_$NavigatorsDatabase, $TaskAssignmentsTable> {
+  $$TaskAssignmentsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get taskId =>
+      $composableBuilder(column: $table.taskId, builder: (column) => column);
+
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<String> get assignedBy => $composableBuilder(
+    column: $table.assignedBy,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get assignedAt => $composableBuilder(
+    column: $table.assignedAt,
+    builder: (column) => column,
+  );
+}
+
+class $$TaskAssignmentsTableTableManager
+    extends
+        RootTableManager<
+          _$NavigatorsDatabase,
+          $TaskAssignmentsTable,
+          TaskAssignment,
+          $$TaskAssignmentsTableFilterComposer,
+          $$TaskAssignmentsTableOrderingComposer,
+          $$TaskAssignmentsTableAnnotationComposer,
+          $$TaskAssignmentsTableCreateCompanionBuilder,
+          $$TaskAssignmentsTableUpdateCompanionBuilder,
+          (
+            TaskAssignment,
+            BaseReferences<
+              _$NavigatorsDatabase,
+              $TaskAssignmentsTable,
+              TaskAssignment
+            >,
+          ),
+          TaskAssignment,
+          PrefetchHooks Function()
+        > {
+  $$TaskAssignmentsTableTableManager(
+    _$NavigatorsDatabase db,
+    $TaskAssignmentsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TaskAssignmentsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TaskAssignmentsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TaskAssignmentsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> taskId = const Value.absent(),
+                Value<String> userId = const Value.absent(),
+                Value<String> assignedBy = const Value.absent(),
+                Value<DateTime> assignedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TaskAssignmentsCompanion(
+                id: id,
+                taskId: taskId,
+                userId: userId,
+                assignedBy: assignedBy,
+                assignedAt: assignedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String taskId,
+                required String userId,
+                required String assignedBy,
+                required DateTime assignedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => TaskAssignmentsCompanion.insert(
+                id: id,
+                taskId: taskId,
+                userId: userId,
+                assignedBy: assignedBy,
+                assignedAt: assignedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$TaskAssignmentsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$NavigatorsDatabase,
+      $TaskAssignmentsTable,
+      TaskAssignment,
+      $$TaskAssignmentsTableFilterComposer,
+      $$TaskAssignmentsTableOrderingComposer,
+      $$TaskAssignmentsTableAnnotationComposer,
+      $$TaskAssignmentsTableCreateCompanionBuilder,
+      $$TaskAssignmentsTableUpdateCompanionBuilder,
+      (
+        TaskAssignment,
+        BaseReferences<
+          _$NavigatorsDatabase,
+          $TaskAssignmentsTable,
+          TaskAssignment
+        >,
+      ),
+      TaskAssignment,
+      PrefetchHooks Function()
+    >;
+typedef $$TaskNotesTableCreateCompanionBuilder =
+    TaskNotesCompanion Function({
+      required String id,
+      required String companyId,
+      required String taskId,
+      required String userId,
+      required String content,
+      Value<String> visibility,
+      required DateTime createdAt,
+      Value<DateTime?> syncedAt,
+      Value<int> rowid,
+    });
+typedef $$TaskNotesTableUpdateCompanionBuilder =
+    TaskNotesCompanion Function({
+      Value<String> id,
+      Value<String> companyId,
+      Value<String> taskId,
+      Value<String> userId,
+      Value<String> content,
+      Value<String> visibility,
+      Value<DateTime> createdAt,
+      Value<DateTime?> syncedAt,
+      Value<int> rowid,
+    });
+
+class $$TaskNotesTableFilterComposer
+    extends Composer<_$NavigatorsDatabase, $TaskNotesTable> {
+  $$TaskNotesTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get companyId => $composableBuilder(
+    column: $table.companyId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get taskId => $composableBuilder(
+    column: $table.taskId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get visibility => $composableBuilder(
+    column: $table.visibility,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get syncedAt => $composableBuilder(
+    column: $table.syncedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$TaskNotesTableOrderingComposer
+    extends Composer<_$NavigatorsDatabase, $TaskNotesTable> {
+  $$TaskNotesTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get companyId => $composableBuilder(
+    column: $table.companyId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get taskId => $composableBuilder(
+    column: $table.taskId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get visibility => $composableBuilder(
+    column: $table.visibility,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get syncedAt => $composableBuilder(
+    column: $table.syncedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TaskNotesTableAnnotationComposer
+    extends Composer<_$NavigatorsDatabase, $TaskNotesTable> {
+  $$TaskNotesTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get companyId =>
+      $composableBuilder(column: $table.companyId, builder: (column) => column);
+
+  GeneratedColumn<String> get taskId =>
+      $composableBuilder(column: $table.taskId, builder: (column) => column);
+
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<String> get content =>
+      $composableBuilder(column: $table.content, builder: (column) => column);
+
+  GeneratedColumn<String> get visibility => $composableBuilder(
+    column: $table.visibility,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get syncedAt =>
+      $composableBuilder(column: $table.syncedAt, builder: (column) => column);
+}
+
+class $$TaskNotesTableTableManager
+    extends
+        RootTableManager<
+          _$NavigatorsDatabase,
+          $TaskNotesTable,
+          TaskNote,
+          $$TaskNotesTableFilterComposer,
+          $$TaskNotesTableOrderingComposer,
+          $$TaskNotesTableAnnotationComposer,
+          $$TaskNotesTableCreateCompanionBuilder,
+          $$TaskNotesTableUpdateCompanionBuilder,
+          (
+            TaskNote,
+            BaseReferences<_$NavigatorsDatabase, $TaskNotesTable, TaskNote>,
+          ),
+          TaskNote,
+          PrefetchHooks Function()
+        > {
+  $$TaskNotesTableTableManager(_$NavigatorsDatabase db, $TaskNotesTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TaskNotesTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TaskNotesTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TaskNotesTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> companyId = const Value.absent(),
+                Value<String> taskId = const Value.absent(),
+                Value<String> userId = const Value.absent(),
+                Value<String> content = const Value.absent(),
+                Value<String> visibility = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime?> syncedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TaskNotesCompanion(
+                id: id,
+                companyId: companyId,
+                taskId: taskId,
+                userId: userId,
+                content: content,
+                visibility: visibility,
+                createdAt: createdAt,
+                syncedAt: syncedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String companyId,
+                required String taskId,
+                required String userId,
+                required String content,
+                Value<String> visibility = const Value.absent(),
+                required DateTime createdAt,
+                Value<DateTime?> syncedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TaskNotesCompanion.insert(
+                id: id,
+                companyId: companyId,
+                taskId: taskId,
+                userId: userId,
+                content: content,
+                visibility: visibility,
+                createdAt: createdAt,
+                syncedAt: syncedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$TaskNotesTableProcessedTableManager =
+    ProcessedTableManager<
+      _$NavigatorsDatabase,
+      $TaskNotesTable,
+      TaskNote,
+      $$TaskNotesTableFilterComposer,
+      $$TaskNotesTableOrderingComposer,
+      $$TaskNotesTableAnnotationComposer,
+      $$TaskNotesTableCreateCompanionBuilder,
+      $$TaskNotesTableUpdateCompanionBuilder,
+      (
+        TaskNote,
+        BaseReferences<_$NavigatorsDatabase, $TaskNotesTable, TaskNote>,
+      ),
+      TaskNote,
+      PrefetchHooks Function()
+    >;
 
 class $NavigatorsDatabaseManager {
   final _$NavigatorsDatabase _db;
@@ -7787,4 +10536,10 @@ class $NavigatorsDatabaseManager {
       $$VoterNotesTableTableManager(_db, _db.voterNotes);
   $$CallScriptsTableTableManager get callScripts =>
       $$CallScriptsTableTableManager(_db, _db.callScripts);
+  $$TasksTableTableManager get tasks =>
+      $$TasksTableTableManager(_db, _db.tasks);
+  $$TaskAssignmentsTableTableManager get taskAssignments =>
+      $$TaskAssignmentsTableTableManager(_db, _db.taskAssignments);
+  $$TaskNotesTableTableManager get taskNotes =>
+      $$TaskNotesTableTableManager(_db, _db.taskNotes);
 }
