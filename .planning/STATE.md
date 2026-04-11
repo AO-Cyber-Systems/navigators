@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-04-10)
 **Objective:** 3 of 10 (Turf Management + Maps)
 **Current Job:** 3
 **Total Jobs in Objective:** 3
-**Status:** Ready to execute
+**Status:** Objective complete — ready for verification
 **Last Activity:** 2026-04-11
 
 Progress: [##........] 13%
@@ -38,6 +38,7 @@ Progress: [##........] 13%
 | Objective 02 P03 | 9min | 2 tasks | 22 files |
 | Objective 03 P01 | 7min | 2 tasks | 8 files |
 | Objective 03 P02 | 6min | 2 tasks | 7 files |
+| Objective 03 P03 | 9min | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -72,6 +73,9 @@ Recent decisions affecting current work:
 - [Objective 03]: PolygonLayer uses generic type parameter <String> for hitValue to satisfy flutter_map 8 nullability constraints
 - [Objective 03]: Map tab positioned for all roles (not just admin) between Voters and Import tabs
 - [Objective 03]: Voter pins loaded per-turf on selection rather than viewport-based to avoid loading all voters at once
+- [Objective 03]: FMTC store naming: 'turf-{turfId}' for per-turf caching
+- [Objective 03]: Heat map uses MapCamera.getOffsetFromOrigin for flutter_map 8 projection
+- [Objective 03]: FMTC 10.1.1: countTiles (not check), startForeground returns record, stats use .length
 
 ### Pending Todos
 
