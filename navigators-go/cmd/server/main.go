@@ -24,6 +24,7 @@ import (
 	"github.com/golang-migrate/migrate/v4/source/iofs"
 
 	navigators "navigators-go"
+	navpkg "navigators-go/internal/navigators"
 )
 
 func main() {
@@ -69,7 +70,7 @@ func main() {
 	ssoService := auth.NewSSOService(authStore, jwtManager, "http://localhost"+cfg.ServerAddr)
 
 	rbacStore := pgBackend.RBACStore()
-	enforcer := rbac.NewEnforcer(rbacStore, navigatorsPermissionMatrix())
+	enforcer := rbac.NewEnforcer(rbacStore, navpkg.NavigatorsPermissionMatrix())
 
 	// --- Audit logging ---
 	auditStore := pgBackend.AuditStore()
@@ -84,11 +85,11 @@ func main() {
 	// --- HTTP server ---
 	mux := http.NewServeMux()
 
-	publicProcedures := publicProcedures()
+	publicProcedures := navpkg.MergedPublicProcedures()
 	authInterceptor := server.NewAuthInterceptor(jwtManager, publicProcedures)
 	rbacConfig := server.InterceptorConfig{
 		PublicProcedures:     publicProcedures,
-		ProcedurePermissions: navigatorsProcedurePermissions(),
+		ProcedurePermissions: navpkg.NavigatorsProcedurePermissions(),
 	}
 	rbacInterceptor := server.NewRBACInterceptor(enforcer, rbacConfig)
 	auditInterceptor := server.NewAuditInterceptor(auditLogger, publicProcedures)
@@ -138,20 +139,3 @@ func runNavigatorsMigrations(databaseURL string, migrationsFS fs.FS) error {
 	return nil
 }
 
-// publicProcedures returns the set of procedures that do not require authentication.
-// Includes eden's default public procedures.
-func publicProcedures() map[string]bool {
-	return server.DefaultPublicProcedures()
-}
-
-// navigatorsPermissionMatrix returns the RBAC permission matrix for navigators.
-// Placeholder: TRD-02 will populate this with voter, turf, team, admin permissions.
-func navigatorsPermissionMatrix() rbac.PermissionMatrix {
-	return nil
-}
-
-// navigatorsProcedurePermissions returns the procedure-to-permission mapping for navigators.
-// Placeholder: TRD-02 will populate this with navigators-specific procedure permissions.
-func navigatorsProcedurePermissions() map[string]server.Permission {
-	return map[string]server.Permission{}
-}
