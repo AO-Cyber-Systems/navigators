@@ -10,6 +10,9 @@ class SyncResult {
   final int pushedCount;
   final int pulledVoters;
   final int pulledContactLogs;
+  final int pulledSurveyForms;
+  final int pulledSurveyResponses;
+  final int pulledVoterNotes;
   final int retriedCount;
   final List<String> errors;
 
@@ -17,6 +20,9 @@ class SyncResult {
     required this.pushedCount,
     required this.pulledVoters,
     required this.pulledContactLogs,
+    this.pulledSurveyForms = 0,
+    this.pulledSurveyResponses = 0,
+    this.pulledVoterNotes = 0,
     required this.retriedCount,
     this.errors = const [],
   });
@@ -26,7 +32,10 @@ class SyncResult {
   @override
   String toString() =>
       'SyncResult(pushed: $pushedCount, pulledVoters: $pulledVoters, '
-      'pulledContactLogs: $pulledContactLogs, retried: $retriedCount, '
+      'pulledContactLogs: $pulledContactLogs, '
+      'pulledSurveyForms: $pulledSurveyForms, '
+      'pulledSurveyResponses: $pulledSurveyResponses, '
+      'pulledVoterNotes: $pulledVoterNotes, retried: $retriedCount, '
       'errors: ${errors.length})';
 }
 
@@ -115,16 +124,26 @@ class SyncEngine {
       // Phase 3: Pull updates from server
       var pulledVoters = 0;
       var pulledContactLogs = 0;
+      var pulledSurveyForms = 0;
+      var pulledSurveyResponses = 0;
+      var pulledVoterNotes = 0;
 
       try {
         // Get turf IDs from local turf assignments
         final turfIds = await _getTurfIds();
 
         if (turfIds.isNotEmpty) {
+          // Pull survey forms first (needed before surveys can be rendered)
+          pulledSurveyForms =
+              await _pullClient.pullAllSurveyForms(_db);
           pulledVoters =
               await _pullClient.pullAllVoters(_db, turfIds);
           pulledContactLogs =
               await _pullClient.pullAllContactLogs(_db, turfIds);
+          pulledSurveyResponses =
+              await _pullClient.pullAllSurveyResponses(_db, turfIds);
+          pulledVoterNotes =
+              await _pullClient.pullAllVoterNotes(_db, turfIds);
         }
       } catch (e) {
         errors.add('Pull failed: $e');
@@ -134,6 +153,9 @@ class SyncEngine {
         pushedCount: totalPushed,
         pulledVoters: pulledVoters,
         pulledContactLogs: pulledContactLogs,
+        pulledSurveyForms: pulledSurveyForms,
+        pulledSurveyResponses: pulledSurveyResponses,
+        pulledVoterNotes: pulledVoterNotes,
         retriedCount: retriedCount,
         errors: errors,
       );

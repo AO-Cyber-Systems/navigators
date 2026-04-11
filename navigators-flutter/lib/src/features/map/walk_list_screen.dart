@@ -1,16 +1,15 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
 import '../../database/database.dart';
+import '../../services/door_knock_service.dart';
 import '../../services/map_service.dart';
+import '../door_knocking/door_knock_screen.dart';
+import 'widgets/walk_list_map_view.dart';
 
-/// Displays a route-optimized walk list of voters in a turf.
-/// Supports both list view and map view with connected route lines.
-///
-/// Offline-first: reads from local Drift DB when available,
-/// falls back to server HTTP call when local data is empty.
+/// Route-optimized walk list with door status tracking and auto-advance.
+/// Offline-first: reads local Drift DB, falls back to server.
 class WalkListScreen extends ConsumerStatefulWidget {
   final String turfId;
   final String turfName;
@@ -32,10 +31,24 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
   bool _showMap = false;
   bool _usingLocalData = false;
 
+  /// Door status for each voter (voterId -> doorStatus).
+  Map<String, String> _doorStatuses = {};
+
+  /// Index of the next unvisited voter.
+  int _currentIndex = 0;
+
+  final ScrollController _scrollController = ScrollController();
+
   @override
   void initState() {
     super.initState();
     _loadWalkList();
+  }
+
+  @override
+  void dispose() {
+    _scrollController.dispose();
+    super.dispose();
   }
 
   Future<void> _loadWalkList() async {
@@ -44,7 +57,6 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
       _error = null;
     });
 
-    // Try local Drift DB first (offline-first)
     final localVoters = await _tryLoadFromLocalDb();
     if (localVoters != null && localVoters.isNotEmpty) {
       if (mounted) {
@@ -54,60 +66,113 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
           _usingLocalData = true;
         });
       }
-      return;
+    } else {
+      try {
+        final service = ref.read(mapServiceProvider);
+        final voters = await service.generateWalkList(widget.turfId);
+        if (mounted) {
+          setState(() {
+            _voters = voters;
+            _isLoading = false;
+            _usingLocalData = false;
+          });
+        }
+      } catch (e) {
+        if (mounted) {
+          setState(() {
+            _isLoading = false;
+            _error = e.toString();
+          });
+        }
+        return;
+      }
     }
 
-    // Fall back to server HTTP call
+    await _loadDoorStatuses();
+  }
+
+  Future<void> _loadDoorStatuses() async {
     try {
-      final service = ref.read(mapServiceProvider);
-      final voters = await service.generateWalkList(widget.turfId);
+      final service = ref.read(doorKnockServiceProvider);
+      final statuses = await service.getDoorStatusesForTurf(widget.turfId);
       if (mounted) {
         setState(() {
-          _voters = voters;
-          _isLoading = false;
-          _usingLocalData = false;
+          _doorStatuses = statuses;
+          _currentIndex = _findNextUnvisitedIndex(0);
         });
       }
-    } catch (e) {
-      if (mounted) {
-        setState(() {
-          _isLoading = false;
-          _error = e.toString();
-        });
-      }
+    } catch (_) {
+      // Silently fail -- statuses are non-critical
     }
   }
 
-  /// Try to load voters from local Drift DB, ordered by walk_sequence.
-  /// Returns null if database is not available or has no data for this turf.
   Future<List<WalkListVoter>?> _tryLoadFromLocalDb() async {
     try {
       final db = ref.read(databaseProvider);
-      final voterDao = db.voterDao;
-
-      // watchVotersInTurf returns a stream; use getVotersInTurf for one-shot
-      // VoterDao orders by walkSequence already in watchVotersInTurf
-      final localVoters = await voterDao.getVotersInTurf(widget.turfId);
-
+      final localVoters = await db.voterDao.getVotersInTurf(widget.turfId);
       if (localVoters.isEmpty) return null;
 
-      // Sort by walk sequence (getVotersInTurf orders by lastName,
-      // we need walkSequence order for the walk list)
       localVoters.sort((a, b) => a.walkSequence.compareTo(b.walkSequence));
 
-      return localVoters.map((v) => WalkListVoter(
-            voterId: v.id,
-            firstName: v.firstName,
-            lastName: v.lastName,
-            latitude: v.latitude,
-            longitude: v.longitude,
-            resStreetAddress: v.resStreetAddress,
-            party: v.party,
-            sequence: v.walkSequence,
-          )).toList();
+      return localVoters
+          .map((v) => WalkListVoter(
+                voterId: v.id,
+                firstName: v.firstName,
+                lastName: v.lastName,
+                latitude: v.latitude,
+                longitude: v.longitude,
+                resStreetAddress: v.resStreetAddress,
+                party: v.party,
+                sequence: v.walkSequence,
+              ))
+          .toList();
     } catch (_) {
-      // Database not initialized or query failed
       return null;
+    }
+  }
+
+  Future<void> _openDoorKnock(WalkListVoter voter) async {
+    final result = await Navigator.push<DoorKnockResult>(
+      context,
+      MaterialPageRoute(
+        builder: (context) => DoorKnockScreen(
+          voterId: voter.voterId,
+          voterName: voter.fullName,
+          turfId: widget.turfId,
+        ),
+      ),
+    );
+
+    if (result != null && mounted) {
+      setState(() {
+        _doorStatuses[result.voterId] = result.doorStatus;
+        _currentIndex = _findNextUnvisitedIndex(_currentIndex);
+      });
+      _scrollToCurrentVoter();
+    }
+  }
+
+  int _findNextUnvisitedIndex(int start) {
+    for (var i = start; i < _voters.length; i++) {
+      if (!_doorStatuses.containsKey(_voters[i].voterId)) return i;
+    }
+    for (var i = 0; i < start; i++) {
+      if (!_doorStatuses.containsKey(_voters[i].voterId)) return i;
+    }
+    return _voters.length;
+  }
+
+  void _scrollToCurrentVoter() {
+    if (_currentIndex < _voters.length && _scrollController.hasClients) {
+      final offset = (_currentIndex * 73.0).clamp(
+        0.0,
+        _scrollController.position.maxScrollExtent,
+      );
+      _scrollController.animateTo(
+        offset,
+        duration: const Duration(milliseconds: 300),
+        curve: Curves.easeInOut,
+      );
     }
   }
 
@@ -121,29 +186,8 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
     }
   }
 
-  Color _partyColor(String party) {
-    switch (party.toUpperCase()) {
-      case 'R':
-      case 'REP':
-      case 'REPUBLICAN':
-        return Colors.red;
-      case 'D':
-      case 'DEM':
-      case 'DEMOCRAT':
-      case 'DEMOCRATIC':
-        return Colors.blue;
-      case 'G':
-      case 'GRN':
-      case 'GREEN':
-        return Colors.green;
-      case 'L':
-      case 'LIB':
-      case 'LIBERTARIAN':
-        return Colors.orange;
-      default:
-        return Colors.grey;
-    }
-  }
+  bool get _allVisited =>
+      _voters.isNotEmpty && _currentIndex >= _voters.length;
 
   @override
   Widget build(BuildContext context) {
@@ -172,6 +216,13 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
         ],
       ),
       body: _buildBody(),
+      floatingActionButton: _voters.isNotEmpty && !_allVisited && !_showMap
+          ? FloatingActionButton.extended(
+              onPressed: () => _openDoorKnock(_voters[_currentIndex]),
+              icon: const Icon(Icons.door_front_door),
+              label: const Text('Knock Next'),
+            )
+          : null,
     );
   }
 
@@ -210,10 +261,13 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
         ),
       );
     }
-    return _showMap ? _buildMapView() : _buildListView();
+    return _showMap
+        ? WalkListMapView(voters: _voters, doorStatuses: _doorStatuses)
+        : _buildListView();
   }
 
   Widget _buildListView() {
+    final visitedCount = _doorStatuses.length;
     return Column(
       children: [
         Padding(
@@ -224,7 +278,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
                   size: 16, color: Theme.of(context).colorScheme.primary),
               const SizedBox(width: 4),
               Text(
-                '${_voters.length} voters in route order',
+                '$visitedCount/${_voters.length} visited',
                 style: Theme.of(context).textTheme.bodySmall,
               ),
             ],
@@ -232,45 +286,54 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
         ),
         Expanded(
           child: ListView.separated(
+            controller: _scrollController,
             itemCount: _voters.length,
             separatorBuilder: (_, _) => const Divider(height: 1),
             itemBuilder: (context, index) {
               final voter = _voters[index];
-              return ListTile(
-                leading: CircleAvatar(
-                  backgroundColor: Theme.of(context).colorScheme.primaryContainer,
-                  child: Text(
-                    '${voter.sequence}',
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: Theme.of(context).colorScheme.onPrimaryContainer,
-                    ),
+              final status = _doorStatuses[voter.voterId];
+              final isCurrent = index == _currentIndex && !_allVisited;
+
+              return Material(
+                color: isCurrent
+                    ? Theme.of(context)
+                        .colorScheme
+                        .primaryContainer
+                        .withValues(alpha: 0.3)
+                    : null,
+                child: ListTile(
+                  onTap: () => _openDoorKnock(voter),
+                  onLongPress: () => _navigateToVoter(voter),
+                  leading: _DoorStatusIndicator(
+                    sequence: voter.sequence,
+                    status: status,
                   ),
-                ),
-                title: Text(voter.fullName),
-                subtitle: Text(voter.resStreetAddress),
-                trailing: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    Chip(
-                      label: Text(
-                        voter.party,
-                        style: TextStyle(
-                          color: _partyColor(voter.party),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w600,
+                  title: Text(voter.fullName),
+                  subtitle: Text(voter.resStreetAddress),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Chip(
+                        label: Text(
+                          voter.party,
+                          style: TextStyle(
+                            color: _partyColor(voter.party),
+                            fontSize: 12,
+                            fontWeight: FontWeight.w600,
+                          ),
                         ),
+                        padding: EdgeInsets.zero,
+                        materialTapTargetSize:
+                            MaterialTapTargetSize.shrinkWrap,
                       ),
-                      padding: EdgeInsets.zero,
-                      materialTapTargetSize: MaterialTapTargetSize.shrinkWrap,
-                    ),
-                    const SizedBox(width: 4),
-                    IconButton(
-                      icon: const Icon(Icons.directions, size: 20),
-                      onPressed: () => _navigateToVoter(voter),
-                      tooltip: 'Navigate',
-                    ),
-                  ],
+                      const SizedBox(width: 4),
+                      IconButton(
+                        icon: const Icon(Icons.directions, size: 20),
+                        onPressed: () => _navigateToVoter(voter),
+                        tooltip: 'Navigate',
+                      ),
+                    ],
+                  ),
                 ),
               );
             },
@@ -280,69 +343,51 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
     );
   }
 
-  Widget _buildMapView() {
-    // Fit map to all voter points
-    final points = _voters
-        .where((v) => v.latitude != 0.0 && v.longitude != 0.0)
-        .map((v) => v.location)
-        .toList();
+  Color _partyColor(String party) => switch (party.toUpperCase()) {
+        'R' || 'REP' || 'REPUBLICAN' => Colors.red,
+        'D' || 'DEM' || 'DEMOCRAT' || 'DEMOCRATIC' => Colors.blue,
+        'G' || 'GRN' || 'GREEN' => Colors.green,
+        'L' || 'LIB' || 'LIBERTARIAN' => Colors.orange,
+        _ => Colors.grey,
+      };
+}
 
-    if (points.isEmpty) {
-      return const Center(child: Text('No geocoded voters to display'));
+/// Door status indicator shown as CircleAvatar in the walk list.
+class _DoorStatusIndicator extends StatelessWidget {
+  final int sequence;
+  final String? status;
+
+  const _DoorStatusIndicator({
+    required this.sequence,
+    required this.status,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    if (status == null) {
+      return CircleAvatar(
+        backgroundColor: Theme.of(context).colorScheme.primaryContainer,
+        child: Text(
+          '$sequence',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Theme.of(context).colorScheme.onPrimaryContainer,
+          ),
+        ),
+      );
     }
 
-    final bounds = LatLngBounds.fromPoints(points);
+    final (icon, color) = switch (status) {
+      'answered' => (Icons.check, Colors.green),
+      'refused' => (Icons.close, Colors.red),
+      'not_home' => (Icons.question_mark, Colors.grey),
+      'moved' => (Icons.arrow_forward, Colors.orange),
+      _ => (Icons.circle, Colors.grey),
+    };
 
-    return FlutterMap(
-      options: MapOptions(
-        initialCameraFit: CameraFit.bounds(
-          bounds: bounds,
-          padding: const EdgeInsets.all(48),
-        ),
-      ),
-      children: [
-        TileLayer(
-          urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
-          userAgentPackageName: 'com.mainegop.navigators',
-        ),
-        // Route line connecting voters in walk order
-        PolylineLayer(
-          polylines: [
-            Polyline(
-              points: points,
-              color: Theme.of(context).colorScheme.primary.withValues(alpha: 0.6),
-              strokeWidth: 3.0,
-            ),
-          ],
-        ),
-        // Voter markers with sequence numbers
-        MarkerLayer(
-          markers: _voters
-              .where((v) => v.latitude != 0.0 && v.longitude != 0.0)
-              .map((voter) => Marker(
-                    point: voter.location,
-                    width: 32,
-                    height: 32,
-                    child: Container(
-                      decoration: BoxDecoration(
-                        color: _partyColor(voter.party),
-                        shape: BoxShape.circle,
-                        border: Border.all(color: Colors.white, width: 2),
-                      ),
-                      alignment: Alignment.center,
-                      child: Text(
-                        '${voter.sequence}',
-                        style: const TextStyle(
-                          color: Colors.white,
-                          fontSize: 11,
-                          fontWeight: FontWeight.bold,
-                        ),
-                      ),
-                    ),
-                  ))
-              .toList(),
-        ),
-      ],
+    return CircleAvatar(
+      backgroundColor: color.withValues(alpha: 0.15),
+      child: Icon(icon, color: color, size: 20),
     );
   }
 }
