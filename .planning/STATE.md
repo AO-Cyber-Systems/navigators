@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-04-10)
 ## Current Position
 
 **Objective:** 4 of 10 (Offline Sync Engine)
-**Current Job:** 1
+**Current Job:** 2
 **Total Jobs in Objective:** 3
-**Status:** In progress
+**Status:** Ready to execute
 **Last Activity:** 2026-04-11
 
 Progress: [##........] 13%
@@ -40,6 +40,7 @@ Progress: [##........] 13%
 | Objective 03 P02 | 6min | 2 tasks | 7 files |
 | Objective 03 P03 | 9min | 2 tasks | 10 files |
 | Objective 04 P01 | 7min | 2 tasks | 28 files |
+| Objective 04 P02 | 43min | 2 tasks | 12 files |
 
 ## Accumulated Context
 
@@ -80,6 +81,8 @@ Recent decisions affecting current work:
 - [Objective 04]: Raw pgxpool for sync voter pull (spatial ST_Contains JOIN not expressible in sqlc)
 - [Objective 04]: Non-admin turf scope enforced server-side (client-provided turf_ids ignored for Navigator/SuperNavigator)
 - [Objective 04]: SQLite3MultipleCiphers via pubspec hooks (NOT sqlcipher_flutter_libs which is deprecated)
+- [Objective 04]: Voter metadata LWW uses timestamp-only update since voters table has no notes column
+- [Objective 04]: SyncEngine.instance static field for WorkManager isolate and connectivity listener access
 
 ### Pending Todos
 
@@ -94,11 +97,12 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-04-11
-Stopped at: Completed 04-01-TRD.md
+Stopped at: Completed 04-02-TRD.md
 Resume file: None
 
 ## History
 
+- 2026-04-11: Completed 04-02-TRD (Push sync engine, transactional outbox, PushSyncBatch RPC, LWW conflict resolution, WorkManager+connectivity scheduling)
 - 2026-04-11: Completed 04-01-TRD (Drift encrypted DB, 5 local tables, 3 DAOs, SyncService proto+handler, cursor-based pull sync)
 - 2026-04-11: Completed 03-01-TRD (turf spatial backend: GeoJSON boundary CRUD, voters-in-turf, walk list, stats, density grid, contact_logs)
 - 2026-04-10: Completed 02-03-TRD (voter profile, suppression list, Flutter UI -- checkpoint approved, all gates pass)
