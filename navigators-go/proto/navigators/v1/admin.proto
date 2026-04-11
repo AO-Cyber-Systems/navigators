@@ -4,5 +4,109 @@ package navigators.v1;
 
 option go_package = "navigators-go/gen/go/navigators/v1;navigatorsv1";
 
-// AdminService handles user management and audit viewing.
-service AdminService {}
+// AdminService handles user management, password reset, and session management.
+service AdminService {
+  // User management (admin only)
+  rpc CreateUser(CreateUserRequest) returns (CreateUserResponse);
+  rpc ListUsers(ListUsersRequest) returns (ListUsersResponse);
+  rpc DeactivateUser(DeactivateUserRequest) returns (DeactivateUserResponse);
+  rpc AssignRole(AssignRoleRequest) returns (AssignRoleResponse);
+
+  // Password reset (public -- unauthenticated users need this)
+  rpc RequestPasswordReset(RequestPasswordResetRequest) returns (RequestPasswordResetResponse);
+  rpc ConfirmPasswordReset(ConfirmPasswordResetRequest) returns (ConfirmPasswordResetResponse);
+
+  // Session management (admin only)
+  rpc RevokeSession(RevokeSessionRequest) returns (RevokeSessionResponse);
+  rpc ListActiveSessions(ListActiveSessionsRequest) returns (ListActiveSessionsResponse);
+}
+
+// --- User Management ---
+
+message CreateUserRequest {
+  string email = 1;
+  string display_name = 2;
+  string password = 3;
+  // One of: "admin", "super_navigator", "navigator"
+  string role = 4;
+}
+
+message CreateUserResponse {
+  string user_id = 1;
+  string email = 2;
+  string role = 3;
+}
+
+message ListUsersRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+message ListUsersResponse {
+  repeated UserInfo users = 1;
+  string next_page_token = 2;
+}
+
+message UserInfo {
+  string user_id = 1;
+  string email = 2;
+  string display_name = 3;
+  string role = 4;
+  bool is_active = 5;
+  string created_at = 6;
+}
+
+message DeactivateUserRequest {
+  string user_id = 1;
+}
+
+message DeactivateUserResponse {}
+
+message AssignRoleRequest {
+  string user_id = 1;
+  // One of: "admin", "super_navigator", "navigator"
+  string role = 2;
+}
+
+message AssignRoleResponse {}
+
+// --- Password Reset ---
+
+message RequestPasswordResetRequest {
+  string email = 1;
+}
+
+// Always returns success regardless of whether email exists.
+message RequestPasswordResetResponse {
+  string message = 1;
+}
+
+message ConfirmPasswordResetRequest {
+  string token = 1;
+  string new_password = 2;
+}
+
+message ConfirmPasswordResetResponse {
+  string message = 1;
+}
+
+// --- Session Management ---
+
+message RevokeSessionRequest {
+  string user_id = 1;
+}
+
+message RevokeSessionResponse {}
+
+message ListActiveSessionsRequest {}
+
+message ListActiveSessionsResponse {
+  repeated SessionInfo sessions = 1;
+}
+
+message SessionInfo {
+  string user_id = 1;
+  string email = 2;
+  string created_at = 3;
+  string last_active_at = 4;
+}

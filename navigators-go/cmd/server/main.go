@@ -7,6 +7,7 @@ import (
 	"log/slog"
 	"net/http"
 	"strings"
+	"time"
 
 	connect "connectrpc.com/connect"
 	edenplatform "github.com/aocybersystems/eden-platform-go"
@@ -24,6 +25,7 @@ import (
 	"github.com/golang-migrate/migrate/v4/source/iofs"
 
 	navigators "navigators-go"
+	"navigators-go/gen/go/navigators/v1/navigatorsv1connect"
 	navpkg "navigators-go/internal/navigators"
 )
 
@@ -94,13 +96,32 @@ func main() {
 	rbacInterceptor := server.NewRBACInterceptor(enforcer, rbacConfig)
 	auditInterceptor := server.NewAuditInterceptor(auditLogger, publicProcedures)
 
+	interceptors := connect.WithInterceptors(obsInterceptor, authInterceptor, rbacInterceptor, auditInterceptor)
+
 	server.RegisterPlatformHandlers(
 		mux,
 		server.PlatformHandlers{
 			Auth: connectapi.NewAuthHandler(authService, ssoService),
 		},
-		connect.WithInterceptors(obsInterceptor, authInterceptor, rbacInterceptor, auditInterceptor),
+		interceptors,
 	)
+
+	// --- Navigators admin service ---
+	adminService := navpkg.NewAdminService(
+		authStore,
+		rbacStore,
+		auth.NewPasswordHasher(),
+		jwtManager,
+		auditLogger,
+		pgBackend.Pool(),
+	)
+	adminHandler := navpkg.NewAdminHandler(adminService)
+	adminPath, adminHTTPHandler := navigatorsv1connect.NewAdminServiceHandler(adminHandler, interceptors)
+	mux.Handle(adminPath, adminHTTPHandler)
+
+	// --- Session timeout checker ---
+	// Check every 5 minutes, revoke tokens inactive for 30 minutes.
+	navpkg.StartSessionTimeoutChecker(ctx, pgBackend.Pool(), 5*time.Minute, 30*time.Minute)
 
 	// Health check
 	healthChecker := server.NewHealthChecker()
