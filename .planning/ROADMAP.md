@@ -14,7 +14,7 @@ Navigators goes from foundation to field-ready in 10 objectives. The first four 
 - [x] **Objective 4: Offline Sync Engine** - Download, work offline, and sync back with conflict resolution
 - [x] **Objective 5: Door Knocking + Contact Log** - Walk lists, at-the-door surveys, notes, and unified contact timeline
 - [x] **Objective 6: SMS Integration** - P2P texting, A2P broadcasts, templates, opt-out handling, and 10DLC
-- [ ] **Objective 7: Phone Calls + Scripts** - Click-to-call, post-call dispositions, and call scripts
+- [x] **Objective 7: Phone Calls + Scripts** - Click-to-call, post-call dispositions, and call scripts
 - [ ] **Objective 8: Tasks + Collaboration** - Task CRUD, auto-progress, push notifications
 - [ ] **Objective 9: Analytics + Dashboards** - Per-role dashboards, heat maps, metrics, and data export
 - [ ] **Objective 10: Volunteer Management + Events** - Onboarding flow, events, leaderboards, training materials
@@ -155,9 +155,9 @@ Jobs:
 **TRDs:** 3 plans in 3 waves
 
 Jobs:
-- [ ] 08-01: TBD
-- [ ] 08-02: TBD
-- [ ] 08-03: TBD
+- [ ] 08-01-TRD.md — Task data model + CRUD + assignment + notes + proto + Drift tables/DAO + pull sync
+- [ ] 08-02-TRD.md — Auto-progress NATS worker + FCM dispatcher + push notifications + device token registration
+- [ ] 08-03-TRD.md — Flutter task UI (list, detail, create) + Firebase Messaging + PUSH-03 sync alert + Tasks tab
 
 ### Objective 9: Analytics + Dashboards
 **Goal**: Each role sees a dashboard tailored to their scope, and Admins can export data and view geographic analytics
@@ -207,4 +207,4 @@ Jobs:
 
 ---
 *Roadmap created: 2026-04-10*
-*Last updated: 2026-04-11 — Objective 7 planned*
+*Last updated: 2026-04-11 — Objective 8 planned*

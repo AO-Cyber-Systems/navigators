@@ -5,13 +5,13 @@
 See: .planning/PROJECT.md (updated 2026-04-10)
 
 **Core value:** Navigators can go into the field with a complete voter list, map, and outreach tools -- work entirely offline in rural Maine -- and have every interaction automatically sync back to give leadership real-time visibility into grassroots organizing efforts.
-**Current focus:** Phone Calls & Scripts (Objective 7)
+**Current focus:** Tasks & Collaboration (Objective 8)
 
 ## Current Position
 
-**Objective:** 7 of 10 (Phone Calls & Scripts)
+**Objective:** 8 of 10 (Tasks & Collaboration)
 **Current Job:** 2
-**Total Jobs in Objective:** 2
+**Total Jobs in Objective:** 3
 **Status:** Ready to execute
 **Last Activity:** 2026-04-11
 
@@ -50,6 +50,7 @@ Progress: [##........] 13%
 | Objective 06-sms-integration P03 | 6min | 2 tasks | 9 files |
 | Objective 07 P01 | 6min | 2 tasks | 19 files |
 | Objective 07 P02 | 7min | 2 tasks | 8 files |
+| Objective 08 P01 | 11min | 2 tasks | 20 files |
 
 ## Accumulated Context
 
@@ -118,6 +119,7 @@ Recent decisions affecting current work:
 - [Objective 07]: CallScriptManagerScreen is read-only (view synced scripts) since no ConnectRPC handler for create/update exists yet
 - [Objective 07]: Phone call screen launches dialer immediately on open, does not gate flow on dialer success
 - [Objective 07]: Phone flow has 4 steps (calling, disposition, sentiment, notes) with calling step showing script before disposition
+- [Objective 08]: DueDate uses pgtype.Timestamptz; LinkedEntityID uses pgtype.UUID; InsertTaskVoters uses sqlc copyfrom; task_note entity type for push sync
 
 ### Pending Todos
 
@@ -132,11 +134,12 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-04-11
-Stopped at: Completed 07-01-TRD.md
+Stopped at: Completed 08-01-TRD.md
 Resume file: None
 
 ## History
 
+- 2026-04-11: Completed 08-01-TRD (Task data model, CRUD service, assignment, linking, notes, proto, Drift tables/DAO, pull sync)
 - 2026-04-11: Completed 07-01-TRD (Call scripts backend + phone call data layer: migration 014, CallScriptService, PullCallScripts sync, Drift table/DAO)
 - 2026-04-11: Completed 06-01-TRD (SMS infrastructure: migration 013, Twilio SDK, P2P send, webhooks, NATS workers, compliance)
 - 2026-04-11: Completed 05-01-TRD (Door knocking data layer: migration 012, survey/notes services, sync endpoints, Drift tables/DAOs)
