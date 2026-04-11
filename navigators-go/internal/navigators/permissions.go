@@ -18,7 +18,11 @@ const (
 	FeatureSMS         rbac.Feature = "sms"
 	FeatureCallScripts rbac.Feature = "call_scripts"
 	FeatureTasks       rbac.Feature = "tasks"
-	FeatureAnalytics   rbac.Feature = "analytics"
+	FeatureAnalytics    rbac.Feature = "analytics"
+	FeatureOnboarding   rbac.Feature = "onboarding"
+	FeatureLeaderboard  rbac.Feature = "leaderboard"
+	FeatureTraining     rbac.Feature = "training"
+	FeatureEvents       rbac.Feature = "events"
 )
 
 // NavigatorsPermissionMatrix returns the RBAC permission matrix for the Navigators app.
@@ -93,6 +97,21 @@ func NavigatorsPermissionMatrix() rbac.PermissionMatrix {
 		FeatureAnalytics: {
 			"view":   rbac.RoleLevelMember, // Navigator (40) -- all roles can view dashboard
 			"export": rbac.RoleLevelAdmin,  // Admin (80) -- export is admin-only
+		},
+		FeatureOnboarding: {
+			"view":   rbac.RoleLevelMember, // Navigator (40) -- all roles can access onboarding
+			"update": rbac.RoleLevelMember, // Navigator (40)
+		},
+		FeatureLeaderboard: {
+			"view": rbac.RoleLevelMember, // Navigator (40) -- all roles can view leaderboard
+		},
+		FeatureTraining: {
+			"view":   rbac.RoleLevelMember,  // Navigator (40) -- all roles can view materials
+			"create": rbac.RoleLevelManager, // Super Navigator (60)
+		},
+		FeatureEvents: {
+			"view":   rbac.RoleLevelMember,  // Navigator (40) -- all roles can view/RSVP/check-in
+			"create": rbac.RoleLevelManager, // Super Navigator (60) -- create/update/cancel
 		},
 	}
 }
@@ -214,6 +233,34 @@ func NavigatorsProcedurePermissions() map[string]server.Permission {
 		"/navigators.v1.AnalyticsService/GetPerformanceReport":  {Feature: "analytics", Action: "view"},
 		// Export is admin-only
 		"/navigators.v1.AnalyticsService/ExportData": {Feature: "analytics", Action: "export"},
+
+		// Onboarding (all authenticated)
+		"/navigators.v1.OnboardingService/GetOnboardingStatus":   {Feature: "onboarding", Action: "view"},
+		"/navigators.v1.OnboardingService/AcknowledgeLegal":      {Feature: "onboarding", Action: "update"},
+		"/navigators.v1.OnboardingService/CompleteOnboarding":    {Feature: "onboarding", Action: "update"},
+		"/navigators.v1.OnboardingService/UpdateLeaderboardOptIn": {Feature: "onboarding", Action: "update"},
+
+		// Leaderboard (all authenticated)
+		"/navigators.v1.LeaderboardService/GetLeaderboard": {Feature: "leaderboard", Action: "view"},
+
+		// Training materials
+		"/navigators.v1.TrainingService/ListTrainingMaterials":   {Feature: "training", Action: "view"},
+		"/navigators.v1.TrainingService/CreateTrainingMaterial":  {Feature: "training", Action: "create"},
+		"/navigators.v1.TrainingService/GetTrainingDownloadUrl":  {Feature: "training", Action: "view"},
+
+		// Events
+		"/navigators.v1.EventService/CreateEvent":         {Feature: "events", Action: "create"},
+		"/navigators.v1.EventService/GetEvent":             {Feature: "events", Action: "view"},
+		"/navigators.v1.EventService/ListEvents":            {Feature: "events", Action: "view"},
+		"/navigators.v1.EventService/UpdateEvent":           {Feature: "events", Action: "create"},
+		"/navigators.v1.EventService/CancelEvent":           {Feature: "events", Action: "create"},
+		"/navigators.v1.EventService/RSVPEvent":             {Feature: "events", Action: "view"},
+		"/navigators.v1.EventService/CheckInEvent":          {Feature: "events", Action: "view"},
+		"/navigators.v1.EventService/GetEventAttendance":    {Feature: "events", Action: "view"},
+
+		// Event + Training sync
+		"/navigators.v1.SyncService/PullEvents":              {Feature: "sync", Action: "pull"},
+		"/navigators.v1.SyncService/PullTrainingMaterials":   {Feature: "sync", Action: "pull"},
 	}
 }
 

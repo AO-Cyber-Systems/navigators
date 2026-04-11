@@ -228,6 +228,33 @@ func main() {
 		}
 	}
 
+	// --- Ensure training-materials bucket exists ---
+	trainingBucket := "training-materials"
+	tmExists, err := minioClient.BucketExists(ctx, trainingBucket)
+	if err != nil {
+		log.Fatalf("check training-materials bucket: %v", err)
+	}
+	if !tmExists {
+		if err := minioClient.MakeBucket(ctx, trainingBucket, minio.MakeBucketOptions{Region: cfg.MinIORegion}); err != nil {
+			log.Fatalf("create training-materials bucket: %v", err)
+		}
+		slog.Info("created training-materials bucket")
+	}
+
+	// --- Volunteer services ---
+	volunteerService := navpkg.NewVolunteerService(navQueries, pgBackend.Pool(), minioClient, trainingBucket)
+	onboardingHandler := navpkg.NewOnboardingHandler(volunteerService)
+	onboardingPath, onboardingHTTPHandler := navigatorsv1connect.NewOnboardingServiceHandler(onboardingHandler, interceptors)
+	mux.Handle(onboardingPath, onboardingHTTPHandler)
+
+	leaderboardHandler := navpkg.NewLeaderboardHandler(volunteerService)
+	leaderboardPath, leaderboardHTTPHandler := navigatorsv1connect.NewLeaderboardServiceHandler(leaderboardHandler, interceptors)
+	mux.Handle(leaderboardPath, leaderboardHTTPHandler)
+
+	trainingHandler := navpkg.NewTrainingHandler(volunteerService)
+	trainingPath, trainingHTTPHandler := navigatorsv1connect.NewTrainingServiceHandler(trainingHandler, interceptors)
+	mux.Handle(trainingPath, trainingHTTPHandler)
+
 	// --- Survey + Notes + Call Script + Task services ---
 	surveyService := navpkg.NewSurveyService(navQueries, pgBackend.Pool())
 	voterNotesService := navpkg.NewVoterNotesService(navQueries, pgBackend.Pool())
@@ -245,6 +272,12 @@ func main() {
 	taskHandler := navpkg.NewTaskHandler(taskService, fcmDisp)
 	taskPath, taskHTTPHandler := navigatorsv1connect.NewTaskServiceHandler(taskHandler, interceptors)
 	mux.Handle(taskPath, taskHTTPHandler)
+
+	// --- Event service ---
+	eventService := navpkg.NewEventService(navQueries, pgBackend.Pool(), js)
+	eventHandler := navpkg.NewEventHandler(eventService)
+	eventPath, eventHTTPHandler := navigatorsv1connect.NewEventServiceHandler(eventHandler, interceptors)
+	mux.Handle(eventPath, eventHTTPHandler)
 
 	// --- Sync service ---
 	syncService := navpkg.NewSyncService(navQueries, pgBackend.Pool(), js, turfScopedFilter, surveyService, voterNotesService, callScriptService, taskService)
@@ -287,6 +320,16 @@ func main() {
 			slog.Warn("Task NATS worker failed to start", "error", err)
 		} else {
 			defer taskWorker.Stop()
+		}
+	}
+
+	// --- Event NATS worker ---
+	if js != nil {
+		eventWorker := navpkg.NewEventWorker(js, navQueries, pgBackend.Pool(), fcmDispatcher)
+		if err := eventWorker.Start(ctx); err != nil {
+			slog.Warn("Event NATS worker failed to start", "error", err)
+		} else {
+			defer eventWorker.Stop()
 		}
 	}
 

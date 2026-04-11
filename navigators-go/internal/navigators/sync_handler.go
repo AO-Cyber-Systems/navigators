@@ -493,6 +493,112 @@ func (h *SyncHandler) PullTaskNotes(ctx context.Context, req *connect.Request[na
 	}), nil
 }
 
+func (h *SyncHandler) PullEvents(ctx context.Context, req *connect.Request[navigatorsv1.PullEventsRequest]) (*connect.Response[navigatorsv1.PullEventsResponse], error) {
+	companyID, err := extractCompanyID(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	batchSize := req.Msg.GetBatchSize()
+	if batchSize <= 0 {
+		batchSize = 500
+	}
+
+	result, err := h.syncService.PullEvents(ctx, companyID, req.Msg.GetSinceCursor(), batchSize)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("pull events: %w", err))
+	}
+
+	pbEvents := make([]*navigatorsv1.SyncEvent, len(result.Events))
+	for i, e := range result.Events {
+		pe := &navigatorsv1.SyncEvent{
+			Id:          e.ID.String(),
+			CompanyId:   e.CompanyID.String(),
+			Title:       e.Title,
+			Description: e.Description,
+			EventType:   e.EventType,
+			Status:      e.Status,
+			StartsAt:    e.StartsAt.Format(time.RFC3339),
+			EndsAt:      e.EndsAt.Format(time.RFC3339),
+			CreatedBy:   e.CreatedBy.String(),
+			CreatedAt:   e.CreatedAt.Format(time.RFC3339),
+			UpdatedAt:   e.UpdatedAt.Format(time.RFC3339),
+		}
+		if e.LocationName != nil {
+			pe.LocationName = *e.LocationName
+		}
+		if e.LocationLat != nil {
+			pe.LocationLat = *e.LocationLat
+		}
+		if e.LocationLng != nil {
+			pe.LocationLng = *e.LocationLng
+		}
+		if e.LinkedTurfID != nil {
+			pe.LinkedTurfId = e.LinkedTurfID.String()
+		}
+		if e.MaxAttendees != nil {
+			pe.MaxAttendees = *e.MaxAttendees
+		}
+		pbEvents[i] = pe
+	}
+
+	pbRSVPs := make([]*navigatorsv1.SyncEventRSVP, len(result.RSVPs))
+	for i, r := range result.RSVPs {
+		pbRSVPs[i] = &navigatorsv1.SyncEventRSVP{
+			Id:        r.ID.String(),
+			EventId:   r.EventID.String(),
+			UserId:    r.UserID.String(),
+			Status:    r.Status,
+			CreatedAt: r.CreatedAt.Format(time.RFC3339),
+		}
+	}
+
+	return connect.NewResponse(&navigatorsv1.PullEventsResponse{
+		Events:     pbEvents,
+		Rsvps:      pbRSVPs,
+		NextCursor: result.NextCursor,
+		HasMore:    result.HasMore,
+	}), nil
+}
+
+func (h *SyncHandler) PullTrainingMaterials(ctx context.Context, req *connect.Request[navigatorsv1.PullTrainingMaterialsRequest]) (*connect.Response[navigatorsv1.PullTrainingMaterialsResponse], error) {
+	companyID, err := extractCompanyID(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	batchSize := req.Msg.GetBatchSize()
+	if batchSize <= 0 {
+		batchSize = 500
+	}
+
+	result, err := h.syncService.PullTrainingMaterials(ctx, companyID, req.Msg.GetSinceCursor(), batchSize)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("pull training materials: %w", err))
+	}
+
+	pbMaterials := make([]*navigatorsv1.SyncTrainingMaterial, len(result.Materials))
+	for i, m := range result.Materials {
+		pbMaterials[i] = &navigatorsv1.SyncTrainingMaterial{
+			Id:          m.ID.String(),
+			CompanyId:   m.CompanyID.String(),
+			Title:       m.Title,
+			Description: m.Description,
+			ContentUrl:  m.ContentURL,
+			SortOrder:   m.SortOrder,
+			IsPublished: m.IsPublished,
+			CreatedAt:   m.CreatedAt.Format(time.RFC3339),
+			UpdatedAt:   m.UpdatedAt.Format(time.RFC3339),
+		}
+	}
+
+	return connect.NewResponse(&navigatorsv1.PullTrainingMaterialsResponse{
+		Materials:  pbMaterials,
+		NextCursor: result.NextCursor,
+		HasMore:    result.HasMore,
+	}), nil
+}
+
 // resolveTurfIDs validates and filters the requested turf IDs against the user's scope.
 // For ScopeAll (admins), it uses whatever IDs the client requested.
 // For ScopeOwn/ScopeTeam, it intersects with the user's allowed turfs.

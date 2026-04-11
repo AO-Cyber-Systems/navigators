@@ -1023,3 +1023,214 @@ func (s *SyncService) processTaskNote(ctx context.Context, companyID, userID uui
 
 	return nil
 }
+
+// --- Sync Event Types ---
+
+// SyncEventRow represents an event row returned for sync pull.
+type SyncEventRow struct {
+	ID           uuid.UUID
+	CompanyID    uuid.UUID
+	Title        string
+	Description  string
+	EventType    string
+	Status       string
+	StartsAt     time.Time
+	EndsAt       time.Time
+	LocationName *string
+	LocationLat  *float64
+	LocationLng  *float64
+	LinkedTurfID *uuid.UUID
+	MaxAttendees *int32
+	CreatedBy    uuid.UUID
+	CreatedAt    time.Time
+	UpdatedAt    time.Time
+}
+
+// SyncEventRSVPRow represents an event RSVP row for sync pull.
+type SyncEventRSVPRow struct {
+	ID        uuid.UUID
+	EventID   uuid.UUID
+	UserID    uuid.UUID
+	Status    string
+	CreatedAt time.Time
+}
+
+// SyncTrainingMaterialRow represents a training material row for sync pull.
+type SyncTrainingMaterialRow struct {
+	ID          uuid.UUID
+	CompanyID   uuid.UUID
+	Title       string
+	Description string
+	ContentURL  string
+	SortOrder   int32
+	IsPublished bool
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+// PullEventsResult contains the result of an events pull operation.
+type PullEventsResult struct {
+	Events     []SyncEventRow
+	RSVPs      []SyncEventRSVPRow
+	NextCursor string
+	HasMore    bool
+}
+
+// PullTrainingMaterialsResult contains the result of a training materials pull operation.
+type PullTrainingMaterialsResult struct {
+	Materials  []SyncTrainingMaterialRow
+	NextCursor string
+	HasMore    bool
+}
+
+// PullEvents returns events updated since cursor for a company, along with their RSVPs.
+func (s *SyncService) PullEvents(ctx context.Context, companyID uuid.UUID, sinceCursor string, batchSize int32) (*PullEventsResult, error) {
+	if batchSize <= 0 || batchSize > 500 {
+		batchSize = 500
+	}
+
+	var sinceTime time.Time
+	if sinceCursor != "" {
+		var err error
+		sinceTime, err = time.Parse(time.RFC3339Nano, sinceCursor)
+		if err != nil {
+			return nil, fmt.Errorf("parse cursor: %w", err)
+		}
+	} else {
+		sinceTime = time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC)
+	}
+
+	dbEvents, err := s.queries.PullEventsUpdated(ctx, db.PullEventsUpdatedParams{
+		CompanyID: companyID,
+		UpdatedAt: sinceTime,
+		Limit:     batchSize + 1,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("pull events: %w", err)
+	}
+
+	hasMore := len(dbEvents) > int(batchSize)
+	if hasMore {
+		dbEvents = dbEvents[:batchSize]
+	}
+
+	events := make([]SyncEventRow, len(dbEvents))
+	for i, e := range dbEvents {
+		row := SyncEventRow{
+			ID:           e.ID,
+			CompanyID:    e.CompanyID,
+			Title:        e.Title,
+			Description:  e.Description,
+			EventType:    e.EventType,
+			Status:       e.Status,
+			StartsAt:     e.StartsAt,
+			EndsAt:       e.EndsAt,
+			LocationName: e.LocationName,
+			LocationLat:  e.LocationLat,
+			LocationLng:  e.LocationLng,
+			MaxAttendees: e.MaxAttendees,
+			CreatedBy:    e.CreatedBy,
+			CreatedAt:    e.CreatedAt,
+			UpdatedAt:    e.UpdatedAt,
+		}
+		if e.LinkedTurfID.Valid {
+			id := uuid.UUID(e.LinkedTurfID.Bytes)
+			row.LinkedTurfID = &id
+		}
+		events[i] = row
+	}
+
+	// Also pull RSVPs for the same time range
+	dbRSVPs, err := s.queries.PullEventRSVPsForEvents(ctx, db.PullEventRSVPsForEventsParams{
+		CompanyID: companyID,
+		CreatedAt: sinceTime,
+		Limit:     batchSize + 1,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("pull event rsvps: %w", err)
+	}
+	if len(dbRSVPs) > int(batchSize) {
+		dbRSVPs = dbRSVPs[:batchSize]
+	}
+
+	rsvps := make([]SyncEventRSVPRow, len(dbRSVPs))
+	for i, r := range dbRSVPs {
+		rsvps[i] = SyncEventRSVPRow{
+			ID:        r.ID,
+			EventID:   r.EventID,
+			UserID:    r.UserID,
+			Status:    r.Status,
+			CreatedAt: r.CreatedAt,
+		}
+	}
+
+	var nextCursor string
+	if len(events) > 0 {
+		nextCursor = events[len(events)-1].UpdatedAt.Format(time.RFC3339Nano)
+	}
+
+	return &PullEventsResult{
+		Events:     events,
+		RSVPs:      rsvps,
+		NextCursor: nextCursor,
+		HasMore:    hasMore,
+	}, nil
+}
+
+// PullTrainingMaterials returns published training materials updated since cursor.
+func (s *SyncService) PullTrainingMaterials(ctx context.Context, companyID uuid.UUID, sinceCursor string, batchSize int32) (*PullTrainingMaterialsResult, error) {
+	if batchSize <= 0 || batchSize > 500 {
+		batchSize = 500
+	}
+
+	var sinceTime time.Time
+	if sinceCursor != "" {
+		var err error
+		sinceTime, err = time.Parse(time.RFC3339Nano, sinceCursor)
+		if err != nil {
+			return nil, fmt.Errorf("parse cursor: %w", err)
+		}
+	} else {
+		sinceTime = time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC)
+	}
+
+	dbMaterials, err := s.queries.PullTrainingMaterialsUpdated(ctx, db.PullTrainingMaterialsUpdatedParams{
+		CompanyID: companyID,
+		UpdatedAt: sinceTime,
+		Limit:     batchSize + 1,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("pull training materials: %w", err)
+	}
+
+	hasMore := len(dbMaterials) > int(batchSize)
+	if hasMore {
+		dbMaterials = dbMaterials[:batchSize]
+	}
+
+	materials := make([]SyncTrainingMaterialRow, len(dbMaterials))
+	for i, m := range dbMaterials {
+		materials[i] = SyncTrainingMaterialRow{
+			ID:          m.ID,
+			CompanyID:   m.CompanyID,
+			Title:       m.Title,
+			Description: m.Description,
+			ContentURL:  m.ContentUrl,
+			SortOrder:   m.SortOrder,
+			IsPublished: m.IsPublished,
+			CreatedAt:   m.CreatedAt,
+			UpdatedAt:   m.UpdatedAt,
+		}
+	}
+
+	var nextCursor string
+	if len(materials) > 0 {
+		nextCursor = materials[len(materials)-1].UpdatedAt.Format(time.RFC3339Nano)
+	}
+
+	return &PullTrainingMaterialsResult{
+		Materials:  materials,
+		NextCursor: nextCursor,
+		HasMore:    hasMore,
+	}, nil
+}
