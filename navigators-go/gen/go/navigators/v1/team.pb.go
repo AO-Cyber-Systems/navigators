@@ -10,6 +10,7 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
+	sync "sync"
 	unsafe "unsafe"
 )
 
@@ -20,20 +21,393 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type AssignNavigatorToTeamRequest struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	SuperNavigatorId string                 `protobuf:"bytes,1,opt,name=super_navigator_id,json=superNavigatorId,proto3" json:"super_navigator_id,omitempty"`
+	NavigatorId      string                 `protobuf:"bytes,2,opt,name=navigator_id,json=navigatorId,proto3" json:"navigator_id,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *AssignNavigatorToTeamRequest) Reset() {
+	*x = AssignNavigatorToTeamRequest{}
+	mi := &file_navigators_v1_team_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AssignNavigatorToTeamRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AssignNavigatorToTeamRequest) ProtoMessage() {}
+
+func (x *AssignNavigatorToTeamRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_team_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AssignNavigatorToTeamRequest.ProtoReflect.Descriptor instead.
+func (*AssignNavigatorToTeamRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_team_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *AssignNavigatorToTeamRequest) GetSuperNavigatorId() string {
+	if x != nil {
+		return x.SuperNavigatorId
+	}
+	return ""
+}
+
+func (x *AssignNavigatorToTeamRequest) GetNavigatorId() string {
+	if x != nil {
+		return x.NavigatorId
+	}
+	return ""
+}
+
+type AssignNavigatorToTeamResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AssignNavigatorToTeamResponse) Reset() {
+	*x = AssignNavigatorToTeamResponse{}
+	mi := &file_navigators_v1_team_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AssignNavigatorToTeamResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AssignNavigatorToTeamResponse) ProtoMessage() {}
+
+func (x *AssignNavigatorToTeamResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_team_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AssignNavigatorToTeamResponse.ProtoReflect.Descriptor instead.
+func (*AssignNavigatorToTeamResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_team_proto_rawDescGZIP(), []int{1}
+}
+
+type RemoveNavigatorFromTeamRequest struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	SuperNavigatorId string                 `protobuf:"bytes,1,opt,name=super_navigator_id,json=superNavigatorId,proto3" json:"super_navigator_id,omitempty"`
+	NavigatorId      string                 `protobuf:"bytes,2,opt,name=navigator_id,json=navigatorId,proto3" json:"navigator_id,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *RemoveNavigatorFromTeamRequest) Reset() {
+	*x = RemoveNavigatorFromTeamRequest{}
+	mi := &file_navigators_v1_team_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RemoveNavigatorFromTeamRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoveNavigatorFromTeamRequest) ProtoMessage() {}
+
+func (x *RemoveNavigatorFromTeamRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_team_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoveNavigatorFromTeamRequest.ProtoReflect.Descriptor instead.
+func (*RemoveNavigatorFromTeamRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_team_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *RemoveNavigatorFromTeamRequest) GetSuperNavigatorId() string {
+	if x != nil {
+		return x.SuperNavigatorId
+	}
+	return ""
+}
+
+func (x *RemoveNavigatorFromTeamRequest) GetNavigatorId() string {
+	if x != nil {
+		return x.NavigatorId
+	}
+	return ""
+}
+
+type RemoveNavigatorFromTeamResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RemoveNavigatorFromTeamResponse) Reset() {
+	*x = RemoveNavigatorFromTeamResponse{}
+	mi := &file_navigators_v1_team_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RemoveNavigatorFromTeamResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoveNavigatorFromTeamResponse) ProtoMessage() {}
+
+func (x *RemoveNavigatorFromTeamResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_team_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoveNavigatorFromTeamResponse.ProtoReflect.Descriptor instead.
+func (*RemoveNavigatorFromTeamResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_team_proto_rawDescGZIP(), []int{3}
+}
+
+type GetTeamNavigatorsRequest struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	SuperNavigatorId string                 `protobuf:"bytes,1,opt,name=super_navigator_id,json=superNavigatorId,proto3" json:"super_navigator_id,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *GetTeamNavigatorsRequest) Reset() {
+	*x = GetTeamNavigatorsRequest{}
+	mi := &file_navigators_v1_team_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTeamNavigatorsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTeamNavigatorsRequest) ProtoMessage() {}
+
+func (x *GetTeamNavigatorsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_team_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTeamNavigatorsRequest.ProtoReflect.Descriptor instead.
+func (*GetTeamNavigatorsRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_team_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetTeamNavigatorsRequest) GetSuperNavigatorId() string {
+	if x != nil {
+		return x.SuperNavigatorId
+	}
+	return ""
+}
+
+type GetTeamNavigatorsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Navigators    []*TeamNavigator       `protobuf:"bytes,1,rep,name=navigators,proto3" json:"navigators,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTeamNavigatorsResponse) Reset() {
+	*x = GetTeamNavigatorsResponse{}
+	mi := &file_navigators_v1_team_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTeamNavigatorsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTeamNavigatorsResponse) ProtoMessage() {}
+
+func (x *GetTeamNavigatorsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_team_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTeamNavigatorsResponse.ProtoReflect.Descriptor instead.
+func (*GetTeamNavigatorsResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_team_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetTeamNavigatorsResponse) GetNavigators() []*TeamNavigator {
+	if x != nil {
+		return x.Navigators
+	}
+	return nil
+}
+
+type TeamNavigator struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Email         string                 `protobuf:"bytes,2,opt,name=email,proto3" json:"email,omitempty"`
+	DisplayName   string                 `protobuf:"bytes,3,opt,name=display_name,json=displayName,proto3" json:"display_name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TeamNavigator) Reset() {
+	*x = TeamNavigator{}
+	mi := &file_navigators_v1_team_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TeamNavigator) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TeamNavigator) ProtoMessage() {}
+
+func (x *TeamNavigator) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_team_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TeamNavigator.ProtoReflect.Descriptor instead.
+func (*TeamNavigator) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_team_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *TeamNavigator) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *TeamNavigator) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *TeamNavigator) GetDisplayName() string {
+	if x != nil {
+		return x.DisplayName
+	}
+	return ""
+}
+
 var File_navigators_v1_team_proto protoreflect.FileDescriptor
 
 const file_navigators_v1_team_proto_rawDesc = "" +
 	"\n" +
-	"\x18navigators/v1/team.proto\x12\rnavigators.v12\r\n" +
-	"\vTeamServiceB1Z/navigators-go/gen/go/navigators/v1;navigatorsv1b\x06proto3"
+	"\x18navigators/v1/team.proto\x12\rnavigators.v1\"o\n" +
+	"\x1cAssignNavigatorToTeamRequest\x12,\n" +
+	"\x12super_navigator_id\x18\x01 \x01(\tR\x10superNavigatorId\x12!\n" +
+	"\fnavigator_id\x18\x02 \x01(\tR\vnavigatorId\"\x1f\n" +
+	"\x1dAssignNavigatorToTeamResponse\"q\n" +
+	"\x1eRemoveNavigatorFromTeamRequest\x12,\n" +
+	"\x12super_navigator_id\x18\x01 \x01(\tR\x10superNavigatorId\x12!\n" +
+	"\fnavigator_id\x18\x02 \x01(\tR\vnavigatorId\"!\n" +
+	"\x1fRemoveNavigatorFromTeamResponse\"H\n" +
+	"\x18GetTeamNavigatorsRequest\x12,\n" +
+	"\x12super_navigator_id\x18\x01 \x01(\tR\x10superNavigatorId\"Y\n" +
+	"\x19GetTeamNavigatorsResponse\x12<\n" +
+	"\n" +
+	"navigators\x18\x01 \x03(\v2\x1c.navigators.v1.TeamNavigatorR\n" +
+	"navigators\"a\n" +
+	"\rTeamNavigator\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\x12\x14\n" +
+	"\x05email\x18\x02 \x01(\tR\x05email\x12!\n" +
+	"\fdisplay_name\x18\x03 \x01(\tR\vdisplayName2\xe3\x02\n" +
+	"\vTeamService\x12r\n" +
+	"\x15AssignNavigatorToTeam\x12+.navigators.v1.AssignNavigatorToTeamRequest\x1a,.navigators.v1.AssignNavigatorToTeamResponse\x12x\n" +
+	"\x17RemoveNavigatorFromTeam\x12-.navigators.v1.RemoveNavigatorFromTeamRequest\x1a..navigators.v1.RemoveNavigatorFromTeamResponse\x12f\n" +
+	"\x11GetTeamNavigators\x12'.navigators.v1.GetTeamNavigatorsRequest\x1a(.navigators.v1.GetTeamNavigatorsResponseB1Z/navigators-go/gen/go/navigators/v1;navigatorsv1b\x06proto3"
 
-var file_navigators_v1_team_proto_goTypes = []any{}
+var (
+	file_navigators_v1_team_proto_rawDescOnce sync.Once
+	file_navigators_v1_team_proto_rawDescData []byte
+)
+
+func file_navigators_v1_team_proto_rawDescGZIP() []byte {
+	file_navigators_v1_team_proto_rawDescOnce.Do(func() {
+		file_navigators_v1_team_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_navigators_v1_team_proto_rawDesc), len(file_navigators_v1_team_proto_rawDesc)))
+	})
+	return file_navigators_v1_team_proto_rawDescData
+}
+
+var file_navigators_v1_team_proto_msgTypes = make([]protoimpl.MessageInfo, 7)
+var file_navigators_v1_team_proto_goTypes = []any{
+	(*AssignNavigatorToTeamRequest)(nil),    // 0: navigators.v1.AssignNavigatorToTeamRequest
+	(*AssignNavigatorToTeamResponse)(nil),   // 1: navigators.v1.AssignNavigatorToTeamResponse
+	(*RemoveNavigatorFromTeamRequest)(nil),  // 2: navigators.v1.RemoveNavigatorFromTeamRequest
+	(*RemoveNavigatorFromTeamResponse)(nil), // 3: navigators.v1.RemoveNavigatorFromTeamResponse
+	(*GetTeamNavigatorsRequest)(nil),        // 4: navigators.v1.GetTeamNavigatorsRequest
+	(*GetTeamNavigatorsResponse)(nil),       // 5: navigators.v1.GetTeamNavigatorsResponse
+	(*TeamNavigator)(nil),                   // 6: navigators.v1.TeamNavigator
+}
 var file_navigators_v1_team_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	6, // 0: navigators.v1.GetTeamNavigatorsResponse.navigators:type_name -> navigators.v1.TeamNavigator
+	0, // 1: navigators.v1.TeamService.AssignNavigatorToTeam:input_type -> navigators.v1.AssignNavigatorToTeamRequest
+	2, // 2: navigators.v1.TeamService.RemoveNavigatorFromTeam:input_type -> navigators.v1.RemoveNavigatorFromTeamRequest
+	4, // 3: navigators.v1.TeamService.GetTeamNavigators:input_type -> navigators.v1.GetTeamNavigatorsRequest
+	1, // 4: navigators.v1.TeamService.AssignNavigatorToTeam:output_type -> navigators.v1.AssignNavigatorToTeamResponse
+	3, // 5: navigators.v1.TeamService.RemoveNavigatorFromTeam:output_type -> navigators.v1.RemoveNavigatorFromTeamResponse
+	5, // 6: navigators.v1.TeamService.GetTeamNavigators:output_type -> navigators.v1.GetTeamNavigatorsResponse
+	4, // [4:7] is the sub-list for method output_type
+	1, // [1:4] is the sub-list for method input_type
+	1, // [1:1] is the sub-list for extension type_name
+	1, // [1:1] is the sub-list for extension extendee
+	0, // [0:1] is the sub-list for field type_name
 }
 
 func init() { file_navigators_v1_team_proto_init() }
@@ -47,12 +421,13 @@ func file_navigators_v1_team_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_navigators_v1_team_proto_rawDesc), len(file_navigators_v1_team_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   0,
+			NumMessages:   7,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_navigators_v1_team_proto_goTypes,
 		DependencyIndexes: file_navigators_v1_team_proto_depIdxs,
+		MessageInfos:      file_navigators_v1_team_proto_msgTypes,
 	}.Build()
 	File_navigators_v1_team_proto = out.File
 	file_navigators_v1_team_proto_goTypes = nil

@@ -920,6 +920,226 @@ func (x *SessionInfo) GetLastActiveAt() string {
 	return ""
 }
 
+type ListAuditLogsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PageSize      int32                  `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	Page          int32                  `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListAuditLogsRequest) Reset() {
+	*x = ListAuditLogsRequest{}
+	mi := &file_navigators_v1_admin_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListAuditLogsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListAuditLogsRequest) ProtoMessage() {}
+
+func (x *ListAuditLogsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_admin_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListAuditLogsRequest.ProtoReflect.Descriptor instead.
+func (*ListAuditLogsRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_admin_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *ListAuditLogsRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *ListAuditLogsRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+type ListAuditLogsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Entries       []*VoterAccessLogEntry `protobuf:"bytes,1,rep,name=entries,proto3" json:"entries,omitempty"`
+	TotalCount    int64                  `protobuf:"varint,2,opt,name=total_count,json=totalCount,proto3" json:"total_count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListAuditLogsResponse) Reset() {
+	*x = ListAuditLogsResponse{}
+	mi := &file_navigators_v1_admin_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListAuditLogsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListAuditLogsResponse) ProtoMessage() {}
+
+func (x *ListAuditLogsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_admin_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListAuditLogsResponse.ProtoReflect.Descriptor instead.
+func (*ListAuditLogsResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_admin_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *ListAuditLogsResponse) GetEntries() []*VoterAccessLogEntry {
+	if x != nil {
+		return x.Entries
+	}
+	return nil
+}
+
+func (x *ListAuditLogsResponse) GetTotalCount() int64 {
+	if x != nil {
+		return x.TotalCount
+	}
+	return 0
+}
+
+type VoterAccessLogEntry struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	UserEmail     string                 `protobuf:"bytes,3,opt,name=user_email,json=userEmail,proto3" json:"user_email,omitempty"`
+	VoterId       string                 `protobuf:"bytes,4,opt,name=voter_id,json=voterId,proto3" json:"voter_id,omitempty"`
+	AccessType    string                 `protobuf:"bytes,5,opt,name=access_type,json=accessType,proto3" json:"access_type,omitempty"`
+	TurfId        string                 `protobuf:"bytes,6,opt,name=turf_id,json=turfId,proto3" json:"turf_id,omitempty"`
+	TurfName      string                 `protobuf:"bytes,7,opt,name=turf_name,json=turfName,proto3" json:"turf_name,omitempty"`
+	Details       string                 `protobuf:"bytes,8,opt,name=details,proto3" json:"details,omitempty"`
+	IpAddress     string                 `protobuf:"bytes,9,opt,name=ip_address,json=ipAddress,proto3" json:"ip_address,omitempty"`
+	CreatedAt     string                 `protobuf:"bytes,10,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *VoterAccessLogEntry) Reset() {
+	*x = VoterAccessLogEntry{}
+	mi := &file_navigators_v1_admin_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VoterAccessLogEntry) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VoterAccessLogEntry) ProtoMessage() {}
+
+func (x *VoterAccessLogEntry) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_admin_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VoterAccessLogEntry.ProtoReflect.Descriptor instead.
+func (*VoterAccessLogEntry) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_admin_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *VoterAccessLogEntry) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *VoterAccessLogEntry) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *VoterAccessLogEntry) GetUserEmail() string {
+	if x != nil {
+		return x.UserEmail
+	}
+	return ""
+}
+
+func (x *VoterAccessLogEntry) GetVoterId() string {
+	if x != nil {
+		return x.VoterId
+	}
+	return ""
+}
+
+func (x *VoterAccessLogEntry) GetAccessType() string {
+	if x != nil {
+		return x.AccessType
+	}
+	return ""
+}
+
+func (x *VoterAccessLogEntry) GetTurfId() string {
+	if x != nil {
+		return x.TurfId
+	}
+	return ""
+}
+
+func (x *VoterAccessLogEntry) GetTurfName() string {
+	if x != nil {
+		return x.TurfName
+	}
+	return ""
+}
+
+func (x *VoterAccessLogEntry) GetDetails() string {
+	if x != nil {
+		return x.Details
+	}
+	return ""
+}
+
+func (x *VoterAccessLogEntry) GetIpAddress() string {
+	if x != nil {
+		return x.IpAddress
+	}
+	return ""
+}
+
+func (x *VoterAccessLogEntry) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
 var File_navigators_v1_admin_proto protoreflect.FileDescriptor
 
 const file_navigators_v1_admin_proto_rawDesc = "" +
@@ -976,7 +1196,30 @@ const file_navigators_v1_admin_proto_rawDesc = "" +
 	"\x05email\x18\x02 \x01(\tR\x05email\x12\x1d\n" +
 	"\n" +
 	"created_at\x18\x03 \x01(\tR\tcreatedAt\x12$\n" +
-	"\x0elast_active_at\x18\x04 \x01(\tR\flastActiveAt2\x8c\x06\n" +
+	"\x0elast_active_at\x18\x04 \x01(\tR\flastActiveAt\"G\n" +
+	"\x14ListAuditLogsRequest\x12\x1b\n" +
+	"\tpage_size\x18\x01 \x01(\x05R\bpageSize\x12\x12\n" +
+	"\x04page\x18\x02 \x01(\x05R\x04page\"v\n" +
+	"\x15ListAuditLogsResponse\x12<\n" +
+	"\aentries\x18\x01 \x03(\v2\".navigators.v1.VoterAccessLogEntryR\aentries\x12\x1f\n" +
+	"\vtotal_count\x18\x02 \x01(\x03R\n" +
+	"totalCount\"\xa7\x02\n" +
+	"\x13VoterAccessLogEntry\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\tR\x06userId\x12\x1d\n" +
+	"\n" +
+	"user_email\x18\x03 \x01(\tR\tuserEmail\x12\x19\n" +
+	"\bvoter_id\x18\x04 \x01(\tR\avoterId\x12\x1f\n" +
+	"\vaccess_type\x18\x05 \x01(\tR\n" +
+	"accessType\x12\x17\n" +
+	"\aturf_id\x18\x06 \x01(\tR\x06turfId\x12\x1b\n" +
+	"\tturf_name\x18\a \x01(\tR\bturfName\x12\x18\n" +
+	"\adetails\x18\b \x01(\tR\adetails\x12\x1d\n" +
+	"\n" +
+	"ip_address\x18\t \x01(\tR\tipAddress\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\n" +
+	" \x01(\tR\tcreatedAt2\xe8\x06\n" +
 	"\fAdminService\x12Q\n" +
 	"\n" +
 	"CreateUser\x12 .navigators.v1.CreateUserRequest\x1a!.navigators.v1.CreateUserResponse\x12N\n" +
@@ -987,7 +1230,8 @@ const file_navigators_v1_admin_proto_rawDesc = "" +
 	"\x14RequestPasswordReset\x12*.navigators.v1.RequestPasswordResetRequest\x1a+.navigators.v1.RequestPasswordResetResponse\x12o\n" +
 	"\x14ConfirmPasswordReset\x12*.navigators.v1.ConfirmPasswordResetRequest\x1a+.navigators.v1.ConfirmPasswordResetResponse\x12Z\n" +
 	"\rRevokeSession\x12#.navigators.v1.RevokeSessionRequest\x1a$.navigators.v1.RevokeSessionResponse\x12i\n" +
-	"\x12ListActiveSessions\x12(.navigators.v1.ListActiveSessionsRequest\x1a).navigators.v1.ListActiveSessionsResponseB1Z/navigators-go/gen/go/navigators/v1;navigatorsv1b\x06proto3"
+	"\x12ListActiveSessions\x12(.navigators.v1.ListActiveSessionsRequest\x1a).navigators.v1.ListActiveSessionsResponse\x12Z\n" +
+	"\rListAuditLogs\x12#.navigators.v1.ListAuditLogsRequest\x1a$.navigators.v1.ListAuditLogsResponseB1Z/navigators-go/gen/go/navigators/v1;navigatorsv1b\x06proto3"
 
 var (
 	file_navigators_v1_admin_proto_rawDescOnce sync.Once
@@ -1001,7 +1245,7 @@ func file_navigators_v1_admin_proto_rawDescGZIP() []byte {
 	return file_navigators_v1_admin_proto_rawDescData
 }
 
-var file_navigators_v1_admin_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
+var file_navigators_v1_admin_proto_msgTypes = make([]protoimpl.MessageInfo, 21)
 var file_navigators_v1_admin_proto_goTypes = []any{
 	(*CreateUserRequest)(nil),            // 0: navigators.v1.CreateUserRequest
 	(*CreateUserResponse)(nil),           // 1: navigators.v1.CreateUserResponse
@@ -1021,31 +1265,37 @@ var file_navigators_v1_admin_proto_goTypes = []any{
 	(*ListActiveSessionsRequest)(nil),    // 15: navigators.v1.ListActiveSessionsRequest
 	(*ListActiveSessionsResponse)(nil),   // 16: navigators.v1.ListActiveSessionsResponse
 	(*SessionInfo)(nil),                  // 17: navigators.v1.SessionInfo
+	(*ListAuditLogsRequest)(nil),         // 18: navigators.v1.ListAuditLogsRequest
+	(*ListAuditLogsResponse)(nil),        // 19: navigators.v1.ListAuditLogsResponse
+	(*VoterAccessLogEntry)(nil),          // 20: navigators.v1.VoterAccessLogEntry
 }
 var file_navigators_v1_admin_proto_depIdxs = []int32{
 	4,  // 0: navigators.v1.ListUsersResponse.users:type_name -> navigators.v1.UserInfo
 	17, // 1: navigators.v1.ListActiveSessionsResponse.sessions:type_name -> navigators.v1.SessionInfo
-	0,  // 2: navigators.v1.AdminService.CreateUser:input_type -> navigators.v1.CreateUserRequest
-	2,  // 3: navigators.v1.AdminService.ListUsers:input_type -> navigators.v1.ListUsersRequest
-	5,  // 4: navigators.v1.AdminService.DeactivateUser:input_type -> navigators.v1.DeactivateUserRequest
-	7,  // 5: navigators.v1.AdminService.AssignRole:input_type -> navigators.v1.AssignRoleRequest
-	9,  // 6: navigators.v1.AdminService.RequestPasswordReset:input_type -> navigators.v1.RequestPasswordResetRequest
-	11, // 7: navigators.v1.AdminService.ConfirmPasswordReset:input_type -> navigators.v1.ConfirmPasswordResetRequest
-	13, // 8: navigators.v1.AdminService.RevokeSession:input_type -> navigators.v1.RevokeSessionRequest
-	15, // 9: navigators.v1.AdminService.ListActiveSessions:input_type -> navigators.v1.ListActiveSessionsRequest
-	1,  // 10: navigators.v1.AdminService.CreateUser:output_type -> navigators.v1.CreateUserResponse
-	3,  // 11: navigators.v1.AdminService.ListUsers:output_type -> navigators.v1.ListUsersResponse
-	6,  // 12: navigators.v1.AdminService.DeactivateUser:output_type -> navigators.v1.DeactivateUserResponse
-	8,  // 13: navigators.v1.AdminService.AssignRole:output_type -> navigators.v1.AssignRoleResponse
-	10, // 14: navigators.v1.AdminService.RequestPasswordReset:output_type -> navigators.v1.RequestPasswordResetResponse
-	12, // 15: navigators.v1.AdminService.ConfirmPasswordReset:output_type -> navigators.v1.ConfirmPasswordResetResponse
-	14, // 16: navigators.v1.AdminService.RevokeSession:output_type -> navigators.v1.RevokeSessionResponse
-	16, // 17: navigators.v1.AdminService.ListActiveSessions:output_type -> navigators.v1.ListActiveSessionsResponse
-	10, // [10:18] is the sub-list for method output_type
-	2,  // [2:10] is the sub-list for method input_type
-	2,  // [2:2] is the sub-list for extension type_name
-	2,  // [2:2] is the sub-list for extension extendee
-	0,  // [0:2] is the sub-list for field type_name
+	20, // 2: navigators.v1.ListAuditLogsResponse.entries:type_name -> navigators.v1.VoterAccessLogEntry
+	0,  // 3: navigators.v1.AdminService.CreateUser:input_type -> navigators.v1.CreateUserRequest
+	2,  // 4: navigators.v1.AdminService.ListUsers:input_type -> navigators.v1.ListUsersRequest
+	5,  // 5: navigators.v1.AdminService.DeactivateUser:input_type -> navigators.v1.DeactivateUserRequest
+	7,  // 6: navigators.v1.AdminService.AssignRole:input_type -> navigators.v1.AssignRoleRequest
+	9,  // 7: navigators.v1.AdminService.RequestPasswordReset:input_type -> navigators.v1.RequestPasswordResetRequest
+	11, // 8: navigators.v1.AdminService.ConfirmPasswordReset:input_type -> navigators.v1.ConfirmPasswordResetRequest
+	13, // 9: navigators.v1.AdminService.RevokeSession:input_type -> navigators.v1.RevokeSessionRequest
+	15, // 10: navigators.v1.AdminService.ListActiveSessions:input_type -> navigators.v1.ListActiveSessionsRequest
+	18, // 11: navigators.v1.AdminService.ListAuditLogs:input_type -> navigators.v1.ListAuditLogsRequest
+	1,  // 12: navigators.v1.AdminService.CreateUser:output_type -> navigators.v1.CreateUserResponse
+	3,  // 13: navigators.v1.AdminService.ListUsers:output_type -> navigators.v1.ListUsersResponse
+	6,  // 14: navigators.v1.AdminService.DeactivateUser:output_type -> navigators.v1.DeactivateUserResponse
+	8,  // 15: navigators.v1.AdminService.AssignRole:output_type -> navigators.v1.AssignRoleResponse
+	10, // 16: navigators.v1.AdminService.RequestPasswordReset:output_type -> navigators.v1.RequestPasswordResetResponse
+	12, // 17: navigators.v1.AdminService.ConfirmPasswordReset:output_type -> navigators.v1.ConfirmPasswordResetResponse
+	14, // 18: navigators.v1.AdminService.RevokeSession:output_type -> navigators.v1.RevokeSessionResponse
+	16, // 19: navigators.v1.AdminService.ListActiveSessions:output_type -> navigators.v1.ListActiveSessionsResponse
+	19, // 20: navigators.v1.AdminService.ListAuditLogs:output_type -> navigators.v1.ListAuditLogsResponse
+	12, // [12:21] is the sub-list for method output_type
+	3,  // [3:12] is the sub-list for method input_type
+	3,  // [3:3] is the sub-list for extension type_name
+	3,  // [3:3] is the sub-list for extension extendee
+	0,  // [0:3] is the sub-list for field type_name
 }
 
 func init() { file_navigators_v1_admin_proto_init() }
@@ -1059,7 +1309,7 @@ func file_navigators_v1_admin_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_navigators_v1_admin_proto_rawDesc), len(file_navigators_v1_admin_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   18,
+			NumMessages:   21,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

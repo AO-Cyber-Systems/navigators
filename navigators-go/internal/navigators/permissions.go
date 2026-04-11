@@ -71,6 +71,18 @@ func NavigatorsProcedurePermissions() map[string]server.Permission {
 
 		// Audit logs
 		"/navigators.v1.AdminService/ListAuditLogs": {Feature: "audit", Action: "view"},
+
+		// Turf management
+		"/navigators.v1.TurfService/CreateTurf":        {Feature: "turfs", Action: "create"},
+		"/navigators.v1.TurfService/ListTurfs":          {Feature: "turfs", Action: "view"},
+		"/navigators.v1.TurfService/AssignUserToTurf":   {Feature: "turfs", Action: "assign"},
+		"/navigators.v1.TurfService/RemoveUserFromTurf": {Feature: "turfs", Action: "assign"},
+		"/navigators.v1.TurfService/GetUserTurfs":       {Feature: "turfs", Action: "view"},
+
+		// Team management
+		"/navigators.v1.TeamService/AssignNavigatorToTeam":   {Feature: "teams", Action: "manage"},
+		"/navigators.v1.TeamService/RemoveNavigatorFromTeam": {Feature: "teams", Action: "manage"},
+		"/navigators.v1.TeamService/GetTeamNavigators":       {Feature: "teams", Action: "view"},
 	}
 }
 

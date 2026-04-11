@@ -6,8 +6,11 @@ package navigatorsv1connect
 
 import (
 	connect "connectrpc.com/connect"
-	_ "navigators-go/gen/go/navigators/v1"
+	context "context"
+	errors "errors"
+	v1 "navigators-go/gen/go/navigators/v1"
 	http "net/http"
+	strings "strings"
 )
 
 // This is a compile-time assertion to ensure that this generated file and the connect package are
@@ -22,8 +25,33 @@ const (
 	TeamServiceName = "navigators.v1.TeamService"
 )
 
+// These constants are the fully-qualified names of the RPCs defined in this package. They're
+// exposed at runtime as Spec.Procedure and as the final two segments of the HTTP route.
+//
+// Note that these are different from the fully-qualified method names used by
+// google.golang.org/protobuf/reflect/protoreflect. To convert from these constants to
+// reflection-formatted method names, remove the leading slash and convert the remaining slash to a
+// period.
+const (
+	// TeamServiceAssignNavigatorToTeamProcedure is the fully-qualified name of the TeamService's
+	// AssignNavigatorToTeam RPC.
+	TeamServiceAssignNavigatorToTeamProcedure = "/navigators.v1.TeamService/AssignNavigatorToTeam"
+	// TeamServiceRemoveNavigatorFromTeamProcedure is the fully-qualified name of the TeamService's
+	// RemoveNavigatorFromTeam RPC.
+	TeamServiceRemoveNavigatorFromTeamProcedure = "/navigators.v1.TeamService/RemoveNavigatorFromTeam"
+	// TeamServiceGetTeamNavigatorsProcedure is the fully-qualified name of the TeamService's
+	// GetTeamNavigators RPC.
+	TeamServiceGetTeamNavigatorsProcedure = "/navigators.v1.TeamService/GetTeamNavigators"
+)
+
 // TeamServiceClient is a client for the navigators.v1.TeamService service.
 type TeamServiceClient interface {
+	// AssignNavigatorToTeam assigns a navigator to a super navigator's team.
+	AssignNavigatorToTeam(context.Context, *connect.Request[v1.AssignNavigatorToTeamRequest]) (*connect.Response[v1.AssignNavigatorToTeamResponse], error)
+	// RemoveNavigatorFromTeam removes a navigator from a super navigator's team.
+	RemoveNavigatorFromTeam(context.Context, *connect.Request[v1.RemoveNavigatorFromTeamRequest]) (*connect.Response[v1.RemoveNavigatorFromTeamResponse], error)
+	// GetTeamNavigators lists all navigators on a super navigator's team.
+	GetTeamNavigators(context.Context, *connect.Request[v1.GetTeamNavigatorsRequest]) (*connect.Response[v1.GetTeamNavigatorsResponse], error)
 }
 
 // NewTeamServiceClient constructs a client for the navigators.v1.TeamService service. By default,
@@ -34,15 +62,60 @@ type TeamServiceClient interface {
 // The URL supplied here should be the base URL for the Connect or gRPC server (for example,
 // http://api.acme.com or https://acme.com/grpc).
 func NewTeamServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) TeamServiceClient {
-	return &teamServiceClient{}
+	baseURL = strings.TrimRight(baseURL, "/")
+	teamServiceMethods := v1.File_navigators_v1_team_proto.Services().ByName("TeamService").Methods()
+	return &teamServiceClient{
+		assignNavigatorToTeam: connect.NewClient[v1.AssignNavigatorToTeamRequest, v1.AssignNavigatorToTeamResponse](
+			httpClient,
+			baseURL+TeamServiceAssignNavigatorToTeamProcedure,
+			connect.WithSchema(teamServiceMethods.ByName("AssignNavigatorToTeam")),
+			connect.WithClientOptions(opts...),
+		),
+		removeNavigatorFromTeam: connect.NewClient[v1.RemoveNavigatorFromTeamRequest, v1.RemoveNavigatorFromTeamResponse](
+			httpClient,
+			baseURL+TeamServiceRemoveNavigatorFromTeamProcedure,
+			connect.WithSchema(teamServiceMethods.ByName("RemoveNavigatorFromTeam")),
+			connect.WithClientOptions(opts...),
+		),
+		getTeamNavigators: connect.NewClient[v1.GetTeamNavigatorsRequest, v1.GetTeamNavigatorsResponse](
+			httpClient,
+			baseURL+TeamServiceGetTeamNavigatorsProcedure,
+			connect.WithSchema(teamServiceMethods.ByName("GetTeamNavigators")),
+			connect.WithClientOptions(opts...),
+		),
+	}
 }
 
 // teamServiceClient implements TeamServiceClient.
 type teamServiceClient struct {
+	assignNavigatorToTeam   *connect.Client[v1.AssignNavigatorToTeamRequest, v1.AssignNavigatorToTeamResponse]
+	removeNavigatorFromTeam *connect.Client[v1.RemoveNavigatorFromTeamRequest, v1.RemoveNavigatorFromTeamResponse]
+	getTeamNavigators       *connect.Client[v1.GetTeamNavigatorsRequest, v1.GetTeamNavigatorsResponse]
+}
+
+// AssignNavigatorToTeam calls navigators.v1.TeamService.AssignNavigatorToTeam.
+func (c *teamServiceClient) AssignNavigatorToTeam(ctx context.Context, req *connect.Request[v1.AssignNavigatorToTeamRequest]) (*connect.Response[v1.AssignNavigatorToTeamResponse], error) {
+	return c.assignNavigatorToTeam.CallUnary(ctx, req)
+}
+
+// RemoveNavigatorFromTeam calls navigators.v1.TeamService.RemoveNavigatorFromTeam.
+func (c *teamServiceClient) RemoveNavigatorFromTeam(ctx context.Context, req *connect.Request[v1.RemoveNavigatorFromTeamRequest]) (*connect.Response[v1.RemoveNavigatorFromTeamResponse], error) {
+	return c.removeNavigatorFromTeam.CallUnary(ctx, req)
+}
+
+// GetTeamNavigators calls navigators.v1.TeamService.GetTeamNavigators.
+func (c *teamServiceClient) GetTeamNavigators(ctx context.Context, req *connect.Request[v1.GetTeamNavigatorsRequest]) (*connect.Response[v1.GetTeamNavigatorsResponse], error) {
+	return c.getTeamNavigators.CallUnary(ctx, req)
 }
 
 // TeamServiceHandler is an implementation of the navigators.v1.TeamService service.
 type TeamServiceHandler interface {
+	// AssignNavigatorToTeam assigns a navigator to a super navigator's team.
+	AssignNavigatorToTeam(context.Context, *connect.Request[v1.AssignNavigatorToTeamRequest]) (*connect.Response[v1.AssignNavigatorToTeamResponse], error)
+	// RemoveNavigatorFromTeam removes a navigator from a super navigator's team.
+	RemoveNavigatorFromTeam(context.Context, *connect.Request[v1.RemoveNavigatorFromTeamRequest]) (*connect.Response[v1.RemoveNavigatorFromTeamResponse], error)
+	// GetTeamNavigators lists all navigators on a super navigator's team.
+	GetTeamNavigators(context.Context, *connect.Request[v1.GetTeamNavigatorsRequest]) (*connect.Response[v1.GetTeamNavigatorsResponse], error)
 }
 
 // NewTeamServiceHandler builds an HTTP handler from the service implementation. It returns the path
@@ -51,8 +124,33 @@ type TeamServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewTeamServiceHandler(svc TeamServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	teamServiceMethods := v1.File_navigators_v1_team_proto.Services().ByName("TeamService").Methods()
+	teamServiceAssignNavigatorToTeamHandler := connect.NewUnaryHandler(
+		TeamServiceAssignNavigatorToTeamProcedure,
+		svc.AssignNavigatorToTeam,
+		connect.WithSchema(teamServiceMethods.ByName("AssignNavigatorToTeam")),
+		connect.WithHandlerOptions(opts...),
+	)
+	teamServiceRemoveNavigatorFromTeamHandler := connect.NewUnaryHandler(
+		TeamServiceRemoveNavigatorFromTeamProcedure,
+		svc.RemoveNavigatorFromTeam,
+		connect.WithSchema(teamServiceMethods.ByName("RemoveNavigatorFromTeam")),
+		connect.WithHandlerOptions(opts...),
+	)
+	teamServiceGetTeamNavigatorsHandler := connect.NewUnaryHandler(
+		TeamServiceGetTeamNavigatorsProcedure,
+		svc.GetTeamNavigators,
+		connect.WithSchema(teamServiceMethods.ByName("GetTeamNavigators")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/navigators.v1.TeamService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
+		case TeamServiceAssignNavigatorToTeamProcedure:
+			teamServiceAssignNavigatorToTeamHandler.ServeHTTP(w, r)
+		case TeamServiceRemoveNavigatorFromTeamProcedure:
+			teamServiceRemoveNavigatorFromTeamHandler.ServeHTTP(w, r)
+		case TeamServiceGetTeamNavigatorsProcedure:
+			teamServiceGetTeamNavigatorsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -61,3 +159,15 @@ func NewTeamServiceHandler(svc TeamServiceHandler, opts ...connect.HandlerOption
 
 // UnimplementedTeamServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedTeamServiceHandler struct{}
+
+func (UnimplementedTeamServiceHandler) AssignNavigatorToTeam(context.Context, *connect.Request[v1.AssignNavigatorToTeamRequest]) (*connect.Response[v1.AssignNavigatorToTeamResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.TeamService.AssignNavigatorToTeam is not implemented"))
+}
+
+func (UnimplementedTeamServiceHandler) RemoveNavigatorFromTeam(context.Context, *connect.Request[v1.RemoveNavigatorFromTeamRequest]) (*connect.Response[v1.RemoveNavigatorFromTeamResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.TeamService.RemoveNavigatorFromTeam is not implemented"))
+}
+
+func (UnimplementedTeamServiceHandler) GetTeamNavigators(context.Context, *connect.Request[v1.GetTeamNavigatorsRequest]) (*connect.Response[v1.GetTeamNavigatorsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.TeamService.GetTeamNavigators is not implemented"))
+}

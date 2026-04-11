@@ -54,6 +54,9 @@ const (
 	// AdminServiceListActiveSessionsProcedure is the fully-qualified name of the AdminService's
 	// ListActiveSessions RPC.
 	AdminServiceListActiveSessionsProcedure = "/navigators.v1.AdminService/ListActiveSessions"
+	// AdminServiceListAuditLogsProcedure is the fully-qualified name of the AdminService's
+	// ListAuditLogs RPC.
+	AdminServiceListAuditLogsProcedure = "/navigators.v1.AdminService/ListAuditLogs"
 )
 
 // AdminServiceClient is a client for the navigators.v1.AdminService service.
@@ -69,6 +72,8 @@ type AdminServiceClient interface {
 	// Session management (admin only)
 	RevokeSession(context.Context, *connect.Request[v1.RevokeSessionRequest]) (*connect.Response[v1.RevokeSessionResponse], error)
 	ListActiveSessions(context.Context, *connect.Request[v1.ListActiveSessionsRequest]) (*connect.Response[v1.ListActiveSessionsResponse], error)
+	// Audit log viewer (admin only)
+	ListAuditLogs(context.Context, *connect.Request[v1.ListAuditLogsRequest]) (*connect.Response[v1.ListAuditLogsResponse], error)
 }
 
 // NewAdminServiceClient constructs a client for the navigators.v1.AdminService service. By default,
@@ -130,6 +135,12 @@ func NewAdminServiceClient(httpClient connect.HTTPClient, baseURL string, opts .
 			connect.WithSchema(adminServiceMethods.ByName("ListActiveSessions")),
 			connect.WithClientOptions(opts...),
 		),
+		listAuditLogs: connect.NewClient[v1.ListAuditLogsRequest, v1.ListAuditLogsResponse](
+			httpClient,
+			baseURL+AdminServiceListAuditLogsProcedure,
+			connect.WithSchema(adminServiceMethods.ByName("ListAuditLogs")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -143,6 +154,7 @@ type adminServiceClient struct {
 	confirmPasswordReset *connect.Client[v1.ConfirmPasswordResetRequest, v1.ConfirmPasswordResetResponse]
 	revokeSession        *connect.Client[v1.RevokeSessionRequest, v1.RevokeSessionResponse]
 	listActiveSessions   *connect.Client[v1.ListActiveSessionsRequest, v1.ListActiveSessionsResponse]
+	listAuditLogs        *connect.Client[v1.ListAuditLogsRequest, v1.ListAuditLogsResponse]
 }
 
 // CreateUser calls navigators.v1.AdminService.CreateUser.
@@ -185,6 +197,11 @@ func (c *adminServiceClient) ListActiveSessions(ctx context.Context, req *connec
 	return c.listActiveSessions.CallUnary(ctx, req)
 }
 
+// ListAuditLogs calls navigators.v1.AdminService.ListAuditLogs.
+func (c *adminServiceClient) ListAuditLogs(ctx context.Context, req *connect.Request[v1.ListAuditLogsRequest]) (*connect.Response[v1.ListAuditLogsResponse], error) {
+	return c.listAuditLogs.CallUnary(ctx, req)
+}
+
 // AdminServiceHandler is an implementation of the navigators.v1.AdminService service.
 type AdminServiceHandler interface {
 	// User management (admin only)
@@ -198,6 +215,8 @@ type AdminServiceHandler interface {
 	// Session management (admin only)
 	RevokeSession(context.Context, *connect.Request[v1.RevokeSessionRequest]) (*connect.Response[v1.RevokeSessionResponse], error)
 	ListActiveSessions(context.Context, *connect.Request[v1.ListActiveSessionsRequest]) (*connect.Response[v1.ListActiveSessionsResponse], error)
+	// Audit log viewer (admin only)
+	ListAuditLogs(context.Context, *connect.Request[v1.ListAuditLogsRequest]) (*connect.Response[v1.ListAuditLogsResponse], error)
 }
 
 // NewAdminServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -255,6 +274,12 @@ func NewAdminServiceHandler(svc AdminServiceHandler, opts ...connect.HandlerOpti
 		connect.WithSchema(adminServiceMethods.ByName("ListActiveSessions")),
 		connect.WithHandlerOptions(opts...),
 	)
+	adminServiceListAuditLogsHandler := connect.NewUnaryHandler(
+		AdminServiceListAuditLogsProcedure,
+		svc.ListAuditLogs,
+		connect.WithSchema(adminServiceMethods.ByName("ListAuditLogs")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/navigators.v1.AdminService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case AdminServiceCreateUserProcedure:
@@ -273,6 +298,8 @@ func NewAdminServiceHandler(svc AdminServiceHandler, opts ...connect.HandlerOpti
 			adminServiceRevokeSessionHandler.ServeHTTP(w, r)
 		case AdminServiceListActiveSessionsProcedure:
 			adminServiceListActiveSessionsHandler.ServeHTTP(w, r)
+		case AdminServiceListAuditLogsProcedure:
+			adminServiceListAuditLogsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -312,4 +339,8 @@ func (UnimplementedAdminServiceHandler) RevokeSession(context.Context, *connect.
 
 func (UnimplementedAdminServiceHandler) ListActiveSessions(context.Context, *connect.Request[v1.ListActiveSessionsRequest]) (*connect.Response[v1.ListActiveSessionsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.AdminService.ListActiveSessions is not implemented"))
+}
+
+func (UnimplementedAdminServiceHandler) ListAuditLogs(context.Context, *connect.Request[v1.ListAuditLogsRequest]) (*connect.Response[v1.ListAuditLogsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.AdminService.ListAuditLogs is not implemented"))
 }

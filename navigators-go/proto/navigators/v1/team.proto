@@ -5,4 +5,41 @@ package navigators.v1;
 option go_package = "navigators-go/gen/go/navigators/v1;navigatorsv1";
 
 // TeamService handles team/canvasser management.
-service TeamService {}
+service TeamService {
+  // AssignNavigatorToTeam assigns a navigator to a super navigator's team.
+  rpc AssignNavigatorToTeam(AssignNavigatorToTeamRequest) returns (AssignNavigatorToTeamResponse);
+
+  // RemoveNavigatorFromTeam removes a navigator from a super navigator's team.
+  rpc RemoveNavigatorFromTeam(RemoveNavigatorFromTeamRequest) returns (RemoveNavigatorFromTeamResponse);
+
+  // GetTeamNavigators lists all navigators on a super navigator's team.
+  rpc GetTeamNavigators(GetTeamNavigatorsRequest) returns (GetTeamNavigatorsResponse);
+}
+
+message AssignNavigatorToTeamRequest {
+  string super_navigator_id = 1;
+  string navigator_id = 2;
+}
+
+message AssignNavigatorToTeamResponse {}
+
+message RemoveNavigatorFromTeamRequest {
+  string super_navigator_id = 1;
+  string navigator_id = 2;
+}
+
+message RemoveNavigatorFromTeamResponse {}
+
+message GetTeamNavigatorsRequest {
+  string super_navigator_id = 1;
+}
+
+message GetTeamNavigatorsResponse {
+  repeated TeamNavigator navigators = 1;
+}
+
+message TeamNavigator {
+  string user_id = 1;
+  string email = 2;
+  string display_name = 3;
+}

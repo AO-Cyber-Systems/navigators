@@ -4,5 +4,76 @@ package navigators.v1;
 
 option go_package = "navigators-go/gen/go/navigators/v1;navigatorsv1";
 
-// TurfService handles turf/territory operations.
-service TurfService {}
+// TurfService handles turf/territory operations and assignments.
+service TurfService {
+  // CreateTurf creates a new turf for the company.
+  rpc CreateTurf(CreateTurfRequest) returns (CreateTurfResponse);
+
+  // ListTurfs lists all active turfs for the company.
+  rpc ListTurfs(ListTurfsRequest) returns (ListTurfsResponse);
+
+  // AssignUserToTurf assigns a navigator to a turf.
+  rpc AssignUserToTurf(AssignUserToTurfRequest) returns (AssignUserToTurfResponse);
+
+  // RemoveUserFromTurf removes a navigator from a turf.
+  rpc RemoveUserFromTurf(RemoveUserFromTurfRequest) returns (RemoveUserFromTurfResponse);
+
+  // GetUserTurfs returns all turfs assigned to a user.
+  rpc GetUserTurfs(GetUserTurfsRequest) returns (GetUserTurfsResponse);
+}
+
+// --- Turf CRUD ---
+
+message CreateTurfRequest {
+  string name = 1;
+  string description = 2;
+}
+
+message CreateTurfResponse {
+  string turf_id = 1;
+  string name = 2;
+}
+
+message ListTurfsRequest {}
+
+message ListTurfsResponse {
+  repeated TurfInfo turfs = 1;
+}
+
+message TurfInfo {
+  string turf_id = 1;
+  string name = 2;
+  string description = 3;
+  bool is_active = 4;
+  string created_at = 5;
+  string updated_at = 6;
+}
+
+// --- Turf Assignments ---
+
+message AssignUserToTurfRequest {
+  string turf_id = 1;
+  string user_id = 2;
+}
+
+message AssignUserToTurfResponse {}
+
+message RemoveUserFromTurfRequest {
+  string turf_id = 1;
+  string user_id = 2;
+}
+
+message RemoveUserFromTurfResponse {}
+
+message GetUserTurfsRequest {
+  string user_id = 1;
+}
+
+message GetUserTurfsResponse {
+  repeated TurfAssignment assignments = 1;
+}
+
+message TurfAssignment {
+  string turf_id = 1;
+  string turf_name = 2;
+}

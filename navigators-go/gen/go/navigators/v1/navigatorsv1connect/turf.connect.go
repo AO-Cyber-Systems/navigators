@@ -6,8 +6,11 @@ package navigatorsv1connect
 
 import (
 	connect "connectrpc.com/connect"
-	_ "navigators-go/gen/go/navigators/v1"
+	context "context"
+	errors "errors"
+	v1 "navigators-go/gen/go/navigators/v1"
 	http "net/http"
+	strings "strings"
 )
 
 // This is a compile-time assertion to ensure that this generated file and the connect package are
@@ -22,8 +25,41 @@ const (
 	TurfServiceName = "navigators.v1.TurfService"
 )
 
+// These constants are the fully-qualified names of the RPCs defined in this package. They're
+// exposed at runtime as Spec.Procedure and as the final two segments of the HTTP route.
+//
+// Note that these are different from the fully-qualified method names used by
+// google.golang.org/protobuf/reflect/protoreflect. To convert from these constants to
+// reflection-formatted method names, remove the leading slash and convert the remaining slash to a
+// period.
+const (
+	// TurfServiceCreateTurfProcedure is the fully-qualified name of the TurfService's CreateTurf RPC.
+	TurfServiceCreateTurfProcedure = "/navigators.v1.TurfService/CreateTurf"
+	// TurfServiceListTurfsProcedure is the fully-qualified name of the TurfService's ListTurfs RPC.
+	TurfServiceListTurfsProcedure = "/navigators.v1.TurfService/ListTurfs"
+	// TurfServiceAssignUserToTurfProcedure is the fully-qualified name of the TurfService's
+	// AssignUserToTurf RPC.
+	TurfServiceAssignUserToTurfProcedure = "/navigators.v1.TurfService/AssignUserToTurf"
+	// TurfServiceRemoveUserFromTurfProcedure is the fully-qualified name of the TurfService's
+	// RemoveUserFromTurf RPC.
+	TurfServiceRemoveUserFromTurfProcedure = "/navigators.v1.TurfService/RemoveUserFromTurf"
+	// TurfServiceGetUserTurfsProcedure is the fully-qualified name of the TurfService's GetUserTurfs
+	// RPC.
+	TurfServiceGetUserTurfsProcedure = "/navigators.v1.TurfService/GetUserTurfs"
+)
+
 // TurfServiceClient is a client for the navigators.v1.TurfService service.
 type TurfServiceClient interface {
+	// CreateTurf creates a new turf for the company.
+	CreateTurf(context.Context, *connect.Request[v1.CreateTurfRequest]) (*connect.Response[v1.CreateTurfResponse], error)
+	// ListTurfs lists all active turfs for the company.
+	ListTurfs(context.Context, *connect.Request[v1.ListTurfsRequest]) (*connect.Response[v1.ListTurfsResponse], error)
+	// AssignUserToTurf assigns a navigator to a turf.
+	AssignUserToTurf(context.Context, *connect.Request[v1.AssignUserToTurfRequest]) (*connect.Response[v1.AssignUserToTurfResponse], error)
+	// RemoveUserFromTurf removes a navigator from a turf.
+	RemoveUserFromTurf(context.Context, *connect.Request[v1.RemoveUserFromTurfRequest]) (*connect.Response[v1.RemoveUserFromTurfResponse], error)
+	// GetUserTurfs returns all turfs assigned to a user.
+	GetUserTurfs(context.Context, *connect.Request[v1.GetUserTurfsRequest]) (*connect.Response[v1.GetUserTurfsResponse], error)
 }
 
 // NewTurfServiceClient constructs a client for the navigators.v1.TurfService service. By default,
@@ -34,15 +70,88 @@ type TurfServiceClient interface {
 // The URL supplied here should be the base URL for the Connect or gRPC server (for example,
 // http://api.acme.com or https://acme.com/grpc).
 func NewTurfServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) TurfServiceClient {
-	return &turfServiceClient{}
+	baseURL = strings.TrimRight(baseURL, "/")
+	turfServiceMethods := v1.File_navigators_v1_turf_proto.Services().ByName("TurfService").Methods()
+	return &turfServiceClient{
+		createTurf: connect.NewClient[v1.CreateTurfRequest, v1.CreateTurfResponse](
+			httpClient,
+			baseURL+TurfServiceCreateTurfProcedure,
+			connect.WithSchema(turfServiceMethods.ByName("CreateTurf")),
+			connect.WithClientOptions(opts...),
+		),
+		listTurfs: connect.NewClient[v1.ListTurfsRequest, v1.ListTurfsResponse](
+			httpClient,
+			baseURL+TurfServiceListTurfsProcedure,
+			connect.WithSchema(turfServiceMethods.ByName("ListTurfs")),
+			connect.WithClientOptions(opts...),
+		),
+		assignUserToTurf: connect.NewClient[v1.AssignUserToTurfRequest, v1.AssignUserToTurfResponse](
+			httpClient,
+			baseURL+TurfServiceAssignUserToTurfProcedure,
+			connect.WithSchema(turfServiceMethods.ByName("AssignUserToTurf")),
+			connect.WithClientOptions(opts...),
+		),
+		removeUserFromTurf: connect.NewClient[v1.RemoveUserFromTurfRequest, v1.RemoveUserFromTurfResponse](
+			httpClient,
+			baseURL+TurfServiceRemoveUserFromTurfProcedure,
+			connect.WithSchema(turfServiceMethods.ByName("RemoveUserFromTurf")),
+			connect.WithClientOptions(opts...),
+		),
+		getUserTurfs: connect.NewClient[v1.GetUserTurfsRequest, v1.GetUserTurfsResponse](
+			httpClient,
+			baseURL+TurfServiceGetUserTurfsProcedure,
+			connect.WithSchema(turfServiceMethods.ByName("GetUserTurfs")),
+			connect.WithClientOptions(opts...),
+		),
+	}
 }
 
 // turfServiceClient implements TurfServiceClient.
 type turfServiceClient struct {
+	createTurf         *connect.Client[v1.CreateTurfRequest, v1.CreateTurfResponse]
+	listTurfs          *connect.Client[v1.ListTurfsRequest, v1.ListTurfsResponse]
+	assignUserToTurf   *connect.Client[v1.AssignUserToTurfRequest, v1.AssignUserToTurfResponse]
+	removeUserFromTurf *connect.Client[v1.RemoveUserFromTurfRequest, v1.RemoveUserFromTurfResponse]
+	getUserTurfs       *connect.Client[v1.GetUserTurfsRequest, v1.GetUserTurfsResponse]
+}
+
+// CreateTurf calls navigators.v1.TurfService.CreateTurf.
+func (c *turfServiceClient) CreateTurf(ctx context.Context, req *connect.Request[v1.CreateTurfRequest]) (*connect.Response[v1.CreateTurfResponse], error) {
+	return c.createTurf.CallUnary(ctx, req)
+}
+
+// ListTurfs calls navigators.v1.TurfService.ListTurfs.
+func (c *turfServiceClient) ListTurfs(ctx context.Context, req *connect.Request[v1.ListTurfsRequest]) (*connect.Response[v1.ListTurfsResponse], error) {
+	return c.listTurfs.CallUnary(ctx, req)
+}
+
+// AssignUserToTurf calls navigators.v1.TurfService.AssignUserToTurf.
+func (c *turfServiceClient) AssignUserToTurf(ctx context.Context, req *connect.Request[v1.AssignUserToTurfRequest]) (*connect.Response[v1.AssignUserToTurfResponse], error) {
+	return c.assignUserToTurf.CallUnary(ctx, req)
+}
+
+// RemoveUserFromTurf calls navigators.v1.TurfService.RemoveUserFromTurf.
+func (c *turfServiceClient) RemoveUserFromTurf(ctx context.Context, req *connect.Request[v1.RemoveUserFromTurfRequest]) (*connect.Response[v1.RemoveUserFromTurfResponse], error) {
+	return c.removeUserFromTurf.CallUnary(ctx, req)
+}
+
+// GetUserTurfs calls navigators.v1.TurfService.GetUserTurfs.
+func (c *turfServiceClient) GetUserTurfs(ctx context.Context, req *connect.Request[v1.GetUserTurfsRequest]) (*connect.Response[v1.GetUserTurfsResponse], error) {
+	return c.getUserTurfs.CallUnary(ctx, req)
 }
 
 // TurfServiceHandler is an implementation of the navigators.v1.TurfService service.
 type TurfServiceHandler interface {
+	// CreateTurf creates a new turf for the company.
+	CreateTurf(context.Context, *connect.Request[v1.CreateTurfRequest]) (*connect.Response[v1.CreateTurfResponse], error)
+	// ListTurfs lists all active turfs for the company.
+	ListTurfs(context.Context, *connect.Request[v1.ListTurfsRequest]) (*connect.Response[v1.ListTurfsResponse], error)
+	// AssignUserToTurf assigns a navigator to a turf.
+	AssignUserToTurf(context.Context, *connect.Request[v1.AssignUserToTurfRequest]) (*connect.Response[v1.AssignUserToTurfResponse], error)
+	// RemoveUserFromTurf removes a navigator from a turf.
+	RemoveUserFromTurf(context.Context, *connect.Request[v1.RemoveUserFromTurfRequest]) (*connect.Response[v1.RemoveUserFromTurfResponse], error)
+	// GetUserTurfs returns all turfs assigned to a user.
+	GetUserTurfs(context.Context, *connect.Request[v1.GetUserTurfsRequest]) (*connect.Response[v1.GetUserTurfsResponse], error)
 }
 
 // NewTurfServiceHandler builds an HTTP handler from the service implementation. It returns the path
@@ -51,8 +160,49 @@ type TurfServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewTurfServiceHandler(svc TurfServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	turfServiceMethods := v1.File_navigators_v1_turf_proto.Services().ByName("TurfService").Methods()
+	turfServiceCreateTurfHandler := connect.NewUnaryHandler(
+		TurfServiceCreateTurfProcedure,
+		svc.CreateTurf,
+		connect.WithSchema(turfServiceMethods.ByName("CreateTurf")),
+		connect.WithHandlerOptions(opts...),
+	)
+	turfServiceListTurfsHandler := connect.NewUnaryHandler(
+		TurfServiceListTurfsProcedure,
+		svc.ListTurfs,
+		connect.WithSchema(turfServiceMethods.ByName("ListTurfs")),
+		connect.WithHandlerOptions(opts...),
+	)
+	turfServiceAssignUserToTurfHandler := connect.NewUnaryHandler(
+		TurfServiceAssignUserToTurfProcedure,
+		svc.AssignUserToTurf,
+		connect.WithSchema(turfServiceMethods.ByName("AssignUserToTurf")),
+		connect.WithHandlerOptions(opts...),
+	)
+	turfServiceRemoveUserFromTurfHandler := connect.NewUnaryHandler(
+		TurfServiceRemoveUserFromTurfProcedure,
+		svc.RemoveUserFromTurf,
+		connect.WithSchema(turfServiceMethods.ByName("RemoveUserFromTurf")),
+		connect.WithHandlerOptions(opts...),
+	)
+	turfServiceGetUserTurfsHandler := connect.NewUnaryHandler(
+		TurfServiceGetUserTurfsProcedure,
+		svc.GetUserTurfs,
+		connect.WithSchema(turfServiceMethods.ByName("GetUserTurfs")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/navigators.v1.TurfService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
+		case TurfServiceCreateTurfProcedure:
+			turfServiceCreateTurfHandler.ServeHTTP(w, r)
+		case TurfServiceListTurfsProcedure:
+			turfServiceListTurfsHandler.ServeHTTP(w, r)
+		case TurfServiceAssignUserToTurfProcedure:
+			turfServiceAssignUserToTurfHandler.ServeHTTP(w, r)
+		case TurfServiceRemoveUserFromTurfProcedure:
+			turfServiceRemoveUserFromTurfHandler.ServeHTTP(w, r)
+		case TurfServiceGetUserTurfsProcedure:
+			turfServiceGetUserTurfsHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -61,3 +211,23 @@ func NewTurfServiceHandler(svc TurfServiceHandler, opts ...connect.HandlerOption
 
 // UnimplementedTurfServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedTurfServiceHandler struct{}
+
+func (UnimplementedTurfServiceHandler) CreateTurf(context.Context, *connect.Request[v1.CreateTurfRequest]) (*connect.Response[v1.CreateTurfResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.TurfService.CreateTurf is not implemented"))
+}
+
+func (UnimplementedTurfServiceHandler) ListTurfs(context.Context, *connect.Request[v1.ListTurfsRequest]) (*connect.Response[v1.ListTurfsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.TurfService.ListTurfs is not implemented"))
+}
+
+func (UnimplementedTurfServiceHandler) AssignUserToTurf(context.Context, *connect.Request[v1.AssignUserToTurfRequest]) (*connect.Response[v1.AssignUserToTurfResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.TurfService.AssignUserToTurf is not implemented"))
+}
+
+func (UnimplementedTurfServiceHandler) RemoveUserFromTurf(context.Context, *connect.Request[v1.RemoveUserFromTurfRequest]) (*connect.Response[v1.RemoveUserFromTurfResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.TurfService.RemoveUserFromTurf is not implemented"))
+}
+
+func (UnimplementedTurfServiceHandler) GetUserTurfs(context.Context, *connect.Request[v1.GetUserTurfsRequest]) (*connect.Response[v1.GetUserTurfsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.TurfService.GetUserTurfs is not implemented"))
+}

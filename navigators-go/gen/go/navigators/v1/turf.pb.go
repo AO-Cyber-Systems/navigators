@@ -10,6 +10,7 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
+	sync "sync"
 	unsafe "unsafe"
 )
 
@@ -20,20 +21,681 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type CreateTurfRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Description   string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateTurfRequest) Reset() {
+	*x = CreateTurfRequest{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateTurfRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateTurfRequest) ProtoMessage() {}
+
+func (x *CreateTurfRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateTurfRequest.ProtoReflect.Descriptor instead.
+func (*CreateTurfRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *CreateTurfRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CreateTurfRequest) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+type CreateTurfResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TurfId        string                 `protobuf:"bytes,1,opt,name=turf_id,json=turfId,proto3" json:"turf_id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateTurfResponse) Reset() {
+	*x = CreateTurfResponse{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateTurfResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateTurfResponse) ProtoMessage() {}
+
+func (x *CreateTurfResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateTurfResponse.ProtoReflect.Descriptor instead.
+func (*CreateTurfResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *CreateTurfResponse) GetTurfId() string {
+	if x != nil {
+		return x.TurfId
+	}
+	return ""
+}
+
+func (x *CreateTurfResponse) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+type ListTurfsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListTurfsRequest) Reset() {
+	*x = ListTurfsRequest{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListTurfsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListTurfsRequest) ProtoMessage() {}
+
+func (x *ListTurfsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListTurfsRequest.ProtoReflect.Descriptor instead.
+func (*ListTurfsRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{2}
+}
+
+type ListTurfsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Turfs         []*TurfInfo            `protobuf:"bytes,1,rep,name=turfs,proto3" json:"turfs,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListTurfsResponse) Reset() {
+	*x = ListTurfsResponse{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListTurfsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListTurfsResponse) ProtoMessage() {}
+
+func (x *ListTurfsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListTurfsResponse.ProtoReflect.Descriptor instead.
+func (*ListTurfsResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *ListTurfsResponse) GetTurfs() []*TurfInfo {
+	if x != nil {
+		return x.Turfs
+	}
+	return nil
+}
+
+type TurfInfo struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TurfId        string                 `protobuf:"bytes,1,opt,name=turf_id,json=turfId,proto3" json:"turf_id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	IsActive      bool                   `protobuf:"varint,4,opt,name=is_active,json=isActive,proto3" json:"is_active,omitempty"`
+	CreatedAt     string                 `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt     string                 `protobuf:"bytes,6,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TurfInfo) Reset() {
+	*x = TurfInfo{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TurfInfo) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TurfInfo) ProtoMessage() {}
+
+func (x *TurfInfo) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TurfInfo.ProtoReflect.Descriptor instead.
+func (*TurfInfo) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *TurfInfo) GetTurfId() string {
+	if x != nil {
+		return x.TurfId
+	}
+	return ""
+}
+
+func (x *TurfInfo) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *TurfInfo) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *TurfInfo) GetIsActive() bool {
+	if x != nil {
+		return x.IsActive
+	}
+	return false
+}
+
+func (x *TurfInfo) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
+func (x *TurfInfo) GetUpdatedAt() string {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return ""
+}
+
+type AssignUserToTurfRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TurfId        string                 `protobuf:"bytes,1,opt,name=turf_id,json=turfId,proto3" json:"turf_id,omitempty"`
+	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AssignUserToTurfRequest) Reset() {
+	*x = AssignUserToTurfRequest{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AssignUserToTurfRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AssignUserToTurfRequest) ProtoMessage() {}
+
+func (x *AssignUserToTurfRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AssignUserToTurfRequest.ProtoReflect.Descriptor instead.
+func (*AssignUserToTurfRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *AssignUserToTurfRequest) GetTurfId() string {
+	if x != nil {
+		return x.TurfId
+	}
+	return ""
+}
+
+func (x *AssignUserToTurfRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+type AssignUserToTurfResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *AssignUserToTurfResponse) Reset() {
+	*x = AssignUserToTurfResponse{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *AssignUserToTurfResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*AssignUserToTurfResponse) ProtoMessage() {}
+
+func (x *AssignUserToTurfResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use AssignUserToTurfResponse.ProtoReflect.Descriptor instead.
+func (*AssignUserToTurfResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{6}
+}
+
+type RemoveUserFromTurfRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TurfId        string                 `protobuf:"bytes,1,opt,name=turf_id,json=turfId,proto3" json:"turf_id,omitempty"`
+	UserId        string                 `protobuf:"bytes,2,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RemoveUserFromTurfRequest) Reset() {
+	*x = RemoveUserFromTurfRequest{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RemoveUserFromTurfRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoveUserFromTurfRequest) ProtoMessage() {}
+
+func (x *RemoveUserFromTurfRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoveUserFromTurfRequest.ProtoReflect.Descriptor instead.
+func (*RemoveUserFromTurfRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *RemoveUserFromTurfRequest) GetTurfId() string {
+	if x != nil {
+		return x.TurfId
+	}
+	return ""
+}
+
+func (x *RemoveUserFromTurfRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+type RemoveUserFromTurfResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *RemoveUserFromTurfResponse) Reset() {
+	*x = RemoveUserFromTurfResponse{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *RemoveUserFromTurfResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*RemoveUserFromTurfResponse) ProtoMessage() {}
+
+func (x *RemoveUserFromTurfResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use RemoveUserFromTurfResponse.ProtoReflect.Descriptor instead.
+func (*RemoveUserFromTurfResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{8}
+}
+
+type GetUserTurfsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	UserId        string                 `protobuf:"bytes,1,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUserTurfsRequest) Reset() {
+	*x = GetUserTurfsRequest{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUserTurfsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUserTurfsRequest) ProtoMessage() {}
+
+func (x *GetUserTurfsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUserTurfsRequest.ProtoReflect.Descriptor instead.
+func (*GetUserTurfsRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *GetUserTurfsRequest) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+type GetUserTurfsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Assignments   []*TurfAssignment      `protobuf:"bytes,1,rep,name=assignments,proto3" json:"assignments,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetUserTurfsResponse) Reset() {
+	*x = GetUserTurfsResponse{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetUserTurfsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetUserTurfsResponse) ProtoMessage() {}
+
+func (x *GetUserTurfsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetUserTurfsResponse.ProtoReflect.Descriptor instead.
+func (*GetUserTurfsResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *GetUserTurfsResponse) GetAssignments() []*TurfAssignment {
+	if x != nil {
+		return x.Assignments
+	}
+	return nil
+}
+
+type TurfAssignment struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TurfId        string                 `protobuf:"bytes,1,opt,name=turf_id,json=turfId,proto3" json:"turf_id,omitempty"`
+	TurfName      string                 `protobuf:"bytes,2,opt,name=turf_name,json=turfName,proto3" json:"turf_name,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *TurfAssignment) Reset() {
+	*x = TurfAssignment{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TurfAssignment) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TurfAssignment) ProtoMessage() {}
+
+func (x *TurfAssignment) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TurfAssignment.ProtoReflect.Descriptor instead.
+func (*TurfAssignment) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *TurfAssignment) GetTurfId() string {
+	if x != nil {
+		return x.TurfId
+	}
+	return ""
+}
+
+func (x *TurfAssignment) GetTurfName() string {
+	if x != nil {
+		return x.TurfName
+	}
+	return ""
+}
+
 var File_navigators_v1_turf_proto protoreflect.FileDescriptor
 
 const file_navigators_v1_turf_proto_rawDesc = "" +
 	"\n" +
-	"\x18navigators/v1/turf.proto\x12\rnavigators.v12\r\n" +
-	"\vTurfServiceB1Z/navigators-go/gen/go/navigators/v1;navigatorsv1b\x06proto3"
+	"\x18navigators/v1/turf.proto\x12\rnavigators.v1\"I\n" +
+	"\x11CreateTurfRequest\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12 \n" +
+	"\vdescription\x18\x02 \x01(\tR\vdescription\"A\n" +
+	"\x12CreateTurfResponse\x12\x17\n" +
+	"\aturf_id\x18\x01 \x01(\tR\x06turfId\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\"\x12\n" +
+	"\x10ListTurfsRequest\"B\n" +
+	"\x11ListTurfsResponse\x12-\n" +
+	"\x05turfs\x18\x01 \x03(\v2\x17.navigators.v1.TurfInfoR\x05turfs\"\xb4\x01\n" +
+	"\bTurfInfo\x12\x17\n" +
+	"\aturf_id\x18\x01 \x01(\tR\x06turfId\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
+	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x1b\n" +
+	"\tis_active\x18\x04 \x01(\bR\bisActive\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\x05 \x01(\tR\tcreatedAt\x12\x1d\n" +
+	"\n" +
+	"updated_at\x18\x06 \x01(\tR\tupdatedAt\"K\n" +
+	"\x17AssignUserToTurfRequest\x12\x17\n" +
+	"\aturf_id\x18\x01 \x01(\tR\x06turfId\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\tR\x06userId\"\x1a\n" +
+	"\x18AssignUserToTurfResponse\"M\n" +
+	"\x19RemoveUserFromTurfRequest\x12\x17\n" +
+	"\aturf_id\x18\x01 \x01(\tR\x06turfId\x12\x17\n" +
+	"\auser_id\x18\x02 \x01(\tR\x06userId\"\x1c\n" +
+	"\x1aRemoveUserFromTurfResponse\".\n" +
+	"\x13GetUserTurfsRequest\x12\x17\n" +
+	"\auser_id\x18\x01 \x01(\tR\x06userId\"W\n" +
+	"\x14GetUserTurfsResponse\x12?\n" +
+	"\vassignments\x18\x01 \x03(\v2\x1d.navigators.v1.TurfAssignmentR\vassignments\"F\n" +
+	"\x0eTurfAssignment\x12\x17\n" +
+	"\aturf_id\x18\x01 \x01(\tR\x06turfId\x12\x1b\n" +
+	"\tturf_name\x18\x02 \x01(\tR\bturfName2\xd9\x03\n" +
+	"\vTurfService\x12Q\n" +
+	"\n" +
+	"CreateTurf\x12 .navigators.v1.CreateTurfRequest\x1a!.navigators.v1.CreateTurfResponse\x12N\n" +
+	"\tListTurfs\x12\x1f.navigators.v1.ListTurfsRequest\x1a .navigators.v1.ListTurfsResponse\x12c\n" +
+	"\x10AssignUserToTurf\x12&.navigators.v1.AssignUserToTurfRequest\x1a'.navigators.v1.AssignUserToTurfResponse\x12i\n" +
+	"\x12RemoveUserFromTurf\x12(.navigators.v1.RemoveUserFromTurfRequest\x1a).navigators.v1.RemoveUserFromTurfResponse\x12W\n" +
+	"\fGetUserTurfs\x12\".navigators.v1.GetUserTurfsRequest\x1a#.navigators.v1.GetUserTurfsResponseB1Z/navigators-go/gen/go/navigators/v1;navigatorsv1b\x06proto3"
 
-var file_navigators_v1_turf_proto_goTypes = []any{}
+var (
+	file_navigators_v1_turf_proto_rawDescOnce sync.Once
+	file_navigators_v1_turf_proto_rawDescData []byte
+)
+
+func file_navigators_v1_turf_proto_rawDescGZIP() []byte {
+	file_navigators_v1_turf_proto_rawDescOnce.Do(func() {
+		file_navigators_v1_turf_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_navigators_v1_turf_proto_rawDesc), len(file_navigators_v1_turf_proto_rawDesc)))
+	})
+	return file_navigators_v1_turf_proto_rawDescData
+}
+
+var file_navigators_v1_turf_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_navigators_v1_turf_proto_goTypes = []any{
+	(*CreateTurfRequest)(nil),          // 0: navigators.v1.CreateTurfRequest
+	(*CreateTurfResponse)(nil),         // 1: navigators.v1.CreateTurfResponse
+	(*ListTurfsRequest)(nil),           // 2: navigators.v1.ListTurfsRequest
+	(*ListTurfsResponse)(nil),          // 3: navigators.v1.ListTurfsResponse
+	(*TurfInfo)(nil),                   // 4: navigators.v1.TurfInfo
+	(*AssignUserToTurfRequest)(nil),    // 5: navigators.v1.AssignUserToTurfRequest
+	(*AssignUserToTurfResponse)(nil),   // 6: navigators.v1.AssignUserToTurfResponse
+	(*RemoveUserFromTurfRequest)(nil),  // 7: navigators.v1.RemoveUserFromTurfRequest
+	(*RemoveUserFromTurfResponse)(nil), // 8: navigators.v1.RemoveUserFromTurfResponse
+	(*GetUserTurfsRequest)(nil),        // 9: navigators.v1.GetUserTurfsRequest
+	(*GetUserTurfsResponse)(nil),       // 10: navigators.v1.GetUserTurfsResponse
+	(*TurfAssignment)(nil),             // 11: navigators.v1.TurfAssignment
+}
 var file_navigators_v1_turf_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	4,  // 0: navigators.v1.ListTurfsResponse.turfs:type_name -> navigators.v1.TurfInfo
+	11, // 1: navigators.v1.GetUserTurfsResponse.assignments:type_name -> navigators.v1.TurfAssignment
+	0,  // 2: navigators.v1.TurfService.CreateTurf:input_type -> navigators.v1.CreateTurfRequest
+	2,  // 3: navigators.v1.TurfService.ListTurfs:input_type -> navigators.v1.ListTurfsRequest
+	5,  // 4: navigators.v1.TurfService.AssignUserToTurf:input_type -> navigators.v1.AssignUserToTurfRequest
+	7,  // 5: navigators.v1.TurfService.RemoveUserFromTurf:input_type -> navigators.v1.RemoveUserFromTurfRequest
+	9,  // 6: navigators.v1.TurfService.GetUserTurfs:input_type -> navigators.v1.GetUserTurfsRequest
+	1,  // 7: navigators.v1.TurfService.CreateTurf:output_type -> navigators.v1.CreateTurfResponse
+	3,  // 8: navigators.v1.TurfService.ListTurfs:output_type -> navigators.v1.ListTurfsResponse
+	6,  // 9: navigators.v1.TurfService.AssignUserToTurf:output_type -> navigators.v1.AssignUserToTurfResponse
+	8,  // 10: navigators.v1.TurfService.RemoveUserFromTurf:output_type -> navigators.v1.RemoveUserFromTurfResponse
+	10, // 11: navigators.v1.TurfService.GetUserTurfs:output_type -> navigators.v1.GetUserTurfsResponse
+	7,  // [7:12] is the sub-list for method output_type
+	2,  // [2:7] is the sub-list for method input_type
+	2,  // [2:2] is the sub-list for extension type_name
+	2,  // [2:2] is the sub-list for extension extendee
+	0,  // [0:2] is the sub-list for field type_name
 }
 
 func init() { file_navigators_v1_turf_proto_init() }
@@ -47,12 +709,13 @@ func file_navigators_v1_turf_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_navigators_v1_turf_proto_rawDesc), len(file_navigators_v1_turf_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   0,
+			NumMessages:   12,
 			NumExtensions: 0,
 			NumServices:   1,
 		},
 		GoTypes:           file_navigators_v1_turf_proto_goTypes,
 		DependencyIndexes: file_navigators_v1_turf_proto_depIdxs,
+		MessageInfos:      file_navigators_v1_turf_proto_msgTypes,
 	}.Build()
 	File_navigators_v1_turf_proto = out.File
 	file_navigators_v1_turf_proto_goTypes = nil

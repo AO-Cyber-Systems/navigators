@@ -19,6 +19,9 @@ service AdminService {
   // Session management (admin only)
   rpc RevokeSession(RevokeSessionRequest) returns (RevokeSessionResponse);
   rpc ListActiveSessions(ListActiveSessionsRequest) returns (ListActiveSessionsResponse);
+
+  // Audit log viewer (admin only)
+  rpc ListAuditLogs(ListAuditLogsRequest) returns (ListAuditLogsResponse);
 }
 
 // --- User Management ---
@@ -109,4 +112,29 @@ message SessionInfo {
   string email = 2;
   string created_at = 3;
   string last_active_at = 4;
+}
+
+// --- Audit Logs ---
+
+message ListAuditLogsRequest {
+  int32 page_size = 1;
+  int32 page = 2;
+}
+
+message ListAuditLogsResponse {
+  repeated VoterAccessLogEntry entries = 1;
+  int64 total_count = 2;
+}
+
+message VoterAccessLogEntry {
+  string id = 1;
+  string user_id = 2;
+  string user_email = 3;
+  string voter_id = 4;
+  string access_type = 5;
+  string turf_id = 6;
+  string turf_name = 7;
+  string details = 8;
+  string ip_address = 9;
+  string created_at = 10;
 }

@@ -26,6 +26,7 @@ import (
 
 	navigators "navigators-go"
 	"navigators-go/gen/go/navigators/v1/navigatorsv1connect"
+	"navigators-go/internal/db"
 	navpkg "navigators-go/internal/navigators"
 )
 
@@ -106,6 +107,15 @@ func main() {
 		interceptors,
 	)
 
+	// --- sqlc queries for navigators domain ---
+	navQueries := db.New(pgBackend.Pool())
+
+	// --- Turf-scoped filter (used by voter data services) ---
+	_ = navpkg.NewTurfScopedFilter(navQueries) // available for future voter data services
+
+	// --- Audit service ---
+	navAuditService := navpkg.NewAuditService(navQueries, auditLogger)
+
 	// --- Navigators admin service ---
 	adminService := navpkg.NewAdminService(
 		authStore,
@@ -115,9 +125,19 @@ func main() {
 		auditLogger,
 		pgBackend.Pool(),
 	)
-	adminHandler := navpkg.NewAdminHandler(adminService)
+	adminHandler := navpkg.NewAdminHandler(adminService, navAuditService)
 	adminPath, adminHTTPHandler := navigatorsv1connect.NewAdminServiceHandler(adminHandler, interceptors)
 	mux.Handle(adminPath, adminHTTPHandler)
+
+	// --- Turf service ---
+	turfHandler := navpkg.NewTurfHandler(navQueries)
+	turfPath, turfHTTPHandler := navigatorsv1connect.NewTurfServiceHandler(turfHandler, interceptors)
+	mux.Handle(turfPath, turfHTTPHandler)
+
+	// --- Team service ---
+	teamHandler := navpkg.NewTeamHandler(navQueries)
+	teamPath, teamHTTPHandler := navigatorsv1connect.NewTeamServiceHandler(teamHandler, interceptors)
+	mux.Handle(teamPath, teamHTTPHandler)
 
 	// --- Session timeout checker ---
 	// Check every 5 minutes, revoke tokens inactive for 30 minutes.
