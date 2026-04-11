@@ -10,7 +10,7 @@ See: .planning/PROJECT.md (updated 2026-04-10)
 ## Current Position
 
 **Objective:** 4 of 10 (Offline Sync Engine)
-**Current Job:** 2
+**Current Job:** 3
 **Total Jobs in Objective:** 3
 **Status:** Ready to execute
 **Last Activity:** 2026-04-11
@@ -41,6 +41,7 @@ Progress: [##........] 13%
 | Objective 03 P03 | 9min | 2 tasks | 10 files |
 | Objective 04 P01 | 7min | 2 tasks | 28 files |
 | Objective 04 P02 | 43min | 2 tasks | 12 files |
+| Objective 04 P03 | 9min | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -83,6 +84,8 @@ Recent decisions affecting current work:
 - [Objective 04]: SQLite3MultipleCiphers via pubspec hooks (NOT sqlcipher_flutter_libs which is deprecated)
 - [Objective 04]: Voter metadata LWW uses timestamp-only update since voters table has no notes column
 - [Objective 04]: SyncEngine.instance static field for WorkManager isolate and connectivity listener access
+- [Objective 04]: VoterListNotifier gets optional NavigatorsDatabase param for offline-first fallback
+- [Objective 04]: Turf reassignment check runs as Phase 0 in runSyncCycle before push/pull
 
 ### Pending Todos
 

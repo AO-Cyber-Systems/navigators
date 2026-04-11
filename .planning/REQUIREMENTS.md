@@ -50,8 +50,8 @@ Requirements for initial release. Each maps to roadmap objectives.
 - [x] **SYNC-03**: Local voter data encrypted at rest via sqlcipher (AES-256)
 - [x] **SYNC-04**: Background sync when connectivity available with operation-log pattern
 - [x] **SYNC-05**: Conflict resolution via last-write-wins with server timestamps for concurrent edits
-- [ ] **SYNC-06**: Sync status indicator in UI — Navigator always knows what's synced vs pending
-- [ ] **SYNC-07**: Forced sync on app open when online
+- [x] **SYNC-06**: Sync status indicator in UI — Navigator always knows what's synced vs pending
+- [x] **SYNC-07**: Forced sync on app open when online
 
 ### SMS Messaging
 
@@ -194,8 +194,8 @@ Deferred to future release. Tracked but not in current roadmap.
 | SYNC-03 | Objective 4 | Complete |
 | SYNC-04 | Objective 4 | Complete |
 | SYNC-05 | Objective 4 | Complete |
-| SYNC-06 | Objective 4 | Pending |
-| SYNC-07 | Objective 4 | Pending |
+| SYNC-06 | Objective 4 | Complete |
+| SYNC-07 | Objective 4 | Complete |
 | DOOR-01 | Objective 5 | Pending |
 | DOOR-02 | Objective 5 | Pending |
 | DOOR-03 | Objective 5 | Pending |
