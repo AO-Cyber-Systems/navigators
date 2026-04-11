@@ -15,6 +15,7 @@ const (
 	FeatureSync    rbac.Feature = "sync"
 	FeatureSurveys rbac.Feature = "surveys"
 	FeatureNotes   rbac.Feature = "notes"
+	FeatureSMS     rbac.Feature = "sms"
 )
 
 // NavigatorsPermissionMatrix returns the RBAC permission matrix for the Navigators app.
@@ -66,6 +67,12 @@ func NavigatorsPermissionMatrix() rbac.PermissionMatrix {
 			"view":   rbac.RoleLevelMember, // Navigator (40)
 			"create": rbac.RoleLevelMember, // Navigator (40)
 			"admin":  rbac.RoleLevelAdmin,  // Admin (80)
+		},
+		FeatureSMS: {
+			"send":   rbac.RoleLevelMember, // Navigator (40) -- can send P2P
+			"view":   rbac.RoleLevelMember, // Navigator (40) -- can view conversations
+			"config": rbac.RoleLevelAdmin,  // Admin (80) -- configures Twilio
+			"admin":  rbac.RoleLevelAdmin,  // Admin (80) -- manages all SMS
 		},
 	}
 }
@@ -134,6 +141,13 @@ func NavigatorsProcedurePermissions() map[string]server.Permission {
 		"/navigators.v1.VoterService/AssignTagToVoter":    {Feature: "voters", Action: "edit"},
 		"/navigators.v1.VoterService/RemoveTagFromVoter":  {Feature: "voters", Action: "edit"},
 		"/navigators.v1.VoterService/GetVoterTags":        {Feature: "voters", Action: "view"},
+
+		// SMS operations
+		"/navigators.v1.SMSService/SendP2PMessage":   {Feature: "sms", Action: "send"},
+		"/navigators.v1.SMSService/GetConversation":   {Feature: "sms", Action: "view"},
+		"/navigators.v1.SMSService/ListConversations": {Feature: "sms", Action: "view"},
+		"/navigators.v1.SMSService/GetSMSConfig":      {Feature: "sms", Action: "config"},
+		"/navigators.v1.SMSService/UpdateSMSConfig":   {Feature: "sms", Action: "config"},
 	}
 }
 

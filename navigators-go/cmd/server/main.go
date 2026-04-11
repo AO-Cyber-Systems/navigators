@@ -26,6 +26,8 @@ import (
 	"github.com/golang-migrate/migrate/v4/source/iofs"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
+	"github.com/nats-io/nats.go"
+	"github.com/nats-io/nats.go/jetstream"
 
 	navigators "navigators-go"
 	"navigators-go/gen/go/navigators/v1/navigatorsv1connect"
@@ -196,6 +198,52 @@ func main() {
 	syncHandler := navpkg.NewSyncHandler(syncService)
 	syncPath, syncHTTPHandler := navigatorsv1connect.NewSyncServiceHandler(syncHandler, interceptors)
 	mux.Handle(syncPath, syncHTTPHandler)
+
+	// --- NATS connection ---
+	natsURL := os.Getenv("NATS_URL")
+	if natsURL == "" {
+		natsURL = nats.DefaultURL // nats://localhost:4222
+	}
+	nc, err := nats.Connect(natsURL)
+	if err != nil {
+		slog.Warn("NATS connection failed, SMS features degraded", "error", err, "url", natsURL)
+	} else {
+		defer nc.Close()
+	}
+
+	var js jetstream.JetStream
+	if nc != nil {
+		js, err = jetstream.New(nc)
+		if err != nil {
+			slog.Warn("NATS JetStream init failed, SMS features degraded", "error", err)
+		}
+	}
+
+	// --- Twilio config ---
+	twilioAccountSid := os.Getenv("TWILIO_ACCOUNT_SID")
+	twilioAuthToken := os.Getenv("TWILIO_AUTH_TOKEN")
+
+	// --- SMS services ---
+	smsCompliance := navpkg.NewSMSComplianceService(navQueries, suppressionService)
+	smsService := navpkg.NewSMSService(navQueries, pgBackend.Pool(), twilioAccountSid, twilioAuthToken, smsCompliance, navAuditService)
+	smsHandler := navpkg.NewSMSHandler(smsService)
+	smsPath, smsHTTPHandler := navigatorsv1connect.NewSMSServiceHandler(smsHandler, interceptors)
+	mux.Handle(smsPath, smsHTTPHandler)
+
+	// --- SMS webhook handlers (plain HTTP, no ConnectRPC interceptors) ---
+	if js != nil {
+		webhookHandler := navpkg.NewSMSWebhookHandler(js, twilioAuthToken)
+		mux.HandleFunc("/webhooks/twilio/inbound", webhookHandler.HandleInbound)
+		mux.HandleFunc("/webhooks/twilio/status", webhookHandler.HandleStatus)
+
+		// --- SMS NATS worker ---
+		smsWorker := navpkg.NewSMSWorker(js, navQueries, pgBackend.Pool(), smsCompliance)
+		if err := smsWorker.Start(ctx); err != nil {
+			slog.Warn("SMS NATS worker failed to start", "error", err)
+		} else {
+			defer smsWorker.Stop()
+		}
+	}
 
 	// --- Session timeout checker ---
 	// Check every 5 minutes, revoke tokens inactive for 30 minutes.

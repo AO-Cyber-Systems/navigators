@@ -110,6 +110,21 @@ func (q *Queries) DeleteSMSTemplate(ctx context.Context, arg DeleteSMSTemplatePa
 	return err
 }
 
+const getCompanyAdminUserID = `-- name: GetCompanyAdminUserID :one
+SELECT cm.user_id FROM company_memberships cm
+JOIN roles r ON r.id = cm.role_id
+WHERE cm.company_id = $1 AND r.level >= 80
+LIMIT 1
+`
+
+// Returns any admin user for the company (for system-initiated operations like opt-out processing).
+func (q *Queries) GetCompanyAdminUserID(ctx context.Context, companyID uuid.UUID) (uuid.UUID, error) {
+	row := q.db.QueryRow(ctx, getCompanyAdminUserID, companyID)
+	var user_id uuid.UUID
+	err := row.Scan(&user_id)
+	return user_id, err
+}
+
 const getSMSCampaign = `-- name: GetSMSCampaign :one
 SELECT id, company_id, name, template_id, segment_filters, status, total_recipients, sent_count, delivered_count, failed_count, created_by, launched_at, completed_at, created_at, updated_at FROM sms_campaigns
 WHERE id = $1 AND company_id = $2

@@ -130,3 +130,10 @@ VALUES ($1, $2, $3, $4, $5);
 
 -- name: GetSMSMessageCampaignID :one
 SELECT campaign_id FROM sms_messages WHERE twilio_message_sid = $1;
+
+-- name: GetCompanyAdminUserID :one
+-- Returns any admin user for the company (for system-initiated operations like opt-out processing).
+SELECT cm.user_id FROM company_memberships cm
+JOIN roles r ON r.id = cm.role_id
+WHERE cm.company_id = $1 AND r.level >= 80
+LIMIT 1;
