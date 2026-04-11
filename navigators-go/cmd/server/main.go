@@ -130,7 +130,8 @@ func main() {
 	mux.Handle(adminPath, adminHTTPHandler)
 
 	// --- Turf service ---
-	turfHandler := navpkg.NewTurfHandler(navQueries)
+	turfStatsService := navpkg.NewTurfStatsService(pgBackend.Pool(), navQueries)
+	turfHandler := navpkg.NewTurfHandler(navQueries, pgBackend.Pool(), turfStatsService)
 	turfPath, turfHTTPHandler := navigatorsv1connect.NewTurfServiceHandler(turfHandler, interceptors)
 	mux.Handle(turfPath, turfHTTPHandler)
 
