@@ -6,8 +6,11 @@ package navigatorsv1connect
 
 import (
 	connect "connectrpc.com/connect"
-	_ "navigators-go/gen/go/navigators/v1"
+	context "context"
+	errors "errors"
+	v1 "navigators-go/gen/go/navigators/v1"
 	http "net/http"
+	strings "strings"
 )
 
 // This is a compile-time assertion to ensure that this generated file and the connect package are
@@ -18,12 +21,205 @@ import (
 const _ = connect.IsAtLeastVersion1_13_0
 
 const (
+	// VoterImportServiceName is the fully-qualified name of the VoterImportService service.
+	VoterImportServiceName = "navigators.v1.VoterImportService"
 	// VoterServiceName is the fully-qualified name of the VoterService service.
 	VoterServiceName = "navigators.v1.VoterService"
 )
 
+// These constants are the fully-qualified names of the RPCs defined in this package. They're
+// exposed at runtime as Spec.Procedure and as the final two segments of the HTTP route.
+//
+// Note that these are different from the fully-qualified method names used by
+// google.golang.org/protobuf/reflect/protoreflect. To convert from these constants to
+// reflection-formatted method names, remove the leading slash and convert the remaining slash to a
+// period.
+const (
+	// VoterImportServiceStartImportProcedure is the fully-qualified name of the VoterImportService's
+	// StartImport RPC.
+	VoterImportServiceStartImportProcedure = "/navigators.v1.VoterImportService/StartImport"
+	// VoterImportServiceConfirmUploadProcedure is the fully-qualified name of the VoterImportService's
+	// ConfirmUpload RPC.
+	VoterImportServiceConfirmUploadProcedure = "/navigators.v1.VoterImportService/ConfirmUpload"
+	// VoterImportServiceGetImportStatusProcedure is the fully-qualified name of the
+	// VoterImportService's GetImportStatus RPC.
+	VoterImportServiceGetImportStatusProcedure = "/navigators.v1.VoterImportService/GetImportStatus"
+	// VoterImportServiceListImportJobsProcedure is the fully-qualified name of the VoterImportService's
+	// ListImportJobs RPC.
+	VoterImportServiceListImportJobsProcedure = "/navigators.v1.VoterImportService/ListImportJobs"
+	// VoterServiceGetVoterProcedure is the fully-qualified name of the VoterService's GetVoter RPC.
+	VoterServiceGetVoterProcedure = "/navigators.v1.VoterService/GetVoter"
+	// VoterServiceSearchVotersProcedure is the fully-qualified name of the VoterService's SearchVoters
+	// RPC.
+	VoterServiceSearchVotersProcedure = "/navigators.v1.VoterService/SearchVoters"
+	// VoterServiceListVotersProcedure is the fully-qualified name of the VoterService's ListVoters RPC.
+	VoterServiceListVotersProcedure = "/navigators.v1.VoterService/ListVoters"
+)
+
+// VoterImportServiceClient is a client for the navigators.v1.VoterImportService service.
+type VoterImportServiceClient interface {
+	// StartImport creates a new import job and returns a presigned upload URL.
+	StartImport(context.Context, *connect.Request[v1.StartImportRequest]) (*connect.Response[v1.StartImportResponse], error)
+	// ConfirmUpload triggers processing of an uploaded file.
+	ConfirmUpload(context.Context, *connect.Request[v1.ConfirmUploadRequest]) (*connect.Response[v1.ConfirmUploadResponse], error)
+	// GetImportStatus returns the current status and progress of an import job.
+	GetImportStatus(context.Context, *connect.Request[v1.GetImportStatusRequest]) (*connect.Response[v1.GetImportStatusResponse], error)
+	// ListImportJobs returns a paginated list of import jobs.
+	ListImportJobs(context.Context, *connect.Request[v1.ListImportJobsRequest]) (*connect.Response[v1.ListImportJobsResponse], error)
+}
+
+// NewVoterImportServiceClient constructs a client for the navigators.v1.VoterImportService service.
+// By default, it uses the Connect protocol with the binary Protobuf Codec, asks for gzipped
+// responses, and sends uncompressed requests. To use the gRPC or gRPC-Web protocols, supply the
+// connect.WithGRPC() or connect.WithGRPCWeb() options.
+//
+// The URL supplied here should be the base URL for the Connect or gRPC server (for example,
+// http://api.acme.com or https://acme.com/grpc).
+func NewVoterImportServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) VoterImportServiceClient {
+	baseURL = strings.TrimRight(baseURL, "/")
+	voterImportServiceMethods := v1.File_navigators_v1_voter_proto.Services().ByName("VoterImportService").Methods()
+	return &voterImportServiceClient{
+		startImport: connect.NewClient[v1.StartImportRequest, v1.StartImportResponse](
+			httpClient,
+			baseURL+VoterImportServiceStartImportProcedure,
+			connect.WithSchema(voterImportServiceMethods.ByName("StartImport")),
+			connect.WithClientOptions(opts...),
+		),
+		confirmUpload: connect.NewClient[v1.ConfirmUploadRequest, v1.ConfirmUploadResponse](
+			httpClient,
+			baseURL+VoterImportServiceConfirmUploadProcedure,
+			connect.WithSchema(voterImportServiceMethods.ByName("ConfirmUpload")),
+			connect.WithClientOptions(opts...),
+		),
+		getImportStatus: connect.NewClient[v1.GetImportStatusRequest, v1.GetImportStatusResponse](
+			httpClient,
+			baseURL+VoterImportServiceGetImportStatusProcedure,
+			connect.WithSchema(voterImportServiceMethods.ByName("GetImportStatus")),
+			connect.WithClientOptions(opts...),
+		),
+		listImportJobs: connect.NewClient[v1.ListImportJobsRequest, v1.ListImportJobsResponse](
+			httpClient,
+			baseURL+VoterImportServiceListImportJobsProcedure,
+			connect.WithSchema(voterImportServiceMethods.ByName("ListImportJobs")),
+			connect.WithClientOptions(opts...),
+		),
+	}
+}
+
+// voterImportServiceClient implements VoterImportServiceClient.
+type voterImportServiceClient struct {
+	startImport     *connect.Client[v1.StartImportRequest, v1.StartImportResponse]
+	confirmUpload   *connect.Client[v1.ConfirmUploadRequest, v1.ConfirmUploadResponse]
+	getImportStatus *connect.Client[v1.GetImportStatusRequest, v1.GetImportStatusResponse]
+	listImportJobs  *connect.Client[v1.ListImportJobsRequest, v1.ListImportJobsResponse]
+}
+
+// StartImport calls navigators.v1.VoterImportService.StartImport.
+func (c *voterImportServiceClient) StartImport(ctx context.Context, req *connect.Request[v1.StartImportRequest]) (*connect.Response[v1.StartImportResponse], error) {
+	return c.startImport.CallUnary(ctx, req)
+}
+
+// ConfirmUpload calls navigators.v1.VoterImportService.ConfirmUpload.
+func (c *voterImportServiceClient) ConfirmUpload(ctx context.Context, req *connect.Request[v1.ConfirmUploadRequest]) (*connect.Response[v1.ConfirmUploadResponse], error) {
+	return c.confirmUpload.CallUnary(ctx, req)
+}
+
+// GetImportStatus calls navigators.v1.VoterImportService.GetImportStatus.
+func (c *voterImportServiceClient) GetImportStatus(ctx context.Context, req *connect.Request[v1.GetImportStatusRequest]) (*connect.Response[v1.GetImportStatusResponse], error) {
+	return c.getImportStatus.CallUnary(ctx, req)
+}
+
+// ListImportJobs calls navigators.v1.VoterImportService.ListImportJobs.
+func (c *voterImportServiceClient) ListImportJobs(ctx context.Context, req *connect.Request[v1.ListImportJobsRequest]) (*connect.Response[v1.ListImportJobsResponse], error) {
+	return c.listImportJobs.CallUnary(ctx, req)
+}
+
+// VoterImportServiceHandler is an implementation of the navigators.v1.VoterImportService service.
+type VoterImportServiceHandler interface {
+	// StartImport creates a new import job and returns a presigned upload URL.
+	StartImport(context.Context, *connect.Request[v1.StartImportRequest]) (*connect.Response[v1.StartImportResponse], error)
+	// ConfirmUpload triggers processing of an uploaded file.
+	ConfirmUpload(context.Context, *connect.Request[v1.ConfirmUploadRequest]) (*connect.Response[v1.ConfirmUploadResponse], error)
+	// GetImportStatus returns the current status and progress of an import job.
+	GetImportStatus(context.Context, *connect.Request[v1.GetImportStatusRequest]) (*connect.Response[v1.GetImportStatusResponse], error)
+	// ListImportJobs returns a paginated list of import jobs.
+	ListImportJobs(context.Context, *connect.Request[v1.ListImportJobsRequest]) (*connect.Response[v1.ListImportJobsResponse], error)
+}
+
+// NewVoterImportServiceHandler builds an HTTP handler from the service implementation. It returns
+// the path on which to mount the handler and the handler itself.
+//
+// By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
+// and JSON codecs. They also support gzip compression.
+func NewVoterImportServiceHandler(svc VoterImportServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	voterImportServiceMethods := v1.File_navigators_v1_voter_proto.Services().ByName("VoterImportService").Methods()
+	voterImportServiceStartImportHandler := connect.NewUnaryHandler(
+		VoterImportServiceStartImportProcedure,
+		svc.StartImport,
+		connect.WithSchema(voterImportServiceMethods.ByName("StartImport")),
+		connect.WithHandlerOptions(opts...),
+	)
+	voterImportServiceConfirmUploadHandler := connect.NewUnaryHandler(
+		VoterImportServiceConfirmUploadProcedure,
+		svc.ConfirmUpload,
+		connect.WithSchema(voterImportServiceMethods.ByName("ConfirmUpload")),
+		connect.WithHandlerOptions(opts...),
+	)
+	voterImportServiceGetImportStatusHandler := connect.NewUnaryHandler(
+		VoterImportServiceGetImportStatusProcedure,
+		svc.GetImportStatus,
+		connect.WithSchema(voterImportServiceMethods.ByName("GetImportStatus")),
+		connect.WithHandlerOptions(opts...),
+	)
+	voterImportServiceListImportJobsHandler := connect.NewUnaryHandler(
+		VoterImportServiceListImportJobsProcedure,
+		svc.ListImportJobs,
+		connect.WithSchema(voterImportServiceMethods.ByName("ListImportJobs")),
+		connect.WithHandlerOptions(opts...),
+	)
+	return "/navigators.v1.VoterImportService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		switch r.URL.Path {
+		case VoterImportServiceStartImportProcedure:
+			voterImportServiceStartImportHandler.ServeHTTP(w, r)
+		case VoterImportServiceConfirmUploadProcedure:
+			voterImportServiceConfirmUploadHandler.ServeHTTP(w, r)
+		case VoterImportServiceGetImportStatusProcedure:
+			voterImportServiceGetImportStatusHandler.ServeHTTP(w, r)
+		case VoterImportServiceListImportJobsProcedure:
+			voterImportServiceListImportJobsHandler.ServeHTTP(w, r)
+		default:
+			http.NotFound(w, r)
+		}
+	})
+}
+
+// UnimplementedVoterImportServiceHandler returns CodeUnimplemented from all methods.
+type UnimplementedVoterImportServiceHandler struct{}
+
+func (UnimplementedVoterImportServiceHandler) StartImport(context.Context, *connect.Request[v1.StartImportRequest]) (*connect.Response[v1.StartImportResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.VoterImportService.StartImport is not implemented"))
+}
+
+func (UnimplementedVoterImportServiceHandler) ConfirmUpload(context.Context, *connect.Request[v1.ConfirmUploadRequest]) (*connect.Response[v1.ConfirmUploadResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.VoterImportService.ConfirmUpload is not implemented"))
+}
+
+func (UnimplementedVoterImportServiceHandler) GetImportStatus(context.Context, *connect.Request[v1.GetImportStatusRequest]) (*connect.Response[v1.GetImportStatusResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.VoterImportService.GetImportStatus is not implemented"))
+}
+
+func (UnimplementedVoterImportServiceHandler) ListImportJobs(context.Context, *connect.Request[v1.ListImportJobsRequest]) (*connect.Response[v1.ListImportJobsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.VoterImportService.ListImportJobs is not implemented"))
+}
+
 // VoterServiceClient is a client for the navigators.v1.VoterService service.
 type VoterServiceClient interface {
+	// GetVoter returns a single voter by ID.
+	GetVoter(context.Context, *connect.Request[v1.GetVoterRequest]) (*connect.Response[v1.GetVoterResponse], error)
+	// SearchVoters performs fuzzy text search on voters.
+	SearchVoters(context.Context, *connect.Request[v1.SearchVotersRequest]) (*connect.Response[v1.SearchVotersResponse], error)
+	// ListVoters returns a filtered, paginated list of voters.
+	ListVoters(context.Context, *connect.Request[v1.ListVotersRequest]) (*connect.Response[v1.ListVotersResponse], error)
 }
 
 // NewVoterServiceClient constructs a client for the navigators.v1.VoterService service. By default,
@@ -34,15 +230,60 @@ type VoterServiceClient interface {
 // The URL supplied here should be the base URL for the Connect or gRPC server (for example,
 // http://api.acme.com or https://acme.com/grpc).
 func NewVoterServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...connect.ClientOption) VoterServiceClient {
-	return &voterServiceClient{}
+	baseURL = strings.TrimRight(baseURL, "/")
+	voterServiceMethods := v1.File_navigators_v1_voter_proto.Services().ByName("VoterService").Methods()
+	return &voterServiceClient{
+		getVoter: connect.NewClient[v1.GetVoterRequest, v1.GetVoterResponse](
+			httpClient,
+			baseURL+VoterServiceGetVoterProcedure,
+			connect.WithSchema(voterServiceMethods.ByName("GetVoter")),
+			connect.WithClientOptions(opts...),
+		),
+		searchVoters: connect.NewClient[v1.SearchVotersRequest, v1.SearchVotersResponse](
+			httpClient,
+			baseURL+VoterServiceSearchVotersProcedure,
+			connect.WithSchema(voterServiceMethods.ByName("SearchVoters")),
+			connect.WithClientOptions(opts...),
+		),
+		listVoters: connect.NewClient[v1.ListVotersRequest, v1.ListVotersResponse](
+			httpClient,
+			baseURL+VoterServiceListVotersProcedure,
+			connect.WithSchema(voterServiceMethods.ByName("ListVoters")),
+			connect.WithClientOptions(opts...),
+		),
+	}
 }
 
 // voterServiceClient implements VoterServiceClient.
 type voterServiceClient struct {
+	getVoter     *connect.Client[v1.GetVoterRequest, v1.GetVoterResponse]
+	searchVoters *connect.Client[v1.SearchVotersRequest, v1.SearchVotersResponse]
+	listVoters   *connect.Client[v1.ListVotersRequest, v1.ListVotersResponse]
+}
+
+// GetVoter calls navigators.v1.VoterService.GetVoter.
+func (c *voterServiceClient) GetVoter(ctx context.Context, req *connect.Request[v1.GetVoterRequest]) (*connect.Response[v1.GetVoterResponse], error) {
+	return c.getVoter.CallUnary(ctx, req)
+}
+
+// SearchVoters calls navigators.v1.VoterService.SearchVoters.
+func (c *voterServiceClient) SearchVoters(ctx context.Context, req *connect.Request[v1.SearchVotersRequest]) (*connect.Response[v1.SearchVotersResponse], error) {
+	return c.searchVoters.CallUnary(ctx, req)
+}
+
+// ListVoters calls navigators.v1.VoterService.ListVoters.
+func (c *voterServiceClient) ListVoters(ctx context.Context, req *connect.Request[v1.ListVotersRequest]) (*connect.Response[v1.ListVotersResponse], error) {
+	return c.listVoters.CallUnary(ctx, req)
 }
 
 // VoterServiceHandler is an implementation of the navigators.v1.VoterService service.
 type VoterServiceHandler interface {
+	// GetVoter returns a single voter by ID.
+	GetVoter(context.Context, *connect.Request[v1.GetVoterRequest]) (*connect.Response[v1.GetVoterResponse], error)
+	// SearchVoters performs fuzzy text search on voters.
+	SearchVoters(context.Context, *connect.Request[v1.SearchVotersRequest]) (*connect.Response[v1.SearchVotersResponse], error)
+	// ListVoters returns a filtered, paginated list of voters.
+	ListVoters(context.Context, *connect.Request[v1.ListVotersRequest]) (*connect.Response[v1.ListVotersResponse], error)
 }
 
 // NewVoterServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -51,8 +292,33 @@ type VoterServiceHandler interface {
 // By default, handlers support the Connect, gRPC, and gRPC-Web protocols with the binary Protobuf
 // and JSON codecs. They also support gzip compression.
 func NewVoterServiceHandler(svc VoterServiceHandler, opts ...connect.HandlerOption) (string, http.Handler) {
+	voterServiceMethods := v1.File_navigators_v1_voter_proto.Services().ByName("VoterService").Methods()
+	voterServiceGetVoterHandler := connect.NewUnaryHandler(
+		VoterServiceGetVoterProcedure,
+		svc.GetVoter,
+		connect.WithSchema(voterServiceMethods.ByName("GetVoter")),
+		connect.WithHandlerOptions(opts...),
+	)
+	voterServiceSearchVotersHandler := connect.NewUnaryHandler(
+		VoterServiceSearchVotersProcedure,
+		svc.SearchVoters,
+		connect.WithSchema(voterServiceMethods.ByName("SearchVoters")),
+		connect.WithHandlerOptions(opts...),
+	)
+	voterServiceListVotersHandler := connect.NewUnaryHandler(
+		VoterServiceListVotersProcedure,
+		svc.ListVoters,
+		connect.WithSchema(voterServiceMethods.ByName("ListVoters")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/navigators.v1.VoterService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
+		case VoterServiceGetVoterProcedure:
+			voterServiceGetVoterHandler.ServeHTTP(w, r)
+		case VoterServiceSearchVotersProcedure:
+			voterServiceSearchVotersHandler.ServeHTTP(w, r)
+		case VoterServiceListVotersProcedure:
+			voterServiceListVotersHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -61,3 +327,15 @@ func NewVoterServiceHandler(svc VoterServiceHandler, opts ...connect.HandlerOpti
 
 // UnimplementedVoterServiceHandler returns CodeUnimplemented from all methods.
 type UnimplementedVoterServiceHandler struct{}
+
+func (UnimplementedVoterServiceHandler) GetVoter(context.Context, *connect.Request[v1.GetVoterRequest]) (*connect.Response[v1.GetVoterResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.VoterService.GetVoter is not implemented"))
+}
+
+func (UnimplementedVoterServiceHandler) SearchVoters(context.Context, *connect.Request[v1.SearchVotersRequest]) (*connect.Response[v1.SearchVotersResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.VoterService.SearchVoters is not implemented"))
+}
+
+func (UnimplementedVoterServiceHandler) ListVoters(context.Context, *connect.Request[v1.ListVotersRequest]) (*connect.Response[v1.ListVotersResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.VoterService.ListVoters is not implemented"))
+}

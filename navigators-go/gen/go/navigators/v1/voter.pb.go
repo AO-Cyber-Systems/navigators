@@ -10,6 +10,7 @@ import (
 	protoreflect "google.golang.org/protobuf/reflect/protoreflect"
 	protoimpl "google.golang.org/protobuf/runtime/protoimpl"
 	reflect "reflect"
+	sync "sync"
 	unsafe "unsafe"
 )
 
@@ -20,20 +21,1599 @@ const (
 	_ = protoimpl.EnforceVersion(protoimpl.MaxVersion - 20)
 )
 
+type StartImportRequest struct {
+	state    protoimpl.MessageState `protogen:"open.v1"`
+	FileName string                 `protobuf:"bytes,1,opt,name=file_name,json=fileName,proto3" json:"file_name,omitempty"`
+	// "cvr" or "l2"
+	SourceType string `protobuf:"bytes,2,opt,name=source_type,json=sourceType,proto3" json:"source_type,omitempty"`
+	// JSON-encoded field mapping: map of column index to field name
+	FieldMapping  string `protobuf:"bytes,3,opt,name=field_mapping,json=fieldMapping,proto3" json:"field_mapping,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *StartImportRequest) Reset() {
+	*x = StartImportRequest{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[0]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StartImportRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StartImportRequest) ProtoMessage() {}
+
+func (x *StartImportRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[0]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StartImportRequest.ProtoReflect.Descriptor instead.
+func (*StartImportRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{0}
+}
+
+func (x *StartImportRequest) GetFileName() string {
+	if x != nil {
+		return x.FileName
+	}
+	return ""
+}
+
+func (x *StartImportRequest) GetSourceType() string {
+	if x != nil {
+		return x.SourceType
+	}
+	return ""
+}
+
+func (x *StartImportRequest) GetFieldMapping() string {
+	if x != nil {
+		return x.FieldMapping
+	}
+	return ""
+}
+
+type StartImportResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	JobId         string                 `protobuf:"bytes,1,opt,name=job_id,json=jobId,proto3" json:"job_id,omitempty"`
+	UploadUrl     string                 `protobuf:"bytes,2,opt,name=upload_url,json=uploadUrl,proto3" json:"upload_url,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *StartImportResponse) Reset() {
+	*x = StartImportResponse{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[1]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *StartImportResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*StartImportResponse) ProtoMessage() {}
+
+func (x *StartImportResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[1]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use StartImportResponse.ProtoReflect.Descriptor instead.
+func (*StartImportResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{1}
+}
+
+func (x *StartImportResponse) GetJobId() string {
+	if x != nil {
+		return x.JobId
+	}
+	return ""
+}
+
+func (x *StartImportResponse) GetUploadUrl() string {
+	if x != nil {
+		return x.UploadUrl
+	}
+	return ""
+}
+
+type ConfirmUploadRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	JobId         string                 `protobuf:"bytes,1,opt,name=job_id,json=jobId,proto3" json:"job_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ConfirmUploadRequest) Reset() {
+	*x = ConfirmUploadRequest{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[2]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ConfirmUploadRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ConfirmUploadRequest) ProtoMessage() {}
+
+func (x *ConfirmUploadRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[2]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ConfirmUploadRequest.ProtoReflect.Descriptor instead.
+func (*ConfirmUploadRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{2}
+}
+
+func (x *ConfirmUploadRequest) GetJobId() string {
+	if x != nil {
+		return x.JobId
+	}
+	return ""
+}
+
+type ConfirmUploadResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Status        string                 `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ConfirmUploadResponse) Reset() {
+	*x = ConfirmUploadResponse{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ConfirmUploadResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ConfirmUploadResponse) ProtoMessage() {}
+
+func (x *ConfirmUploadResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ConfirmUploadResponse.ProtoReflect.Descriptor instead.
+func (*ConfirmUploadResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *ConfirmUploadResponse) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+type GetImportStatusRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	JobId         string                 `protobuf:"bytes,1,opt,name=job_id,json=jobId,proto3" json:"job_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetImportStatusRequest) Reset() {
+	*x = GetImportStatusRequest{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetImportStatusRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetImportStatusRequest) ProtoMessage() {}
+
+func (x *GetImportStatusRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetImportStatusRequest.ProtoReflect.Descriptor instead.
+func (*GetImportStatusRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *GetImportStatusRequest) GetJobId() string {
+	if x != nil {
+		return x.JobId
+	}
+	return ""
+}
+
+type GetImportStatusResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Job           *ImportJob             `protobuf:"bytes,1,opt,name=job,proto3" json:"job,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetImportStatusResponse) Reset() {
+	*x = GetImportStatusResponse{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[5]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetImportStatusResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetImportStatusResponse) ProtoMessage() {}
+
+func (x *GetImportStatusResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[5]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetImportStatusResponse.ProtoReflect.Descriptor instead.
+func (*GetImportStatusResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{5}
+}
+
+func (x *GetImportStatusResponse) GetJob() *ImportJob {
+	if x != nil {
+		return x.Job
+	}
+	return nil
+}
+
+type ListImportJobsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PageSize      int32                  `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	Page          int32                  `protobuf:"varint,2,opt,name=page,proto3" json:"page,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListImportJobsRequest) Reset() {
+	*x = ListImportJobsRequest{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[6]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListImportJobsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListImportJobsRequest) ProtoMessage() {}
+
+func (x *ListImportJobsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[6]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListImportJobsRequest.ProtoReflect.Descriptor instead.
+func (*ListImportJobsRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{6}
+}
+
+func (x *ListImportJobsRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *ListImportJobsRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+type ListImportJobsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Jobs          []*ImportJob           `protobuf:"bytes,1,rep,name=jobs,proto3" json:"jobs,omitempty"`
+	TotalCount    int64                  `protobuf:"varint,2,opt,name=total_count,json=totalCount,proto3" json:"total_count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListImportJobsResponse) Reset() {
+	*x = ListImportJobsResponse{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[7]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListImportJobsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListImportJobsResponse) ProtoMessage() {}
+
+func (x *ListImportJobsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[7]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListImportJobsResponse.ProtoReflect.Descriptor instead.
+func (*ListImportJobsResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{7}
+}
+
+func (x *ListImportJobsResponse) GetJobs() []*ImportJob {
+	if x != nil {
+		return x.Jobs
+	}
+	return nil
+}
+
+func (x *ListImportJobsResponse) GetTotalCount() int64 {
+	if x != nil {
+		return x.TotalCount
+	}
+	return 0
+}
+
+type ImportJob struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	UploadedBy    string                 `protobuf:"bytes,2,opt,name=uploaded_by,json=uploadedBy,proto3" json:"uploaded_by,omitempty"`
+	FileName      string                 `protobuf:"bytes,3,opt,name=file_name,json=fileName,proto3" json:"file_name,omitempty"`
+	SourceType    string                 `protobuf:"bytes,4,opt,name=source_type,json=sourceType,proto3" json:"source_type,omitempty"`
+	Status        string                 `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	TotalRows     int32                  `protobuf:"varint,6,opt,name=total_rows,json=totalRows,proto3" json:"total_rows,omitempty"`
+	ParsedRows    int32                  `protobuf:"varint,7,opt,name=parsed_rows,json=parsedRows,proto3" json:"parsed_rows,omitempty"`
+	MergedRows    int32                  `protobuf:"varint,8,opt,name=merged_rows,json=mergedRows,proto3" json:"merged_rows,omitempty"`
+	SkippedRows   int32                  `protobuf:"varint,9,opt,name=skipped_rows,json=skippedRows,proto3" json:"skipped_rows,omitempty"`
+	ErrorRows     int32                  `protobuf:"varint,10,opt,name=error_rows,json=errorRows,proto3" json:"error_rows,omitempty"`
+	GeocodedRows  int32                  `protobuf:"varint,11,opt,name=geocoded_rows,json=geocodedRows,proto3" json:"geocoded_rows,omitempty"`
+	Errors        string                 `protobuf:"bytes,12,opt,name=errors,proto3" json:"errors,omitempty"`
+	FieldMapping  string                 `protobuf:"bytes,13,opt,name=field_mapping,json=fieldMapping,proto3" json:"field_mapping,omitempty"`
+	CreatedAt     string                 `protobuf:"bytes,14,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt     string                 `protobuf:"bytes,15,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ImportJob) Reset() {
+	*x = ImportJob{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[8]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ImportJob) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ImportJob) ProtoMessage() {}
+
+func (x *ImportJob) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[8]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ImportJob.ProtoReflect.Descriptor instead.
+func (*ImportJob) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{8}
+}
+
+func (x *ImportJob) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *ImportJob) GetUploadedBy() string {
+	if x != nil {
+		return x.UploadedBy
+	}
+	return ""
+}
+
+func (x *ImportJob) GetFileName() string {
+	if x != nil {
+		return x.FileName
+	}
+	return ""
+}
+
+func (x *ImportJob) GetSourceType() string {
+	if x != nil {
+		return x.SourceType
+	}
+	return ""
+}
+
+func (x *ImportJob) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *ImportJob) GetTotalRows() int32 {
+	if x != nil {
+		return x.TotalRows
+	}
+	return 0
+}
+
+func (x *ImportJob) GetParsedRows() int32 {
+	if x != nil {
+		return x.ParsedRows
+	}
+	return 0
+}
+
+func (x *ImportJob) GetMergedRows() int32 {
+	if x != nil {
+		return x.MergedRows
+	}
+	return 0
+}
+
+func (x *ImportJob) GetSkippedRows() int32 {
+	if x != nil {
+		return x.SkippedRows
+	}
+	return 0
+}
+
+func (x *ImportJob) GetErrorRows() int32 {
+	if x != nil {
+		return x.ErrorRows
+	}
+	return 0
+}
+
+func (x *ImportJob) GetGeocodedRows() int32 {
+	if x != nil {
+		return x.GeocodedRows
+	}
+	return 0
+}
+
+func (x *ImportJob) GetErrors() string {
+	if x != nil {
+		return x.Errors
+	}
+	return ""
+}
+
+func (x *ImportJob) GetFieldMapping() string {
+	if x != nil {
+		return x.FieldMapping
+	}
+	return ""
+}
+
+func (x *ImportJob) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
+func (x *ImportJob) GetUpdatedAt() string {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return ""
+}
+
+type GetVoterRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VoterId       string                 `protobuf:"bytes,1,opt,name=voter_id,json=voterId,proto3" json:"voter_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetVoterRequest) Reset() {
+	*x = GetVoterRequest{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[9]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetVoterRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetVoterRequest) ProtoMessage() {}
+
+func (x *GetVoterRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[9]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetVoterRequest.ProtoReflect.Descriptor instead.
+func (*GetVoterRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{9}
+}
+
+func (x *GetVoterRequest) GetVoterId() string {
+	if x != nil {
+		return x.VoterId
+	}
+	return ""
+}
+
+type GetVoterResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Voter         *Voter                 `protobuf:"bytes,1,opt,name=voter,proto3" json:"voter,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetVoterResponse) Reset() {
+	*x = GetVoterResponse{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[10]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetVoterResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetVoterResponse) ProtoMessage() {}
+
+func (x *GetVoterResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[10]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetVoterResponse.ProtoReflect.Descriptor instead.
+func (*GetVoterResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{10}
+}
+
+func (x *GetVoterResponse) GetVoter() *Voter {
+	if x != nil {
+		return x.Voter
+	}
+	return nil
+}
+
+type SearchVotersRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Query         string                 `protobuf:"bytes,1,opt,name=query,proto3" json:"query,omitempty"`
+	PageSize      int32                  `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	Page          int32                  `protobuf:"varint,3,opt,name=page,proto3" json:"page,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SearchVotersRequest) Reset() {
+	*x = SearchVotersRequest{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[11]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SearchVotersRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchVotersRequest) ProtoMessage() {}
+
+func (x *SearchVotersRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[11]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchVotersRequest.ProtoReflect.Descriptor instead.
+func (*SearchVotersRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{11}
+}
+
+func (x *SearchVotersRequest) GetQuery() string {
+	if x != nil {
+		return x.Query
+	}
+	return ""
+}
+
+func (x *SearchVotersRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *SearchVotersRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+type SearchVotersResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Voters        []*VoterSummary        `protobuf:"bytes,1,rep,name=voters,proto3" json:"voters,omitempty"`
+	TotalCount    int64                  `protobuf:"varint,2,opt,name=total_count,json=totalCount,proto3" json:"total_count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SearchVotersResponse) Reset() {
+	*x = SearchVotersResponse{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SearchVotersResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SearchVotersResponse) ProtoMessage() {}
+
+func (x *SearchVotersResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SearchVotersResponse.ProtoReflect.Descriptor instead.
+func (*SearchVotersResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *SearchVotersResponse) GetVoters() []*VoterSummary {
+	if x != nil {
+		return x.Voters
+	}
+	return nil
+}
+
+func (x *SearchVotersResponse) GetTotalCount() int64 {
+	if x != nil {
+		return x.TotalCount
+	}
+	return 0
+}
+
+type ListVotersRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Filters       *VoterFilters          `protobuf:"bytes,1,opt,name=filters,proto3" json:"filters,omitempty"`
+	PageSize      int32                  `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	Page          int32                  `protobuf:"varint,3,opt,name=page,proto3" json:"page,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListVotersRequest) Reset() {
+	*x = ListVotersRequest{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListVotersRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListVotersRequest) ProtoMessage() {}
+
+func (x *ListVotersRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListVotersRequest.ProtoReflect.Descriptor instead.
+func (*ListVotersRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *ListVotersRequest) GetFilters() *VoterFilters {
+	if x != nil {
+		return x.Filters
+	}
+	return nil
+}
+
+func (x *ListVotersRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *ListVotersRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+type ListVotersResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Voters        []*VoterSummary        `protobuf:"bytes,1,rep,name=voters,proto3" json:"voters,omitempty"`
+	TotalCount    int64                  `protobuf:"varint,2,opt,name=total_count,json=totalCount,proto3" json:"total_count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListVotersResponse) Reset() {
+	*x = ListVotersResponse{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListVotersResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListVotersResponse) ProtoMessage() {}
+
+func (x *ListVotersResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListVotersResponse.ProtoReflect.Descriptor instead.
+func (*ListVotersResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *ListVotersResponse) GetVoters() []*VoterSummary {
+	if x != nil {
+		return x.Voters
+	}
+	return nil
+}
+
+func (x *ListVotersResponse) GetTotalCount() int64 {
+	if x != nil {
+		return x.TotalCount
+	}
+	return 0
+}
+
+type VoterFilters struct {
+	state                 protoimpl.MessageState `protogen:"open.v1"`
+	Party                 string                 `protobuf:"bytes,1,opt,name=party,proto3" json:"party,omitempty"`
+	Status                string                 `protobuf:"bytes,2,opt,name=status,proto3" json:"status,omitempty"`
+	CongressionalDistrict string                 `protobuf:"bytes,3,opt,name=congressional_district,json=congressionalDistrict,proto3" json:"congressional_district,omitempty"`
+	StateSenateDistrict   string                 `protobuf:"bytes,4,opt,name=state_senate_district,json=stateSenateDistrict,proto3" json:"state_senate_district,omitempty"`
+	StateHouseDistrict    string                 `protobuf:"bytes,5,opt,name=state_house_district,json=stateHouseDistrict,proto3" json:"state_house_district,omitempty"`
+	Municipality          string                 `protobuf:"bytes,6,opt,name=municipality,proto3" json:"municipality,omitempty"`
+	County                string                 `protobuf:"bytes,7,opt,name=county,proto3" json:"county,omitempty"`
+	MinVoteCount          int32                  `protobuf:"varint,8,opt,name=min_vote_count,json=minVoteCount,proto3" json:"min_vote_count,omitempty"`
+	// Bounding box for geographic filter: "min_lon,min_lat,max_lon,max_lat"
+	Bbox          string `protobuf:"bytes,9,opt,name=bbox,proto3" json:"bbox,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *VoterFilters) Reset() {
+	*x = VoterFilters{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VoterFilters) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VoterFilters) ProtoMessage() {}
+
+func (x *VoterFilters) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VoterFilters.ProtoReflect.Descriptor instead.
+func (*VoterFilters) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *VoterFilters) GetParty() string {
+	if x != nil {
+		return x.Party
+	}
+	return ""
+}
+
+func (x *VoterFilters) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *VoterFilters) GetCongressionalDistrict() string {
+	if x != nil {
+		return x.CongressionalDistrict
+	}
+	return ""
+}
+
+func (x *VoterFilters) GetStateSenateDistrict() string {
+	if x != nil {
+		return x.StateSenateDistrict
+	}
+	return ""
+}
+
+func (x *VoterFilters) GetStateHouseDistrict() string {
+	if x != nil {
+		return x.StateHouseDistrict
+	}
+	return ""
+}
+
+func (x *VoterFilters) GetMunicipality() string {
+	if x != nil {
+		return x.Municipality
+	}
+	return ""
+}
+
+func (x *VoterFilters) GetCounty() string {
+	if x != nil {
+		return x.County
+	}
+	return ""
+}
+
+func (x *VoterFilters) GetMinVoteCount() int32 {
+	if x != nil {
+		return x.MinVoteCount
+	}
+	return 0
+}
+
+func (x *VoterFilters) GetBbox() string {
+	if x != nil {
+		return x.Bbox
+	}
+	return ""
+}
+
+type Voter struct {
+	state                 protoimpl.MessageState `protogen:"open.v1"`
+	Id                    string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	FirstName             string                 `protobuf:"bytes,2,opt,name=first_name,json=firstName,proto3" json:"first_name,omitempty"`
+	MiddleName            string                 `protobuf:"bytes,3,opt,name=middle_name,json=middleName,proto3" json:"middle_name,omitempty"`
+	LastName              string                 `protobuf:"bytes,4,opt,name=last_name,json=lastName,proto3" json:"last_name,omitempty"`
+	Suffix                string                 `protobuf:"bytes,5,opt,name=suffix,proto3" json:"suffix,omitempty"`
+	YearOfBirth           int32                  `protobuf:"varint,6,opt,name=year_of_birth,json=yearOfBirth,proto3" json:"year_of_birth,omitempty"`
+	ResStreetAddress      string                 `protobuf:"bytes,7,opt,name=res_street_address,json=resStreetAddress,proto3" json:"res_street_address,omitempty"`
+	ResCity               string                 `protobuf:"bytes,8,opt,name=res_city,json=resCity,proto3" json:"res_city,omitempty"`
+	ResState              string                 `protobuf:"bytes,9,opt,name=res_state,json=resState,proto3" json:"res_state,omitempty"`
+	ResZip                string                 `protobuf:"bytes,10,opt,name=res_zip,json=resZip,proto3" json:"res_zip,omitempty"`
+	MailStreetAddress     string                 `protobuf:"bytes,11,opt,name=mail_street_address,json=mailStreetAddress,proto3" json:"mail_street_address,omitempty"`
+	MailCity              string                 `protobuf:"bytes,12,opt,name=mail_city,json=mailCity,proto3" json:"mail_city,omitempty"`
+	MailState             string                 `protobuf:"bytes,13,opt,name=mail_state,json=mailState,proto3" json:"mail_state,omitempty"`
+	MailZip               string                 `protobuf:"bytes,14,opt,name=mail_zip,json=mailZip,proto3" json:"mail_zip,omitempty"`
+	Party                 string                 `protobuf:"bytes,15,opt,name=party,proto3" json:"party,omitempty"`
+	Status                string                 `protobuf:"bytes,16,opt,name=status,proto3" json:"status,omitempty"`
+	RegistrationDate      string                 `protobuf:"bytes,17,opt,name=registration_date,json=registrationDate,proto3" json:"registration_date,omitempty"`
+	County                string                 `protobuf:"bytes,18,opt,name=county,proto3" json:"county,omitempty"`
+	Municipality          string                 `protobuf:"bytes,19,opt,name=municipality,proto3" json:"municipality,omitempty"`
+	Ward                  string                 `protobuf:"bytes,20,opt,name=ward,proto3" json:"ward,omitempty"`
+	Precinct              string                 `protobuf:"bytes,21,opt,name=precinct,proto3" json:"precinct,omitempty"`
+	CongressionalDistrict string                 `protobuf:"bytes,22,opt,name=congressional_district,json=congressionalDistrict,proto3" json:"congressional_district,omitempty"`
+	StateSenateDistrict   string                 `protobuf:"bytes,23,opt,name=state_senate_district,json=stateSenateDistrict,proto3" json:"state_senate_district,omitempty"`
+	StateHouseDistrict    string                 `protobuf:"bytes,24,opt,name=state_house_district,json=stateHouseDistrict,proto3" json:"state_house_district,omitempty"`
+	Longitude             float64                `protobuf:"fixed64,25,opt,name=longitude,proto3" json:"longitude,omitempty"`
+	Latitude              float64                `protobuf:"fixed64,26,opt,name=latitude,proto3" json:"latitude,omitempty"`
+	GeocodeStatus         string                 `protobuf:"bytes,27,opt,name=geocode_status,json=geocodeStatus,proto3" json:"geocode_status,omitempty"`
+	SourceVoterId         string                 `protobuf:"bytes,28,opt,name=source_voter_id,json=sourceVoterId,proto3" json:"source_voter_id,omitempty"`
+	Source                string                 `protobuf:"bytes,29,opt,name=source,proto3" json:"source,omitempty"`
+	VotingHistory         string                 `protobuf:"bytes,30,opt,name=voting_history,json=votingHistory,proto3" json:"voting_history,omitempty"`
+	Phone                 string                 `protobuf:"bytes,31,opt,name=phone,proto3" json:"phone,omitempty"`
+	Email                 string                 `protobuf:"bytes,32,opt,name=email,proto3" json:"email,omitempty"`
+	CreatedAt             string                 `protobuf:"bytes,33,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt             string                 `protobuf:"bytes,34,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	unknownFields         protoimpl.UnknownFields
+	sizeCache             protoimpl.SizeCache
+}
+
+func (x *Voter) Reset() {
+	*x = Voter{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Voter) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Voter) ProtoMessage() {}
+
+func (x *Voter) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Voter.ProtoReflect.Descriptor instead.
+func (*Voter) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *Voter) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *Voter) GetFirstName() string {
+	if x != nil {
+		return x.FirstName
+	}
+	return ""
+}
+
+func (x *Voter) GetMiddleName() string {
+	if x != nil {
+		return x.MiddleName
+	}
+	return ""
+}
+
+func (x *Voter) GetLastName() string {
+	if x != nil {
+		return x.LastName
+	}
+	return ""
+}
+
+func (x *Voter) GetSuffix() string {
+	if x != nil {
+		return x.Suffix
+	}
+	return ""
+}
+
+func (x *Voter) GetYearOfBirth() int32 {
+	if x != nil {
+		return x.YearOfBirth
+	}
+	return 0
+}
+
+func (x *Voter) GetResStreetAddress() string {
+	if x != nil {
+		return x.ResStreetAddress
+	}
+	return ""
+}
+
+func (x *Voter) GetResCity() string {
+	if x != nil {
+		return x.ResCity
+	}
+	return ""
+}
+
+func (x *Voter) GetResState() string {
+	if x != nil {
+		return x.ResState
+	}
+	return ""
+}
+
+func (x *Voter) GetResZip() string {
+	if x != nil {
+		return x.ResZip
+	}
+	return ""
+}
+
+func (x *Voter) GetMailStreetAddress() string {
+	if x != nil {
+		return x.MailStreetAddress
+	}
+	return ""
+}
+
+func (x *Voter) GetMailCity() string {
+	if x != nil {
+		return x.MailCity
+	}
+	return ""
+}
+
+func (x *Voter) GetMailState() string {
+	if x != nil {
+		return x.MailState
+	}
+	return ""
+}
+
+func (x *Voter) GetMailZip() string {
+	if x != nil {
+		return x.MailZip
+	}
+	return ""
+}
+
+func (x *Voter) GetParty() string {
+	if x != nil {
+		return x.Party
+	}
+	return ""
+}
+
+func (x *Voter) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *Voter) GetRegistrationDate() string {
+	if x != nil {
+		return x.RegistrationDate
+	}
+	return ""
+}
+
+func (x *Voter) GetCounty() string {
+	if x != nil {
+		return x.County
+	}
+	return ""
+}
+
+func (x *Voter) GetMunicipality() string {
+	if x != nil {
+		return x.Municipality
+	}
+	return ""
+}
+
+func (x *Voter) GetWard() string {
+	if x != nil {
+		return x.Ward
+	}
+	return ""
+}
+
+func (x *Voter) GetPrecinct() string {
+	if x != nil {
+		return x.Precinct
+	}
+	return ""
+}
+
+func (x *Voter) GetCongressionalDistrict() string {
+	if x != nil {
+		return x.CongressionalDistrict
+	}
+	return ""
+}
+
+func (x *Voter) GetStateSenateDistrict() string {
+	if x != nil {
+		return x.StateSenateDistrict
+	}
+	return ""
+}
+
+func (x *Voter) GetStateHouseDistrict() string {
+	if x != nil {
+		return x.StateHouseDistrict
+	}
+	return ""
+}
+
+func (x *Voter) GetLongitude() float64 {
+	if x != nil {
+		return x.Longitude
+	}
+	return 0
+}
+
+func (x *Voter) GetLatitude() float64 {
+	if x != nil {
+		return x.Latitude
+	}
+	return 0
+}
+
+func (x *Voter) GetGeocodeStatus() string {
+	if x != nil {
+		return x.GeocodeStatus
+	}
+	return ""
+}
+
+func (x *Voter) GetSourceVoterId() string {
+	if x != nil {
+		return x.SourceVoterId
+	}
+	return ""
+}
+
+func (x *Voter) GetSource() string {
+	if x != nil {
+		return x.Source
+	}
+	return ""
+}
+
+func (x *Voter) GetVotingHistory() string {
+	if x != nil {
+		return x.VotingHistory
+	}
+	return ""
+}
+
+func (x *Voter) GetPhone() string {
+	if x != nil {
+		return x.Phone
+	}
+	return ""
+}
+
+func (x *Voter) GetEmail() string {
+	if x != nil {
+		return x.Email
+	}
+	return ""
+}
+
+func (x *Voter) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
+func (x *Voter) GetUpdatedAt() string {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return ""
+}
+
+type VoterSummary struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	FirstName     string                 `protobuf:"bytes,2,opt,name=first_name,json=firstName,proto3" json:"first_name,omitempty"`
+	LastName      string                 `protobuf:"bytes,3,opt,name=last_name,json=lastName,proto3" json:"last_name,omitempty"`
+	Party         string                 `protobuf:"bytes,4,opt,name=party,proto3" json:"party,omitempty"`
+	Status        string                 `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`
+	ResCity       string                 `protobuf:"bytes,6,opt,name=res_city,json=resCity,proto3" json:"res_city,omitempty"`
+	ResZip        string                 `protobuf:"bytes,7,opt,name=res_zip,json=resZip,proto3" json:"res_zip,omitempty"`
+	Municipality  string                 `protobuf:"bytes,8,opt,name=municipality,proto3" json:"municipality,omitempty"`
+	YearOfBirth   int32                  `protobuf:"varint,9,opt,name=year_of_birth,json=yearOfBirth,proto3" json:"year_of_birth,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *VoterSummary) Reset() {
+	*x = VoterSummary{}
+	mi := &file_navigators_v1_voter_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VoterSummary) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VoterSummary) ProtoMessage() {}
+
+func (x *VoterSummary) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_voter_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VoterSummary.ProtoReflect.Descriptor instead.
+func (*VoterSummary) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_voter_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *VoterSummary) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *VoterSummary) GetFirstName() string {
+	if x != nil {
+		return x.FirstName
+	}
+	return ""
+}
+
+func (x *VoterSummary) GetLastName() string {
+	if x != nil {
+		return x.LastName
+	}
+	return ""
+}
+
+func (x *VoterSummary) GetParty() string {
+	if x != nil {
+		return x.Party
+	}
+	return ""
+}
+
+func (x *VoterSummary) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *VoterSummary) GetResCity() string {
+	if x != nil {
+		return x.ResCity
+	}
+	return ""
+}
+
+func (x *VoterSummary) GetResZip() string {
+	if x != nil {
+		return x.ResZip
+	}
+	return ""
+}
+
+func (x *VoterSummary) GetMunicipality() string {
+	if x != nil {
+		return x.Municipality
+	}
+	return ""
+}
+
+func (x *VoterSummary) GetYearOfBirth() int32 {
+	if x != nil {
+		return x.YearOfBirth
+	}
+	return 0
+}
+
 var File_navigators_v1_voter_proto protoreflect.FileDescriptor
 
 const file_navigators_v1_voter_proto_rawDesc = "" +
 	"\n" +
-	"\x19navigators/v1/voter.proto\x12\rnavigators.v12\x0e\n" +
-	"\fVoterServiceB1Z/navigators-go/gen/go/navigators/v1;navigatorsv1b\x06proto3"
+	"\x19navigators/v1/voter.proto\x12\rnavigators.v1\"w\n" +
+	"\x12StartImportRequest\x12\x1b\n" +
+	"\tfile_name\x18\x01 \x01(\tR\bfileName\x12\x1f\n" +
+	"\vsource_type\x18\x02 \x01(\tR\n" +
+	"sourceType\x12#\n" +
+	"\rfield_mapping\x18\x03 \x01(\tR\ffieldMapping\"K\n" +
+	"\x13StartImportResponse\x12\x15\n" +
+	"\x06job_id\x18\x01 \x01(\tR\x05jobId\x12\x1d\n" +
+	"\n" +
+	"upload_url\x18\x02 \x01(\tR\tuploadUrl\"-\n" +
+	"\x14ConfirmUploadRequest\x12\x15\n" +
+	"\x06job_id\x18\x01 \x01(\tR\x05jobId\"/\n" +
+	"\x15ConfirmUploadResponse\x12\x16\n" +
+	"\x06status\x18\x01 \x01(\tR\x06status\"/\n" +
+	"\x16GetImportStatusRequest\x12\x15\n" +
+	"\x06job_id\x18\x01 \x01(\tR\x05jobId\"E\n" +
+	"\x17GetImportStatusResponse\x12*\n" +
+	"\x03job\x18\x01 \x01(\v2\x18.navigators.v1.ImportJobR\x03job\"H\n" +
+	"\x15ListImportJobsRequest\x12\x1b\n" +
+	"\tpage_size\x18\x01 \x01(\x05R\bpageSize\x12\x12\n" +
+	"\x04page\x18\x02 \x01(\x05R\x04page\"g\n" +
+	"\x16ListImportJobsResponse\x12,\n" +
+	"\x04jobs\x18\x01 \x03(\v2\x18.navigators.v1.ImportJobR\x04jobs\x12\x1f\n" +
+	"\vtotal_count\x18\x02 \x01(\x03R\n" +
+	"totalCount\"\xd5\x03\n" +
+	"\tImportJob\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1f\n" +
+	"\vuploaded_by\x18\x02 \x01(\tR\n" +
+	"uploadedBy\x12\x1b\n" +
+	"\tfile_name\x18\x03 \x01(\tR\bfileName\x12\x1f\n" +
+	"\vsource_type\x18\x04 \x01(\tR\n" +
+	"sourceType\x12\x16\n" +
+	"\x06status\x18\x05 \x01(\tR\x06status\x12\x1d\n" +
+	"\n" +
+	"total_rows\x18\x06 \x01(\x05R\ttotalRows\x12\x1f\n" +
+	"\vparsed_rows\x18\a \x01(\x05R\n" +
+	"parsedRows\x12\x1f\n" +
+	"\vmerged_rows\x18\b \x01(\x05R\n" +
+	"mergedRows\x12!\n" +
+	"\fskipped_rows\x18\t \x01(\x05R\vskippedRows\x12\x1d\n" +
+	"\n" +
+	"error_rows\x18\n" +
+	" \x01(\x05R\terrorRows\x12#\n" +
+	"\rgeocoded_rows\x18\v \x01(\x05R\fgeocodedRows\x12\x16\n" +
+	"\x06errors\x18\f \x01(\tR\x06errors\x12#\n" +
+	"\rfield_mapping\x18\r \x01(\tR\ffieldMapping\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\x0e \x01(\tR\tcreatedAt\x12\x1d\n" +
+	"\n" +
+	"updated_at\x18\x0f \x01(\tR\tupdatedAt\",\n" +
+	"\x0fGetVoterRequest\x12\x19\n" +
+	"\bvoter_id\x18\x01 \x01(\tR\avoterId\">\n" +
+	"\x10GetVoterResponse\x12*\n" +
+	"\x05voter\x18\x01 \x01(\v2\x14.navigators.v1.VoterR\x05voter\"\\\n" +
+	"\x13SearchVotersRequest\x12\x14\n" +
+	"\x05query\x18\x01 \x01(\tR\x05query\x12\x1b\n" +
+	"\tpage_size\x18\x02 \x01(\x05R\bpageSize\x12\x12\n" +
+	"\x04page\x18\x03 \x01(\x05R\x04page\"l\n" +
+	"\x14SearchVotersResponse\x123\n" +
+	"\x06voters\x18\x01 \x03(\v2\x1b.navigators.v1.VoterSummaryR\x06voters\x12\x1f\n" +
+	"\vtotal_count\x18\x02 \x01(\x03R\n" +
+	"totalCount\"{\n" +
+	"\x11ListVotersRequest\x125\n" +
+	"\afilters\x18\x01 \x01(\v2\x1b.navigators.v1.VoterFiltersR\afilters\x12\x1b\n" +
+	"\tpage_size\x18\x02 \x01(\x05R\bpageSize\x12\x12\n" +
+	"\x04page\x18\x03 \x01(\x05R\x04page\"j\n" +
+	"\x12ListVotersResponse\x123\n" +
+	"\x06voters\x18\x01 \x03(\v2\x1b.navigators.v1.VoterSummaryR\x06voters\x12\x1f\n" +
+	"\vtotal_count\x18\x02 \x01(\x03R\n" +
+	"totalCount\"\xcf\x02\n" +
+	"\fVoterFilters\x12\x14\n" +
+	"\x05party\x18\x01 \x01(\tR\x05party\x12\x16\n" +
+	"\x06status\x18\x02 \x01(\tR\x06status\x125\n" +
+	"\x16congressional_district\x18\x03 \x01(\tR\x15congressionalDistrict\x122\n" +
+	"\x15state_senate_district\x18\x04 \x01(\tR\x13stateSenateDistrict\x120\n" +
+	"\x14state_house_district\x18\x05 \x01(\tR\x12stateHouseDistrict\x12\"\n" +
+	"\fmunicipality\x18\x06 \x01(\tR\fmunicipality\x12\x16\n" +
+	"\x06county\x18\a \x01(\tR\x06county\x12$\n" +
+	"\x0emin_vote_count\x18\b \x01(\x05R\fminVoteCount\x12\x12\n" +
+	"\x04bbox\x18\t \x01(\tR\x04bbox\"\xcc\b\n" +
+	"\x05Voter\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
+	"\n" +
+	"first_name\x18\x02 \x01(\tR\tfirstName\x12\x1f\n" +
+	"\vmiddle_name\x18\x03 \x01(\tR\n" +
+	"middleName\x12\x1b\n" +
+	"\tlast_name\x18\x04 \x01(\tR\blastName\x12\x16\n" +
+	"\x06suffix\x18\x05 \x01(\tR\x06suffix\x12\"\n" +
+	"\ryear_of_birth\x18\x06 \x01(\x05R\vyearOfBirth\x12,\n" +
+	"\x12res_street_address\x18\a \x01(\tR\x10resStreetAddress\x12\x19\n" +
+	"\bres_city\x18\b \x01(\tR\aresCity\x12\x1b\n" +
+	"\tres_state\x18\t \x01(\tR\bresState\x12\x17\n" +
+	"\ares_zip\x18\n" +
+	" \x01(\tR\x06resZip\x12.\n" +
+	"\x13mail_street_address\x18\v \x01(\tR\x11mailStreetAddress\x12\x1b\n" +
+	"\tmail_city\x18\f \x01(\tR\bmailCity\x12\x1d\n" +
+	"\n" +
+	"mail_state\x18\r \x01(\tR\tmailState\x12\x19\n" +
+	"\bmail_zip\x18\x0e \x01(\tR\amailZip\x12\x14\n" +
+	"\x05party\x18\x0f \x01(\tR\x05party\x12\x16\n" +
+	"\x06status\x18\x10 \x01(\tR\x06status\x12+\n" +
+	"\x11registration_date\x18\x11 \x01(\tR\x10registrationDate\x12\x16\n" +
+	"\x06county\x18\x12 \x01(\tR\x06county\x12\"\n" +
+	"\fmunicipality\x18\x13 \x01(\tR\fmunicipality\x12\x12\n" +
+	"\x04ward\x18\x14 \x01(\tR\x04ward\x12\x1a\n" +
+	"\bprecinct\x18\x15 \x01(\tR\bprecinct\x125\n" +
+	"\x16congressional_district\x18\x16 \x01(\tR\x15congressionalDistrict\x122\n" +
+	"\x15state_senate_district\x18\x17 \x01(\tR\x13stateSenateDistrict\x120\n" +
+	"\x14state_house_district\x18\x18 \x01(\tR\x12stateHouseDistrict\x12\x1c\n" +
+	"\tlongitude\x18\x19 \x01(\x01R\tlongitude\x12\x1a\n" +
+	"\blatitude\x18\x1a \x01(\x01R\blatitude\x12%\n" +
+	"\x0egeocode_status\x18\x1b \x01(\tR\rgeocodeStatus\x12&\n" +
+	"\x0fsource_voter_id\x18\x1c \x01(\tR\rsourceVoterId\x12\x16\n" +
+	"\x06source\x18\x1d \x01(\tR\x06source\x12%\n" +
+	"\x0evoting_history\x18\x1e \x01(\tR\rvotingHistory\x12\x14\n" +
+	"\x05phone\x18\x1f \x01(\tR\x05phone\x12\x14\n" +
+	"\x05email\x18  \x01(\tR\x05email\x12\x1d\n" +
+	"\n" +
+	"created_at\x18! \x01(\tR\tcreatedAt\x12\x1d\n" +
+	"\n" +
+	"updated_at\x18\" \x01(\tR\tupdatedAt\"\x84\x02\n" +
+	"\fVoterSummary\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
+	"\n" +
+	"first_name\x18\x02 \x01(\tR\tfirstName\x12\x1b\n" +
+	"\tlast_name\x18\x03 \x01(\tR\blastName\x12\x14\n" +
+	"\x05party\x18\x04 \x01(\tR\x05party\x12\x16\n" +
+	"\x06status\x18\x05 \x01(\tR\x06status\x12\x19\n" +
+	"\bres_city\x18\x06 \x01(\tR\aresCity\x12\x17\n" +
+	"\ares_zip\x18\a \x01(\tR\x06resZip\x12\"\n" +
+	"\fmunicipality\x18\b \x01(\tR\fmunicipality\x12\"\n" +
+	"\ryear_of_birth\x18\t \x01(\x05R\vyearOfBirth2\x87\x03\n" +
+	"\x12VoterImportService\x12T\n" +
+	"\vStartImport\x12!.navigators.v1.StartImportRequest\x1a\".navigators.v1.StartImportResponse\x12Z\n" +
+	"\rConfirmUpload\x12#.navigators.v1.ConfirmUploadRequest\x1a$.navigators.v1.ConfirmUploadResponse\x12`\n" +
+	"\x0fGetImportStatus\x12%.navigators.v1.GetImportStatusRequest\x1a&.navigators.v1.GetImportStatusResponse\x12]\n" +
+	"\x0eListImportJobs\x12$.navigators.v1.ListImportJobsRequest\x1a%.navigators.v1.ListImportJobsResponse2\x87\x02\n" +
+	"\fVoterService\x12K\n" +
+	"\bGetVoter\x12\x1e.navigators.v1.GetVoterRequest\x1a\x1f.navigators.v1.GetVoterResponse\x12W\n" +
+	"\fSearchVoters\x12\".navigators.v1.SearchVotersRequest\x1a#.navigators.v1.SearchVotersResponse\x12Q\n" +
+	"\n" +
+	"ListVoters\x12 .navigators.v1.ListVotersRequest\x1a!.navigators.v1.ListVotersResponseB1Z/navigators-go/gen/go/navigators/v1;navigatorsv1b\x06proto3"
 
-var file_navigators_v1_voter_proto_goTypes = []any{}
+var (
+	file_navigators_v1_voter_proto_rawDescOnce sync.Once
+	file_navigators_v1_voter_proto_rawDescData []byte
+)
+
+func file_navigators_v1_voter_proto_rawDescGZIP() []byte {
+	file_navigators_v1_voter_proto_rawDescOnce.Do(func() {
+		file_navigators_v1_voter_proto_rawDescData = protoimpl.X.CompressGZIP(unsafe.Slice(unsafe.StringData(file_navigators_v1_voter_proto_rawDesc), len(file_navigators_v1_voter_proto_rawDesc)))
+	})
+	return file_navigators_v1_voter_proto_rawDescData
+}
+
+var file_navigators_v1_voter_proto_msgTypes = make([]protoimpl.MessageInfo, 18)
+var file_navigators_v1_voter_proto_goTypes = []any{
+	(*StartImportRequest)(nil),      // 0: navigators.v1.StartImportRequest
+	(*StartImportResponse)(nil),     // 1: navigators.v1.StartImportResponse
+	(*ConfirmUploadRequest)(nil),    // 2: navigators.v1.ConfirmUploadRequest
+	(*ConfirmUploadResponse)(nil),   // 3: navigators.v1.ConfirmUploadResponse
+	(*GetImportStatusRequest)(nil),  // 4: navigators.v1.GetImportStatusRequest
+	(*GetImportStatusResponse)(nil), // 5: navigators.v1.GetImportStatusResponse
+	(*ListImportJobsRequest)(nil),   // 6: navigators.v1.ListImportJobsRequest
+	(*ListImportJobsResponse)(nil),  // 7: navigators.v1.ListImportJobsResponse
+	(*ImportJob)(nil),               // 8: navigators.v1.ImportJob
+	(*GetVoterRequest)(nil),         // 9: navigators.v1.GetVoterRequest
+	(*GetVoterResponse)(nil),        // 10: navigators.v1.GetVoterResponse
+	(*SearchVotersRequest)(nil),     // 11: navigators.v1.SearchVotersRequest
+	(*SearchVotersResponse)(nil),    // 12: navigators.v1.SearchVotersResponse
+	(*ListVotersRequest)(nil),       // 13: navigators.v1.ListVotersRequest
+	(*ListVotersResponse)(nil),      // 14: navigators.v1.ListVotersResponse
+	(*VoterFilters)(nil),            // 15: navigators.v1.VoterFilters
+	(*Voter)(nil),                   // 16: navigators.v1.Voter
+	(*VoterSummary)(nil),            // 17: navigators.v1.VoterSummary
+}
 var file_navigators_v1_voter_proto_depIdxs = []int32{
-	0, // [0:0] is the sub-list for method output_type
-	0, // [0:0] is the sub-list for method input_type
-	0, // [0:0] is the sub-list for extension type_name
-	0, // [0:0] is the sub-list for extension extendee
-	0, // [0:0] is the sub-list for field type_name
+	8,  // 0: navigators.v1.GetImportStatusResponse.job:type_name -> navigators.v1.ImportJob
+	8,  // 1: navigators.v1.ListImportJobsResponse.jobs:type_name -> navigators.v1.ImportJob
+	16, // 2: navigators.v1.GetVoterResponse.voter:type_name -> navigators.v1.Voter
+	17, // 3: navigators.v1.SearchVotersResponse.voters:type_name -> navigators.v1.VoterSummary
+	15, // 4: navigators.v1.ListVotersRequest.filters:type_name -> navigators.v1.VoterFilters
+	17, // 5: navigators.v1.ListVotersResponse.voters:type_name -> navigators.v1.VoterSummary
+	0,  // 6: navigators.v1.VoterImportService.StartImport:input_type -> navigators.v1.StartImportRequest
+	2,  // 7: navigators.v1.VoterImportService.ConfirmUpload:input_type -> navigators.v1.ConfirmUploadRequest
+	4,  // 8: navigators.v1.VoterImportService.GetImportStatus:input_type -> navigators.v1.GetImportStatusRequest
+	6,  // 9: navigators.v1.VoterImportService.ListImportJobs:input_type -> navigators.v1.ListImportJobsRequest
+	9,  // 10: navigators.v1.VoterService.GetVoter:input_type -> navigators.v1.GetVoterRequest
+	11, // 11: navigators.v1.VoterService.SearchVoters:input_type -> navigators.v1.SearchVotersRequest
+	13, // 12: navigators.v1.VoterService.ListVoters:input_type -> navigators.v1.ListVotersRequest
+	1,  // 13: navigators.v1.VoterImportService.StartImport:output_type -> navigators.v1.StartImportResponse
+	3,  // 14: navigators.v1.VoterImportService.ConfirmUpload:output_type -> navigators.v1.ConfirmUploadResponse
+	5,  // 15: navigators.v1.VoterImportService.GetImportStatus:output_type -> navigators.v1.GetImportStatusResponse
+	7,  // 16: navigators.v1.VoterImportService.ListImportJobs:output_type -> navigators.v1.ListImportJobsResponse
+	10, // 17: navigators.v1.VoterService.GetVoter:output_type -> navigators.v1.GetVoterResponse
+	12, // 18: navigators.v1.VoterService.SearchVoters:output_type -> navigators.v1.SearchVotersResponse
+	14, // 19: navigators.v1.VoterService.ListVoters:output_type -> navigators.v1.ListVotersResponse
+	13, // [13:20] is the sub-list for method output_type
+	6,  // [6:13] is the sub-list for method input_type
+	6,  // [6:6] is the sub-list for extension type_name
+	6,  // [6:6] is the sub-list for extension extendee
+	0,  // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_navigators_v1_voter_proto_init() }
@@ -47,12 +1627,13 @@ func file_navigators_v1_voter_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_navigators_v1_voter_proto_rawDesc), len(file_navigators_v1_voter_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   0,
+			NumMessages:   18,
 			NumExtensions: 0,
-			NumServices:   1,
+			NumServices:   2,
 		},
 		GoTypes:           file_navigators_v1_voter_proto_goTypes,
 		DependencyIndexes: file_navigators_v1_voter_proto_depIdxs,
+		MessageInfos:      file_navigators_v1_voter_proto_msgTypes,
 	}.Build()
 	File_navigators_v1_voter_proto = out.File
 	file_navigators_v1_voter_proto_goTypes = nil

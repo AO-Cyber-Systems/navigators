@@ -4,5 +4,191 @@ package navigators.v1;
 
 option go_package = "navigators-go/gen/go/navigators/v1;navigatorsv1";
 
-// VoterService handles voter data operations.
-service VoterService {}
+// VoterImportService handles voter file import operations.
+service VoterImportService {
+  // StartImport creates a new import job and returns a presigned upload URL.
+  rpc StartImport(StartImportRequest) returns (StartImportResponse);
+
+  // ConfirmUpload triggers processing of an uploaded file.
+  rpc ConfirmUpload(ConfirmUploadRequest) returns (ConfirmUploadResponse);
+
+  // GetImportStatus returns the current status and progress of an import job.
+  rpc GetImportStatus(GetImportStatusRequest) returns (GetImportStatusResponse);
+
+  // ListImportJobs returns a paginated list of import jobs.
+  rpc ListImportJobs(ListImportJobsRequest) returns (ListImportJobsResponse);
+}
+
+// VoterService handles voter data queries (handlers built in TRD 02-02).
+service VoterService {
+  // GetVoter returns a single voter by ID.
+  rpc GetVoter(GetVoterRequest) returns (GetVoterResponse);
+
+  // SearchVoters performs fuzzy text search on voters.
+  rpc SearchVoters(SearchVotersRequest) returns (SearchVotersResponse);
+
+  // ListVoters returns a filtered, paginated list of voters.
+  rpc ListVoters(ListVotersRequest) returns (ListVotersResponse);
+}
+
+// --- Import Messages ---
+
+message StartImportRequest {
+  string file_name = 1;
+  // "cvr" or "l2"
+  string source_type = 2;
+  // JSON-encoded field mapping: map of column index to field name
+  string field_mapping = 3;
+}
+
+message StartImportResponse {
+  string job_id = 1;
+  string upload_url = 2;
+}
+
+message ConfirmUploadRequest {
+  string job_id = 1;
+}
+
+message ConfirmUploadResponse {
+  string status = 1;
+}
+
+message GetImportStatusRequest {
+  string job_id = 1;
+}
+
+message GetImportStatusResponse {
+  ImportJob job = 1;
+}
+
+message ListImportJobsRequest {
+  int32 page_size = 1;
+  int32 page = 2;
+}
+
+message ListImportJobsResponse {
+  repeated ImportJob jobs = 1;
+  int64 total_count = 2;
+}
+
+message ImportJob {
+  string id = 1;
+  string uploaded_by = 2;
+  string file_name = 3;
+  string source_type = 4;
+  string status = 5;
+  int32 total_rows = 6;
+  int32 parsed_rows = 7;
+  int32 merged_rows = 8;
+  int32 skipped_rows = 9;
+  int32 error_rows = 10;
+  int32 geocoded_rows = 11;
+  string errors = 12;
+  string field_mapping = 13;
+  string created_at = 14;
+  string updated_at = 15;
+}
+
+// --- Voter Messages ---
+
+message GetVoterRequest {
+  string voter_id = 1;
+}
+
+message GetVoterResponse {
+  Voter voter = 1;
+}
+
+message SearchVotersRequest {
+  string query = 1;
+  int32 page_size = 2;
+  int32 page = 3;
+}
+
+message SearchVotersResponse {
+  repeated VoterSummary voters = 1;
+  int64 total_count = 2;
+}
+
+message ListVotersRequest {
+  VoterFilters filters = 1;
+  int32 page_size = 2;
+  int32 page = 3;
+}
+
+message ListVotersResponse {
+  repeated VoterSummary voters = 1;
+  int64 total_count = 2;
+}
+
+message VoterFilters {
+  string party = 1;
+  string status = 2;
+  string congressional_district = 3;
+  string state_senate_district = 4;
+  string state_house_district = 5;
+  string municipality = 6;
+  string county = 7;
+  int32 min_vote_count = 8;
+  // Bounding box for geographic filter: "min_lon,min_lat,max_lon,max_lat"
+  string bbox = 9;
+}
+
+message Voter {
+  string id = 1;
+  string first_name = 2;
+  string middle_name = 3;
+  string last_name = 4;
+  string suffix = 5;
+  int32 year_of_birth = 6;
+
+  string res_street_address = 7;
+  string res_city = 8;
+  string res_state = 9;
+  string res_zip = 10;
+
+  string mail_street_address = 11;
+  string mail_city = 12;
+  string mail_state = 13;
+  string mail_zip = 14;
+
+  string party = 15;
+  string status = 16;
+  string registration_date = 17;
+
+  string county = 18;
+  string municipality = 19;
+  string ward = 20;
+  string precinct = 21;
+  string congressional_district = 22;
+  string state_senate_district = 23;
+  string state_house_district = 24;
+
+  double longitude = 25;
+  double latitude = 26;
+  string geocode_status = 27;
+
+  string source_voter_id = 28;
+  string source = 29;
+
+  string voting_history = 30;
+
+  string phone = 31;
+  string email = 32;
+
+  string created_at = 33;
+  string updated_at = 34;
+}
+
+message VoterSummary {
+  string id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string party = 4;
+  string status = 5;
+  string res_city = 6;
+  string res_zip = 7;
+  string municipality = 8;
+  int32 year_of_birth = 9;
+}

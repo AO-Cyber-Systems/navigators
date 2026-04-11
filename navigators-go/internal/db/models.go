@@ -72,6 +72,66 @@ type EncryptedCredential struct {
 	UpdatedAt      time.Time `json:"updated_at"`
 }
 
+type ImportJob struct {
+	ID             uuid.UUID       `json:"id"`
+	CompanyID      uuid.UUID       `json:"company_id"`
+	UploadedBy     uuid.UUID       `json:"uploaded_by"`
+	FileName       string          `json:"file_name"`
+	FileStorageKey string          `json:"file_storage_key"`
+	SourceType     string          `json:"source_type"`
+	Status         string          `json:"status"`
+	TotalRows      int32           `json:"total_rows"`
+	ParsedRows     int32           `json:"parsed_rows"`
+	MergedRows     int32           `json:"merged_rows"`
+	SkippedRows    int32           `json:"skipped_rows"`
+	ErrorRows      int32           `json:"error_rows"`
+	GeocodedRows   int32           `json:"geocoded_rows"`
+	Errors         json.RawMessage `json:"errors"`
+	FieldMapping   json.RawMessage `json:"field_mapping"`
+	CreatedAt      time.Time       `json:"created_at"`
+	UpdatedAt      time.Time       `json:"updated_at"`
+}
+
+type ImportStaging struct {
+	ID                    int64           `json:"id"`
+	ImportJobID           uuid.UUID       `json:"import_job_id"`
+	LineNumber            int32           `json:"line_number"`
+	IsValid               bool            `json:"is_valid"`
+	ValidationError       string          `json:"validation_error"`
+	FirstName             string          `json:"first_name"`
+	MiddleName            string          `json:"middle_name"`
+	LastName              string          `json:"last_name"`
+	Suffix                string          `json:"suffix"`
+	YearOfBirth           *int32          `json:"year_of_birth"`
+	ResStreetAddress      string          `json:"res_street_address"`
+	ResStreetNumber       string          `json:"res_street_number"`
+	ResStreetName         string          `json:"res_street_name"`
+	ResUnit               string          `json:"res_unit"`
+	ResCity               string          `json:"res_city"`
+	ResState              string          `json:"res_state"`
+	ResZip                string          `json:"res_zip"`
+	MailStreetAddress     string          `json:"mail_street_address"`
+	MailCity              string          `json:"mail_city"`
+	MailState             string          `json:"mail_state"`
+	MailZip               string          `json:"mail_zip"`
+	Party                 string          `json:"party"`
+	Status                string          `json:"status"`
+	RegistrationDate      string          `json:"registration_date"`
+	County                string          `json:"county"`
+	Municipality          string          `json:"municipality"`
+	Ward                  string          `json:"ward"`
+	Precinct              string          `json:"precinct"`
+	CongressionalDistrict string          `json:"congressional_district"`
+	StateSenateDistrict   string          `json:"state_senate_district"`
+	StateHouseDistrict    string          `json:"state_house_district"`
+	SourceVoterID         string          `json:"source_voter_id"`
+	VotingHistory         json.RawMessage `json:"voting_history"`
+	Phone                 string          `json:"phone"`
+	Email                 string          `json:"email"`
+	DedupKey              string          `json:"dedup_key"`
+	RawLine               string          `json:"raw_line"`
+}
+
 type OauthCredential struct {
 	ID           uuid.UUID          `json:"id"`
 	CompanyID    uuid.UUID          `json:"company_id"`
@@ -171,6 +231,49 @@ type User struct {
 	IsActive     bool      `json:"is_active"`
 	CreatedAt    time.Time `json:"created_at"`
 	UpdatedAt    time.Time `json:"updated_at"`
+}
+
+type Voter struct {
+	ID                    uuid.UUID       `json:"id"`
+	CompanyID             uuid.UUID       `json:"company_id"`
+	FirstName             string          `json:"first_name"`
+	MiddleName            string          `json:"middle_name"`
+	LastName              string          `json:"last_name"`
+	Suffix                string          `json:"suffix"`
+	YearOfBirth           *int32          `json:"year_of_birth"`
+	ResStreetAddress      string          `json:"res_street_address"`
+	ResStreetNumber       string          `json:"res_street_number"`
+	ResStreetName         string          `json:"res_street_name"`
+	ResUnit               string          `json:"res_unit"`
+	ResCity               string          `json:"res_city"`
+	ResState              string          `json:"res_state"`
+	ResZip                string          `json:"res_zip"`
+	MailStreetAddress     string          `json:"mail_street_address"`
+	MailCity              string          `json:"mail_city"`
+	MailState             string          `json:"mail_state"`
+	MailZip               string          `json:"mail_zip"`
+	Party                 string          `json:"party"`
+	Status                string          `json:"status"`
+	RegistrationDate      string          `json:"registration_date"`
+	County                string          `json:"county"`
+	Municipality          string          `json:"municipality"`
+	Ward                  string          `json:"ward"`
+	Precinct              string          `json:"precinct"`
+	CongressionalDistrict string          `json:"congressional_district"`
+	StateSenateDistrict   string          `json:"state_senate_district"`
+	StateHouseDistrict    string          `json:"state_house_district"`
+	Location              interface{}     `json:"location"`
+	GeocodeStatus         string          `json:"geocode_status"`
+	GeocodeSource         string          `json:"geocode_source"`
+	SourceVoterID         string          `json:"source_voter_id"`
+	Source                string          `json:"source"`
+	DedupKey              string          `json:"dedup_key"`
+	VotingHistory         json.RawMessage `json:"voting_history"`
+	Phone                 string          `json:"phone"`
+	Email                 string          `json:"email"`
+	SearchText            *string         `json:"search_text"`
+	CreatedAt             time.Time       `json:"created_at"`
+	UpdatedAt             time.Time       `json:"updated_at"`
 }
 
 type VoterAccessLog struct {
