@@ -45,9 +45,9 @@ Requirements for initial release. Each maps to roadmap objectives.
 
 ### Offline & Sync
 
-- [ ] **SYNC-01**: Navigator can download turf data (voters, map tiles, tasks, scripts) before going into field
-- [ ] **SYNC-02**: All field interactions (door knocks, notes, dispositions) stored locally in Drift/SQLite
-- [ ] **SYNC-03**: Local voter data encrypted at rest via sqlcipher (AES-256)
+- [x] **SYNC-01**: Navigator can download turf data (voters, map tiles, tasks, scripts) before going into field
+- [x] **SYNC-02**: All field interactions (door knocks, notes, dispositions) stored locally in Drift/SQLite
+- [x] **SYNC-03**: Local voter data encrypted at rest via sqlcipher (AES-256)
 - [ ] **SYNC-04**: Background sync when connectivity available with operation-log pattern
 - [ ] **SYNC-05**: Conflict resolution via last-write-wins with server timestamps for concurrent edits
 - [ ] **SYNC-06**: Sync status indicator in UI — Navigator always knows what's synced vs pending
@@ -189,9 +189,9 @@ Deferred to future release. Tracked but not in current roadmap.
 | TURF-06 | Objective 3 | Complete |
 | TURF-07 | Objective 3 | Complete |
 | TURF-08 | Objective 3 | Complete |
-| SYNC-01 | Objective 4 | Pending |
-| SYNC-02 | Objective 4 | Pending |
-| SYNC-03 | Objective 4 | Pending |
+| SYNC-01 | Objective 4 | Complete |
+| SYNC-02 | Objective 4 | Complete |
+| SYNC-03 | Objective 4 | Complete |
 | SYNC-04 | Objective 4 | Pending |
 | SYNC-05 | Objective 4 | Pending |
 | SYNC-06 | Objective 4 | Pending |

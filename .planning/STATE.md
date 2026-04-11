@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-04-10)
 
 **Core value:** Navigators can go into the field with a complete voter list, map, and outreach tools -- work entirely offline in rural Maine -- and have every interaction automatically sync back to give leadership real-time visibility into grassroots organizing efforts.
-**Current focus:** Turf Management + Maps (Objective 3)
+**Current focus:** Offline Sync Engine (Objective 4)
 
 ## Current Position
 
-**Objective:** 3 of 10 (Turf Management + Maps)
-**Current Job:** 3
+**Objective:** 4 of 10 (Offline Sync Engine)
+**Current Job:** 1
 **Total Jobs in Objective:** 3
-**Status:** Objective complete — ready for verification
+**Status:** In progress
 **Last Activity:** 2026-04-11
 
 Progress: [##........] 13%
@@ -39,6 +39,7 @@ Progress: [##........] 13%
 | Objective 03 P01 | 7min | 2 tasks | 8 files |
 | Objective 03 P02 | 6min | 2 tasks | 7 files |
 | Objective 03 P03 | 9min | 2 tasks | 10 files |
+| Objective 04 P01 | 7min | 2 tasks | 28 files |
 
 ## Accumulated Context
 
@@ -76,6 +77,9 @@ Recent decisions affecting current work:
 - [Objective 03]: FMTC store naming: 'turf-{turfId}' for per-turf caching
 - [Objective 03]: Heat map uses MapCamera.getOffsetFromOrigin for flutter_map 8 projection
 - [Objective 03]: FMTC 10.1.1: countTiles (not check), startForeground returns record, stats use .length
+- [Objective 04]: Raw pgxpool for sync voter pull (spatial ST_Contains JOIN not expressible in sqlc)
+- [Objective 04]: Non-admin turf scope enforced server-side (client-provided turf_ids ignored for Navigator/SuperNavigator)
+- [Objective 04]: SQLite3MultipleCiphers via pubspec hooks (NOT sqlcipher_flutter_libs which is deprecated)
 
 ### Pending Todos
 
@@ -90,11 +94,12 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-04-11
-Stopped at: Completed 03-01-TRD.md
+Stopped at: Completed 04-01-TRD.md
 Resume file: None
 
 ## History
 
+- 2026-04-11: Completed 04-01-TRD (Drift encrypted DB, 5 local tables, 3 DAOs, SyncService proto+handler, cursor-based pull sync)
 - 2026-04-11: Completed 03-01-TRD (turf spatial backend: GeoJSON boundary CRUD, voters-in-turf, walk list, stats, density grid, contact_logs)
 - 2026-04-10: Completed 02-03-TRD (voter profile, suppression list, Flutter UI -- checkpoint approved, all gates pass)
 - 2026-04-10: Completed 02-02-TRD (geocode service, search/filter, tags)
