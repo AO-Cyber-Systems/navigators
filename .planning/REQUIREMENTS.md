@@ -57,11 +57,11 @@ Requirements for initial release. Each maps to roadmap objectives.
 
 - [x] **SMS-01**: Navigator can send personalized P2P text to a voter (human-initiated, TCPA compliant)
 - [x] **SMS-02**: Full conversation threading — view all messages exchanged with a voter
-- [ ] **SMS-03**: Admin can create message templates with merge fields (voter name, district, etc.)
-- [ ] **SMS-04**: Admin can create A2P broadcast campaigns targeting voter segments
+- [x] **SMS-03**: Admin can create message templates with merge fields (voter name, district, etc.)
+- [x] **SMS-04**: Admin can create A2P broadcast campaigns targeting voter segments
 - [x] **SMS-05**: System automatically processes STOP/opt-out keywords and updates suppression list
 - [x] **SMS-06**: System enforces quiet hours (no texts before 8am or after 9pm local time)
-- [ ] **SMS-07**: System supports 10DLC registration flow for A2P messaging
+- [x] **SMS-07**: System supports 10DLC registration flow for A2P messaging
 - [x] **SMS-08**: System tracks message delivery status via provider webhooks
 
 ### Phone Calls
@@ -207,11 +207,11 @@ Deferred to future release. Tracked but not in current roadmap.
 | NOTE-04 | Objective 5 | Complete |
 | SMS-01 | Objective 6 | Complete |
 | SMS-02 | Objective 6 | Complete |
-| SMS-03 | Objective 6 | Pending |
-| SMS-04 | Objective 6 | Pending |
+| SMS-03 | Objective 6 | Complete |
+| SMS-04 | Objective 6 | Complete |
 | SMS-05 | Objective 6 | Complete |
 | SMS-06 | Objective 6 | Complete |
-| SMS-07 | Objective 6 | Pending |
+| SMS-07 | Objective 6 | Complete |
 | SMS-08 | Objective 6 | Complete |
 | CALL-01 | Objective 7 | Pending |
 | CALL-02 | Objective 7 | Pending |

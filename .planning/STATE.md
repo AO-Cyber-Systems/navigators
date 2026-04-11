@@ -10,7 +10,7 @@ See: .planning/PROJECT.md (updated 2026-04-10)
 ## Current Position
 
 **Objective:** 6 of 10 (SMS Integration)
-**Current Job:** 2
+**Current Job:** 3
 **Total Jobs in Objective:** 3
 **Status:** Ready to execute
 **Last Activity:** 2026-04-11
@@ -46,6 +46,7 @@ Progress: [##........] 13%
 | Objective 05 P02 | 12min | 2 tasks | 9 files |
 | Objective 05 P03 | 5min | 2 tasks | 5 files |
 | Objective 06 P01 | 12min | 2 tasks | 12 files |
+| Objective 06 P02 | 8min | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -102,6 +103,9 @@ Recent decisions affecting current work:
 - [Objective 06]: NATS connection failure is non-fatal: SMS features degrade but server starts
 - [Objective 06]: Single-company (MaineGOP) assumption for inbound webhook voter lookup in v1
 - [Objective 06]: Company admin user for opt-out FK: GetCompanyAdminUserID for suppression_list.added_by
+- [Objective 06]: VoterContext struct with 5 merge fields for text/template rendering
+- [Objective 06]: Campaign segment filtering simplified to company-wide for v1; full JSONB parsing deferred
+- [Objective 06]: Rate limiter at 1 msg/sec for A2P sends using golang.org/x/time/rate
 
 ### Pending Todos
 
