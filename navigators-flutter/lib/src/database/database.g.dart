@@ -6963,6 +6963,2052 @@ class TaskNotesCompanion extends UpdateCompanion<TaskNote> {
   }
 }
 
+class $EventsTable extends Events with TableInfo<$EventsTable, Event> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EventsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _companyIdMeta = const VerificationMeta(
+    'companyId',
+  );
+  @override
+  late final GeneratedColumn<String> companyId = GeneratedColumn<String>(
+    'company_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _eventTypeMeta = const VerificationMeta(
+    'eventType',
+  );
+  @override
+  late final GeneratedColumn<String> eventType = GeneratedColumn<String>(
+    'event_type',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('scheduled'),
+  );
+  static const VerificationMeta _startsAtMeta = const VerificationMeta(
+    'startsAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> startsAt = GeneratedColumn<DateTime>(
+    'starts_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _endsAtMeta = const VerificationMeta('endsAt');
+  @override
+  late final GeneratedColumn<DateTime> endsAt = GeneratedColumn<DateTime>(
+    'ends_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _locationNameMeta = const VerificationMeta(
+    'locationName',
+  );
+  @override
+  late final GeneratedColumn<String> locationName = GeneratedColumn<String>(
+    'location_name',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _locationLatMeta = const VerificationMeta(
+    'locationLat',
+  );
+  @override
+  late final GeneratedColumn<double> locationLat = GeneratedColumn<double>(
+    'location_lat',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _locationLngMeta = const VerificationMeta(
+    'locationLng',
+  );
+  @override
+  late final GeneratedColumn<double> locationLng = GeneratedColumn<double>(
+    'location_lng',
+    aliasedName,
+    true,
+    type: DriftSqlType.double,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _linkedTurfIdMeta = const VerificationMeta(
+    'linkedTurfId',
+  );
+  @override
+  late final GeneratedColumn<String> linkedTurfId = GeneratedColumn<String>(
+    'linked_turf_id',
+    aliasedName,
+    true,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _maxAttendeesMeta = const VerificationMeta(
+    'maxAttendees',
+  );
+  @override
+  late final GeneratedColumn<int> maxAttendees = GeneratedColumn<int>(
+    'max_attendees',
+    aliasedName,
+    true,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+  );
+  static const VerificationMeta _rsvpCountMeta = const VerificationMeta(
+    'rsvpCount',
+  );
+  @override
+  late final GeneratedColumn<int> rsvpCount = GeneratedColumn<int>(
+    'rsvp_count',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _createdByMeta = const VerificationMeta(
+    'createdBy',
+  );
+  @override
+  late final GeneratedColumn<String> createdBy = GeneratedColumn<String>(
+    'created_by',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _syncedAtMeta = const VerificationMeta(
+    'syncedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> syncedAt = GeneratedColumn<DateTime>(
+    'synced_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    companyId,
+    title,
+    description,
+    eventType,
+    status,
+    startsAt,
+    endsAt,
+    locationName,
+    locationLat,
+    locationLng,
+    linkedTurfId,
+    maxAttendees,
+    rsvpCount,
+    createdBy,
+    createdAt,
+    updatedAt,
+    syncedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'events';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<Event> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('company_id')) {
+      context.handle(
+        _companyIdMeta,
+        companyId.isAcceptableOrUnknown(data['company_id']!, _companyIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_companyIdMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('event_type')) {
+      context.handle(
+        _eventTypeMeta,
+        eventType.isAcceptableOrUnknown(data['event_type']!, _eventTypeMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_eventTypeMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    if (data.containsKey('starts_at')) {
+      context.handle(
+        _startsAtMeta,
+        startsAt.isAcceptableOrUnknown(data['starts_at']!, _startsAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_startsAtMeta);
+    }
+    if (data.containsKey('ends_at')) {
+      context.handle(
+        _endsAtMeta,
+        endsAt.isAcceptableOrUnknown(data['ends_at']!, _endsAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_endsAtMeta);
+    }
+    if (data.containsKey('location_name')) {
+      context.handle(
+        _locationNameMeta,
+        locationName.isAcceptableOrUnknown(
+          data['location_name']!,
+          _locationNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('location_lat')) {
+      context.handle(
+        _locationLatMeta,
+        locationLat.isAcceptableOrUnknown(
+          data['location_lat']!,
+          _locationLatMeta,
+        ),
+      );
+    }
+    if (data.containsKey('location_lng')) {
+      context.handle(
+        _locationLngMeta,
+        locationLng.isAcceptableOrUnknown(
+          data['location_lng']!,
+          _locationLngMeta,
+        ),
+      );
+    }
+    if (data.containsKey('linked_turf_id')) {
+      context.handle(
+        _linkedTurfIdMeta,
+        linkedTurfId.isAcceptableOrUnknown(
+          data['linked_turf_id']!,
+          _linkedTurfIdMeta,
+        ),
+      );
+    }
+    if (data.containsKey('max_attendees')) {
+      context.handle(
+        _maxAttendeesMeta,
+        maxAttendees.isAcceptableOrUnknown(
+          data['max_attendees']!,
+          _maxAttendeesMeta,
+        ),
+      );
+    }
+    if (data.containsKey('rsvp_count')) {
+      context.handle(
+        _rsvpCountMeta,
+        rsvpCount.isAcceptableOrUnknown(data['rsvp_count']!, _rsvpCountMeta),
+      );
+    }
+    if (data.containsKey('created_by')) {
+      context.handle(
+        _createdByMeta,
+        createdBy.isAcceptableOrUnknown(data['created_by']!, _createdByMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdByMeta);
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    if (data.containsKey('synced_at')) {
+      context.handle(
+        _syncedAtMeta,
+        syncedAt.isAcceptableOrUnknown(data['synced_at']!, _syncedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  Event map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return Event(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      companyId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}company_id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      eventType: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}event_type'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      startsAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}starts_at'],
+      )!,
+      endsAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}ends_at'],
+      )!,
+      locationName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}location_name'],
+      ),
+      locationLat: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}location_lat'],
+      ),
+      locationLng: attachedDatabase.typeMapping.read(
+        DriftSqlType.double,
+        data['${effectivePrefix}location_lng'],
+      ),
+      linkedTurfId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}linked_turf_id'],
+      ),
+      maxAttendees: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}max_attendees'],
+      ),
+      rsvpCount: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}rsvp_count'],
+      )!,
+      createdBy: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}created_by'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+      syncedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}synced_at'],
+      ),
+    );
+  }
+
+  @override
+  $EventsTable createAlias(String alias) {
+    return $EventsTable(attachedDatabase, alias);
+  }
+}
+
+class Event extends DataClass implements Insertable<Event> {
+  final String id;
+  final String companyId;
+  final String title;
+  final String description;
+  final String eventType;
+  final String status;
+  final DateTime startsAt;
+  final DateTime endsAt;
+  final String? locationName;
+  final double? locationLat;
+  final double? locationLng;
+  final String? linkedTurfId;
+  final int? maxAttendees;
+  final int rsvpCount;
+  final String createdBy;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  final DateTime? syncedAt;
+  const Event({
+    required this.id,
+    required this.companyId,
+    required this.title,
+    required this.description,
+    required this.eventType,
+    required this.status,
+    required this.startsAt,
+    required this.endsAt,
+    this.locationName,
+    this.locationLat,
+    this.locationLng,
+    this.linkedTurfId,
+    this.maxAttendees,
+    required this.rsvpCount,
+    required this.createdBy,
+    required this.createdAt,
+    required this.updatedAt,
+    this.syncedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['company_id'] = Variable<String>(companyId);
+    map['title'] = Variable<String>(title);
+    map['description'] = Variable<String>(description);
+    map['event_type'] = Variable<String>(eventType);
+    map['status'] = Variable<String>(status);
+    map['starts_at'] = Variable<DateTime>(startsAt);
+    map['ends_at'] = Variable<DateTime>(endsAt);
+    if (!nullToAbsent || locationName != null) {
+      map['location_name'] = Variable<String>(locationName);
+    }
+    if (!nullToAbsent || locationLat != null) {
+      map['location_lat'] = Variable<double>(locationLat);
+    }
+    if (!nullToAbsent || locationLng != null) {
+      map['location_lng'] = Variable<double>(locationLng);
+    }
+    if (!nullToAbsent || linkedTurfId != null) {
+      map['linked_turf_id'] = Variable<String>(linkedTurfId);
+    }
+    if (!nullToAbsent || maxAttendees != null) {
+      map['max_attendees'] = Variable<int>(maxAttendees);
+    }
+    map['rsvp_count'] = Variable<int>(rsvpCount);
+    map['created_by'] = Variable<String>(createdBy);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    if (!nullToAbsent || syncedAt != null) {
+      map['synced_at'] = Variable<DateTime>(syncedAt);
+    }
+    return map;
+  }
+
+  EventsCompanion toCompanion(bool nullToAbsent) {
+    return EventsCompanion(
+      id: Value(id),
+      companyId: Value(companyId),
+      title: Value(title),
+      description: Value(description),
+      eventType: Value(eventType),
+      status: Value(status),
+      startsAt: Value(startsAt),
+      endsAt: Value(endsAt),
+      locationName: locationName == null && nullToAbsent
+          ? const Value.absent()
+          : Value(locationName),
+      locationLat: locationLat == null && nullToAbsent
+          ? const Value.absent()
+          : Value(locationLat),
+      locationLng: locationLng == null && nullToAbsent
+          ? const Value.absent()
+          : Value(locationLng),
+      linkedTurfId: linkedTurfId == null && nullToAbsent
+          ? const Value.absent()
+          : Value(linkedTurfId),
+      maxAttendees: maxAttendees == null && nullToAbsent
+          ? const Value.absent()
+          : Value(maxAttendees),
+      rsvpCount: Value(rsvpCount),
+      createdBy: Value(createdBy),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+      syncedAt: syncedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncedAt),
+    );
+  }
+
+  factory Event.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return Event(
+      id: serializer.fromJson<String>(json['id']),
+      companyId: serializer.fromJson<String>(json['companyId']),
+      title: serializer.fromJson<String>(json['title']),
+      description: serializer.fromJson<String>(json['description']),
+      eventType: serializer.fromJson<String>(json['eventType']),
+      status: serializer.fromJson<String>(json['status']),
+      startsAt: serializer.fromJson<DateTime>(json['startsAt']),
+      endsAt: serializer.fromJson<DateTime>(json['endsAt']),
+      locationName: serializer.fromJson<String?>(json['locationName']),
+      locationLat: serializer.fromJson<double?>(json['locationLat']),
+      locationLng: serializer.fromJson<double?>(json['locationLng']),
+      linkedTurfId: serializer.fromJson<String?>(json['linkedTurfId']),
+      maxAttendees: serializer.fromJson<int?>(json['maxAttendees']),
+      rsvpCount: serializer.fromJson<int>(json['rsvpCount']),
+      createdBy: serializer.fromJson<String>(json['createdBy']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+      syncedAt: serializer.fromJson<DateTime?>(json['syncedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'companyId': serializer.toJson<String>(companyId),
+      'title': serializer.toJson<String>(title),
+      'description': serializer.toJson<String>(description),
+      'eventType': serializer.toJson<String>(eventType),
+      'status': serializer.toJson<String>(status),
+      'startsAt': serializer.toJson<DateTime>(startsAt),
+      'endsAt': serializer.toJson<DateTime>(endsAt),
+      'locationName': serializer.toJson<String?>(locationName),
+      'locationLat': serializer.toJson<double?>(locationLat),
+      'locationLng': serializer.toJson<double?>(locationLng),
+      'linkedTurfId': serializer.toJson<String?>(linkedTurfId),
+      'maxAttendees': serializer.toJson<int?>(maxAttendees),
+      'rsvpCount': serializer.toJson<int>(rsvpCount),
+      'createdBy': serializer.toJson<String>(createdBy),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+      'syncedAt': serializer.toJson<DateTime?>(syncedAt),
+    };
+  }
+
+  Event copyWith({
+    String? id,
+    String? companyId,
+    String? title,
+    String? description,
+    String? eventType,
+    String? status,
+    DateTime? startsAt,
+    DateTime? endsAt,
+    Value<String?> locationName = const Value.absent(),
+    Value<double?> locationLat = const Value.absent(),
+    Value<double?> locationLng = const Value.absent(),
+    Value<String?> linkedTurfId = const Value.absent(),
+    Value<int?> maxAttendees = const Value.absent(),
+    int? rsvpCount,
+    String? createdBy,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+    Value<DateTime?> syncedAt = const Value.absent(),
+  }) => Event(
+    id: id ?? this.id,
+    companyId: companyId ?? this.companyId,
+    title: title ?? this.title,
+    description: description ?? this.description,
+    eventType: eventType ?? this.eventType,
+    status: status ?? this.status,
+    startsAt: startsAt ?? this.startsAt,
+    endsAt: endsAt ?? this.endsAt,
+    locationName: locationName.present ? locationName.value : this.locationName,
+    locationLat: locationLat.present ? locationLat.value : this.locationLat,
+    locationLng: locationLng.present ? locationLng.value : this.locationLng,
+    linkedTurfId: linkedTurfId.present ? linkedTurfId.value : this.linkedTurfId,
+    maxAttendees: maxAttendees.present ? maxAttendees.value : this.maxAttendees,
+    rsvpCount: rsvpCount ?? this.rsvpCount,
+    createdBy: createdBy ?? this.createdBy,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+    syncedAt: syncedAt.present ? syncedAt.value : this.syncedAt,
+  );
+  Event copyWithCompanion(EventsCompanion data) {
+    return Event(
+      id: data.id.present ? data.id.value : this.id,
+      companyId: data.companyId.present ? data.companyId.value : this.companyId,
+      title: data.title.present ? data.title.value : this.title,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      eventType: data.eventType.present ? data.eventType.value : this.eventType,
+      status: data.status.present ? data.status.value : this.status,
+      startsAt: data.startsAt.present ? data.startsAt.value : this.startsAt,
+      endsAt: data.endsAt.present ? data.endsAt.value : this.endsAt,
+      locationName: data.locationName.present
+          ? data.locationName.value
+          : this.locationName,
+      locationLat: data.locationLat.present
+          ? data.locationLat.value
+          : this.locationLat,
+      locationLng: data.locationLng.present
+          ? data.locationLng.value
+          : this.locationLng,
+      linkedTurfId: data.linkedTurfId.present
+          ? data.linkedTurfId.value
+          : this.linkedTurfId,
+      maxAttendees: data.maxAttendees.present
+          ? data.maxAttendees.value
+          : this.maxAttendees,
+      rsvpCount: data.rsvpCount.present ? data.rsvpCount.value : this.rsvpCount,
+      createdBy: data.createdBy.present ? data.createdBy.value : this.createdBy,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+      syncedAt: data.syncedAt.present ? data.syncedAt.value : this.syncedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('Event(')
+          ..write('id: $id, ')
+          ..write('companyId: $companyId, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('eventType: $eventType, ')
+          ..write('status: $status, ')
+          ..write('startsAt: $startsAt, ')
+          ..write('endsAt: $endsAt, ')
+          ..write('locationName: $locationName, ')
+          ..write('locationLat: $locationLat, ')
+          ..write('locationLng: $locationLng, ')
+          ..write('linkedTurfId: $linkedTurfId, ')
+          ..write('maxAttendees: $maxAttendees, ')
+          ..write('rsvpCount: $rsvpCount, ')
+          ..write('createdBy: $createdBy, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('syncedAt: $syncedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    companyId,
+    title,
+    description,
+    eventType,
+    status,
+    startsAt,
+    endsAt,
+    locationName,
+    locationLat,
+    locationLng,
+    linkedTurfId,
+    maxAttendees,
+    rsvpCount,
+    createdBy,
+    createdAt,
+    updatedAt,
+    syncedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is Event &&
+          other.id == this.id &&
+          other.companyId == this.companyId &&
+          other.title == this.title &&
+          other.description == this.description &&
+          other.eventType == this.eventType &&
+          other.status == this.status &&
+          other.startsAt == this.startsAt &&
+          other.endsAt == this.endsAt &&
+          other.locationName == this.locationName &&
+          other.locationLat == this.locationLat &&
+          other.locationLng == this.locationLng &&
+          other.linkedTurfId == this.linkedTurfId &&
+          other.maxAttendees == this.maxAttendees &&
+          other.rsvpCount == this.rsvpCount &&
+          other.createdBy == this.createdBy &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt &&
+          other.syncedAt == this.syncedAt);
+}
+
+class EventsCompanion extends UpdateCompanion<Event> {
+  final Value<String> id;
+  final Value<String> companyId;
+  final Value<String> title;
+  final Value<String> description;
+  final Value<String> eventType;
+  final Value<String> status;
+  final Value<DateTime> startsAt;
+  final Value<DateTime> endsAt;
+  final Value<String?> locationName;
+  final Value<double?> locationLat;
+  final Value<double?> locationLng;
+  final Value<String?> linkedTurfId;
+  final Value<int?> maxAttendees;
+  final Value<int> rsvpCount;
+  final Value<String> createdBy;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<DateTime?> syncedAt;
+  final Value<int> rowid;
+  const EventsCompanion({
+    this.id = const Value.absent(),
+    this.companyId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.description = const Value.absent(),
+    this.eventType = const Value.absent(),
+    this.status = const Value.absent(),
+    this.startsAt = const Value.absent(),
+    this.endsAt = const Value.absent(),
+    this.locationName = const Value.absent(),
+    this.locationLat = const Value.absent(),
+    this.locationLng = const Value.absent(),
+    this.linkedTurfId = const Value.absent(),
+    this.maxAttendees = const Value.absent(),
+    this.rsvpCount = const Value.absent(),
+    this.createdBy = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.syncedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  EventsCompanion.insert({
+    required String id,
+    required String companyId,
+    required String title,
+    this.description = const Value.absent(),
+    required String eventType,
+    this.status = const Value.absent(),
+    required DateTime startsAt,
+    required DateTime endsAt,
+    this.locationName = const Value.absent(),
+    this.locationLat = const Value.absent(),
+    this.locationLng = const Value.absent(),
+    this.linkedTurfId = const Value.absent(),
+    this.maxAttendees = const Value.absent(),
+    this.rsvpCount = const Value.absent(),
+    required String createdBy,
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.syncedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       companyId = Value(companyId),
+       title = Value(title),
+       eventType = Value(eventType),
+       startsAt = Value(startsAt),
+       endsAt = Value(endsAt),
+       createdBy = Value(createdBy),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<Event> custom({
+    Expression<String>? id,
+    Expression<String>? companyId,
+    Expression<String>? title,
+    Expression<String>? description,
+    Expression<String>? eventType,
+    Expression<String>? status,
+    Expression<DateTime>? startsAt,
+    Expression<DateTime>? endsAt,
+    Expression<String>? locationName,
+    Expression<double>? locationLat,
+    Expression<double>? locationLng,
+    Expression<String>? linkedTurfId,
+    Expression<int>? maxAttendees,
+    Expression<int>? rsvpCount,
+    Expression<String>? createdBy,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<DateTime>? syncedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (companyId != null) 'company_id': companyId,
+      if (title != null) 'title': title,
+      if (description != null) 'description': description,
+      if (eventType != null) 'event_type': eventType,
+      if (status != null) 'status': status,
+      if (startsAt != null) 'starts_at': startsAt,
+      if (endsAt != null) 'ends_at': endsAt,
+      if (locationName != null) 'location_name': locationName,
+      if (locationLat != null) 'location_lat': locationLat,
+      if (locationLng != null) 'location_lng': locationLng,
+      if (linkedTurfId != null) 'linked_turf_id': linkedTurfId,
+      if (maxAttendees != null) 'max_attendees': maxAttendees,
+      if (rsvpCount != null) 'rsvp_count': rsvpCount,
+      if (createdBy != null) 'created_by': createdBy,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (syncedAt != null) 'synced_at': syncedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  EventsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? companyId,
+    Value<String>? title,
+    Value<String>? description,
+    Value<String>? eventType,
+    Value<String>? status,
+    Value<DateTime>? startsAt,
+    Value<DateTime>? endsAt,
+    Value<String?>? locationName,
+    Value<double?>? locationLat,
+    Value<double?>? locationLng,
+    Value<String?>? linkedTurfId,
+    Value<int?>? maxAttendees,
+    Value<int>? rsvpCount,
+    Value<String>? createdBy,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<DateTime?>? syncedAt,
+    Value<int>? rowid,
+  }) {
+    return EventsCompanion(
+      id: id ?? this.id,
+      companyId: companyId ?? this.companyId,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      eventType: eventType ?? this.eventType,
+      status: status ?? this.status,
+      startsAt: startsAt ?? this.startsAt,
+      endsAt: endsAt ?? this.endsAt,
+      locationName: locationName ?? this.locationName,
+      locationLat: locationLat ?? this.locationLat,
+      locationLng: locationLng ?? this.locationLng,
+      linkedTurfId: linkedTurfId ?? this.linkedTurfId,
+      maxAttendees: maxAttendees ?? this.maxAttendees,
+      rsvpCount: rsvpCount ?? this.rsvpCount,
+      createdBy: createdBy ?? this.createdBy,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      syncedAt: syncedAt ?? this.syncedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (companyId.present) {
+      map['company_id'] = Variable<String>(companyId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (eventType.present) {
+      map['event_type'] = Variable<String>(eventType.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (startsAt.present) {
+      map['starts_at'] = Variable<DateTime>(startsAt.value);
+    }
+    if (endsAt.present) {
+      map['ends_at'] = Variable<DateTime>(endsAt.value);
+    }
+    if (locationName.present) {
+      map['location_name'] = Variable<String>(locationName.value);
+    }
+    if (locationLat.present) {
+      map['location_lat'] = Variable<double>(locationLat.value);
+    }
+    if (locationLng.present) {
+      map['location_lng'] = Variable<double>(locationLng.value);
+    }
+    if (linkedTurfId.present) {
+      map['linked_turf_id'] = Variable<String>(linkedTurfId.value);
+    }
+    if (maxAttendees.present) {
+      map['max_attendees'] = Variable<int>(maxAttendees.value);
+    }
+    if (rsvpCount.present) {
+      map['rsvp_count'] = Variable<int>(rsvpCount.value);
+    }
+    if (createdBy.present) {
+      map['created_by'] = Variable<String>(createdBy.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (syncedAt.present) {
+      map['synced_at'] = Variable<DateTime>(syncedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EventsCompanion(')
+          ..write('id: $id, ')
+          ..write('companyId: $companyId, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('eventType: $eventType, ')
+          ..write('status: $status, ')
+          ..write('startsAt: $startsAt, ')
+          ..write('endsAt: $endsAt, ')
+          ..write('locationName: $locationName, ')
+          ..write('locationLat: $locationLat, ')
+          ..write('locationLng: $locationLng, ')
+          ..write('linkedTurfId: $linkedTurfId, ')
+          ..write('maxAttendees: $maxAttendees, ')
+          ..write('rsvpCount: $rsvpCount, ')
+          ..write('createdBy: $createdBy, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('syncedAt: $syncedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $EventRsvpsTable extends EventRsvps
+    with TableInfo<$EventRsvpsTable, EventRsvp> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $EventRsvpsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _eventIdMeta = const VerificationMeta(
+    'eventId',
+  );
+  @override
+  late final GeneratedColumn<String> eventId = GeneratedColumn<String>(
+    'event_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _userIdMeta = const VerificationMeta('userId');
+  @override
+  late final GeneratedColumn<String> userId = GeneratedColumn<String>(
+    'user_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _statusMeta = const VerificationMeta('status');
+  @override
+  late final GeneratedColumn<String> status = GeneratedColumn<String>(
+    'status',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant('going'),
+  );
+  static const VerificationMeta _displayNameMeta = const VerificationMeta(
+    'displayName',
+  );
+  @override
+  late final GeneratedColumn<String> displayName = GeneratedColumn<String>(
+    'display_name',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _syncedAtMeta = const VerificationMeta(
+    'syncedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> syncedAt = GeneratedColumn<DateTime>(
+    'synced_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    eventId,
+    userId,
+    status,
+    displayName,
+    createdAt,
+    syncedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'event_rsvps';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<EventRsvp> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('event_id')) {
+      context.handle(
+        _eventIdMeta,
+        eventId.isAcceptableOrUnknown(data['event_id']!, _eventIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_eventIdMeta);
+    }
+    if (data.containsKey('user_id')) {
+      context.handle(
+        _userIdMeta,
+        userId.isAcceptableOrUnknown(data['user_id']!, _userIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_userIdMeta);
+    }
+    if (data.containsKey('status')) {
+      context.handle(
+        _statusMeta,
+        status.isAcceptableOrUnknown(data['status']!, _statusMeta),
+      );
+    }
+    if (data.containsKey('display_name')) {
+      context.handle(
+        _displayNameMeta,
+        displayName.isAcceptableOrUnknown(
+          data['display_name']!,
+          _displayNameMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('synced_at')) {
+      context.handle(
+        _syncedAtMeta,
+        syncedAt.isAcceptableOrUnknown(data['synced_at']!, _syncedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  EventRsvp map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return EventRsvp(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      eventId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}event_id'],
+      )!,
+      userId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}user_id'],
+      )!,
+      status: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}status'],
+      )!,
+      displayName: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}display_name'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      syncedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}synced_at'],
+      ),
+    );
+  }
+
+  @override
+  $EventRsvpsTable createAlias(String alias) {
+    return $EventRsvpsTable(attachedDatabase, alias);
+  }
+}
+
+class EventRsvp extends DataClass implements Insertable<EventRsvp> {
+  final String id;
+  final String eventId;
+  final String userId;
+  final String status;
+  final String displayName;
+  final DateTime createdAt;
+  final DateTime? syncedAt;
+  const EventRsvp({
+    required this.id,
+    required this.eventId,
+    required this.userId,
+    required this.status,
+    required this.displayName,
+    required this.createdAt,
+    this.syncedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['event_id'] = Variable<String>(eventId);
+    map['user_id'] = Variable<String>(userId);
+    map['status'] = Variable<String>(status);
+    map['display_name'] = Variable<String>(displayName);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || syncedAt != null) {
+      map['synced_at'] = Variable<DateTime>(syncedAt);
+    }
+    return map;
+  }
+
+  EventRsvpsCompanion toCompanion(bool nullToAbsent) {
+    return EventRsvpsCompanion(
+      id: Value(id),
+      eventId: Value(eventId),
+      userId: Value(userId),
+      status: Value(status),
+      displayName: Value(displayName),
+      createdAt: Value(createdAt),
+      syncedAt: syncedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncedAt),
+    );
+  }
+
+  factory EventRsvp.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return EventRsvp(
+      id: serializer.fromJson<String>(json['id']),
+      eventId: serializer.fromJson<String>(json['eventId']),
+      userId: serializer.fromJson<String>(json['userId']),
+      status: serializer.fromJson<String>(json['status']),
+      displayName: serializer.fromJson<String>(json['displayName']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      syncedAt: serializer.fromJson<DateTime?>(json['syncedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'eventId': serializer.toJson<String>(eventId),
+      'userId': serializer.toJson<String>(userId),
+      'status': serializer.toJson<String>(status),
+      'displayName': serializer.toJson<String>(displayName),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'syncedAt': serializer.toJson<DateTime?>(syncedAt),
+    };
+  }
+
+  EventRsvp copyWith({
+    String? id,
+    String? eventId,
+    String? userId,
+    String? status,
+    String? displayName,
+    DateTime? createdAt,
+    Value<DateTime?> syncedAt = const Value.absent(),
+  }) => EventRsvp(
+    id: id ?? this.id,
+    eventId: eventId ?? this.eventId,
+    userId: userId ?? this.userId,
+    status: status ?? this.status,
+    displayName: displayName ?? this.displayName,
+    createdAt: createdAt ?? this.createdAt,
+    syncedAt: syncedAt.present ? syncedAt.value : this.syncedAt,
+  );
+  EventRsvp copyWithCompanion(EventRsvpsCompanion data) {
+    return EventRsvp(
+      id: data.id.present ? data.id.value : this.id,
+      eventId: data.eventId.present ? data.eventId.value : this.eventId,
+      userId: data.userId.present ? data.userId.value : this.userId,
+      status: data.status.present ? data.status.value : this.status,
+      displayName: data.displayName.present
+          ? data.displayName.value
+          : this.displayName,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      syncedAt: data.syncedAt.present ? data.syncedAt.value : this.syncedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EventRsvp(')
+          ..write('id: $id, ')
+          ..write('eventId: $eventId, ')
+          ..write('userId: $userId, ')
+          ..write('status: $status, ')
+          ..write('displayName: $displayName, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('syncedAt: $syncedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    eventId,
+    userId,
+    status,
+    displayName,
+    createdAt,
+    syncedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is EventRsvp &&
+          other.id == this.id &&
+          other.eventId == this.eventId &&
+          other.userId == this.userId &&
+          other.status == this.status &&
+          other.displayName == this.displayName &&
+          other.createdAt == this.createdAt &&
+          other.syncedAt == this.syncedAt);
+}
+
+class EventRsvpsCompanion extends UpdateCompanion<EventRsvp> {
+  final Value<String> id;
+  final Value<String> eventId;
+  final Value<String> userId;
+  final Value<String> status;
+  final Value<String> displayName;
+  final Value<DateTime> createdAt;
+  final Value<DateTime?> syncedAt;
+  final Value<int> rowid;
+  const EventRsvpsCompanion({
+    this.id = const Value.absent(),
+    this.eventId = const Value.absent(),
+    this.userId = const Value.absent(),
+    this.status = const Value.absent(),
+    this.displayName = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.syncedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  EventRsvpsCompanion.insert({
+    required String id,
+    required String eventId,
+    required String userId,
+    this.status = const Value.absent(),
+    this.displayName = const Value.absent(),
+    required DateTime createdAt,
+    this.syncedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       eventId = Value(eventId),
+       userId = Value(userId),
+       createdAt = Value(createdAt);
+  static Insertable<EventRsvp> custom({
+    Expression<String>? id,
+    Expression<String>? eventId,
+    Expression<String>? userId,
+    Expression<String>? status,
+    Expression<String>? displayName,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? syncedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (eventId != null) 'event_id': eventId,
+      if (userId != null) 'user_id': userId,
+      if (status != null) 'status': status,
+      if (displayName != null) 'display_name': displayName,
+      if (createdAt != null) 'created_at': createdAt,
+      if (syncedAt != null) 'synced_at': syncedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  EventRsvpsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? eventId,
+    Value<String>? userId,
+    Value<String>? status,
+    Value<String>? displayName,
+    Value<DateTime>? createdAt,
+    Value<DateTime?>? syncedAt,
+    Value<int>? rowid,
+  }) {
+    return EventRsvpsCompanion(
+      id: id ?? this.id,
+      eventId: eventId ?? this.eventId,
+      userId: userId ?? this.userId,
+      status: status ?? this.status,
+      displayName: displayName ?? this.displayName,
+      createdAt: createdAt ?? this.createdAt,
+      syncedAt: syncedAt ?? this.syncedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (eventId.present) {
+      map['event_id'] = Variable<String>(eventId.value);
+    }
+    if (userId.present) {
+      map['user_id'] = Variable<String>(userId.value);
+    }
+    if (status.present) {
+      map['status'] = Variable<String>(status.value);
+    }
+    if (displayName.present) {
+      map['display_name'] = Variable<String>(displayName.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (syncedAt.present) {
+      map['synced_at'] = Variable<DateTime>(syncedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('EventRsvpsCompanion(')
+          ..write('id: $id, ')
+          ..write('eventId: $eventId, ')
+          ..write('userId: $userId, ')
+          ..write('status: $status, ')
+          ..write('displayName: $displayName, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('syncedAt: $syncedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
+class $TrainingMaterialsTable extends TrainingMaterials
+    with TableInfo<$TrainingMaterialsTable, TrainingMaterial> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $TrainingMaterialsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _companyIdMeta = const VerificationMeta(
+    'companyId',
+  );
+  @override
+  late final GeneratedColumn<String> companyId = GeneratedColumn<String>(
+    'company_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _descriptionMeta = const VerificationMeta(
+    'description',
+  );
+  @override
+  late final GeneratedColumn<String> description = GeneratedColumn<String>(
+    'description',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _contentUrlMeta = const VerificationMeta(
+    'contentUrl',
+  );
+  @override
+  late final GeneratedColumn<String> contentUrl = GeneratedColumn<String>(
+    'content_url',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _sortOrderMeta = const VerificationMeta(
+    'sortOrder',
+  );
+  @override
+  late final GeneratedColumn<int> sortOrder = GeneratedColumn<int>(
+    'sort_order',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(0),
+  );
+  static const VerificationMeta _isPublishedMeta = const VerificationMeta(
+    'isPublished',
+  );
+  @override
+  late final GeneratedColumn<bool> isPublished = GeneratedColumn<bool>(
+    'is_published',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_published" IN (0, 1))',
+    ),
+    defaultValue: const Constant(false),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _syncedAtMeta = const VerificationMeta(
+    'syncedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> syncedAt = GeneratedColumn<DateTime>(
+    'synced_at',
+    aliasedName,
+    true,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: false,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    companyId,
+    title,
+    description,
+    contentUrl,
+    sortOrder,
+    isPublished,
+    createdAt,
+    syncedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'training_materials';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<TrainingMaterial> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('company_id')) {
+      context.handle(
+        _companyIdMeta,
+        companyId.isAcceptableOrUnknown(data['company_id']!, _companyIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_companyIdMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('description')) {
+      context.handle(
+        _descriptionMeta,
+        description.isAcceptableOrUnknown(
+          data['description']!,
+          _descriptionMeta,
+        ),
+      );
+    }
+    if (data.containsKey('content_url')) {
+      context.handle(
+        _contentUrlMeta,
+        contentUrl.isAcceptableOrUnknown(data['content_url']!, _contentUrlMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_contentUrlMeta);
+    }
+    if (data.containsKey('sort_order')) {
+      context.handle(
+        _sortOrderMeta,
+        sortOrder.isAcceptableOrUnknown(data['sort_order']!, _sortOrderMeta),
+      );
+    }
+    if (data.containsKey('is_published')) {
+      context.handle(
+        _isPublishedMeta,
+        isPublished.isAcceptableOrUnknown(
+          data['is_published']!,
+          _isPublishedMeta,
+        ),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('synced_at')) {
+      context.handle(
+        _syncedAtMeta,
+        syncedAt.isAcceptableOrUnknown(data['synced_at']!, _syncedAtMeta),
+      );
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  TrainingMaterial map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return TrainingMaterial(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      companyId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}company_id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      description: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}description'],
+      )!,
+      contentUrl: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content_url'],
+      )!,
+      sortOrder: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}sort_order'],
+      )!,
+      isPublished: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_published'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      syncedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}synced_at'],
+      ),
+    );
+  }
+
+  @override
+  $TrainingMaterialsTable createAlias(String alias) {
+    return $TrainingMaterialsTable(attachedDatabase, alias);
+  }
+}
+
+class TrainingMaterial extends DataClass
+    implements Insertable<TrainingMaterial> {
+  final String id;
+  final String companyId;
+  final String title;
+  final String description;
+  final String contentUrl;
+  final int sortOrder;
+  final bool isPublished;
+  final DateTime createdAt;
+  final DateTime? syncedAt;
+  const TrainingMaterial({
+    required this.id,
+    required this.companyId,
+    required this.title,
+    required this.description,
+    required this.contentUrl,
+    required this.sortOrder,
+    required this.isPublished,
+    required this.createdAt,
+    this.syncedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['company_id'] = Variable<String>(companyId);
+    map['title'] = Variable<String>(title);
+    map['description'] = Variable<String>(description);
+    map['content_url'] = Variable<String>(contentUrl);
+    map['sort_order'] = Variable<int>(sortOrder);
+    map['is_published'] = Variable<bool>(isPublished);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    if (!nullToAbsent || syncedAt != null) {
+      map['synced_at'] = Variable<DateTime>(syncedAt);
+    }
+    return map;
+  }
+
+  TrainingMaterialsCompanion toCompanion(bool nullToAbsent) {
+    return TrainingMaterialsCompanion(
+      id: Value(id),
+      companyId: Value(companyId),
+      title: Value(title),
+      description: Value(description),
+      contentUrl: Value(contentUrl),
+      sortOrder: Value(sortOrder),
+      isPublished: Value(isPublished),
+      createdAt: Value(createdAt),
+      syncedAt: syncedAt == null && nullToAbsent
+          ? const Value.absent()
+          : Value(syncedAt),
+    );
+  }
+
+  factory TrainingMaterial.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return TrainingMaterial(
+      id: serializer.fromJson<String>(json['id']),
+      companyId: serializer.fromJson<String>(json['companyId']),
+      title: serializer.fromJson<String>(json['title']),
+      description: serializer.fromJson<String>(json['description']),
+      contentUrl: serializer.fromJson<String>(json['contentUrl']),
+      sortOrder: serializer.fromJson<int>(json['sortOrder']),
+      isPublished: serializer.fromJson<bool>(json['isPublished']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      syncedAt: serializer.fromJson<DateTime?>(json['syncedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'companyId': serializer.toJson<String>(companyId),
+      'title': serializer.toJson<String>(title),
+      'description': serializer.toJson<String>(description),
+      'contentUrl': serializer.toJson<String>(contentUrl),
+      'sortOrder': serializer.toJson<int>(sortOrder),
+      'isPublished': serializer.toJson<bool>(isPublished),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'syncedAt': serializer.toJson<DateTime?>(syncedAt),
+    };
+  }
+
+  TrainingMaterial copyWith({
+    String? id,
+    String? companyId,
+    String? title,
+    String? description,
+    String? contentUrl,
+    int? sortOrder,
+    bool? isPublished,
+    DateTime? createdAt,
+    Value<DateTime?> syncedAt = const Value.absent(),
+  }) => TrainingMaterial(
+    id: id ?? this.id,
+    companyId: companyId ?? this.companyId,
+    title: title ?? this.title,
+    description: description ?? this.description,
+    contentUrl: contentUrl ?? this.contentUrl,
+    sortOrder: sortOrder ?? this.sortOrder,
+    isPublished: isPublished ?? this.isPublished,
+    createdAt: createdAt ?? this.createdAt,
+    syncedAt: syncedAt.present ? syncedAt.value : this.syncedAt,
+  );
+  TrainingMaterial copyWithCompanion(TrainingMaterialsCompanion data) {
+    return TrainingMaterial(
+      id: data.id.present ? data.id.value : this.id,
+      companyId: data.companyId.present ? data.companyId.value : this.companyId,
+      title: data.title.present ? data.title.value : this.title,
+      description: data.description.present
+          ? data.description.value
+          : this.description,
+      contentUrl: data.contentUrl.present
+          ? data.contentUrl.value
+          : this.contentUrl,
+      sortOrder: data.sortOrder.present ? data.sortOrder.value : this.sortOrder,
+      isPublished: data.isPublished.present
+          ? data.isPublished.value
+          : this.isPublished,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      syncedAt: data.syncedAt.present ? data.syncedAt.value : this.syncedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TrainingMaterial(')
+          ..write('id: $id, ')
+          ..write('companyId: $companyId, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('contentUrl: $contentUrl, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('isPublished: $isPublished, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('syncedAt: $syncedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    companyId,
+    title,
+    description,
+    contentUrl,
+    sortOrder,
+    isPublished,
+    createdAt,
+    syncedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is TrainingMaterial &&
+          other.id == this.id &&
+          other.companyId == this.companyId &&
+          other.title == this.title &&
+          other.description == this.description &&
+          other.contentUrl == this.contentUrl &&
+          other.sortOrder == this.sortOrder &&
+          other.isPublished == this.isPublished &&
+          other.createdAt == this.createdAt &&
+          other.syncedAt == this.syncedAt);
+}
+
+class TrainingMaterialsCompanion extends UpdateCompanion<TrainingMaterial> {
+  final Value<String> id;
+  final Value<String> companyId;
+  final Value<String> title;
+  final Value<String> description;
+  final Value<String> contentUrl;
+  final Value<int> sortOrder;
+  final Value<bool> isPublished;
+  final Value<DateTime> createdAt;
+  final Value<DateTime?> syncedAt;
+  final Value<int> rowid;
+  const TrainingMaterialsCompanion({
+    this.id = const Value.absent(),
+    this.companyId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.description = const Value.absent(),
+    this.contentUrl = const Value.absent(),
+    this.sortOrder = const Value.absent(),
+    this.isPublished = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.syncedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  TrainingMaterialsCompanion.insert({
+    required String id,
+    required String companyId,
+    required String title,
+    this.description = const Value.absent(),
+    required String contentUrl,
+    this.sortOrder = const Value.absent(),
+    this.isPublished = const Value.absent(),
+    required DateTime createdAt,
+    this.syncedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       companyId = Value(companyId),
+       title = Value(title),
+       contentUrl = Value(contentUrl),
+       createdAt = Value(createdAt);
+  static Insertable<TrainingMaterial> custom({
+    Expression<String>? id,
+    Expression<String>? companyId,
+    Expression<String>? title,
+    Expression<String>? description,
+    Expression<String>? contentUrl,
+    Expression<int>? sortOrder,
+    Expression<bool>? isPublished,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? syncedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (companyId != null) 'company_id': companyId,
+      if (title != null) 'title': title,
+      if (description != null) 'description': description,
+      if (contentUrl != null) 'content_url': contentUrl,
+      if (sortOrder != null) 'sort_order': sortOrder,
+      if (isPublished != null) 'is_published': isPublished,
+      if (createdAt != null) 'created_at': createdAt,
+      if (syncedAt != null) 'synced_at': syncedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  TrainingMaterialsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? companyId,
+    Value<String>? title,
+    Value<String>? description,
+    Value<String>? contentUrl,
+    Value<int>? sortOrder,
+    Value<bool>? isPublished,
+    Value<DateTime>? createdAt,
+    Value<DateTime?>? syncedAt,
+    Value<int>? rowid,
+  }) {
+    return TrainingMaterialsCompanion(
+      id: id ?? this.id,
+      companyId: companyId ?? this.companyId,
+      title: title ?? this.title,
+      description: description ?? this.description,
+      contentUrl: contentUrl ?? this.contentUrl,
+      sortOrder: sortOrder ?? this.sortOrder,
+      isPublished: isPublished ?? this.isPublished,
+      createdAt: createdAt ?? this.createdAt,
+      syncedAt: syncedAt ?? this.syncedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (companyId.present) {
+      map['company_id'] = Variable<String>(companyId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (description.present) {
+      map['description'] = Variable<String>(description.value);
+    }
+    if (contentUrl.present) {
+      map['content_url'] = Variable<String>(contentUrl.value);
+    }
+    if (sortOrder.present) {
+      map['sort_order'] = Variable<int>(sortOrder.value);
+    }
+    if (isPublished.present) {
+      map['is_published'] = Variable<bool>(isPublished.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (syncedAt.present) {
+      map['synced_at'] = Variable<DateTime>(syncedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('TrainingMaterialsCompanion(')
+          ..write('id: $id, ')
+          ..write('companyId: $companyId, ')
+          ..write('title: $title, ')
+          ..write('description: $description, ')
+          ..write('contentUrl: $contentUrl, ')
+          ..write('sortOrder: $sortOrder, ')
+          ..write('isPublished: $isPublished, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('syncedAt: $syncedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$NavigatorsDatabase extends GeneratedDatabase {
   _$NavigatorsDatabase(QueryExecutor e) : super(e);
   $NavigatorsDatabaseManager get managers => $NavigatorsDatabaseManager(this);
@@ -6984,6 +9030,10 @@ abstract class _$NavigatorsDatabase extends GeneratedDatabase {
     this,
   );
   late final $TaskNotesTable taskNotes = $TaskNotesTable(this);
+  late final $EventsTable events = $EventsTable(this);
+  late final $EventRsvpsTable eventRsvps = $EventRsvpsTable(this);
+  late final $TrainingMaterialsTable trainingMaterials =
+      $TrainingMaterialsTable(this);
   late final VoterDao voterDao = VoterDao(this as NavigatorsDatabase);
   late final SyncDao syncDao = SyncDao(this as NavigatorsDatabase);
   late final ContactLogDao contactLogDao = ContactLogDao(
@@ -6997,6 +9047,8 @@ abstract class _$NavigatorsDatabase extends GeneratedDatabase {
     this as NavigatorsDatabase,
   );
   late final TaskDao taskDao = TaskDao(this as NavigatorsDatabase);
+  late final EventDao eventDao = EventDao(this as NavigatorsDatabase);
+  late final TrainingDao trainingDao = TrainingDao(this as NavigatorsDatabase);
   @override
   Iterable<TableInfo<Table, Object?>> get allTables =>
       allSchemaEntities.whereType<TableInfo<Table, Object?>>();
@@ -7014,6 +9066,9 @@ abstract class _$NavigatorsDatabase extends GeneratedDatabase {
     tasks,
     taskAssignments,
     taskNotes,
+    events,
+    eventRsvps,
+    trainingMaterials,
   ];
 }
 
@@ -10514,6 +12569,994 @@ typedef $$TaskNotesTableProcessedTableManager =
       TaskNote,
       PrefetchHooks Function()
     >;
+typedef $$EventsTableCreateCompanionBuilder =
+    EventsCompanion Function({
+      required String id,
+      required String companyId,
+      required String title,
+      Value<String> description,
+      required String eventType,
+      Value<String> status,
+      required DateTime startsAt,
+      required DateTime endsAt,
+      Value<String?> locationName,
+      Value<double?> locationLat,
+      Value<double?> locationLng,
+      Value<String?> linkedTurfId,
+      Value<int?> maxAttendees,
+      Value<int> rsvpCount,
+      required String createdBy,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<DateTime?> syncedAt,
+      Value<int> rowid,
+    });
+typedef $$EventsTableUpdateCompanionBuilder =
+    EventsCompanion Function({
+      Value<String> id,
+      Value<String> companyId,
+      Value<String> title,
+      Value<String> description,
+      Value<String> eventType,
+      Value<String> status,
+      Value<DateTime> startsAt,
+      Value<DateTime> endsAt,
+      Value<String?> locationName,
+      Value<double?> locationLat,
+      Value<double?> locationLng,
+      Value<String?> linkedTurfId,
+      Value<int?> maxAttendees,
+      Value<int> rsvpCount,
+      Value<String> createdBy,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<DateTime?> syncedAt,
+      Value<int> rowid,
+    });
+
+class $$EventsTableFilterComposer
+    extends Composer<_$NavigatorsDatabase, $EventsTable> {
+  $$EventsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get companyId => $composableBuilder(
+    column: $table.companyId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get eventType => $composableBuilder(
+    column: $table.eventType,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get startsAt => $composableBuilder(
+    column: $table.startsAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get endsAt => $composableBuilder(
+    column: $table.endsAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get locationName => $composableBuilder(
+    column: $table.locationName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get locationLat => $composableBuilder(
+    column: $table.locationLat,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<double> get locationLng => $composableBuilder(
+    column: $table.locationLng,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get linkedTurfId => $composableBuilder(
+    column: $table.linkedTurfId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get maxAttendees => $composableBuilder(
+    column: $table.maxAttendees,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get rsvpCount => $composableBuilder(
+    column: $table.rsvpCount,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get syncedAt => $composableBuilder(
+    column: $table.syncedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$EventsTableOrderingComposer
+    extends Composer<_$NavigatorsDatabase, $EventsTable> {
+  $$EventsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get companyId => $composableBuilder(
+    column: $table.companyId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get eventType => $composableBuilder(
+    column: $table.eventType,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get startsAt => $composableBuilder(
+    column: $table.startsAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get endsAt => $composableBuilder(
+    column: $table.endsAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get locationName => $composableBuilder(
+    column: $table.locationName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get locationLat => $composableBuilder(
+    column: $table.locationLat,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<double> get locationLng => $composableBuilder(
+    column: $table.locationLng,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get linkedTurfId => $composableBuilder(
+    column: $table.linkedTurfId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get maxAttendees => $composableBuilder(
+    column: $table.maxAttendees,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get rsvpCount => $composableBuilder(
+    column: $table.rsvpCount,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get createdBy => $composableBuilder(
+    column: $table.createdBy,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get syncedAt => $composableBuilder(
+    column: $table.syncedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$EventsTableAnnotationComposer
+    extends Composer<_$NavigatorsDatabase, $EventsTable> {
+  $$EventsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get companyId =>
+      $composableBuilder(column: $table.companyId, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get eventType =>
+      $composableBuilder(column: $table.eventType, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get startsAt =>
+      $composableBuilder(column: $table.startsAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get endsAt =>
+      $composableBuilder(column: $table.endsAt, builder: (column) => column);
+
+  GeneratedColumn<String> get locationName => $composableBuilder(
+    column: $table.locationName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get locationLat => $composableBuilder(
+    column: $table.locationLat,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<double> get locationLng => $composableBuilder(
+    column: $table.locationLng,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get linkedTurfId => $composableBuilder(
+    column: $table.linkedTurfId,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get maxAttendees => $composableBuilder(
+    column: $table.maxAttendees,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get rsvpCount =>
+      $composableBuilder(column: $table.rsvpCount, builder: (column) => column);
+
+  GeneratedColumn<String> get createdBy =>
+      $composableBuilder(column: $table.createdBy, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get syncedAt =>
+      $composableBuilder(column: $table.syncedAt, builder: (column) => column);
+}
+
+class $$EventsTableTableManager
+    extends
+        RootTableManager<
+          _$NavigatorsDatabase,
+          $EventsTable,
+          Event,
+          $$EventsTableFilterComposer,
+          $$EventsTableOrderingComposer,
+          $$EventsTableAnnotationComposer,
+          $$EventsTableCreateCompanionBuilder,
+          $$EventsTableUpdateCompanionBuilder,
+          (Event, BaseReferences<_$NavigatorsDatabase, $EventsTable, Event>),
+          Event,
+          PrefetchHooks Function()
+        > {
+  $$EventsTableTableManager(_$NavigatorsDatabase db, $EventsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$EventsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$EventsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$EventsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> companyId = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String> eventType = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<DateTime> startsAt = const Value.absent(),
+                Value<DateTime> endsAt = const Value.absent(),
+                Value<String?> locationName = const Value.absent(),
+                Value<double?> locationLat = const Value.absent(),
+                Value<double?> locationLng = const Value.absent(),
+                Value<String?> linkedTurfId = const Value.absent(),
+                Value<int?> maxAttendees = const Value.absent(),
+                Value<int> rsvpCount = const Value.absent(),
+                Value<String> createdBy = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<DateTime?> syncedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EventsCompanion(
+                id: id,
+                companyId: companyId,
+                title: title,
+                description: description,
+                eventType: eventType,
+                status: status,
+                startsAt: startsAt,
+                endsAt: endsAt,
+                locationName: locationName,
+                locationLat: locationLat,
+                locationLng: locationLng,
+                linkedTurfId: linkedTurfId,
+                maxAttendees: maxAttendees,
+                rsvpCount: rsvpCount,
+                createdBy: createdBy,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                syncedAt: syncedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String companyId,
+                required String title,
+                Value<String> description = const Value.absent(),
+                required String eventType,
+                Value<String> status = const Value.absent(),
+                required DateTime startsAt,
+                required DateTime endsAt,
+                Value<String?> locationName = const Value.absent(),
+                Value<double?> locationLat = const Value.absent(),
+                Value<double?> locationLng = const Value.absent(),
+                Value<String?> linkedTurfId = const Value.absent(),
+                Value<int?> maxAttendees = const Value.absent(),
+                Value<int> rsvpCount = const Value.absent(),
+                required String createdBy,
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<DateTime?> syncedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EventsCompanion.insert(
+                id: id,
+                companyId: companyId,
+                title: title,
+                description: description,
+                eventType: eventType,
+                status: status,
+                startsAt: startsAt,
+                endsAt: endsAt,
+                locationName: locationName,
+                locationLat: locationLat,
+                locationLng: locationLng,
+                linkedTurfId: linkedTurfId,
+                maxAttendees: maxAttendees,
+                rsvpCount: rsvpCount,
+                createdBy: createdBy,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                syncedAt: syncedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$EventsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$NavigatorsDatabase,
+      $EventsTable,
+      Event,
+      $$EventsTableFilterComposer,
+      $$EventsTableOrderingComposer,
+      $$EventsTableAnnotationComposer,
+      $$EventsTableCreateCompanionBuilder,
+      $$EventsTableUpdateCompanionBuilder,
+      (Event, BaseReferences<_$NavigatorsDatabase, $EventsTable, Event>),
+      Event,
+      PrefetchHooks Function()
+    >;
+typedef $$EventRsvpsTableCreateCompanionBuilder =
+    EventRsvpsCompanion Function({
+      required String id,
+      required String eventId,
+      required String userId,
+      Value<String> status,
+      Value<String> displayName,
+      required DateTime createdAt,
+      Value<DateTime?> syncedAt,
+      Value<int> rowid,
+    });
+typedef $$EventRsvpsTableUpdateCompanionBuilder =
+    EventRsvpsCompanion Function({
+      Value<String> id,
+      Value<String> eventId,
+      Value<String> userId,
+      Value<String> status,
+      Value<String> displayName,
+      Value<DateTime> createdAt,
+      Value<DateTime?> syncedAt,
+      Value<int> rowid,
+    });
+
+class $$EventRsvpsTableFilterComposer
+    extends Composer<_$NavigatorsDatabase, $EventRsvpsTable> {
+  $$EventRsvpsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get eventId => $composableBuilder(
+    column: $table.eventId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get syncedAt => $composableBuilder(
+    column: $table.syncedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$EventRsvpsTableOrderingComposer
+    extends Composer<_$NavigatorsDatabase, $EventRsvpsTable> {
+  $$EventRsvpsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get eventId => $composableBuilder(
+    column: $table.eventId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get userId => $composableBuilder(
+    column: $table.userId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get status => $composableBuilder(
+    column: $table.status,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get syncedAt => $composableBuilder(
+    column: $table.syncedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$EventRsvpsTableAnnotationComposer
+    extends Composer<_$NavigatorsDatabase, $EventRsvpsTable> {
+  $$EventRsvpsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get eventId =>
+      $composableBuilder(column: $table.eventId, builder: (column) => column);
+
+  GeneratedColumn<String> get userId =>
+      $composableBuilder(column: $table.userId, builder: (column) => column);
+
+  GeneratedColumn<String> get status =>
+      $composableBuilder(column: $table.status, builder: (column) => column);
+
+  GeneratedColumn<String> get displayName => $composableBuilder(
+    column: $table.displayName,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get syncedAt =>
+      $composableBuilder(column: $table.syncedAt, builder: (column) => column);
+}
+
+class $$EventRsvpsTableTableManager
+    extends
+        RootTableManager<
+          _$NavigatorsDatabase,
+          $EventRsvpsTable,
+          EventRsvp,
+          $$EventRsvpsTableFilterComposer,
+          $$EventRsvpsTableOrderingComposer,
+          $$EventRsvpsTableAnnotationComposer,
+          $$EventRsvpsTableCreateCompanionBuilder,
+          $$EventRsvpsTableUpdateCompanionBuilder,
+          (
+            EventRsvp,
+            BaseReferences<_$NavigatorsDatabase, $EventRsvpsTable, EventRsvp>,
+          ),
+          EventRsvp,
+          PrefetchHooks Function()
+        > {
+  $$EventRsvpsTableTableManager(_$NavigatorsDatabase db, $EventRsvpsTable table)
+    : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$EventRsvpsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$EventRsvpsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$EventRsvpsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> eventId = const Value.absent(),
+                Value<String> userId = const Value.absent(),
+                Value<String> status = const Value.absent(),
+                Value<String> displayName = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime?> syncedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EventRsvpsCompanion(
+                id: id,
+                eventId: eventId,
+                userId: userId,
+                status: status,
+                displayName: displayName,
+                createdAt: createdAt,
+                syncedAt: syncedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String eventId,
+                required String userId,
+                Value<String> status = const Value.absent(),
+                Value<String> displayName = const Value.absent(),
+                required DateTime createdAt,
+                Value<DateTime?> syncedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => EventRsvpsCompanion.insert(
+                id: id,
+                eventId: eventId,
+                userId: userId,
+                status: status,
+                displayName: displayName,
+                createdAt: createdAt,
+                syncedAt: syncedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$EventRsvpsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$NavigatorsDatabase,
+      $EventRsvpsTable,
+      EventRsvp,
+      $$EventRsvpsTableFilterComposer,
+      $$EventRsvpsTableOrderingComposer,
+      $$EventRsvpsTableAnnotationComposer,
+      $$EventRsvpsTableCreateCompanionBuilder,
+      $$EventRsvpsTableUpdateCompanionBuilder,
+      (
+        EventRsvp,
+        BaseReferences<_$NavigatorsDatabase, $EventRsvpsTable, EventRsvp>,
+      ),
+      EventRsvp,
+      PrefetchHooks Function()
+    >;
+typedef $$TrainingMaterialsTableCreateCompanionBuilder =
+    TrainingMaterialsCompanion Function({
+      required String id,
+      required String companyId,
+      required String title,
+      Value<String> description,
+      required String contentUrl,
+      Value<int> sortOrder,
+      Value<bool> isPublished,
+      required DateTime createdAt,
+      Value<DateTime?> syncedAt,
+      Value<int> rowid,
+    });
+typedef $$TrainingMaterialsTableUpdateCompanionBuilder =
+    TrainingMaterialsCompanion Function({
+      Value<String> id,
+      Value<String> companyId,
+      Value<String> title,
+      Value<String> description,
+      Value<String> contentUrl,
+      Value<int> sortOrder,
+      Value<bool> isPublished,
+      Value<DateTime> createdAt,
+      Value<DateTime?> syncedAt,
+      Value<int> rowid,
+    });
+
+class $$TrainingMaterialsTableFilterComposer
+    extends Composer<_$NavigatorsDatabase, $TrainingMaterialsTable> {
+  $$TrainingMaterialsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get companyId => $composableBuilder(
+    column: $table.companyId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get contentUrl => $composableBuilder(
+    column: $table.contentUrl,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isPublished => $composableBuilder(
+    column: $table.isPublished,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get syncedAt => $composableBuilder(
+    column: $table.syncedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$TrainingMaterialsTableOrderingComposer
+    extends Composer<_$NavigatorsDatabase, $TrainingMaterialsTable> {
+  $$TrainingMaterialsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get companyId => $composableBuilder(
+    column: $table.companyId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get contentUrl => $composableBuilder(
+    column: $table.contentUrl,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get sortOrder => $composableBuilder(
+    column: $table.sortOrder,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isPublished => $composableBuilder(
+    column: $table.isPublished,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get syncedAt => $composableBuilder(
+    column: $table.syncedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$TrainingMaterialsTableAnnotationComposer
+    extends Composer<_$NavigatorsDatabase, $TrainingMaterialsTable> {
+  $$TrainingMaterialsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get companyId =>
+      $composableBuilder(column: $table.companyId, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get description => $composableBuilder(
+    column: $table.description,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<String> get contentUrl => $composableBuilder(
+    column: $table.contentUrl,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<int> get sortOrder =>
+      $composableBuilder(column: $table.sortOrder, builder: (column) => column);
+
+  GeneratedColumn<bool> get isPublished => $composableBuilder(
+    column: $table.isPublished,
+    builder: (column) => column,
+  );
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get syncedAt =>
+      $composableBuilder(column: $table.syncedAt, builder: (column) => column);
+}
+
+class $$TrainingMaterialsTableTableManager
+    extends
+        RootTableManager<
+          _$NavigatorsDatabase,
+          $TrainingMaterialsTable,
+          TrainingMaterial,
+          $$TrainingMaterialsTableFilterComposer,
+          $$TrainingMaterialsTableOrderingComposer,
+          $$TrainingMaterialsTableAnnotationComposer,
+          $$TrainingMaterialsTableCreateCompanionBuilder,
+          $$TrainingMaterialsTableUpdateCompanionBuilder,
+          (
+            TrainingMaterial,
+            BaseReferences<
+              _$NavigatorsDatabase,
+              $TrainingMaterialsTable,
+              TrainingMaterial
+            >,
+          ),
+          TrainingMaterial,
+          PrefetchHooks Function()
+        > {
+  $$TrainingMaterialsTableTableManager(
+    _$NavigatorsDatabase db,
+    $TrainingMaterialsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$TrainingMaterialsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$TrainingMaterialsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$TrainingMaterialsTableAnnotationComposer(
+                $db: db,
+                $table: table,
+              ),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> companyId = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> description = const Value.absent(),
+                Value<String> contentUrl = const Value.absent(),
+                Value<int> sortOrder = const Value.absent(),
+                Value<bool> isPublished = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime?> syncedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TrainingMaterialsCompanion(
+                id: id,
+                companyId: companyId,
+                title: title,
+                description: description,
+                contentUrl: contentUrl,
+                sortOrder: sortOrder,
+                isPublished: isPublished,
+                createdAt: createdAt,
+                syncedAt: syncedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String companyId,
+                required String title,
+                Value<String> description = const Value.absent(),
+                required String contentUrl,
+                Value<int> sortOrder = const Value.absent(),
+                Value<bool> isPublished = const Value.absent(),
+                required DateTime createdAt,
+                Value<DateTime?> syncedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => TrainingMaterialsCompanion.insert(
+                id: id,
+                companyId: companyId,
+                title: title,
+                description: description,
+                contentUrl: contentUrl,
+                sortOrder: sortOrder,
+                isPublished: isPublished,
+                createdAt: createdAt,
+                syncedAt: syncedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$TrainingMaterialsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$NavigatorsDatabase,
+      $TrainingMaterialsTable,
+      TrainingMaterial,
+      $$TrainingMaterialsTableFilterComposer,
+      $$TrainingMaterialsTableOrderingComposer,
+      $$TrainingMaterialsTableAnnotationComposer,
+      $$TrainingMaterialsTableCreateCompanionBuilder,
+      $$TrainingMaterialsTableUpdateCompanionBuilder,
+      (
+        TrainingMaterial,
+        BaseReferences<
+          _$NavigatorsDatabase,
+          $TrainingMaterialsTable,
+          TrainingMaterial
+        >,
+      ),
+      TrainingMaterial,
+      PrefetchHooks Function()
+    >;
 
 class $NavigatorsDatabaseManager {
   final _$NavigatorsDatabase _db;
@@ -10542,4 +13585,10 @@ class $NavigatorsDatabaseManager {
       $$TaskAssignmentsTableTableManager(_db, _db.taskAssignments);
   $$TaskNotesTableTableManager get taskNotes =>
       $$TaskNotesTableTableManager(_db, _db.taskNotes);
+  $$EventsTableTableManager get events =>
+      $$EventsTableTableManager(_db, _db.events);
+  $$EventRsvpsTableTableManager get eventRsvps =>
+      $$EventRsvpsTableTableManager(_db, _db.eventRsvps);
+  $$TrainingMaterialsTableTableManager get trainingMaterials =>
+      $$TrainingMaterialsTableTableManager(_db, _db.trainingMaterials);
 }

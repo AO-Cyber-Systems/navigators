@@ -14,6 +14,8 @@ class SyncResult {
   final int pulledSurveyResponses;
   final int pulledVoterNotes;
   final int pulledCallScripts;
+  final int pulledEvents;
+  final int pulledTrainingMaterials;
   final int retriedCount;
   final List<String> errors;
 
@@ -25,6 +27,8 @@ class SyncResult {
     this.pulledSurveyResponses = 0,
     this.pulledVoterNotes = 0,
     this.pulledCallScripts = 0,
+    this.pulledEvents = 0,
+    this.pulledTrainingMaterials = 0,
     required this.retriedCount,
     this.errors = const [],
   });
@@ -38,8 +42,10 @@ class SyncResult {
       'pulledSurveyForms: $pulledSurveyForms, '
       'pulledSurveyResponses: $pulledSurveyResponses, '
       'pulledVoterNotes: $pulledVoterNotes, '
-      'pulledCallScripts: $pulledCallScripts, retried: $retriedCount, '
-      'errors: ${errors.length})';
+      'pulledCallScripts: $pulledCallScripts, '
+      'pulledEvents: $pulledEvents, '
+      'pulledTrainingMaterials: $pulledTrainingMaterials, '
+      'retried: $retriedCount, errors: ${errors.length})';
 }
 
 /// SyncEngine orchestrates the full sync cycle: push pending, then pull updates.
@@ -131,6 +137,8 @@ class SyncEngine {
       var pulledSurveyResponses = 0;
       var pulledVoterNotes = 0;
       var pulledCallScripts = 0;
+      var pulledEvents = 0;
+      var pulledTrainingMaterials = 0;
 
       try {
         // Get turf IDs from local turf assignments
@@ -151,6 +159,11 @@ class SyncEngine {
           pulledVoterNotes =
               await _pullClient.pullAllVoterNotes(db, turfIds);
         }
+
+        // Pull events and training materials (not turf-scoped)
+        pulledEvents = await _pullClient.pullAllEvents(db);
+        pulledTrainingMaterials =
+            await _pullClient.pullAllTrainingMaterials(db);
       } catch (e) {
         errors.add('Pull failed: $e');
       }
@@ -163,6 +176,8 @@ class SyncEngine {
         pulledSurveyResponses: pulledSurveyResponses,
         pulledVoterNotes: pulledVoterNotes,
         pulledCallScripts: pulledCallScripts,
+        pulledEvents: pulledEvents,
+        pulledTrainingMaterials: pulledTrainingMaterials,
         retriedCount: retriedCount,
         errors: errors,
       );

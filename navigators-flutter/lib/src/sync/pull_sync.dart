@@ -352,6 +352,114 @@ class SyncClient {
     return totalPulled;
   }
 
+  /// Pull event updates since the given cursor.
+  Future<PullEventsResult> pullEvents({
+    required String sinceCursor,
+    int batchSize = 500,
+  }) async {
+    final result = await _post('PullEvents', {
+      'sinceCursor': sinceCursor,
+      'batchSize': batchSize,
+    });
+
+    final events = (result['events'] as List<dynamic>? ?? [])
+        .map((e) => SyncEventData.fromJson(e as Map<String, dynamic>))
+        .toList();
+
+    final rsvps = (result['eventRsvps'] as List<dynamic>? ?? [])
+        .map((r) => SyncEventRsvpData.fromJson(r as Map<String, dynamic>))
+        .toList();
+
+    return PullEventsResult(
+      events: events,
+      eventRsvps: rsvps,
+      nextCursor: result['nextCursor'] as String? ?? '',
+      hasMore: result['hasMore'] as bool? ?? false,
+    );
+  }
+
+  /// Pull training material updates since the given cursor.
+  Future<PullTrainingMaterialsResult> pullTrainingMaterials({
+    required String sinceCursor,
+    int batchSize = 500,
+  }) async {
+    final result = await _post('PullTrainingMaterials', {
+      'sinceCursor': sinceCursor,
+      'batchSize': batchSize,
+    });
+
+    final materials = (result['trainingMaterials'] as List<dynamic>? ?? [])
+        .map(
+            (m) => SyncTrainingMaterialData.fromJson(m as Map<String, dynamic>))
+        .toList();
+
+    return PullTrainingMaterialsResult(
+      trainingMaterials: materials,
+      nextCursor: result['nextCursor'] as String? ?? '',
+      hasMore: result['hasMore'] as bool? ?? false,
+    );
+  }
+
+  /// Pull all events, looping with cursor until complete.
+  Future<int> pullAllEvents(NavigatorsDatabase db) async {
+    final syncDao = db.syncDao;
+    final eventDao = db.eventDao;
+
+    final cursorRow = await syncDao.getCursor('events');
+    var cursor = cursorRow?.cursor ?? '';
+    var totalPulled = 0;
+
+    while (true) {
+      final result = await pullEvents(sinceCursor: cursor);
+      if (result.events.isEmpty) break;
+
+      final eventCompanions =
+          result.events.map((e) => e.toCompanion()).toList();
+      await eventDao.upsertEvents(eventCompanions);
+
+      if (result.eventRsvps.isNotEmpty) {
+        final rsvpCompanions =
+            result.eventRsvps.map((r) => r.toCompanion()).toList();
+        await eventDao.upsertRSVPs(rsvpCompanions);
+      }
+
+      totalPulled += result.events.length;
+      cursor = result.nextCursor;
+      await syncDao.updateCursor('events', cursor);
+
+      if (!result.hasMore) break;
+    }
+
+    return totalPulled;
+  }
+
+  /// Pull all training materials, looping with cursor until complete.
+  Future<int> pullAllTrainingMaterials(NavigatorsDatabase db) async {
+    final syncDao = db.syncDao;
+    final trainingDao = db.trainingDao;
+
+    final cursorRow = await syncDao.getCursor('training_materials');
+    var cursor = cursorRow?.cursor ?? '';
+    var totalPulled = 0;
+
+    while (true) {
+      final result = await pullTrainingMaterials(sinceCursor: cursor);
+      if (result.trainingMaterials.isEmpty) break;
+
+      final companions =
+          result.trainingMaterials.map((m) => m.toCompanion()).toList();
+      await trainingDao.upsertMaterials(companions);
+
+      totalPulled += result.trainingMaterials.length;
+      cursor = result.nextCursor;
+      await syncDao.updateCursor('training_materials', cursor);
+
+      if (!result.hasMore) break;
+    }
+
+    return totalPulled;
+  }
+
   /// Pull task updates since the given cursor.
   Future<PullTasksResult> pullTasks({
     required String sinceCursor,
@@ -1171,6 +1279,219 @@ class SyncTaskNoteData {
       userId: Value(userId),
       content: Value(content),
       visibility: Value(visibility),
+      createdAt: Value(
+        createdAt.isNotEmpty ? DateTime.parse(createdAt) : DateTime.now(),
+      ),
+      syncedAt: Value(DateTime.now()),
+    );
+  }
+}
+
+class PullEventsResult {
+  final List<SyncEventData> events;
+  final List<SyncEventRsvpData> eventRsvps;
+  final String nextCursor;
+  final bool hasMore;
+
+  const PullEventsResult({
+    required this.events,
+    required this.eventRsvps,
+    required this.nextCursor,
+    required this.hasMore,
+  });
+}
+
+class PullTrainingMaterialsResult {
+  final List<SyncTrainingMaterialData> trainingMaterials;
+  final String nextCursor;
+  final bool hasMore;
+
+  const PullTrainingMaterialsResult({
+    required this.trainingMaterials,
+    required this.nextCursor,
+    required this.hasMore,
+  });
+}
+
+class SyncEventData {
+  final String id;
+  final String companyId;
+  final String title;
+  final String description;
+  final String eventType;
+  final String status;
+  final String startsAt;
+  final String endsAt;
+  final String? locationName;
+  final double? locationLat;
+  final double? locationLng;
+  final String? linkedTurfId;
+  final int? maxAttendees;
+  final int rsvpCount;
+  final String createdBy;
+  final String createdAt;
+  final String updatedAt;
+
+  const SyncEventData({
+    required this.id,
+    required this.companyId,
+    required this.title,
+    required this.description,
+    required this.eventType,
+    required this.status,
+    required this.startsAt,
+    required this.endsAt,
+    this.locationName,
+    this.locationLat,
+    this.locationLng,
+    this.linkedTurfId,
+    this.maxAttendees,
+    required this.rsvpCount,
+    required this.createdBy,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  factory SyncEventData.fromJson(Map<String, dynamic> json) {
+    return SyncEventData(
+      id: json['id'] as String? ?? '',
+      companyId: json['companyId'] as String? ?? '',
+      title: json['title'] as String? ?? '',
+      description: json['description'] as String? ?? '',
+      eventType: json['eventType'] as String? ?? 'other',
+      status: json['status'] as String? ?? 'scheduled',
+      startsAt: json['startsAt'] as String? ?? '',
+      endsAt: json['endsAt'] as String? ?? '',
+      locationName: json['locationName'] as String?,
+      locationLat: (json['locationLat'] as num?)?.toDouble(),
+      locationLng: (json['locationLng'] as num?)?.toDouble(),
+      linkedTurfId: json['linkedTurfId'] as String?,
+      maxAttendees: (json['maxAttendees'] as num?)?.toInt(),
+      rsvpCount: (json['rsvpCount'] as num?)?.toInt() ?? 0,
+      createdBy: json['createdBy'] as String? ?? '',
+      createdAt: json['createdAt'] as String? ?? '',
+      updatedAt: json['updatedAt'] as String? ?? '',
+    );
+  }
+
+  EventsCompanion toCompanion() {
+    return EventsCompanion(
+      id: Value(id),
+      companyId: Value(companyId),
+      title: Value(title),
+      description: Value(description),
+      eventType: Value(eventType),
+      status: Value(status),
+      startsAt: Value(
+        startsAt.isNotEmpty ? DateTime.parse(startsAt) : DateTime.now(),
+      ),
+      endsAt: Value(
+        endsAt.isNotEmpty ? DateTime.parse(endsAt) : DateTime.now(),
+      ),
+      locationName: Value(locationName),
+      locationLat: Value(locationLat),
+      locationLng: Value(locationLng),
+      linkedTurfId: Value(linkedTurfId),
+      maxAttendees: Value(maxAttendees),
+      rsvpCount: Value(rsvpCount),
+      createdBy: Value(createdBy),
+      createdAt: Value(
+        createdAt.isNotEmpty ? DateTime.parse(createdAt) : DateTime.now(),
+      ),
+      updatedAt: Value(
+        updatedAt.isNotEmpty ? DateTime.parse(updatedAt) : DateTime.now(),
+      ),
+      syncedAt: Value(DateTime.now()),
+    );
+  }
+}
+
+class SyncEventRsvpData {
+  final String id;
+  final String eventId;
+  final String userId;
+  final String status;
+  final String displayName;
+  final String createdAt;
+
+  const SyncEventRsvpData({
+    required this.id,
+    required this.eventId,
+    required this.userId,
+    required this.status,
+    required this.displayName,
+    required this.createdAt,
+  });
+
+  factory SyncEventRsvpData.fromJson(Map<String, dynamic> json) {
+    return SyncEventRsvpData(
+      id: json['id'] as String? ?? '',
+      eventId: json['eventId'] as String? ?? '',
+      userId: json['userId'] as String? ?? '',
+      status: json['status'] as String? ?? 'going',
+      displayName: json['displayName'] as String? ?? '',
+      createdAt: json['createdAt'] as String? ?? '',
+    );
+  }
+
+  EventRsvpsCompanion toCompanion() {
+    return EventRsvpsCompanion(
+      id: Value(id),
+      eventId: Value(eventId),
+      userId: Value(userId),
+      status: Value(status),
+      displayName: Value(displayName),
+      createdAt: Value(
+        createdAt.isNotEmpty ? DateTime.parse(createdAt) : DateTime.now(),
+      ),
+      syncedAt: Value(DateTime.now()),
+    );
+  }
+}
+
+class SyncTrainingMaterialData {
+  final String id;
+  final String companyId;
+  final String title;
+  final String description;
+  final String contentUrl;
+  final int sortOrder;
+  final bool isPublished;
+  final String createdAt;
+
+  const SyncTrainingMaterialData({
+    required this.id,
+    required this.companyId,
+    required this.title,
+    required this.description,
+    required this.contentUrl,
+    required this.sortOrder,
+    required this.isPublished,
+    required this.createdAt,
+  });
+
+  factory SyncTrainingMaterialData.fromJson(Map<String, dynamic> json) {
+    return SyncTrainingMaterialData(
+      id: json['id'] as String? ?? '',
+      companyId: json['companyId'] as String? ?? '',
+      title: json['title'] as String? ?? '',
+      description: json['description'] as String? ?? '',
+      contentUrl: json['contentUrl'] as String? ?? '',
+      sortOrder: (json['sortOrder'] as num?)?.toInt() ?? 0,
+      isPublished: json['isPublished'] as bool? ?? false,
+      createdAt: json['createdAt'] as String? ?? '',
+    );
+  }
+
+  TrainingMaterialsCompanion toCompanion() {
+    return TrainingMaterialsCompanion(
+      id: Value(id),
+      companyId: Value(companyId),
+      title: Value(title),
+      description: Value(description),
+      contentUrl: Value(contentUrl),
+      sortOrder: Value(sortOrder),
+      isPublished: Value(isPublished),
       createdAt: Value(
         createdAt.isNotEmpty ? DateTime.parse(createdAt) : DateTime.now(),
       ),

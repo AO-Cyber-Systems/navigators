@@ -15,6 +15,9 @@ import 'tables/call_scripts.dart';
 import 'tables/tasks.dart';
 import 'tables/task_assignments.dart';
 import 'tables/task_notes.dart';
+import 'tables/events.dart';
+import 'tables/event_rsvps.dart';
+import 'tables/training_materials.dart';
 import 'daos/voter_dao.dart';
 import 'daos/sync_dao.dart';
 import 'daos/contact_log_dao.dart';
@@ -22,6 +25,8 @@ import 'daos/survey_dao.dart';
 import 'daos/voter_note_dao.dart';
 import 'daos/call_script_dao.dart';
 import 'daos/task_dao.dart';
+import 'daos/event_dao.dart';
+import 'daos/training_dao.dart';
 
 part 'database.g.dart';
 
@@ -39,6 +44,9 @@ part 'database.g.dart';
     Tasks,
     TaskAssignments,
     TaskNotes,
+    Events,
+    EventRsvps,
+    TrainingMaterials,
   ],
   daos: [
     VoterDao,
@@ -48,13 +56,15 @@ part 'database.g.dart';
     VoterNoteDao,
     CallScriptDao,
     TaskDao,
+    EventDao,
+    TrainingDao,
   ],
 )
 class NavigatorsDatabase extends _$NavigatorsDatabase {
   NavigatorsDatabase(super.e);
 
   @override
-  int get schemaVersion => 4;
+  int get schemaVersion => 5;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -76,6 +86,11 @@ class NavigatorsDatabase extends _$NavigatorsDatabase {
             await m.createTable(tasks);
             await m.createTable(taskAssignments);
             await m.createTable(taskNotes);
+          }
+          if (from < 5) {
+            await m.createTable(events);
+            await m.createTable(eventRsvps);
+            await m.createTable(trainingMaterials);
           }
         },
         beforeOpen: (details) async {
