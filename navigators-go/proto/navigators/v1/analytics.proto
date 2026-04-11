@@ -1,0 +1,108 @@
+syntax = "proto3";
+
+package navigators.v1;
+
+option go_package = "navigators-go/gen/go/navigators/v1;navigatorsv1";
+
+// AnalyticsService provides dashboard metrics, trend data, performance reports, and data export.
+service AnalyticsService {
+  // GetDashboardMetrics returns aggregate contact stats, task stats, and turf summaries.
+  rpc GetDashboardMetrics(GetDashboardMetricsRequest) returns (GetDashboardMetricsResponse);
+
+  // GetTrendData returns time-series contact data for trend charts.
+  rpc GetTrendData(GetTrendDataRequest) returns (GetTrendDataResponse);
+
+  // GetPerformanceReport returns per-navigator metrics for team/admin dashboards.
+  rpc GetPerformanceReport(GetPerformanceReportRequest) returns (GetPerformanceReportResponse);
+
+  // ExportData exports contacts, voters, or tasks as CSV or Excel.
+  rpc ExportData(ExportDataRequest) returns (ExportDataResponse);
+}
+
+// --- Dashboard Metrics ---
+
+message GetDashboardMetricsRequest {
+  string since = 1; // RFC3339 timestamp
+  string until = 2; // RFC3339 timestamp
+}
+
+message GetDashboardMetricsResponse {
+  int64 doors_knocked = 1;
+  int64 calls_made = 2;
+  int64 texts_sent = 3;
+  double contact_rate = 4;
+  int64 total_voters = 5;
+  int64 contacted_voters = 6;
+  repeated SentimentBucket sentiment_distribution = 7;
+  int64 total_tasks = 8;
+  int64 completed_tasks = 9;
+  repeated TurfSummary turf_summaries = 10;
+}
+
+message SentimentBucket {
+  int32 sentiment = 1; // 1-5
+  int64 count = 2;
+}
+
+message TurfSummary {
+  string turf_id = 1;
+  string turf_name = 2;
+  int64 voter_count = 3;
+  int64 contacted_count = 4;
+}
+
+// --- Trend Data ---
+
+message GetTrendDataRequest {
+  string since = 1;    // RFC3339 timestamp
+  string until = 2;    // RFC3339 timestamp
+  string interval = 3; // "day" or "week"
+}
+
+message GetTrendDataResponse {
+  repeated TrendPoint points = 1;
+}
+
+message TrendPoint {
+  string date = 1;
+  int64 door_knocks = 2;
+  int64 calls = 3;
+  int64 texts = 4;
+  int64 total_contacts = 5;
+}
+
+// --- Performance Report ---
+
+message GetPerformanceReportRequest {
+  string since = 1; // RFC3339 timestamp
+  string until = 2; // RFC3339 timestamp
+}
+
+message GetPerformanceReportResponse {
+  repeated NavigatorPerformance navigators = 1;
+}
+
+message NavigatorPerformance {
+  string user_id = 1;
+  string display_name = 2;
+  int64 doors_knocked = 3;
+  int64 calls_made = 4;
+  int64 texts_sent = 5;
+  int64 total_contacts = 6;
+  double contact_rate = 7;
+}
+
+// --- Export ---
+
+message ExportDataRequest {
+  string export_type = 1; // "contacts", "voters", "tasks"
+  string format = 2;      // "csv", "xlsx"
+  string since = 3;       // RFC3339 timestamp
+  string until = 4;       // RFC3339 timestamp
+}
+
+message ExportDataResponse {
+  bytes data = 1;
+  string filename = 2;
+  string content_type = 3;
+}
