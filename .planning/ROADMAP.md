@@ -11,7 +11,7 @@ Navigators goes from foundation to field-ready in 10 objectives. The first four 
 - [x] **Objective 1: Foundation + Auth** - Backend skeleton with auth, RBAC, audit logging, and infrastructure services
 - [x] **Objective 2: Voter Data Pipeline** - Import, geocode, deduplicate, search, and display voter records
 - [x] **Objective 3: Turf Management + Maps** - Draw turfs, assign Navigators, display voters on interactive maps
-- [ ] **Objective 4: Offline Sync Engine** - Download, work offline, and sync back with conflict resolution
+- [x] **Objective 4: Offline Sync Engine** - Download, work offline, and sync back with conflict resolution
 - [ ] **Objective 5: Door Knocking + Contact Log** - Walk lists, at-the-door surveys, notes, and unified contact timeline
 - [ ] **Objective 6: SMS Integration** - P2P texting, A2P broadcasts, templates, opt-out handling, and 10DLC
 - [ ] **Objective 7: Phone Calls + Scripts** - Click-to-call, post-call dispositions, and call scripts
@@ -102,9 +102,9 @@ Jobs:
 **TRDs:** 3 plans in 3 waves
 
 Jobs:
-- [ ] 05-01: TBD
-- [ ] 05-02: TBD
-- [ ] 05-03: TBD
+- [ ] 05-01-TRD.md — Door knock backend + survey forms + notes (migration, Go services, sync, Drift tables/DAOs)
+- [ ] 05-02-TRD.md — At-the-door UI + walk list enhancement (door knock screen, survey renderer, pull sync)
+- [ ] 05-03-TRD.md — Contact timeline + voter profile enhancement (timeline widget, notes tab, sentiment history)
 
 ### Objective 6: SMS Integration
 **Goal**: Navigators can send personalized texts to voters, Admins can run broadcast campaigns, and the system handles opt-outs and compliance automatically
@@ -207,4 +207,4 @@ Jobs:
 
 ---
 *Roadmap created: 2026-04-10*
-*Last updated: 2026-04-10 — Objective 1 complete*
+*Last updated: 2026-04-10 — Objective 5 planned*
