@@ -13,6 +13,7 @@ class SyncResult {
   final int pulledSurveyForms;
   final int pulledSurveyResponses;
   final int pulledVoterNotes;
+  final int pulledCallScripts;
   final int retriedCount;
   final List<String> errors;
 
@@ -23,6 +24,7 @@ class SyncResult {
     this.pulledSurveyForms = 0,
     this.pulledSurveyResponses = 0,
     this.pulledVoterNotes = 0,
+    this.pulledCallScripts = 0,
     required this.retriedCount,
     this.errors = const [],
   });
@@ -35,7 +37,8 @@ class SyncResult {
       'pulledContactLogs: $pulledContactLogs, '
       'pulledSurveyForms: $pulledSurveyForms, '
       'pulledSurveyResponses: $pulledSurveyResponses, '
-      'pulledVoterNotes: $pulledVoterNotes, retried: $retriedCount, '
+      'pulledVoterNotes: $pulledVoterNotes, '
+      'pulledCallScripts: $pulledCallScripts, retried: $retriedCount, '
       'errors: ${errors.length})';
 }
 
@@ -127,15 +130,18 @@ class SyncEngine {
       var pulledSurveyForms = 0;
       var pulledSurveyResponses = 0;
       var pulledVoterNotes = 0;
+      var pulledCallScripts = 0;
 
       try {
         // Get turf IDs from local turf assignments
         final turfIds = await _getTurfIds();
 
         if (turfIds.isNotEmpty) {
-          // Pull survey forms first (needed before surveys can be rendered)
+          // Pull survey forms and call scripts first (needed before UI can render)
           pulledSurveyForms =
               await _pullClient.pullAllSurveyForms(_db);
+          pulledCallScripts =
+              await _pullClient.pullAllCallScripts(_db);
           pulledVoters =
               await _pullClient.pullAllVoters(_db, turfIds);
           pulledContactLogs =
@@ -156,6 +162,7 @@ class SyncEngine {
         pulledSurveyForms: pulledSurveyForms,
         pulledSurveyResponses: pulledSurveyResponses,
         pulledVoterNotes: pulledVoterNotes,
+        pulledCallScripts: pulledCallScripts,
         retriedCount: retriedCount,
         errors: errors,
       );

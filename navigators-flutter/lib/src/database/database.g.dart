@@ -4623,6 +4623,513 @@ class VoterNotesCompanion extends UpdateCompanion<VoterNote> {
   }
 }
 
+class $CallScriptsTable extends CallScripts
+    with TableInfo<$CallScriptsTable, CallScript> {
+  @override
+  final GeneratedDatabase attachedDatabase;
+  final String? _alias;
+  $CallScriptsTable(this.attachedDatabase, [this._alias]);
+  static const VerificationMeta _idMeta = const VerificationMeta('id');
+  @override
+  late final GeneratedColumn<String> id = GeneratedColumn<String>(
+    'id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _companyIdMeta = const VerificationMeta(
+    'companyId',
+  );
+  @override
+  late final GeneratedColumn<String> companyId = GeneratedColumn<String>(
+    'company_id',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _titleMeta = const VerificationMeta('title');
+  @override
+  late final GeneratedColumn<String> title = GeneratedColumn<String>(
+    'title',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _contentMeta = const VerificationMeta(
+    'content',
+  );
+  @override
+  late final GeneratedColumn<String> content = GeneratedColumn<String>(
+    'content',
+    aliasedName,
+    false,
+    type: DriftSqlType.string,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(''),
+  );
+  static const VerificationMeta _versionMeta = const VerificationMeta(
+    'version',
+  );
+  @override
+  late final GeneratedColumn<int> version = GeneratedColumn<int>(
+    'version',
+    aliasedName,
+    false,
+    type: DriftSqlType.int,
+    requiredDuringInsert: false,
+    defaultValue: const Constant(1),
+  );
+  static const VerificationMeta _isActiveMeta = const VerificationMeta(
+    'isActive',
+  );
+  @override
+  late final GeneratedColumn<bool> isActive = GeneratedColumn<bool>(
+    'is_active',
+    aliasedName,
+    false,
+    type: DriftSqlType.bool,
+    requiredDuringInsert: false,
+    defaultConstraints: GeneratedColumn.constraintIsAlways(
+      'CHECK ("is_active" IN (0, 1))',
+    ),
+    defaultValue: const Constant(true),
+  );
+  static const VerificationMeta _createdAtMeta = const VerificationMeta(
+    'createdAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> createdAt = GeneratedColumn<DateTime>(
+    'created_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  static const VerificationMeta _updatedAtMeta = const VerificationMeta(
+    'updatedAt',
+  );
+  @override
+  late final GeneratedColumn<DateTime> updatedAt = GeneratedColumn<DateTime>(
+    'updated_at',
+    aliasedName,
+    false,
+    type: DriftSqlType.dateTime,
+    requiredDuringInsert: true,
+  );
+  @override
+  List<GeneratedColumn> get $columns => [
+    id,
+    companyId,
+    title,
+    content,
+    version,
+    isActive,
+    createdAt,
+    updatedAt,
+  ];
+  @override
+  String get aliasedName => _alias ?? actualTableName;
+  @override
+  String get actualTableName => $name;
+  static const String $name = 'call_scripts';
+  @override
+  VerificationContext validateIntegrity(
+    Insertable<CallScript> instance, {
+    bool isInserting = false,
+  }) {
+    final context = VerificationContext();
+    final data = instance.toColumns(true);
+    if (data.containsKey('id')) {
+      context.handle(_idMeta, id.isAcceptableOrUnknown(data['id']!, _idMeta));
+    } else if (isInserting) {
+      context.missing(_idMeta);
+    }
+    if (data.containsKey('company_id')) {
+      context.handle(
+        _companyIdMeta,
+        companyId.isAcceptableOrUnknown(data['company_id']!, _companyIdMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_companyIdMeta);
+    }
+    if (data.containsKey('title')) {
+      context.handle(
+        _titleMeta,
+        title.isAcceptableOrUnknown(data['title']!, _titleMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_titleMeta);
+    }
+    if (data.containsKey('content')) {
+      context.handle(
+        _contentMeta,
+        content.isAcceptableOrUnknown(data['content']!, _contentMeta),
+      );
+    }
+    if (data.containsKey('version')) {
+      context.handle(
+        _versionMeta,
+        version.isAcceptableOrUnknown(data['version']!, _versionMeta),
+      );
+    }
+    if (data.containsKey('is_active')) {
+      context.handle(
+        _isActiveMeta,
+        isActive.isAcceptableOrUnknown(data['is_active']!, _isActiveMeta),
+      );
+    }
+    if (data.containsKey('created_at')) {
+      context.handle(
+        _createdAtMeta,
+        createdAt.isAcceptableOrUnknown(data['created_at']!, _createdAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_createdAtMeta);
+    }
+    if (data.containsKey('updated_at')) {
+      context.handle(
+        _updatedAtMeta,
+        updatedAt.isAcceptableOrUnknown(data['updated_at']!, _updatedAtMeta),
+      );
+    } else if (isInserting) {
+      context.missing(_updatedAtMeta);
+    }
+    return context;
+  }
+
+  @override
+  Set<GeneratedColumn> get $primaryKey => {id};
+  @override
+  CallScript map(Map<String, dynamic> data, {String? tablePrefix}) {
+    final effectivePrefix = tablePrefix != null ? '$tablePrefix.' : '';
+    return CallScript(
+      id: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}id'],
+      )!,
+      companyId: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}company_id'],
+      )!,
+      title: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}title'],
+      )!,
+      content: attachedDatabase.typeMapping.read(
+        DriftSqlType.string,
+        data['${effectivePrefix}content'],
+      )!,
+      version: attachedDatabase.typeMapping.read(
+        DriftSqlType.int,
+        data['${effectivePrefix}version'],
+      )!,
+      isActive: attachedDatabase.typeMapping.read(
+        DriftSqlType.bool,
+        data['${effectivePrefix}is_active'],
+      )!,
+      createdAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}created_at'],
+      )!,
+      updatedAt: attachedDatabase.typeMapping.read(
+        DriftSqlType.dateTime,
+        data['${effectivePrefix}updated_at'],
+      )!,
+    );
+  }
+
+  @override
+  $CallScriptsTable createAlias(String alias) {
+    return $CallScriptsTable(attachedDatabase, alias);
+  }
+}
+
+class CallScript extends DataClass implements Insertable<CallScript> {
+  final String id;
+  final String companyId;
+  final String title;
+  final String content;
+  final int version;
+  final bool isActive;
+  final DateTime createdAt;
+  final DateTime updatedAt;
+  const CallScript({
+    required this.id,
+    required this.companyId,
+    required this.title,
+    required this.content,
+    required this.version,
+    required this.isActive,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    map['id'] = Variable<String>(id);
+    map['company_id'] = Variable<String>(companyId);
+    map['title'] = Variable<String>(title);
+    map['content'] = Variable<String>(content);
+    map['version'] = Variable<int>(version);
+    map['is_active'] = Variable<bool>(isActive);
+    map['created_at'] = Variable<DateTime>(createdAt);
+    map['updated_at'] = Variable<DateTime>(updatedAt);
+    return map;
+  }
+
+  CallScriptsCompanion toCompanion(bool nullToAbsent) {
+    return CallScriptsCompanion(
+      id: Value(id),
+      companyId: Value(companyId),
+      title: Value(title),
+      content: Value(content),
+      version: Value(version),
+      isActive: Value(isActive),
+      createdAt: Value(createdAt),
+      updatedAt: Value(updatedAt),
+    );
+  }
+
+  factory CallScript.fromJson(
+    Map<String, dynamic> json, {
+    ValueSerializer? serializer,
+  }) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return CallScript(
+      id: serializer.fromJson<String>(json['id']),
+      companyId: serializer.fromJson<String>(json['companyId']),
+      title: serializer.fromJson<String>(json['title']),
+      content: serializer.fromJson<String>(json['content']),
+      version: serializer.fromJson<int>(json['version']),
+      isActive: serializer.fromJson<bool>(json['isActive']),
+      createdAt: serializer.fromJson<DateTime>(json['createdAt']),
+      updatedAt: serializer.fromJson<DateTime>(json['updatedAt']),
+    );
+  }
+  @override
+  Map<String, dynamic> toJson({ValueSerializer? serializer}) {
+    serializer ??= driftRuntimeOptions.defaultSerializer;
+    return <String, dynamic>{
+      'id': serializer.toJson<String>(id),
+      'companyId': serializer.toJson<String>(companyId),
+      'title': serializer.toJson<String>(title),
+      'content': serializer.toJson<String>(content),
+      'version': serializer.toJson<int>(version),
+      'isActive': serializer.toJson<bool>(isActive),
+      'createdAt': serializer.toJson<DateTime>(createdAt),
+      'updatedAt': serializer.toJson<DateTime>(updatedAt),
+    };
+  }
+
+  CallScript copyWith({
+    String? id,
+    String? companyId,
+    String? title,
+    String? content,
+    int? version,
+    bool? isActive,
+    DateTime? createdAt,
+    DateTime? updatedAt,
+  }) => CallScript(
+    id: id ?? this.id,
+    companyId: companyId ?? this.companyId,
+    title: title ?? this.title,
+    content: content ?? this.content,
+    version: version ?? this.version,
+    isActive: isActive ?? this.isActive,
+    createdAt: createdAt ?? this.createdAt,
+    updatedAt: updatedAt ?? this.updatedAt,
+  );
+  CallScript copyWithCompanion(CallScriptsCompanion data) {
+    return CallScript(
+      id: data.id.present ? data.id.value : this.id,
+      companyId: data.companyId.present ? data.companyId.value : this.companyId,
+      title: data.title.present ? data.title.value : this.title,
+      content: data.content.present ? data.content.value : this.content,
+      version: data.version.present ? data.version.value : this.version,
+      isActive: data.isActive.present ? data.isActive.value : this.isActive,
+      createdAt: data.createdAt.present ? data.createdAt.value : this.createdAt,
+      updatedAt: data.updatedAt.present ? data.updatedAt.value : this.updatedAt,
+    );
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CallScript(')
+          ..write('id: $id, ')
+          ..write('companyId: $companyId, ')
+          ..write('title: $title, ')
+          ..write('content: $content, ')
+          ..write('version: $version, ')
+          ..write('isActive: $isActive, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt')
+          ..write(')'))
+        .toString();
+  }
+
+  @override
+  int get hashCode => Object.hash(
+    id,
+    companyId,
+    title,
+    content,
+    version,
+    isActive,
+    createdAt,
+    updatedAt,
+  );
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      (other is CallScript &&
+          other.id == this.id &&
+          other.companyId == this.companyId &&
+          other.title == this.title &&
+          other.content == this.content &&
+          other.version == this.version &&
+          other.isActive == this.isActive &&
+          other.createdAt == this.createdAt &&
+          other.updatedAt == this.updatedAt);
+}
+
+class CallScriptsCompanion extends UpdateCompanion<CallScript> {
+  final Value<String> id;
+  final Value<String> companyId;
+  final Value<String> title;
+  final Value<String> content;
+  final Value<int> version;
+  final Value<bool> isActive;
+  final Value<DateTime> createdAt;
+  final Value<DateTime> updatedAt;
+  final Value<int> rowid;
+  const CallScriptsCompanion({
+    this.id = const Value.absent(),
+    this.companyId = const Value.absent(),
+    this.title = const Value.absent(),
+    this.content = const Value.absent(),
+    this.version = const Value.absent(),
+    this.isActive = const Value.absent(),
+    this.createdAt = const Value.absent(),
+    this.updatedAt = const Value.absent(),
+    this.rowid = const Value.absent(),
+  });
+  CallScriptsCompanion.insert({
+    required String id,
+    required String companyId,
+    required String title,
+    this.content = const Value.absent(),
+    this.version = const Value.absent(),
+    this.isActive = const Value.absent(),
+    required DateTime createdAt,
+    required DateTime updatedAt,
+    this.rowid = const Value.absent(),
+  }) : id = Value(id),
+       companyId = Value(companyId),
+       title = Value(title),
+       createdAt = Value(createdAt),
+       updatedAt = Value(updatedAt);
+  static Insertable<CallScript> custom({
+    Expression<String>? id,
+    Expression<String>? companyId,
+    Expression<String>? title,
+    Expression<String>? content,
+    Expression<int>? version,
+    Expression<bool>? isActive,
+    Expression<DateTime>? createdAt,
+    Expression<DateTime>? updatedAt,
+    Expression<int>? rowid,
+  }) {
+    return RawValuesInsertable({
+      if (id != null) 'id': id,
+      if (companyId != null) 'company_id': companyId,
+      if (title != null) 'title': title,
+      if (content != null) 'content': content,
+      if (version != null) 'version': version,
+      if (isActive != null) 'is_active': isActive,
+      if (createdAt != null) 'created_at': createdAt,
+      if (updatedAt != null) 'updated_at': updatedAt,
+      if (rowid != null) 'rowid': rowid,
+    });
+  }
+
+  CallScriptsCompanion copyWith({
+    Value<String>? id,
+    Value<String>? companyId,
+    Value<String>? title,
+    Value<String>? content,
+    Value<int>? version,
+    Value<bool>? isActive,
+    Value<DateTime>? createdAt,
+    Value<DateTime>? updatedAt,
+    Value<int>? rowid,
+  }) {
+    return CallScriptsCompanion(
+      id: id ?? this.id,
+      companyId: companyId ?? this.companyId,
+      title: title ?? this.title,
+      content: content ?? this.content,
+      version: version ?? this.version,
+      isActive: isActive ?? this.isActive,
+      createdAt: createdAt ?? this.createdAt,
+      updatedAt: updatedAt ?? this.updatedAt,
+      rowid: rowid ?? this.rowid,
+    );
+  }
+
+  @override
+  Map<String, Expression> toColumns(bool nullToAbsent) {
+    final map = <String, Expression>{};
+    if (id.present) {
+      map['id'] = Variable<String>(id.value);
+    }
+    if (companyId.present) {
+      map['company_id'] = Variable<String>(companyId.value);
+    }
+    if (title.present) {
+      map['title'] = Variable<String>(title.value);
+    }
+    if (content.present) {
+      map['content'] = Variable<String>(content.value);
+    }
+    if (version.present) {
+      map['version'] = Variable<int>(version.value);
+    }
+    if (isActive.present) {
+      map['is_active'] = Variable<bool>(isActive.value);
+    }
+    if (createdAt.present) {
+      map['created_at'] = Variable<DateTime>(createdAt.value);
+    }
+    if (updatedAt.present) {
+      map['updated_at'] = Variable<DateTime>(updatedAt.value);
+    }
+    if (rowid.present) {
+      map['rowid'] = Variable<int>(rowid.value);
+    }
+    return map;
+  }
+
+  @override
+  String toString() {
+    return (StringBuffer('CallScriptsCompanion(')
+          ..write('id: $id, ')
+          ..write('companyId: $companyId, ')
+          ..write('title: $title, ')
+          ..write('content: $content, ')
+          ..write('version: $version, ')
+          ..write('isActive: $isActive, ')
+          ..write('createdAt: $createdAt, ')
+          ..write('updatedAt: $updatedAt, ')
+          ..write('rowid: $rowid')
+          ..write(')'))
+        .toString();
+  }
+}
+
 abstract class _$NavigatorsDatabase extends GeneratedDatabase {
   _$NavigatorsDatabase(QueryExecutor e) : super(e);
   $NavigatorsDatabaseManager get managers => $NavigatorsDatabaseManager(this);
@@ -4638,6 +5145,7 @@ abstract class _$NavigatorsDatabase extends GeneratedDatabase {
     this,
   );
   late final $VoterNotesTable voterNotes = $VoterNotesTable(this);
+  late final $CallScriptsTable callScripts = $CallScriptsTable(this);
   late final VoterDao voterDao = VoterDao(this as NavigatorsDatabase);
   late final SyncDao syncDao = SyncDao(this as NavigatorsDatabase);
   late final ContactLogDao contactLogDao = ContactLogDao(
@@ -4645,6 +5153,9 @@ abstract class _$NavigatorsDatabase extends GeneratedDatabase {
   );
   late final SurveyDao surveyDao = SurveyDao(this as NavigatorsDatabase);
   late final VoterNoteDao voterNoteDao = VoterNoteDao(
+    this as NavigatorsDatabase,
+  );
+  late final CallScriptDao callScriptDao = CallScriptDao(
     this as NavigatorsDatabase,
   );
   @override
@@ -4660,6 +5171,7 @@ abstract class _$NavigatorsDatabase extends GeneratedDatabase {
     surveyForms,
     surveyResponses,
     voterNotes,
+    callScripts,
   ];
 }
 
@@ -6994,6 +7506,265 @@ typedef $$VoterNotesTableProcessedTableManager =
       VoterNote,
       PrefetchHooks Function()
     >;
+typedef $$CallScriptsTableCreateCompanionBuilder =
+    CallScriptsCompanion Function({
+      required String id,
+      required String companyId,
+      required String title,
+      Value<String> content,
+      Value<int> version,
+      Value<bool> isActive,
+      required DateTime createdAt,
+      required DateTime updatedAt,
+      Value<int> rowid,
+    });
+typedef $$CallScriptsTableUpdateCompanionBuilder =
+    CallScriptsCompanion Function({
+      Value<String> id,
+      Value<String> companyId,
+      Value<String> title,
+      Value<String> content,
+      Value<int> version,
+      Value<bool> isActive,
+      Value<DateTime> createdAt,
+      Value<DateTime> updatedAt,
+      Value<int> rowid,
+    });
+
+class $$CallScriptsTableFilterComposer
+    extends Composer<_$NavigatorsDatabase, $CallScriptsTable> {
+  $$CallScriptsTableFilterComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnFilters<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get companyId => $composableBuilder(
+    column: $table.companyId,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnFilters(column),
+  );
+
+  ColumnFilters<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnFilters(column),
+  );
+}
+
+class $$CallScriptsTableOrderingComposer
+    extends Composer<_$NavigatorsDatabase, $CallScriptsTable> {
+  $$CallScriptsTableOrderingComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  ColumnOrderings<String> get id => $composableBuilder(
+    column: $table.id,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get companyId => $composableBuilder(
+    column: $table.companyId,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get title => $composableBuilder(
+    column: $table.title,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<String> get content => $composableBuilder(
+    column: $table.content,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<int> get version => $composableBuilder(
+    column: $table.version,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<bool> get isActive => $composableBuilder(
+    column: $table.isActive,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get createdAt => $composableBuilder(
+    column: $table.createdAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+
+  ColumnOrderings<DateTime> get updatedAt => $composableBuilder(
+    column: $table.updatedAt,
+    builder: (column) => ColumnOrderings(column),
+  );
+}
+
+class $$CallScriptsTableAnnotationComposer
+    extends Composer<_$NavigatorsDatabase, $CallScriptsTable> {
+  $$CallScriptsTableAnnotationComposer({
+    required super.$db,
+    required super.$table,
+    super.joinBuilder,
+    super.$addJoinBuilderToRootComposer,
+    super.$removeJoinBuilderFromRootComposer,
+  });
+  GeneratedColumn<String> get id =>
+      $composableBuilder(column: $table.id, builder: (column) => column);
+
+  GeneratedColumn<String> get companyId =>
+      $composableBuilder(column: $table.companyId, builder: (column) => column);
+
+  GeneratedColumn<String> get title =>
+      $composableBuilder(column: $table.title, builder: (column) => column);
+
+  GeneratedColumn<String> get content =>
+      $composableBuilder(column: $table.content, builder: (column) => column);
+
+  GeneratedColumn<int> get version =>
+      $composableBuilder(column: $table.version, builder: (column) => column);
+
+  GeneratedColumn<bool> get isActive =>
+      $composableBuilder(column: $table.isActive, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get createdAt =>
+      $composableBuilder(column: $table.createdAt, builder: (column) => column);
+
+  GeneratedColumn<DateTime> get updatedAt =>
+      $composableBuilder(column: $table.updatedAt, builder: (column) => column);
+}
+
+class $$CallScriptsTableTableManager
+    extends
+        RootTableManager<
+          _$NavigatorsDatabase,
+          $CallScriptsTable,
+          CallScript,
+          $$CallScriptsTableFilterComposer,
+          $$CallScriptsTableOrderingComposer,
+          $$CallScriptsTableAnnotationComposer,
+          $$CallScriptsTableCreateCompanionBuilder,
+          $$CallScriptsTableUpdateCompanionBuilder,
+          (
+            CallScript,
+            BaseReferences<_$NavigatorsDatabase, $CallScriptsTable, CallScript>,
+          ),
+          CallScript,
+          PrefetchHooks Function()
+        > {
+  $$CallScriptsTableTableManager(
+    _$NavigatorsDatabase db,
+    $CallScriptsTable table,
+  ) : super(
+        TableManagerState(
+          db: db,
+          table: table,
+          createFilteringComposer: () =>
+              $$CallScriptsTableFilterComposer($db: db, $table: table),
+          createOrderingComposer: () =>
+              $$CallScriptsTableOrderingComposer($db: db, $table: table),
+          createComputedFieldComposer: () =>
+              $$CallScriptsTableAnnotationComposer($db: db, $table: table),
+          updateCompanionCallback:
+              ({
+                Value<String> id = const Value.absent(),
+                Value<String> companyId = const Value.absent(),
+                Value<String> title = const Value.absent(),
+                Value<String> content = const Value.absent(),
+                Value<int> version = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                Value<DateTime> createdAt = const Value.absent(),
+                Value<DateTime> updatedAt = const Value.absent(),
+                Value<int> rowid = const Value.absent(),
+              }) => CallScriptsCompanion(
+                id: id,
+                companyId: companyId,
+                title: title,
+                content: content,
+                version: version,
+                isActive: isActive,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          createCompanionCallback:
+              ({
+                required String id,
+                required String companyId,
+                required String title,
+                Value<String> content = const Value.absent(),
+                Value<int> version = const Value.absent(),
+                Value<bool> isActive = const Value.absent(),
+                required DateTime createdAt,
+                required DateTime updatedAt,
+                Value<int> rowid = const Value.absent(),
+              }) => CallScriptsCompanion.insert(
+                id: id,
+                companyId: companyId,
+                title: title,
+                content: content,
+                version: version,
+                isActive: isActive,
+                createdAt: createdAt,
+                updatedAt: updatedAt,
+                rowid: rowid,
+              ),
+          withReferenceMapper: (p0) => p0
+              .map((e) => (e.readTable(table), BaseReferences(db, table, e)))
+              .toList(),
+          prefetchHooksCallback: null,
+        ),
+      );
+}
+
+typedef $$CallScriptsTableProcessedTableManager =
+    ProcessedTableManager<
+      _$NavigatorsDatabase,
+      $CallScriptsTable,
+      CallScript,
+      $$CallScriptsTableFilterComposer,
+      $$CallScriptsTableOrderingComposer,
+      $$CallScriptsTableAnnotationComposer,
+      $$CallScriptsTableCreateCompanionBuilder,
+      $$CallScriptsTableUpdateCompanionBuilder,
+      (
+        CallScript,
+        BaseReferences<_$NavigatorsDatabase, $CallScriptsTable, CallScript>,
+      ),
+      CallScript,
+      PrefetchHooks Function()
+    >;
 
 class $NavigatorsDatabaseManager {
   final _$NavigatorsDatabase _db;
@@ -7014,4 +7785,6 @@ class $NavigatorsDatabaseManager {
       $$SurveyResponsesTableTableManager(_db, _db.surveyResponses);
   $$VoterNotesTableTableManager get voterNotes =>
       $$VoterNotesTableTableManager(_db, _db.voterNotes);
+  $$CallScriptsTableTableManager get callScripts =>
+      $$CallScriptsTableTableManager(_db, _db.callScripts);
 }

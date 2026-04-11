@@ -11,11 +11,13 @@ import 'tables/turf_assignments.dart';
 import 'tables/survey_forms.dart';
 import 'tables/survey_responses.dart';
 import 'tables/voter_notes.dart';
+import 'tables/call_scripts.dart';
 import 'daos/voter_dao.dart';
 import 'daos/sync_dao.dart';
 import 'daos/contact_log_dao.dart';
 import 'daos/survey_dao.dart';
 import 'daos/voter_note_dao.dart';
+import 'daos/call_script_dao.dart';
 
 part 'database.g.dart';
 
@@ -29,6 +31,7 @@ part 'database.g.dart';
     SurveyForms,
     SurveyResponses,
     VoterNotes,
+    CallScripts,
   ],
   daos: [
     VoterDao,
@@ -36,13 +39,14 @@ part 'database.g.dart';
     ContactLogDao,
     SurveyDao,
     VoterNoteDao,
+    CallScriptDao,
   ],
 )
 class NavigatorsDatabase extends _$NavigatorsDatabase {
   NavigatorsDatabase(super.e);
 
   @override
-  int get schemaVersion => 2;
+  int get schemaVersion => 3;
 
   @override
   MigrationStrategy get migration => MigrationStrategy(
@@ -56,6 +60,9 @@ class NavigatorsDatabase extends _$NavigatorsDatabase {
             await m.createTable(voterNotes);
             await m.addColumn(contactLogs, contactLogs.doorStatus);
             await m.addColumn(contactLogs, contactLogs.sentiment);
+          }
+          if (from < 3) {
+            await m.createTable(callScripts);
           }
         },
         beforeOpen: (details) async {

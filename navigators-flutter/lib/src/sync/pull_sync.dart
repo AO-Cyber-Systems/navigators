@@ -126,6 +126,27 @@ class SyncClient {
     );
   }
 
+  /// Pull call script updates since the given cursor.
+  Future<PullCallScriptsResult> pullCallScripts({
+    required String sinceCursor,
+    int batchSize = 500,
+  }) async {
+    final result = await _post('PullCallScripts', {
+      'sinceCursor': sinceCursor,
+      'batchSize': batchSize,
+    });
+
+    final scripts = (result['callScripts'] as List<dynamic>? ?? [])
+        .map((s) => SyncCallScriptData.fromJson(s as Map<String, dynamic>))
+        .toList();
+
+    return PullCallScriptsResult(
+      callScripts: scripts,
+      nextCursor: result['nextCursor'] as String? ?? '',
+      hasMore: result['hasMore'] as bool? ?? false,
+    );
+  }
+
   /// Pull voter note updates since the given cursor.
   Future<PullVoterNotesResult> pullVoterNotes({
     required String sinceCursor,
@@ -297,6 +318,33 @@ class SyncClient {
       totalPulled += result.surveyResponses.length;
       cursor = result.nextCursor;
       await syncDao.updateCursor('survey_responses', cursor);
+
+      if (!result.hasMore) break;
+    }
+
+    return totalPulled;
+  }
+
+  /// Pull all call scripts, looping with cursor until complete.
+  Future<int> pullAllCallScripts(NavigatorsDatabase db) async {
+    final syncDao = db.syncDao;
+    final callScriptDao = db.callScriptDao;
+
+    final cursorRow = await syncDao.getCursor('call_scripts');
+    var cursor = cursorRow?.cursor ?? '';
+    var totalPulled = 0;
+
+    while (true) {
+      final result = await pullCallScripts(sinceCursor: cursor);
+      if (result.callScripts.isEmpty) break;
+
+      final companions =
+          result.callScripts.map((s) => s.toCompanion()).toList();
+      await callScriptDao.upsertCallScripts(companions);
+
+      totalPulled += result.callScripts.length;
+      cursor = result.nextCursor;
+      await syncDao.updateCursor('call_scripts', cursor);
 
       if (!result.hasMore) break;
     }
@@ -582,6 +630,18 @@ class PullSurveyResponsesResult {
   });
 }
 
+class PullCallScriptsResult {
+  final List<SyncCallScriptData> callScripts;
+  final String nextCursor;
+  final bool hasMore;
+
+  const PullCallScriptsResult({
+    required this.callScripts,
+    required this.nextCursor,
+    required this.hasMore,
+  });
+}
+
 class PullVoterNotesResult {
   final List<SyncVoterNoteData> voterNotes;
   final String nextCursor;
@@ -754,6 +814,58 @@ class SyncVoterNoteData {
         updatedAt.isNotEmpty ? DateTime.parse(updatedAt) : DateTime.now(),
       ),
       syncedAt: Value(DateTime.now()),
+    );
+  }
+}
+
+class SyncCallScriptData {
+  final String id;
+  final String companyId;
+  final String title;
+  final String content;
+  final int version;
+  final bool isActive;
+  final String createdAt;
+  final String updatedAt;
+
+  const SyncCallScriptData({
+    required this.id,
+    required this.companyId,
+    required this.title,
+    required this.content,
+    required this.version,
+    required this.isActive,
+    required this.createdAt,
+    required this.updatedAt,
+  });
+
+  factory SyncCallScriptData.fromJson(Map<String, dynamic> json) {
+    return SyncCallScriptData(
+      id: json['id'] as String? ?? '',
+      companyId: json['companyId'] as String? ?? '',
+      title: json['title'] as String? ?? '',
+      content: json['content'] as String? ?? '',
+      version: (json['version'] as num?)?.toInt() ?? 1,
+      isActive: json['isActive'] as bool? ?? true,
+      createdAt: json['createdAt'] as String? ?? '',
+      updatedAt: json['updatedAt'] as String? ?? '',
+    );
+  }
+
+  CallScriptsCompanion toCompanion() {
+    return CallScriptsCompanion(
+      id: Value(id),
+      companyId: Value(companyId),
+      title: Value(title),
+      content: Value(content),
+      version: Value(version),
+      isActive: Value(isActive),
+      createdAt: Value(
+        createdAt.isNotEmpty ? DateTime.parse(createdAt) : DateTime.now(),
+      ),
+      updatedAt: Value(
+        updatedAt.isNotEmpty ? DateTime.parse(updatedAt) : DateTime.now(),
+      ),
     );
   }
 }
