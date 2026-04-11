@@ -10,28 +10,28 @@ See: .planning/PROJECT.md (updated 2026-04-10)
 ## Current Position
 
 Objective: 1 of 10 (Foundation + Auth)
-TRD: 1 of 3 in current objective
+TRD: 2 of 3 in current objective
 Status: Executing
-Last activity: 2026-04-10 -- Completed 01-01-TRD (project scaffold)
+Last activity: 2026-04-10 -- Completed 01-02-TRD (auth RBAC + admin services)
 
-Progress: [#.........] 3%
+Progress: [##........] 6%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 1
-- Average duration: 11 min
-- Total execution time: 0.18 hours
+- Total plans completed: 2
+- Average duration: 12 min
+- Total execution time: 0.38 hours
 
 **By Objective:**
 
 | Objective | Plans | Total | Avg/Plan |
 |-----------|-------|-------|----------|
-| 01-foundation-auth | 1/3 | 11 min | 11 min |
+| 01-foundation-auth | 2/3 | 23 min | 12 min |
 
 **Recent Trend:**
-- Last 5 jobs: 01-01 (11 min)
-- Trend: Starting
+- Last 5 jobs: 01-01 (11 min), 01-02 (12 min)
+- Trend: Stable
 
 ## Accumulated Context
 
@@ -43,6 +43,10 @@ Recent decisions affecting current work:
 - Use pgx5:// URL scheme for DATABASE_URL -- golang-migrate pgx/v5 driver registers as "pgx5", eden pgstore.NewPool converts to postgres:// for pgxpool
 - Navigators migrations use x-migrations-table=schema_migrations_navigators for separate tracking
 - Flutter app follows eden example pattern: authProvider, PlatformLoginScreen/PlatformSignUpScreen
+- MaineGOP company uses 'standalone' type (eden CHECK constraint disallows 'organization')
+- Admin creates users via auth store directly (not eden SignUp which creates a company per user)
+- Role mapping: navigator=member(40), super_navigator=manager(60), admin=admin(80)
+- Password reset logs URL to console for MVP (email service deferred)
 
 ### Pending Todos
 
@@ -57,10 +61,11 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-04-10
-Stopped at: Completed 01-01-TRD.md
+Stopped at: Completed 01-02-TRD.md
 Resume file: None
 
 ## History
 
+- 2026-04-10: Completed 01-02-TRD (auth RBAC + admin services: permission matrix, admin user CRUD, password reset, session management)
 - 2026-04-10: Completed 01-01-TRD (project scaffold: Go backend, Flutter app, Docker Compose, Justfile)
 - 2026-04-10: Project initialized, roadmap created with 10 objectives covering 74 v1 requirements

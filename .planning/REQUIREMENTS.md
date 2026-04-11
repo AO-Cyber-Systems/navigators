@@ -11,10 +11,10 @@ Requirements for initial release. Each maps to roadmap objectives.
 
 - [x] **AUTH-01**: User can sign up with email and password
 - [x] **AUTH-02**: User can log in and stay logged in across sessions (JWT refresh)
-- [ ] **AUTH-03**: User can reset password via email link
-- [ ] **AUTH-04**: User session times out after inactivity and can be revoked by Admin
-- [ ] **AUTH-05**: Admin can create and manage user accounts with role assignment
-- [ ] **AUTH-06**: System enforces strict RBAC — Admin (org-wide), Super Navigator (team-scoped), Navigator (turf-scoped)
+- [x] **AUTH-03**: User can reset password via email link
+- [x] **AUTH-04**: User session times out after inactivity and can be revoked by Admin
+- [x] **AUTH-05**: Admin can create and manage user accounts with role assignment
+- [x] **AUTH-06**: System enforces strict RBAC — Admin (org-wide), Super Navigator (team-scoped), Navigator (turf-scoped)
 - [ ] **AUTH-07**: Navigator can only access voters in their assigned turfs
 - [ ] **AUTH-08**: Super Navigator can view all data from their assigned Navigators
 - [ ] **AUTH-09**: Audit trail logs all voter data access (who viewed/modified what, when)
@@ -164,10 +164,10 @@ Deferred to future release. Tracked but not in current roadmap.
 |-------------|-----------|--------|
 | AUTH-01 | Objective 1 | Complete |
 | AUTH-02 | Objective 1 | Complete |
-| AUTH-03 | Objective 1 | Pending |
-| AUTH-04 | Objective 1 | Pending |
-| AUTH-05 | Objective 1 | Pending |
-| AUTH-06 | Objective 1 | Pending |
+| AUTH-03 | Objective 1 | Complete |
+| AUTH-04 | Objective 1 | Complete |
+| AUTH-05 | Objective 1 | Complete |
+| AUTH-06 | Objective 1 | Complete |
 | AUTH-07 | Objective 1 | Pending |
 | AUTH-08 | Objective 1 | Pending |
 | AUTH-09 | Objective 1 | Pending |
