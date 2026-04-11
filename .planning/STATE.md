@@ -10,7 +10,7 @@ See: .planning/PROJECT.md (updated 2026-04-10)
 ## Current Position
 
 **Objective:** 8 of 10 (Tasks & Collaboration)
-**Current Job:** 2
+**Current Job:** 3
 **Total Jobs in Objective:** 3
 **Status:** Ready to execute
 **Last Activity:** 2026-04-11
@@ -51,6 +51,7 @@ Progress: [##........] 13%
 | Objective 07 P01 | 6min | 2 tasks | 19 files |
 | Objective 07 P02 | 7min | 2 tasks | 8 files |
 | Objective 08 P01 | 11min | 2 tasks | 20 files |
+| Objective 08 P02 | 8min | 2 tasks | 10 files |
 
 ## Accumulated Context
 
@@ -120,6 +121,9 @@ Recent decisions affecting current work:
 - [Objective 07]: Phone call screen launches dialer immediately on open, does not gate flow on dialer success
 - [Objective 07]: Phone flow has 4 steps (calling, disposition, sentiment, notes) with calling step showing script before disposition
 - [Objective 08]: DueDate uses pgtype.Timestamptz; LinkedEntityID uses pgtype.UUID; InsertTaskVoters uses sqlc copyfrom; task_note entity type for push sync
+- [Objective 08]: Firebase init moved before service wiring for dependency order (NATS, Firebase, then services)
+- [Objective 08]: FCMDispatcher uses raw pgxpool queries for device_tokens (eden pgstore.Backend has no NotificationStore)
+- [Objective 08]: TaskService.AssignTask signature expanded to include companyID for task title lookup in NATS event
 
 ### Pending Todos
 

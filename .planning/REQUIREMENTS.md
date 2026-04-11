@@ -84,7 +84,7 @@ Requirements for initial release. Each maps to roadmap objectives.
 - [x] **TASK-01**: Admin/Super Navigator can create tasks and assign to Navigators
 - [x] **TASK-02**: Tasks can be linked to voter lists, turfs, or specific voters
 - [x] **TASK-03**: Tasks have types (contact list, event, data entry, custom), due dates, and priority
-- [ ] **TASK-04**: System auto-updates task progress based on linked voter contacts
+- [x] **TASK-04**: System auto-updates task progress based on linked voter contacts
 - [x] **TASK-05**: Navigator can add notes to tasks (visible to their Super Navigator and Admin)
 
 ### Voter Notes & Contact History
@@ -116,8 +116,8 @@ Requirements for initial release. Each maps to roadmap objectives.
 
 ### Push Notifications
 
-- [ ] **PUSH-01**: System sends push notifications for task reminders (upcoming due dates)
-- [ ] **PUSH-02**: System sends push notifications for new turf/task assignments
+- [x] **PUSH-01**: System sends push notifications for task reminders (upcoming due dates)
+- [x] **PUSH-02**: System sends push notifications for new turf/task assignments
 - [ ] **PUSH-03**: System alerts Navigator when unsynced data exists and connectivity is available
 
 ## v2 Requirements
@@ -220,10 +220,10 @@ Deferred to future release. Tracked but not in current roadmap.
 | TASK-01 | Objective 8 | Complete |
 | TASK-02 | Objective 8 | Complete |
 | TASK-03 | Objective 8 | Complete |
-| TASK-04 | Objective 8 | Pending |
+| TASK-04 | Objective 8 | Complete |
 | TASK-05 | Objective 8 | Complete |
-| PUSH-01 | Objective 8 | Pending |
-| PUSH-02 | Objective 8 | Pending |
+| PUSH-01 | Objective 8 | Complete |
+| PUSH-02 | Objective 8 | Complete |
 | PUSH-03 | Objective 8 | Pending |
 | ANLYT-01 | Objective 9 | Pending |
 | ANLYT-02 | Objective 9 | Pending |
