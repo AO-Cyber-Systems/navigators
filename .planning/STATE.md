@@ -56,6 +56,7 @@ Progress: [##........] 13%
 | Objective 09 P01 | 7min | 2 tasks | 8 files |
 | Objective 09 P02 | 4min | 2 tasks | 8 files |
 | Objective 09 P03 | 4min | 2 tasks | 6 files |
+| Objective 10 P01 | 12min | 2 tasks | 25 files |
 
 ## Accumulated Context
 
@@ -138,6 +139,9 @@ Recent decisions affecting current work:
 - [Objective 09]: AnalyticsService.toRfc3339 made public static for dashboard screen date range formatting
 - [Objective 09]: Admin dashboard is a local placeholder in app.dart until TRD 09-03
 - [Objective 09]: DropdownButtonFormField uses initialValue (not deprecated value) for Flutter 3.33+
+- [Objective 10]: Leaderboard aggregation over contact_logs + event_checkins with time window param
+- [Objective 10]: Training materials use MinIO presigned URLs with 15-minute expiry
+- [Objective 10]: EventWorker uses separate NAVIGATORS_EVENTS NATS stream; reminder dedup via last_reminder_sent_at (2-hour threshold)
 
 ### Pending Todos
 

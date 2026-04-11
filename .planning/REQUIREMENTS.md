@@ -104,15 +104,15 @@ Requirements for initial release. Each maps to roadmap objectives.
 
 ### Volunteer Management
 
-- [ ] **VOL-01**: New Navigator goes through onboarding flow: signup → Maine Title 21-A data usage acknowledgment → role assignment → training materials
-- [ ] **VOL-02**: System provides opt-in leaderboards with engagement metrics to motivate volunteers
-- [ ] **VOL-03**: In-app training materials and best practices guides
+- [x] **VOL-01**: New Navigator goes through onboarding flow: signup → Maine Title 21-A data usage acknowledgment → role assignment → training materials
+- [x] **VOL-02**: System provides opt-in leaderboards with engagement metrics to motivate volunteers
+- [x] **VOL-03**: In-app training materials and best practices guides
 
 ### Events
 
-- [ ] **EVT-01**: Admin/Super Navigator can create events (canvass events, phone banks, community meetings)
-- [ ] **EVT-02**: Navigators can RSVP to events with reminder notifications
-- [ ] **EVT-03**: Navigators check in at events — system tracks attendance
+- [x] **EVT-01**: Admin/Super Navigator can create events (canvass events, phone banks, community meetings)
+- [x] **EVT-02**: Navigators can RSVP to events with reminder notifications
+- [x] **EVT-03**: Navigators check in at events — system tracks attendance
 
 ### Push Notifications
 
@@ -230,12 +230,12 @@ Deferred to future release. Tracked but not in current roadmap.
 | ANLYT-03 | Objective 9 | Complete |
 | ANLYT-04 | Objective 9 | Complete |
 | ANLYT-05 | Objective 9 | Complete |
-| VOL-01 | Objective 10 | Pending |
-| VOL-02 | Objective 10 | Pending |
-| VOL-03 | Objective 10 | Pending |
-| EVT-01 | Objective 10 | Pending |
-| EVT-02 | Objective 10 | Pending |
-| EVT-03 | Objective 10 | Pending |
+| VOL-01 | Objective 10 | Complete |
+| VOL-02 | Objective 10 | Complete |
+| VOL-03 | Objective 10 | Complete |
+| EVT-01 | Objective 10 | Complete |
+| EVT-02 | Objective 10 | Complete |
+| EVT-03 | Objective 10 | Complete |
 
 **Coverage:**
 - v1 requirements: 74 total
