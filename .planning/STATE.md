@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-04-10)
 **Objective:** 9 of 10 (Analytics Dashboards)
 **Current Job:** 3
 **Total Jobs in Objective:** 3
-**Status:** Ready to execute
+**Status:** Objective complete — ready for verification
 **Last Activity:** 2026-04-11
 
 Progress: [##........] 13%
@@ -55,6 +55,7 @@ Progress: [##........] 13%
 | Objective 08 P03 | 8min | 2 tasks | 11 files |
 | Objective 09 P01 | 7min | 2 tasks | 8 files |
 | Objective 09 P02 | 4min | 2 tasks | 8 files |
+| Objective 09 P03 | 4min | 2 tasks | 6 files |
 
 ## Accumulated Context
 
@@ -136,6 +137,7 @@ Recent decisions affecting current work:
 - [Objective 09]: All analytics SQL compiled by sqlc (FILTER/LATERAL supported); no raw pgxpool fallback needed
 - [Objective 09]: AnalyticsService.toRfc3339 made public static for dashboard screen date range formatting
 - [Objective 09]: Admin dashboard is a local placeholder in app.dart until TRD 09-03
+- [Objective 09]: DropdownButtonFormField uses initialValue (not deprecated value) for Flutter 3.33+
 
 ### Pending Todos
 
