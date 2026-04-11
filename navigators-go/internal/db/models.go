@@ -215,6 +215,12 @@ type SuppressionList struct {
 	AddedAt   time.Time `json:"added_at"`
 }
 
+type SyncServerCursor struct {
+	UserID     uuid.UUID `json:"user_id"`
+	EntityType string    `json:"entity_type"`
+	LastCursor time.Time `json:"last_cursor"`
+}
+
 type TeamAssignment struct {
 	ID               uuid.UUID `json:"id"`
 	SuperNavigatorID uuid.UUID `json:"super_navigator_id"`

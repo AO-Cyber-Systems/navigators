@@ -1,0 +1,126 @@
+syntax = "proto3";
+
+package navigators.v1;
+
+option go_package = "navigators-go/gen/go/navigators/v1;navigatorsv1";
+
+// SyncService handles offline data synchronization between Flutter client and server.
+service SyncService {
+  // PullVoterUpdates returns voters updated since the given cursor, scoped to turfs.
+  rpc PullVoterUpdates(PullVoterUpdatesRequest) returns (PullVoterUpdatesResponse);
+
+  // PullContactLogs returns contact logs updated since the given cursor, scoped to turfs.
+  rpc PullContactLogs(PullContactLogsRequest) returns (PullContactLogsResponse);
+
+  // PushSyncBatch receives a batch of operations from the client outbox.
+  rpc PushSyncBatch(PushSyncBatchRequest) returns (PushSyncBatchResponse);
+
+  // GetSyncManifest returns the user's turf assignments with metadata for initial sync.
+  rpc GetSyncManifest(GetSyncManifestRequest) returns (GetSyncManifestResponse);
+}
+
+// --- Pull Voters ---
+
+message PullVoterUpdatesRequest {
+  string since_cursor = 1;      // ISO timestamp or empty for full sync
+  repeated string turf_ids = 2; // Scoped to assigned turfs
+  int32 batch_size = 3;         // Max voters per response (default 500)
+}
+
+message PullVoterUpdatesResponse {
+  repeated SyncVoter voters = 1;
+  string next_cursor = 2;       // Use as since_cursor in next call
+  bool has_more = 3;            // More pages available
+}
+
+// SyncVoter contains all voter fields needed for local cache.
+message SyncVoter {
+  string id = 1;
+  string turf_id = 2;
+  string first_name = 3;
+  string last_name = 4;
+  string middle_name = 5;
+  string suffix = 6;
+  int32 year_of_birth = 7;
+  string res_street_address = 8;
+  string res_city = 9;
+  string res_state = 10;
+  string res_zip = 11;
+  string party = 12;
+  string status = 13;
+  double latitude = 14;
+  double longitude = 15;
+  string voting_history = 16;
+  string phone = 17;
+  string email = 18;
+  int32 walk_sequence = 19;
+  string server_updated_at = 20; // ISO timestamp
+}
+
+// --- Pull Contact Logs ---
+
+message PullContactLogsRequest {
+  string since_cursor = 1;
+  repeated string turf_ids = 2;
+  int32 batch_size = 3;
+}
+
+message PullContactLogsResponse {
+  repeated SyncContactLog contact_logs = 1;
+  string next_cursor = 2;
+  bool has_more = 3;
+}
+
+// SyncContactLog contains all contact log fields for local cache.
+message SyncContactLog {
+  string id = 1;
+  string voter_id = 2;
+  string turf_id = 3;
+  string user_id = 4;
+  string contact_type = 5;
+  string outcome = 6;
+  string notes = 7;
+  string created_at = 8; // ISO timestamp
+}
+
+// --- Push Sync Batch ---
+
+message PushSyncBatchRequest {
+  repeated SyncOperation operations = 1;
+}
+
+message PushSyncBatchResponse {
+  repeated string processed_operation_ids = 1; // Client UUIDs that succeeded
+  repeated SyncError errors = 2;               // Failures with reasons
+}
+
+message SyncOperation {
+  string client_operation_id = 1;
+  string entity_type = 2;
+  string entity_id = 3;
+  string operation_type = 4; // create, update, delete
+  bytes payload = 5;         // JSON-encoded operation data
+  string client_timestamp = 6;
+}
+
+message SyncError {
+  string operation_id = 1;
+  string code = 2;
+  string message = 3;
+}
+
+// --- Get Sync Manifest ---
+
+message GetSyncManifestRequest {}
+
+message GetSyncManifestResponse {
+  repeated TurfAssignmentInfo turf_assignments = 1;
+  string server_time = 2; // ISO timestamp
+}
+
+message TurfAssignmentInfo {
+  string turf_id = 1;
+  string turf_name = 2;
+  string boundary_geojson = 3;
+  int32 voter_count = 4;
+}

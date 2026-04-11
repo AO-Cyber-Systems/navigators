@@ -12,6 +12,7 @@ const (
 	FeatureTeams  rbac.Feature = "teams"
 	FeatureAudit  rbac.Feature = "audit"
 	FeatureAdmin  rbac.Feature = "admin"
+	FeatureSync   rbac.Feature = "sync"
 )
 
 // NavigatorsPermissionMatrix returns the RBAC permission matrix for the Navigators app.
@@ -49,6 +50,10 @@ func NavigatorsPermissionMatrix() rbac.PermissionMatrix {
 			"users":    rbac.RoleLevelAdmin, // Admin (80)
 			"sessions": rbac.RoleLevelAdmin, // Admin (80)
 			"admin":    rbac.RoleLevelAdmin, // Admin (80)
+		},
+		FeatureSync: {
+			"pull": rbac.RoleLevelMember, // Navigator (40) -- all navigators can sync
+			"push": rbac.RoleLevelMember, // Navigator (40)
 		},
 	}
 }
@@ -100,6 +105,12 @@ func NavigatorsProcedurePermissions() map[string]server.Permission {
 		"/navigators.v1.VoterService/RemoveFromSuppressionList": {Feature: "voters", Action: "admin"},
 		"/navigators.v1.VoterService/IsVoterSuppressed":         {Feature: "voters", Action: "view"},
 		"/navigators.v1.VoterService/ListSuppressedVoters":      {Feature: "voters", Action: "admin"},
+
+		// Sync operations
+		"/navigators.v1.SyncService/PullVoterUpdates": {Feature: "sync", Action: "pull"},
+		"/navigators.v1.SyncService/PullContactLogs":  {Feature: "sync", Action: "pull"},
+		"/navigators.v1.SyncService/PushSyncBatch":    {Feature: "sync", Action: "push"},
+		"/navigators.v1.SyncService/GetSyncManifest":  {Feature: "sync", Action: "pull"},
 
 		// Voter tag management
 		"/navigators.v1.VoterService/CreateTag":          {Feature: "voters", Action: "admin"},

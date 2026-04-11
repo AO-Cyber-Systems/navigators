@@ -187,6 +187,12 @@ func main() {
 	voterPath, voterHTTPHandler := navigatorsv1connect.NewVoterServiceHandler(voterHandler, interceptors)
 	mux.Handle(voterPath, voterHTTPHandler)
 
+	// --- Sync service ---
+	syncService := navpkg.NewSyncService(navQueries, pgBackend.Pool(), turfScopedFilter)
+	syncHandler := navpkg.NewSyncHandler(syncService)
+	syncPath, syncHTTPHandler := navigatorsv1connect.NewSyncServiceHandler(syncHandler, interceptors)
+	mux.Handle(syncPath, syncHTTPHandler)
+
 	// --- Session timeout checker ---
 	// Check every 5 minutes, revoke tokens inactive for 30 minutes.
 	navpkg.StartSessionTimeoutChecker(ctx, pgBackend.Pool(), 5*time.Minute, 30*time.Minute)
