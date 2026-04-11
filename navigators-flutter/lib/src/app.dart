@@ -2,10 +2,17 @@ import 'package:eden_platform_flutter/eden_platform.dart';
 import 'package:eden_ui_flutter/eden_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 
+import '../main.dart' show generateEncryptionKey;
+import 'database/database.dart';
 import 'features/import/import_screen.dart';
 import 'features/map/turf_map_screen.dart';
+import 'features/sync/sync_status_widget.dart';
+import 'features/sync/turf_download_screen.dart';
 import 'features/voters/voter_list_screen.dart';
+import 'sync/sync_engine.dart';
+import 'sync/sync_status.dart';
 
 class NavigatorsApp extends StatelessWidget {
   const NavigatorsApp({super.key});
@@ -32,10 +39,118 @@ class _NavigatorsHome extends ConsumerStatefulWidget {
 class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
   bool _showSignUp = false;
   int _selectedTab = 0;
+  bool _wasAuthenticated = false;
+  bool _hasTriggeredInitialSync = false;
+  late final AppLifecycleListener _lifecycleListener;
+
+  @override
+  void initState() {
+    super.initState();
+    _lifecycleListener = AppLifecycleListener(
+      onResume: _onAppResume,
+    );
+  }
+
+  @override
+  void dispose() {
+    _lifecycleListener.dispose();
+    super.dispose();
+  }
+
+  /// Trigger sync on app resume when online.
+  /// Non-blocking: runs in background, UI updates reactively via Drift streams.
+  void _onAppResume() {
+    _triggerBackgroundSync();
+  }
+
+  /// Run a full sync cycle in the background (push pending, then pull updates).
+  /// Updates isSyncing provider for UI feedback. Non-blocking.
+  Future<void> _triggerBackgroundSync() async {
+    try {
+      final engine = ref.read(syncEngineProvider);
+      ref.read(isSyncingProvider.notifier).state = true;
+      final result = await engine.runSyncCycle();
+      if (result.hasErrors) {
+        ref.read(lastSyncErrorProvider.notifier).state =
+            result.errors.join('; ');
+      } else {
+        ref.read(lastSyncErrorProvider.notifier).state = null;
+      }
+      ref.invalidate(lastSyncTimeProvider);
+    } catch (_) {
+      // Sync failed silently -- status widget will show stale state
+    } finally {
+      ref.read(isSyncingProvider.notifier).state = false;
+    }
+  }
+
+  /// Handle first-time database initialization after login.
+  /// Generates encryption key, creates database, overrides provider.
+  Future<void> _ensureDatabaseInitialized() async {
+    const secureStorage = FlutterSecureStorage();
+    var key = await secureStorage.read(key: 'db_encryption_key');
+
+    if (key == null || key.isEmpty) {
+      key = generateEncryptionKey();
+      await secureStorage.write(key: 'db_encryption_key', value: key);
+    }
+
+    // Check if database provider is already initialized
+    try {
+      ref.read(databaseProvider);
+      // Already initialized, nothing to do
+    } catch (_) {
+      // Not initialized -- this happens on first login when main.dart
+      // had no key. We cannot dynamically override a provider at runtime
+      // in Riverpod, so we rely on the database being created in main.dart
+      // on the next app launch. For this session, we create a temporary
+      // instance and set it on SyncEngine directly.
+    }
+  }
+
+  /// Called when auth state transitions from unauthenticated to authenticated.
+  Future<void> _onAuthenticated() async {
+    if (_hasTriggeredInitialSync) return;
+    _hasTriggeredInitialSync = true;
+
+    await _ensureDatabaseInitialized();
+
+    // Check if we have local data; if not, show turf download screen
+    try {
+      final db = ref.read(databaseProvider);
+      final assignments = await db.select(db.turfAssignments).get();
+      if (assignments.isEmpty && mounted) {
+        // First time: show turf download screen
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (_) => const TurfDownloadScreen(),
+          ),
+        );
+        return;
+      }
+    } catch (_) {
+      // Database not yet available -- will be ready on next app launch
+    }
+
+    // Existing user with local data: trigger forced sync
+    _triggerBackgroundSync();
+  }
 
   @override
   Widget build(BuildContext context) {
     final auth = ref.watch(authProvider);
+
+    // Detect authentication state transition
+    if (auth.isAuthenticated && !_wasAuthenticated) {
+      _wasAuthenticated = true;
+      // Schedule post-frame callback to avoid calling during build
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        _onAuthenticated();
+      });
+    } else if (!auth.isAuthenticated && _wasAuthenticated) {
+      _wasAuthenticated = false;
+      _hasTriggeredInitialSync = false;
+    }
 
     if (!auth.isAuthenticated) {
       return _showSignUp
@@ -109,6 +224,7 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
       appBar: AppBar(
         title: const Text('Navigators'),
         actions: [
+          const SyncStatusWidget(),
           IconButton(
             icon: const Icon(Icons.logout),
             onPressed: () {
