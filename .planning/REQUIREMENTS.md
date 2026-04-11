@@ -74,10 +74,10 @@ Requirements for initial release. Each maps to roadmap objectives.
 ### Door Knocking
 
 - [ ] **DOOR-01**: Navigator can view ordered walk list for assigned turf with map view
-- [ ] **DOOR-02**: Navigator can record door status (not home/answered/refused/moved) per visit
-- [ ] **DOOR-03**: Admin can create configurable at-the-door survey forms
-- [ ] **DOOR-04**: Navigator can complete survey forms offline — data queued for sync
-- [ ] **DOOR-05**: System tracks door-knock attempts per voter with timestamp history
+- [x] **DOOR-02**: Navigator can record door status (not home/answered/refused/moved) per visit
+- [x] **DOOR-03**: Admin can create configurable at-the-door survey forms
+- [x] **DOOR-04**: Navigator can complete survey forms offline — data queued for sync
+- [x] **DOOR-05**: System tracks door-knock attempts per voter with timestamp history
 
 ### Task Management
 
@@ -89,10 +89,10 @@ Requirements for initial release. Each maps to roadmap objectives.
 
 ### Voter Notes & Contact History
 
-- [ ] **NOTE-01**: Navigator can add free-text notes to any voter after an interaction
+- [x] **NOTE-01**: Navigator can add free-text notes to any voter after an interaction
 - [ ] **NOTE-02**: System maintains unified contact timeline per voter (texts, calls, door knocks)
-- [ ] **NOTE-03**: Note visibility follows role hierarchy — Navigator sees own; Super Nav sees team; Admin sees all
-- [ ] **NOTE-04**: Navigator can record voter sentiment (strong support → lean support → undecided → lean oppose → strong oppose)
+- [x] **NOTE-03**: Note visibility follows role hierarchy — Navigator sees own; Super Nav sees team; Admin sees all
+- [x] **NOTE-04**: Navigator can record voter sentiment (strong support → lean support → undecided → lean oppose → strong oppose)
 
 ### Analytics & Reporting
 
@@ -197,14 +197,14 @@ Deferred to future release. Tracked but not in current roadmap.
 | SYNC-06 | Objective 4 | Complete |
 | SYNC-07 | Objective 4 | Complete |
 | DOOR-01 | Objective 5 | Pending |
-| DOOR-02 | Objective 5 | Pending |
-| DOOR-03 | Objective 5 | Pending |
-| DOOR-04 | Objective 5 | Pending |
-| DOOR-05 | Objective 5 | Pending |
-| NOTE-01 | Objective 5 | Pending |
+| DOOR-02 | Objective 5 | Complete |
+| DOOR-03 | Objective 5 | Complete |
+| DOOR-04 | Objective 5 | Complete |
+| DOOR-05 | Objective 5 | Complete |
+| NOTE-01 | Objective 5 | Complete |
 | NOTE-02 | Objective 5 | Pending |
-| NOTE-03 | Objective 5 | Pending |
-| NOTE-04 | Objective 5 | Pending |
+| NOTE-03 | Objective 5 | Complete |
+| NOTE-04 | Objective 5 | Complete |
 | SMS-01 | Objective 6 | Pending |
 | SMS-02 | Objective 6 | Pending |
 | SMS-03 | Objective 6 | Pending |
