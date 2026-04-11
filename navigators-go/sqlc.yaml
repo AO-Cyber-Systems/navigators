@@ -2,7 +2,9 @@ version: "2"
 sql:
   - engine: "postgresql"
     queries: "queries/navigators/"
-    schema: "migrations/navigators/"
+    schema:
+      - "../../eden-libs/eden-platform-go/migrations/platform/"
+      - "migrations/navigators/"
     gen:
       go:
         package: "db"
@@ -18,3 +20,5 @@ sql:
             go_type: { import: "time", type: "Time" }
           - db_type: "jsonb"
             go_type: { import: "encoding/json", type: "RawMessage" }
+          - db_type: "geometry"
+            go_type: "string"
