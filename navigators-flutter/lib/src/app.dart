@@ -11,6 +11,7 @@ import 'features/map/turf_map_screen.dart';
 import 'features/sms/campaign_list_screen.dart';
 import 'features/sms/conversation_list_screen.dart';
 import 'features/sms/template_list_screen.dart';
+import 'features/dashboard/admin_dashboard_screen.dart';
 import 'features/dashboard/navigator_dashboard_screen.dart';
 import 'features/dashboard/team_dashboard_screen.dart';
 import 'features/sync/sync_status_widget.dart';
@@ -289,7 +290,7 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
         ],
       ),
       body: switch (role) {
-        'admin' => const _AdminDashboardPlaceholder(),
+        'admin' => const AdminDashboardScreen(),
         'super_navigator' => const TeamDashboardScreen(),
         _ => const NavigatorDashboardScreen(),
       },
@@ -307,14 +308,4 @@ class _TabItem {
     required this.icon,
     required this.activeIcon,
   });
-}
-
-/// Placeholder for Admin dashboard until TRD 09-03 delivers AdminDashboardScreen.
-class _AdminDashboardPlaceholder extends StatelessWidget {
-  const _AdminDashboardPlaceholder();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Center(child: Text('Admin dashboard coming soon'));
-  }
 }
