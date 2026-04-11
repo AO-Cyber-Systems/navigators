@@ -5,33 +5,33 @@
 See: .planning/PROJECT.md (updated 2026-04-10)
 
 **Core value:** Navigators can go into the field with a complete voter list, map, and outreach tools -- work entirely offline in rural Maine -- and have every interaction automatically sync back to give leadership real-time visibility into grassroots organizing efforts.
-**Current focus:** Not started
+**Current focus:** Foundation + Auth (Objective 1)
 
 ## Current Position
 
 Objective: 1 of 10 (Foundation + Auth)
-Job: 0 of 3 in current objective
-Status: Ready to plan
-Last activity: 2026-04-10 -- Roadmap created with 10 objectives covering 74 requirements
+TRD: 1 of 3 in current objective
+Status: Executing
+Last activity: 2026-04-10 -- Completed 01-01-TRD (project scaffold)
 
-Progress: [..........] 0%
+Progress: [#.........] 3%
 
 ## Performance Metrics
 
 **Velocity:**
-- Total plans completed: 0
-- Average duration: -
-- Total execution time: 0 hours
+- Total plans completed: 1
+- Average duration: 11 min
+- Total execution time: 0.18 hours
 
 **By Objective:**
 
 | Objective | Plans | Total | Avg/Plan |
 |-----------|-------|-------|----------|
-| - | - | - | - |
+| 01-foundation-auth | 1/3 | 11 min | 11 min |
 
 **Recent Trend:**
-- Last 5 jobs: -
-- Trend: -
+- Last 5 jobs: 01-01 (11 min)
+- Trend: Starting
 
 ## Accumulated Context
 
@@ -40,7 +40,9 @@ Progress: [..........] 0%
 Decisions are logged in PROJECT.md Key Decisions table.
 Recent decisions affecting current work:
 
-- None yet.
+- Use pgx5:// URL scheme for DATABASE_URL -- golang-migrate pgx/v5 driver registers as "pgx5", eden pgstore.NewPool converts to postgres:// for pgxpool
+- Navigators migrations use x-migrations-table=schema_migrations_navigators for separate tracking
+- Flutter app follows eden example pattern: authProvider, PlatformLoginScreen/PlatformSignUpScreen
 
 ### Pending Todos
 
@@ -55,9 +57,10 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-04-10
-Stopped at: Roadmap created, ready to plan Objective 1
+Stopped at: Completed 01-01-TRD.md
 Resume file: None
 
 ## History
 
+- 2026-04-10: Completed 01-01-TRD (project scaffold: Go backend, Flutter app, Docker Compose, Justfile)
 - 2026-04-10: Project initialized, roadmap created with 10 objectives covering 74 v1 requirements

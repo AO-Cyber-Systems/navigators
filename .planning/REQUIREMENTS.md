@@ -9,8 +9,8 @@ Requirements for initial release. Each maps to roadmap objectives.
 
 ### Authentication & RBAC
 
-- [ ] **AUTH-01**: User can sign up with email and password
-- [ ] **AUTH-02**: User can log in and stay logged in across sessions (JWT refresh)
+- [x] **AUTH-01**: User can sign up with email and password
+- [x] **AUTH-02**: User can log in and stay logged in across sessions (JWT refresh)
 - [ ] **AUTH-03**: User can reset password via email link
 - [ ] **AUTH-04**: User session times out after inactivity and can be revoked by Admin
 - [ ] **AUTH-05**: Admin can create and manage user accounts with role assignment
@@ -162,8 +162,8 @@ Deferred to future release. Tracked but not in current roadmap.
 
 | Requirement | Objective | Status |
 |-------------|-----------|--------|
-| AUTH-01 | Objective 1 | Pending |
-| AUTH-02 | Objective 1 | Pending |
+| AUTH-01 | Objective 1 | Complete |
+| AUTH-02 | Objective 1 | Complete |
 | AUTH-03 | Objective 1 | Pending |
 | AUTH-04 | Objective 1 | Pending |
 | AUTH-05 | Objective 1 | Pending |
