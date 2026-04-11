@@ -23,11 +23,17 @@ import (
 
 // ImportService provides voter file import operations.
 type ImportService struct {
-	queries      *db.Queries
-	pool         *pgxpool.Pool
-	minioClient  *minio.Client
-	bucket       string
-	auditService *AuditService
+	queries        *db.Queries
+	pool           *pgxpool.Pool
+	minioClient    *minio.Client
+	bucket         string
+	auditService   *AuditService
+	geocodeService *GeocodeService
+}
+
+// SetGeocodeService sets the geocode service for post-import geocoding.
+func (s *ImportService) SetGeocodeService(gs *GeocodeService) {
+	s.geocodeService = gs
 }
 
 // NewImportService creates a new ImportService.
@@ -598,6 +604,12 @@ func (s *ImportService) processImport(ctx context.Context, job db.ImportJob, fie
 	_ = s.queries.CleanupStaging(ctx, job.ID)
 
 	logger.Info("import complete", "merged", mergedRows, "skipped", skippedRows, "errors", errorRows)
+
+	// 8. Trigger geocoding for newly imported voters
+	if s.geocodeService != nil {
+		logger.Info("queuing geocoding for imported voters")
+		s.geocodeService.QueueGeocoding(job.CompanyID)
+	}
 }
 
 // bulkCopyStaging uses pgx CopyFrom to insert staging rows efficiently.

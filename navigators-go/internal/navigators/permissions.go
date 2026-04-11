@@ -89,6 +89,19 @@ func NavigatorsProcedurePermissions() map[string]server.Permission {
 		"/navigators.v1.VoterImportService/ConfirmUpload":    {Feature: "voters", Action: "admin"},
 		"/navigators.v1.VoterImportService/GetImportStatus":  {Feature: "voters", Action: "admin"},
 		"/navigators.v1.VoterImportService/ListImportJobs":   {Feature: "voters", Action: "admin"},
+
+		// Voter data queries
+		"/navigators.v1.VoterService/GetVoter":     {Feature: "voters", Action: "view"},
+		"/navigators.v1.VoterService/SearchVoters": {Feature: "voters", Action: "view"},
+		"/navigators.v1.VoterService/ListVoters":   {Feature: "voters", Action: "view"},
+
+		// Voter tag management
+		"/navigators.v1.VoterService/CreateTag":          {Feature: "voters", Action: "admin"},
+		"/navigators.v1.VoterService/ListTags":            {Feature: "voters", Action: "view"},
+		"/navigators.v1.VoterService/DeleteTag":           {Feature: "voters", Action: "admin"},
+		"/navigators.v1.VoterService/AssignTagToVoter":    {Feature: "voters", Action: "edit"},
+		"/navigators.v1.VoterService/RemoveTagFromVoter":  {Feature: "voters", Action: "edit"},
+		"/navigators.v1.VoterService/GetVoterTags":        {Feature: "voters", Action: "view"},
 	}
 }
 

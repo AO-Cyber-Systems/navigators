@@ -6,6 +6,7 @@ import (
 	"log"
 	"log/slog"
 	"net/http"
+	"os"
 	"strings"
 	"time"
 
@@ -161,13 +162,26 @@ func main() {
 		slog.Info("created voter-imports bucket")
 	}
 
-	// --- Voter import service ---
+	// --- Turf scoped filter ---
 	turfScopedFilter := navpkg.NewTurfScopedFilter(navQueries)
-	_ = turfScopedFilter // available for future voter query services
+
+	// --- Geocode service ---
+	googleMapsAPIKey := os.Getenv("GOOGLE_MAPS_API_KEY")
+	geocodeService := navpkg.NewGeocodeService(navQueries, pgBackend.Pool(), googleMapsAPIKey)
+
+	// --- Voter import service ---
 	importService := navpkg.NewImportService(navQueries, pgBackend.Pool(), minioClient, voterImportsBucket, navAuditService)
+	importService.SetGeocodeService(geocodeService)
 	importHandler := navpkg.NewImportHandler(importService)
 	importPath, importHTTPHandler := navigatorsv1connect.NewVoterImportServiceHandler(importHandler, interceptors)
 	mux.Handle(importPath, importHTTPHandler)
+
+	// --- Voter query service ---
+	voterService := navpkg.NewVoterService(navQueries, pgBackend.Pool(), turfScopedFilter, navAuditService)
+	tagService := navpkg.NewTagService(navQueries, navAuditService)
+	voterHandler := navpkg.NewVoterHandler(voterService, tagService)
+	voterPath, voterHTTPHandler := navigatorsv1connect.NewVoterServiceHandler(voterHandler, interceptors)
+	mux.Handle(voterPath, voterHTTPHandler)
 
 	// --- Session timeout checker ---
 	// Check every 5 minutes, revoke tokens inactive for 30 minutes.
