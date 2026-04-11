@@ -73,7 +73,7 @@ Requirements for initial release. Each maps to roadmap objectives.
 
 ### Door Knocking
 
-- [ ] **DOOR-01**: Navigator can view ordered walk list for assigned turf with map view
+- [x] **DOOR-01**: Navigator can view ordered walk list for assigned turf with map view
 - [x] **DOOR-02**: Navigator can record door status (not home/answered/refused/moved) per visit
 - [x] **DOOR-03**: Admin can create configurable at-the-door survey forms
 - [x] **DOOR-04**: Navigator can complete survey forms offline — data queued for sync
@@ -90,7 +90,7 @@ Requirements for initial release. Each maps to roadmap objectives.
 ### Voter Notes & Contact History
 
 - [x] **NOTE-01**: Navigator can add free-text notes to any voter after an interaction
-- [ ] **NOTE-02**: System maintains unified contact timeline per voter (texts, calls, door knocks)
+- [x] **NOTE-02**: System maintains unified contact timeline per voter (texts, calls, door knocks)
 - [x] **NOTE-03**: Note visibility follows role hierarchy — Navigator sees own; Super Nav sees team; Admin sees all
 - [x] **NOTE-04**: Navigator can record voter sentiment (strong support → lean support → undecided → lean oppose → strong oppose)
 
@@ -196,13 +196,13 @@ Deferred to future release. Tracked but not in current roadmap.
 | SYNC-05 | Objective 4 | Complete |
 | SYNC-06 | Objective 4 | Complete |
 | SYNC-07 | Objective 4 | Complete |
-| DOOR-01 | Objective 5 | Pending |
+| DOOR-01 | Objective 5 | Complete |
 | DOOR-02 | Objective 5 | Complete |
 | DOOR-03 | Objective 5 | Complete |
 | DOOR-04 | Objective 5 | Complete |
 | DOOR-05 | Objective 5 | Complete |
 | NOTE-01 | Objective 5 | Complete |
-| NOTE-02 | Objective 5 | Pending |
+| NOTE-02 | Objective 5 | Complete |
 | NOTE-03 | Objective 5 | Complete |
 | NOTE-04 | Objective 5 | Complete |
 | SMS-01 | Objective 6 | Pending |

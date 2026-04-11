@@ -10,7 +10,7 @@ See: .planning/PROJECT.md (updated 2026-04-10)
 ## Current Position
 
 **Objective:** 5 of 10 (Door Knocking & Contact Log)
-**Current Job:** 2
+**Current Job:** 3
 **Total Jobs in Objective:** 3
 **Status:** Ready to execute
 **Last Activity:** 2026-04-11
@@ -44,6 +44,7 @@ Progress: [##........] 13%
 | Objective 04 P03 | 11min | 3 tasks | 11 files |
 | Objective 05 P01 | 11min | 2 tasks | 27 files |
 | Objective 05 P02 | 12min | 2 tasks | 9 files |
+| Objective 05 P03 | 5min | 2 tasks | 5 files |
 
 ## Accumulated Context
 
@@ -94,6 +95,9 @@ Recent decisions affecting current work:
 - [Objective 05]: Step-based flow with local enum state instead of EdenFormWizard for door knock screen
 - [Objective 05]: UUID v4 generated with dart:math Random.secure (no uuid package dependency)
 - [Objective 05]: Walk list map view extracted to widgets/ subdirectory to keep screen under 400 lines
+- [Objective 05]: Custom StreamController merging instead of rxdart for combining Drift watch streams
+- [Objective 05]: Custom timeline ListView instead of EdenTimeline (does not exist in eden-ui-flutter)
+- [Objective 05]: Optional turfId parameter on VoterDetailScreen for notes context
 
 ### Pending Todos
 
