@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:eden_platform_flutter/eden_platform.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -141,6 +142,19 @@ class TurfSummary {
   }
 }
 
+/// Result of an export operation containing file bytes and metadata.
+class ExportResult {
+  final Uint8List bytes;
+  final String filename;
+  final String contentType;
+
+  ExportResult({
+    required this.bytes,
+    required this.filename,
+    required this.contentType,
+  });
+}
+
 /// AnalyticsService provides API client for analytics endpoints via ConnectRPC JSON protocol.
 class AnalyticsService {
   final String _baseUrl;
@@ -223,6 +237,34 @@ class AnalyticsService {
         .map((n) =>
             NavigatorPerformance.fromJson(n as Map<String, dynamic>))
         .toList();
+  }
+
+  /// Export filtered data as CSV or Excel bytes.
+  ///
+  /// [exportType] is one of: 'contacts', 'voters', 'tasks'.
+  /// [format] is one of: 'csv', 'xlsx'.
+  /// Returns [ExportResult] with file bytes, filename, and content type.
+  Future<ExportResult> exportData({
+    required String exportType,
+    required String format,
+    required String since,
+    required String until,
+  }) async {
+    final result = await _post('ExportData', {
+      'exportType': exportType,
+      'format': format,
+      'since': since,
+      'until': until,
+    });
+    // Proto JSON encodes bytes as base64 string
+    final bytes = base64Decode(result['data'] as String);
+    final filename = result['filename'] as String;
+    final contentType = result['contentType'] as String;
+    return ExportResult(
+      bytes: Uint8List.fromList(bytes),
+      filename: filename,
+      contentType: contentType,
+    );
   }
 }
 

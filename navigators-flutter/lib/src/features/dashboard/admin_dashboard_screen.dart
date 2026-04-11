@@ -7,7 +7,7 @@ import '../../services/analytics_service.dart';
 import '../../services/map_service.dart';
 import '../map/widgets/heat_map_painter.dart';
 import 'widgets/activity_chart.dart';
-// import 'widgets/export_dialog.dart'; // Enabled in Task 2
+import 'widgets/export_dialog.dart';
 import 'widgets/leaderboard_widget.dart';
 import 'widgets/metric_card.dart';
 import 'widgets/sentiment_pie_chart.dart';
@@ -216,9 +216,9 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
       ),
       floatingActionButton: FloatingActionButton(
         onPressed: () {
-          // ExportDialog opened in Task 2
-          ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('Export coming soon')),
+          showDialog(
+            context: context,
+            builder: (_) => const ExportDialog(),
           );
         },
         tooltip: 'Export Data',
