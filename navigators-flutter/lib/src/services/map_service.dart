@@ -113,6 +113,101 @@ class VoterPin {
   LatLng get location => LatLng(latitude, longitude);
 }
 
+class WalkListVoter {
+  final String voterId;
+  final String firstName;
+  final String lastName;
+  final double latitude;
+  final double longitude;
+  final String resStreetAddress;
+  final String party;
+  final int sequence;
+
+  const WalkListVoter({
+    required this.voterId,
+    required this.firstName,
+    required this.lastName,
+    required this.latitude,
+    required this.longitude,
+    required this.resStreetAddress,
+    required this.party,
+    required this.sequence,
+  });
+
+  factory WalkListVoter.fromJson(Map<String, dynamic> json) {
+    return WalkListVoter(
+      voterId: json['voterId'] as String? ?? '',
+      firstName: json['firstName'] as String? ?? '',
+      lastName: json['lastName'] as String? ?? '',
+      latitude: (json['latitude'] as num?)?.toDouble() ?? 0.0,
+      longitude: (json['longitude'] as num?)?.toDouble() ?? 0.0,
+      resStreetAddress: json['resStreetAddress'] as String? ?? '',
+      party: json['party'] as String? ?? '',
+      sequence: (json['sequence'] as num?)?.toInt() ?? 0,
+    );
+  }
+
+  String get fullName => '$firstName $lastName';
+
+  LatLng get location => LatLng(latitude, longitude);
+}
+
+class TurfStats {
+  final String turfId;
+  final int totalVoters;
+  final int contactedVoters;
+  final double completionPercentage;
+
+  const TurfStats({
+    required this.turfId,
+    required this.totalVoters,
+    required this.contactedVoters,
+    required this.completionPercentage,
+  });
+
+  factory TurfStats.fromJson(Map<String, dynamic> json) {
+    return TurfStats(
+      turfId: json['turfId'] as String? ?? '',
+      totalVoters: (json['totalVoters'] as num?)?.toInt() ?? 0,
+      contactedVoters: (json['contactedVoters'] as num?)?.toInt() ?? 0,
+      completionPercentage:
+          (json['completionPercentage'] as num?)?.toDouble() ?? 0.0,
+    );
+  }
+}
+
+class DensityGridCell {
+  final double gridLat;
+  final double gridLng;
+  final int voterCount;
+  final int contactedCount;
+  final int supportCount;
+
+  const DensityGridCell({
+    required this.gridLat,
+    required this.gridLng,
+    required this.voterCount,
+    required this.contactedCount,
+    required this.supportCount,
+  });
+
+  factory DensityGridCell.fromJson(Map<String, dynamic> json) {
+    return DensityGridCell(
+      gridLat: (json['gridLat'] as num?)?.toDouble() ?? 0.0,
+      gridLng: (json['gridLng'] as num?)?.toDouble() ?? 0.0,
+      voterCount: (json['voterCount'] as num?)?.toInt() ?? 0,
+      contactedCount: (json['contactedCount'] as num?)?.toInt() ?? 0,
+      supportCount: (json['supportCount'] as num?)?.toInt() ?? 0,
+    );
+  }
+
+  LatLng get location => LatLng(gridLat, gridLng);
+
+  /// Support ratio: 0.0 to 1.0 (supportCount / contactedCount).
+  double get supportRatio =>
+      contactedCount > 0 ? supportCount / contactedCount : 0.0;
+}
+
 // --- Service ---
 
 class MapService {
@@ -191,6 +286,48 @@ class MapService {
 
   Future<void> removeUserFromTurf(String turfId, String userId) async {
     await _post('RemoveUserFromTurf', {'turfId': turfId, 'userId': userId});
+  }
+
+  /// Generate a walk list with route-optimized voter ordering.
+  Future<List<WalkListVoter>> generateWalkList(
+    String turfId, {
+    double? startLat,
+    double? startLng,
+  }) async {
+    final body = <String, dynamic>{'turfId': turfId};
+    if (startLat != null) body['startLat'] = startLat;
+    if (startLng != null) body['startLng'] = startLng;
+    final result = await _post('GenerateWalkList', body);
+    return (result['voters'] as List<dynamic>? ?? [])
+        .map((v) => WalkListVoter.fromJson(v as Map<String, dynamic>))
+        .toList();
+  }
+
+  /// Get turf stats (voter count, contacted, completion %).
+  Future<TurfStats> getTurfStats(String turfId) async {
+    final result = await _post('GetTurfStats', {'turfId': turfId});
+    final stats = result['stats'] as Map<String, dynamic>? ?? result;
+    return TurfStats.fromJson(stats);
+  }
+
+  /// Get voter density grid for heat map within a bounding box.
+  Future<List<DensityGridCell>> getVoterDensityGrid({
+    required double minLat,
+    required double minLng,
+    required double maxLat,
+    required double maxLng,
+    required double gridSize,
+  }) async {
+    final result = await _post('GetVoterDensityGrid', {
+      'minLat': minLat,
+      'minLng': minLng,
+      'maxLat': maxLat,
+      'maxLng': maxLng,
+      'gridSize': gridSize,
+    });
+    return (result['cells'] as List<dynamic>? ?? [])
+        .map((c) => DensityGridCell.fromJson(c as Map<String, dynamic>))
+        .toList();
   }
 }
 

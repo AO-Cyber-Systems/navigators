@@ -25,6 +25,8 @@ dependencies:
   flutter_map_line_editor: ^8.0.0
   flutter_map_dragmarker: ^8.0.0
   latlong2: ^0.9.1
+  flutter_map_tile_caching: ^10.1.1
+  url_launcher: ^6.3.0
 
 dev_dependencies:
   flutter_test:
