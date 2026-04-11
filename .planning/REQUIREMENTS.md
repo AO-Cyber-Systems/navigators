@@ -15,9 +15,9 @@ Requirements for initial release. Each maps to roadmap objectives.
 - [x] **AUTH-04**: User session times out after inactivity and can be revoked by Admin
 - [x] **AUTH-05**: Admin can create and manage user accounts with role assignment
 - [x] **AUTH-06**: System enforces strict RBAC — Admin (org-wide), Super Navigator (team-scoped), Navigator (turf-scoped)
-- [ ] **AUTH-07**: Navigator can only access voters in their assigned turfs
-- [ ] **AUTH-08**: Super Navigator can view all data from their assigned Navigators
-- [ ] **AUTH-09**: Audit trail logs all voter data access (who viewed/modified what, when)
+- [x] **AUTH-07**: Navigator can only access voters in their assigned turfs
+- [x] **AUTH-08**: Super Navigator can view all data from their assigned Navigators
+- [x] **AUTH-09**: Audit trail logs all voter data access (who viewed/modified what, when)
 
 ### Voter Data Management
 
@@ -168,9 +168,9 @@ Deferred to future release. Tracked but not in current roadmap.
 | AUTH-04 | Objective 1 | Complete |
 | AUTH-05 | Objective 1 | Complete |
 | AUTH-06 | Objective 1 | Complete |
-| AUTH-07 | Objective 1 | Pending |
-| AUTH-08 | Objective 1 | Pending |
-| AUTH-09 | Objective 1 | Pending |
+| AUTH-07 | Objective 1 | Complete |
+| AUTH-08 | Objective 1 | Complete |
+| AUTH-09 | Objective 1 | Complete |
 | VOTER-01 | Objective 2 | Pending |
 | VOTER-02 | Objective 2 | Pending |
 | VOTER-03 | Objective 2 | Pending |
