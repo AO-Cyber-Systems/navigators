@@ -4,6 +4,9 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:eden_platform_flutter/eden_platform.dart';
 
+import '../database/database.dart';
+import '../database/daos/voter_dao.dart';
+
 // --- Models ---
 
 class VoterSummary {
@@ -382,6 +385,37 @@ class VoterService {
   }
 }
 
+// --- Offline-first extensions ---
+
+/// Extension to convert a Drift Voter row to a VoterSummary for UI display.
+extension VoterToSummary on dynamic {
+  /// Converts a Drift-generated Voter data class to a VoterSummary.
+  /// The Drift Voter class is from database.g.dart; we access fields directly.
+  static VoterSummary fromDriftVoter({
+    required String id,
+    required String firstName,
+    required String lastName,
+    required String party,
+    required String status,
+    required String resCity,
+    required String resZip,
+    required String municipality,
+    required int yearOfBirth,
+  }) {
+    return VoterSummary(
+      id: id,
+      firstName: firstName,
+      lastName: lastName,
+      party: party,
+      status: status,
+      resCity: resCity,
+      resZip: resZip,
+      municipality: municipality,
+      yearOfBirth: yearOfBirth,
+    );
+  }
+}
+
 // --- Providers ---
 
 final voterServiceProvider = Provider<VoterService>((ref) {
@@ -522,12 +556,62 @@ class VoterListState {
 
 class VoterListNotifier extends StateNotifier<VoterListState> {
   final VoterService _service;
+  final NavigatorsDatabase? _db;
 
-  VoterListNotifier(this._service) : super(const VoterListState());
+  VoterListNotifier(this._service, this._db) : super(const VoterListState());
 
+  /// Load voters with offline-first fallback.
+  /// Tries local Drift DB first; if local data exists, returns it.
+  /// Falls back to network call (existing behavior) when local is empty.
   Future<void> loadVoters({VoterFilters? filters}) async {
     final activeFilters = filters ?? state.filters;
     state = state.copyWith(filters: activeFilters, isLoading: true, page: 0);
+
+    // Try local DB first
+    if (_db != null) {
+      try {
+        final voterDao = VoterDao(_db);
+        final localVoters = await voterDao.getAllVoters();
+
+        if (localVoters.isNotEmpty) {
+          var summaries = localVoters.map((v) =>
+              VoterToSummary.fromDriftVoter(
+                id: v.id,
+                firstName: v.firstName,
+                lastName: v.lastName,
+                party: v.party,
+                status: v.status,
+                resCity: v.resCity,
+                resZip: v.resZip,
+                municipality: '',
+                yearOfBirth: v.yearOfBirth ?? 0,
+              )).toList();
+
+          // Apply local filters
+          if (activeFilters.party != null && activeFilters.party!.isNotEmpty) {
+            summaries = summaries
+                .where((v) => v.party.toLowerCase() == activeFilters.party!.toLowerCase())
+                .toList();
+          }
+          if (activeFilters.status != null && activeFilters.status!.isNotEmpty) {
+            summaries = summaries
+                .where((v) => v.status.toLowerCase() == activeFilters.status!.toLowerCase())
+                .toList();
+          }
+
+          state = state.copyWith(
+            voters: summaries,
+            totalCount: summaries.length,
+            isLoading: false,
+          );
+          return;
+        }
+      } catch (_) {
+        // Local DB read failed -- fall through to network
+      }
+    }
+
+    // Fall back to network call (existing behavior)
     try {
       final result = await _service.listVoters(activeFilters);
       state = state.copyWith(
@@ -564,7 +648,13 @@ class VoterListNotifier extends StateNotifier<VoterListState> {
 
 final voterListProvider =
     StateNotifierProvider<VoterListNotifier, VoterListState>((ref) {
-  return VoterListNotifier(ref.watch(voterServiceProvider));
+  NavigatorsDatabase? db;
+  try {
+    db = ref.watch(databaseProvider);
+  } catch (_) {
+    // Database not yet initialized
+  }
+  return VoterListNotifier(ref.watch(voterServiceProvider), db);
 });
 
 // --- Voter detail provider ---

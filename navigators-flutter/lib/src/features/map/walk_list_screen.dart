@@ -3,10 +3,14 @@ import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+import '../../database/database.dart';
 import '../../services/map_service.dart';
 
 /// Displays a route-optimized walk list of voters in a turf.
 /// Supports both list view and map view with connected route lines.
+///
+/// Offline-first: reads from local Drift DB when available,
+/// falls back to server HTTP call when local data is empty.
 class WalkListScreen extends ConsumerStatefulWidget {
   final String turfId;
   final String turfName;
@@ -26,6 +30,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
   bool _isLoading = true;
   String? _error;
   bool _showMap = false;
+  bool _usingLocalData = false;
 
   @override
   void initState() {
@@ -38,6 +43,21 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
       _isLoading = true;
       _error = null;
     });
+
+    // Try local Drift DB first (offline-first)
+    final localVoters = await _tryLoadFromLocalDb();
+    if (localVoters != null && localVoters.isNotEmpty) {
+      if (mounted) {
+        setState(() {
+          _voters = localVoters;
+          _isLoading = false;
+          _usingLocalData = true;
+        });
+      }
+      return;
+    }
+
+    // Fall back to server HTTP call
     try {
       final service = ref.read(mapServiceProvider);
       final voters = await service.generateWalkList(widget.turfId);
@@ -45,6 +65,7 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
         setState(() {
           _voters = voters;
           _isLoading = false;
+          _usingLocalData = false;
         });
       }
     } catch (e) {
@@ -54,6 +75,39 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
           _error = e.toString();
         });
       }
+    }
+  }
+
+  /// Try to load voters from local Drift DB, ordered by walk_sequence.
+  /// Returns null if database is not available or has no data for this turf.
+  Future<List<WalkListVoter>?> _tryLoadFromLocalDb() async {
+    try {
+      final db = ref.read(databaseProvider);
+      final voterDao = db.voterDao;
+
+      // watchVotersInTurf returns a stream; use getVotersInTurf for one-shot
+      // VoterDao orders by walkSequence already in watchVotersInTurf
+      final localVoters = await voterDao.getVotersInTurf(widget.turfId);
+
+      if (localVoters.isEmpty) return null;
+
+      // Sort by walk sequence (getVotersInTurf orders by lastName,
+      // we need walkSequence order for the walk list)
+      localVoters.sort((a, b) => a.walkSequence.compareTo(b.walkSequence));
+
+      return localVoters.map((v) => WalkListVoter(
+            voterId: v.id,
+            firstName: v.firstName,
+            lastName: v.lastName,
+            latitude: v.latitude,
+            longitude: v.longitude,
+            resStreetAddress: v.resStreetAddress,
+            party: v.party,
+            sequence: v.walkSequence,
+          )).toList();
+    } catch (_) {
+      // Database not initialized or query failed
+      return null;
     }
   }
 
@@ -97,6 +151,14 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
       appBar: AppBar(
         title: Text('Walk List: ${widget.turfName}'),
         actions: [
+          if (_usingLocalData)
+            const Tooltip(
+              message: 'Using offline data',
+              child: Padding(
+                padding: EdgeInsets.symmetric(horizontal: 8),
+                child: Icon(Icons.offline_pin, size: 20, color: Colors.orange),
+              ),
+            ),
           IconButton(
             icon: Icon(_showMap ? Icons.list : Icons.map),
             onPressed: () => setState(() => _showMap = !_showMap),

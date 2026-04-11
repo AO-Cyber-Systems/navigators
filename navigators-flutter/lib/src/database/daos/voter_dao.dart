@@ -18,6 +18,32 @@ class VoterDao extends DatabaseAccessor<NavigatorsDatabase>
         .watch();
   }
 
+  /// Get all voters in a turf (one-shot), ordered by last name.
+  Future<List<Voter>> getVotersInTurf(String turfId) {
+    return (select(voters)
+          ..where((v) => v.turfId.equals(turfId))
+          ..orderBy([(v) => OrderingTerm.asc(v.lastName)]))
+        .get();
+  }
+
+  /// Get all voters across all turfs, ordered by last name.
+  Future<List<Voter>> getAllVoters() {
+    return (select(voters)
+          ..orderBy([(v) => OrderingTerm.asc(v.lastName)]))
+        .get();
+  }
+
+  /// Search voters locally by first or last name (case-insensitive).
+  Future<List<Voter>> searchVoters(String query) {
+    final pattern = '%${query.toLowerCase()}%';
+    return (select(voters)
+          ..where((v) =>
+              v.firstName.lower().like(pattern) |
+              v.lastName.lower().like(pattern))
+          ..orderBy([(v) => OrderingTerm.asc(v.lastName)]))
+        .get();
+  }
+
   /// Get a single voter by ID.
   Future<Voter?> getVoterById(String id) {
     return (select(voters)..where((v) => v.id.equals(id))).getSingleOrNull();

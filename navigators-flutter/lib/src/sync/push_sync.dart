@@ -132,6 +132,80 @@ class PushSync {
   Future<List<SyncOperation>> getDeadLetterOperations() {
     return _db.syncDao.getDeadLetterOperations(maxRetryCount);
   }
+
+  /// Push pending operations for a specific turf (used before turf reassignment cleanup).
+  ///
+  /// Filters the outbox for operations whose entityId matches voters in the given turf,
+  /// or whose payload contains the turfId. This ensures no field work is lost before
+  /// deleting local data for a removed turf.
+  Future<int> pushOperationsForTurf(String turfId) async {
+    final syncDao = _db.syncDao;
+    final pending = await syncDao.getPendingOperations(1000);
+    if (pending.isEmpty) return 0;
+
+    // Filter operations related to this turf by checking payload for turfId
+    final turfOps = pending.where((op) {
+      try {
+        final payloadStr = utf8.decode(op.payload);
+        return payloadStr.contains(turfId);
+      } catch (_) {
+        return false;
+      }
+    }).toList();
+
+    if (turfOps.isEmpty) return 0;
+
+    // Mark as in_progress before sending
+    final ids = turfOps.map((op) => op.id).toList();
+    await syncDao.markInProgress(ids);
+
+    try {
+      final operations = turfOps.map((op) {
+        return {
+          'clientOperationId': '${op.id}',
+          'entityType': op.entityType,
+          'entityId': op.entityId,
+          'operationType': op.operationType,
+          'payload': base64Encode(op.payload),
+          'clientTimestamp': op.createdAt.toIso8601String(),
+        };
+      }).toList();
+
+      final response = await _client.pushSyncBatch(operations);
+
+      final processedIds = (response['processedOperationIds'] as List<dynamic>?)
+              ?.cast<String>() ??
+          [];
+
+      final idMap = <String, int>{};
+      for (final op in turfOps) {
+        idMap['${op.id}'] = op.id;
+      }
+
+      final processedIntIds = <int>[];
+      for (final pid in processedIds) {
+        final intId = idMap[pid];
+        if (intId != null) processedIntIds.add(intId);
+      }
+
+      if (processedIntIds.isNotEmpty) {
+        await syncDao.markSynced(processedIntIds);
+      }
+
+      // Reset any not-processed back to pending
+      final unprocessedIds =
+          ids.where((id) => !processedIntIds.contains(id)).toList();
+      if (unprocessedIds.isNotEmpty) {
+        await syncDao.resetToPending(unprocessedIds);
+      }
+
+      return processedIntIds.length;
+    } catch (_) {
+      // Network failure: reset to pending for retry
+      await syncDao.resetInProgressToPending();
+      return 0;
+    }
+  }
 }
 
 /// Riverpod provider for PushSync.

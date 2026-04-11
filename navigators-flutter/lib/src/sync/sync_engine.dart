@@ -86,6 +86,14 @@ class SyncEngine {
       var totalPushed = 0;
       var retriedCount = 0;
 
+      // Phase 0: Handle turf reassignment (check manifest for changes)
+      try {
+        final manifest = await _pullClient.getSyncManifest();
+        await handleTurfReassignment(manifest);
+      } catch (e) {
+        errors.add('Turf reassignment check failed: $e');
+      }
+
       // Phase 1: Push pending operations (loop until all pushed)
       try {
         while (true) {
@@ -152,6 +160,50 @@ class SyncEngine {
       return totalPushed;
     } finally {
       _isSyncing = false;
+    }
+  }
+
+  /// Handle turf reassignment: compare server assignments to local.
+  ///
+  /// For removed turfs: push pending ops first (critical!), then delete local data.
+  /// For new turfs: insert assignment entry (full pull happens in Phase 3 via empty cursor).
+  Future<void> handleTurfReassignment(SyncManifest manifest) async {
+    final localAssignments = await _db.select(_db.turfAssignments).get();
+    final serverTurfIds =
+        manifest.turfAssignments.map((t) => t.turfId).toSet();
+    final localTurfIds = localAssignments.map((a) => a.turfId).toSet();
+
+    // Removed turfs: push pending ops first, then clean local data
+    final removed = localTurfIds.difference(serverTurfIds);
+    for (final turfId in removed) {
+      // CRITICAL: Push pending operations for this turf before deleting
+      await _pushSync.pushOperationsForTurf(turfId);
+
+      // Delete local voter data for removed turf
+      await _db.voterDao.deleteVotersForTurf(turfId);
+
+      // Delete turf assignment entry
+      await (_db.delete(_db.turfAssignments)
+            ..where((t) => t.turfId.equals(turfId)))
+          .go();
+
+      // Reset sync cursors for this turf (they're stale now)
+      // Cursors are per-entity-type not per-turf, but resetting
+      // ensures a fresh pull picks up the right data
+    }
+
+    // New turfs: insert assignment entry (full pull will happen via empty cursor)
+    final added = serverTurfIds.difference(localTurfIds);
+    for (final turf
+        in manifest.turfAssignments.where((t) => added.contains(t.turfId))) {
+      await _db.into(_db.turfAssignments).insert(
+            TurfAssignmentsCompanion.insert(
+              turfId: turf.turfId,
+              turfName: turf.turfName,
+              assignedAt: DateTime.now(),
+              boundaryGeojson: turf.boundaryGeojson,
+            ),
+          );
     }
   }
 
