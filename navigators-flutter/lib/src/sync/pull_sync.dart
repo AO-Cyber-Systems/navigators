@@ -82,6 +82,13 @@ class SyncClient {
     );
   }
 
+  /// Push a batch of sync operations to the server.
+  /// Returns the raw response map with processedOperationIds and errors.
+  Future<Map<String, dynamic>> pushSyncBatch(
+      List<Map<String, dynamic>> operations) async {
+    return _post('PushSyncBatch', {'operations': operations});
+  }
+
   /// Get the sync manifest (turf assignments with metadata).
   Future<SyncManifest> getSyncManifest() async {
     final result = await _post('GetSyncManifest', {});
