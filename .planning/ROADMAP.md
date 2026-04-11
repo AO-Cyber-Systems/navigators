@@ -8,7 +8,7 @@ Navigators goes from foundation to field-ready in 10 objectives. The first four 
 
 ## Objectives
 
-- [ ] **Objective 1: Foundation + Auth** - Backend skeleton with auth, RBAC, audit logging, and infrastructure services
+- [x] **Objective 1: Foundation + Auth** - Backend skeleton with auth, RBAC, audit logging, and infrastructure services
 - [ ] **Objective 2: Voter Data Pipeline** - Import, geocode, deduplicate, search, and display voter records
 - [ ] **Objective 3: Turf Management + Maps** - Draw turfs, assign Navigators, display voters on interactive maps
 - [ ] **Objective 4: Offline Sync Engine** - Download, work offline, and sync back with conflict resolution
@@ -48,12 +48,12 @@ Jobs:
   3. User can search voters by name, address, or voter ID and filter by district, party, voting frequency, tags, and geography
   4. Full voter profile displays name, address, YOB, party enrollment, voting history, districts, registration date, and status
   5. System maintains a global suppression list and no prohibited fields (SSN, full DOB, felony info) are stored
-**Plans**: TBD
+**TRDs:** 3 plans in 3 waves
 
 Jobs:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
-- [ ] 02-03: TBD
+- [ ] 02-01-TRD.md — Voter data model + import pipeline (CVR + L2 parsers, staging, dedup merge)
+- [ ] 02-02-TRD.md — Geocoding + voter search/filter + tags
+- [ ] 02-03-TRD.md — Voter profile + suppression list + Flutter UI
 
 ### Objective 3: Turf Management + Maps
 **Goal**: Admins can draw turf boundaries on a map, assign them to Navigators, and voters appear as clustered pins within turfs
@@ -65,7 +65,7 @@ Jobs:
   3. Navigator can download offline map tiles for their assigned turf
   4. System generates route-optimized walk lists and tracks turf completion percentage
   5. Admin can view geographic heat maps of contact density and support levels
-**Plans**: TBD
+**TRDs:** 3 plans in 3 waves
 
 Jobs:
 - [ ] 03-01: TBD
@@ -82,7 +82,7 @@ Jobs:
   3. Background sync pushes local changes to the server when connectivity is available, with conflict resolution for concurrent edits
   4. Sync status indicator shows the Navigator exactly what is synced vs pending at all times
   5. App forces sync on open when online; local voter data is encrypted at rest with AES-256
-**Plans**: TBD
+**TRDs:** 3 plans in 3 waves
 
 Jobs:
 - [ ] 04-01: TBD
@@ -99,7 +99,7 @@ Jobs:
   3. Navigator can add free-text notes to any voter; notes follow role-scoped visibility (own notes, team notes, all notes)
   4. Each voter profile shows a unified contact timeline of all interactions (door knocks, texts, calls) with timestamps
   5. System tracks door-knock attempts per voter with full timestamp history
-**Plans**: TBD
+**TRDs:** 3 plans in 3 waves
 
 Jobs:
 - [ ] 05-01: TBD
@@ -116,7 +116,7 @@ Jobs:
   3. System automatically processes STOP/opt-out keywords within seconds and updates the global suppression list
   4. System enforces quiet hours (no texts before 8am or after 9pm) and tracks delivery status via provider webhooks
   5. System supports 10DLC registration flow and gates A2P messaging on registration status
-**Plans**: TBD
+**TRDs:** 3 plans in 3 waves
 
 Jobs:
 - [ ] 06-01: TBD
@@ -137,7 +137,7 @@ Jobs:
   2. Call script displays to the Navigator during the call with relevant voter context
   3. Navigator completes a post-call disposition form capturing outcome, sentiment, and free-text notes
   4. Call interactions appear in the voter's unified contact timeline
-**Plans**: TBD
+**TRDs:** 3 plans in 3 waves
 
 Jobs:
 - [ ] 07-01: TBD
@@ -152,7 +152,7 @@ Jobs:
   2. Tasks can be linked to voter lists, turfs, or specific voters, and progress auto-updates as linked voters are contacted
   3. Navigator can add notes to tasks visible to their Super Navigator and Admin
   4. System sends push notifications for task reminders, new assignments, and sync alerts
-**Plans**: TBD
+**TRDs:** 3 plans in 3 waves
 
 Jobs:
 - [ ] 08-01: TBD
@@ -168,7 +168,7 @@ Jobs:
   2. Super Navigator sees a team dashboard with performance metrics, task completion, and turf coverage
   3. Admin sees an organization dashboard with geographic heat maps, trend analysis, and key metrics (doors knocked, texts sent, calls made, contact rate, sentiment distribution)
   4. Admin can export any filtered dataset as CSV or Excel
-**Plans**: TBD
+**TRDs:** 3 plans in 3 waves
 
 Jobs:
 - [ ] 09-01: TBD
@@ -184,7 +184,7 @@ Jobs:
   2. Admin or Super Navigator can create events (canvass events, phone banks) with Navigators RSVPing and checking in
   3. System tracks event attendance and provides opt-in leaderboards with engagement metrics
   4. In-app training materials and best practices guides are accessible to all Navigators
-**Plans**: TBD
+**TRDs:** 3 plans in 3 waves
 
 Jobs:
 - [ ] 10-01: TBD
@@ -194,7 +194,7 @@ Jobs:
 
 | Objective | Jobs Complete | Status | Completed |
 |-----------|--------------|--------|-----------|
-| 1. Foundation + Auth | 0/3 | Planning complete | - |
+| 1. Foundation + Auth | 3/3 | ✓ Complete | 2026-04-10 |
 | 2. Voter Data Pipeline | 0/3 | Not started | - |
 | 3. Turf Management + Maps | 0/3 | Not started | - |
 | 4. Offline Sync Engine | 0/3 | Not started | - |
@@ -207,4 +207,4 @@ Jobs:
 
 ---
 *Roadmap created: 2026-04-10*
-*Last updated: 2026-04-10*
+*Last updated: 2026-04-10 — Objective 1 complete*
