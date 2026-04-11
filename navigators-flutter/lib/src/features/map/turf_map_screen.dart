@@ -5,7 +5,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:latlong2/latlong.dart';
 
 import '../../services/map_service.dart';
+import '../../services/tile_cache_service.dart';
+import 'heat_map_overlay.dart';
+import 'offline_download_screen.dart';
+import 'turf_dashboard_screen.dart';
 import 'turf_draw_screen.dart';
+import 'walk_list_screen.dart';
+import 'widgets/heat_map_painter.dart';
 import 'widgets/turf_polygon_layer.dart';
 import 'widgets/voter_cluster_layer.dart';
 
@@ -28,6 +34,15 @@ class _TurfMapScreenState extends ConsumerState<TurfMapScreen> {
   List<VoterPin> _voters = [];
   bool _loadingVoters = false;
 
+  // Heat map state: null = off, otherwise the current mode
+  HeatMapMode? _heatMapMode;
+
+  // Turf stats for selected turf
+  TurfStats? _selectedTurfStats;
+
+  // Whether the selected turf has cached tiles
+  bool _hasCachedTiles = false;
+
   @override
   void initState() {
     super.initState();
@@ -49,6 +64,8 @@ class _TurfMapScreenState extends ConsumerState<TurfMapScreen> {
       setState(() {
         _selectedTurfId = null;
         _voters = [];
+        _selectedTurfStats = null;
+        _hasCachedTiles = false;
       });
       return;
     }
@@ -56,15 +73,34 @@ class _TurfMapScreenState extends ConsumerState<TurfMapScreen> {
     setState(() {
       _selectedTurfId = turfId;
       _loadingVoters = true;
+      _selectedTurfStats = null;
+      _hasCachedTiles = false;
     });
 
     try {
       final service = ref.read(mapServiceProvider);
-      final result = await service.getVotersInTurf(turfId);
+      final cacheService = ref.read(tileCacheServiceProvider);
+
+      // Load voters, stats, and cache check in parallel
+      final results = await Future.wait([
+        service.getVotersInTurf(turfId),
+        service.getTurfStats(turfId).catchError((_) => const TurfStats(
+              turfId: '',
+              totalVoters: 0,
+              contactedVoters: 0,
+              completionPercentage: 0,
+            )),
+        cacheService.hasCache(turfId),
+      ]);
+
       if (mounted) {
+        final voterResult =
+            results[0] as ({List<VoterPin> voters, int totalCount});
         setState(() {
-          _voters = result.voters;
+          _voters = voterResult.voters;
           _loadingVoters = false;
+          _selectedTurfStats = results[1] as TurfStats;
+          _hasCachedTiles = results[2] as bool;
         });
       }
     } catch (e) {
@@ -83,6 +119,49 @@ class _TurfMapScreenState extends ConsumerState<TurfMapScreen> {
     showModalBottomSheet(
       context: context,
       builder: (context) => _VoterSummarySheet(voter: voter),
+    );
+  }
+
+  void _toggleHeatMap() {
+    setState(() {
+      if (_heatMapMode == null) {
+        _heatMapMode = HeatMapMode.density;
+      } else if (_heatMapMode == HeatMapMode.density) {
+        _heatMapMode = HeatMapMode.support;
+      } else {
+        _heatMapMode = null;
+      }
+    });
+  }
+
+  Future<void> _navigateToDashboard() async {
+    final selectedId = await Navigator.of(context).push<String>(
+      MaterialPageRoute(builder: (_) => const TurfDashboardScreen()),
+    );
+    if (selectedId != null && mounted) {
+      _selectTurf(selectedId);
+    }
+  }
+
+  void _navigateToWalkList(TurfInfo turf) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => WalkListScreen(
+          turfId: turf.turfId,
+          turfName: turf.name,
+        ),
+      ),
+    );
+  }
+
+  void _navigateToOfflineDownload(TurfInfo turf) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (_) => OfflineDownloadScreen(
+          turfId: turf.turfId,
+          turfName: turf.name,
+        ),
+      ),
     );
   }
 
@@ -150,6 +229,26 @@ class _TurfMapScreenState extends ConsumerState<TurfMapScreen> {
         title: const Text('Turf Map'),
         actions: [
           IconButton(
+            icon: Icon(
+              _heatMapMode == null
+                  ? Icons.thermostat_outlined
+                  : _heatMapMode == HeatMapMode.density
+                      ? Icons.thermostat
+                      : Icons.favorite,
+            ),
+            onPressed: _toggleHeatMap,
+            tooltip: _heatMapMode == null
+                ? 'Enable heat map'
+                : _heatMapMode == HeatMapMode.density
+                    ? 'Switch to support mode'
+                    : 'Disable heat map',
+          ),
+          IconButton(
+            icon: const Icon(Icons.dashboard_outlined),
+            onPressed: _navigateToDashboard,
+            tooltip: 'Turf Dashboard',
+          ),
+          IconButton(
             icon: const Icon(Icons.refresh),
             onPressed: () => ref.read(turfListProvider.notifier).refresh(),
             tooltip: 'Refresh turfs',
@@ -178,6 +277,11 @@ class _TurfMapScreenState extends ConsumerState<TurfMapScreen> {
               TileLayer(
                 urlTemplate: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
                 userAgentPackageName: 'com.mainegop.navigators',
+                tileProvider: _hasCachedTiles && _selectedTurfId != null
+                    ? ref
+                        .read(tileCacheServiceProvider)
+                        .getTileProvider(_selectedTurfId!)
+                    : null,
               ),
               buildTurfPolygonLayer(
                 turfState.turfs,
@@ -188,6 +292,11 @@ class _TurfMapScreenState extends ConsumerState<TurfMapScreen> {
                 buildVoterClusterLayer(
                   _voters,
                   onVoterTap: _onVoterTap,
+                ),
+              if (_heatMapMode != null)
+                HeatMapOverlay(
+                  mapController: _mapController,
+                  mode: _heatMapMode!,
                 ),
             ],
           ),
@@ -205,8 +314,8 @@ class _TurfMapScreenState extends ConsumerState<TurfMapScreen> {
               bottom: 0,
               left: 0,
               right: 0,
-              child: _TurfDetailPanel(
-                turf: turfState.turfs.firstWhere(
+              child: Builder(builder: (context) {
+                final turf = turfState.turfs.firstWhere(
                   (t) => t.turfId == _selectedTurfId,
                   orElse: () => const TurfInfo(
                     turfId: '',
@@ -221,20 +330,23 @@ class _TurfMapScreenState extends ConsumerState<TurfMapScreen> {
                     createdAt: '',
                     updatedAt: '',
                   ),
-                ),
-                voterCount: _voters.length,
-                isAdmin: isAdmin,
-                onAssign: () {
-                  final turf = turfState.turfs.firstWhere(
-                    (t) => t.turfId == _selectedTurfId,
-                  );
-                  _showAssignDialog(turf);
-                },
-                onClose: () => setState(() {
-                  _selectedTurfId = null;
-                  _voters = [];
-                }),
-              ),
+                );
+                return _TurfDetailPanel(
+                  turf: turf,
+                  voterCount: _voters.length,
+                  stats: _selectedTurfStats,
+                  isAdmin: isAdmin,
+                  onAssign: () => _showAssignDialog(turf),
+                  onWalkList: () => _navigateToWalkList(turf),
+                  onDownloadTiles: () => _navigateToOfflineDownload(turf),
+                  onClose: () => setState(() {
+                    _selectedTurfId = null;
+                    _voters = [];
+                    _selectedTurfStats = null;
+                    _hasCachedTiles = false;
+                  }),
+                );
+              }),
             ),
           // Error banner
           if (turfState.error != null)
@@ -291,21 +403,28 @@ class _TurfMapScreenState extends ConsumerState<TurfMapScreen> {
 class _TurfDetailPanel extends StatelessWidget {
   final TurfInfo turf;
   final int voterCount;
+  final TurfStats? stats;
   final bool isAdmin;
   final VoidCallback onAssign;
+  final VoidCallback onWalkList;
+  final VoidCallback onDownloadTiles;
   final VoidCallback onClose;
 
   const _TurfDetailPanel({
     required this.turf,
     required this.voterCount,
+    required this.stats,
     required this.isAdmin,
     required this.onAssign,
+    required this.onWalkList,
+    required this.onDownloadTiles,
     required this.onClose,
   });
 
   @override
   Widget build(BuildContext context) {
     final areaAcres = turf.areaSqMeters / 4046.86;
+    final completion = stats?.completionPercentage ?? 0.0;
 
     return Container(
       decoration: BoxDecoration(
@@ -338,7 +457,31 @@ class _TurfDetailPanel extends StatelessWidget {
             const SizedBox(height: 4),
             Text(turf.description, style: Theme.of(context).textTheme.bodyMedium),
           ],
-          const SizedBox(height: 12),
+          const SizedBox(height: 8),
+          // Completion progress
+          if (stats != null) ...[
+            Row(
+              children: [
+                Expanded(
+                  child: ClipRRect(
+                    borderRadius: BorderRadius.circular(4),
+                    child: LinearProgressIndicator(
+                      value: completion / 100,
+                      minHeight: 6,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                Text(
+                  '${completion.toStringAsFixed(0)}%',
+                  style: Theme.of(context).textTheme.bodySmall?.copyWith(
+                        fontWeight: FontWeight.bold,
+                      ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 8),
+          ],
           Row(
             children: [
               _StatChip(
@@ -350,16 +493,39 @@ class _TurfDetailPanel extends StatelessWidget {
                 icon: Icons.square_foot,
                 label: '${areaAcres.toStringAsFixed(0)} acres',
               ),
+              if (stats != null) ...[
+                const SizedBox(width: 12),
+                _StatChip(
+                  icon: Icons.check_circle_outline,
+                  label: '${stats!.contactedVoters} contacted',
+                ),
+              ],
             ],
           ),
-          if (isAdmin) ...[
-            const SizedBox(height: 12),
-            FilledButton.tonalIcon(
-              onPressed: onAssign,
-              icon: const Icon(Icons.person_add),
-              label: const Text('Assign Navigator'),
-            ),
-          ],
+          const SizedBox(height: 12),
+          // Action buttons
+          Wrap(
+            spacing: 8,
+            runSpacing: 8,
+            children: [
+              FilledButton.tonalIcon(
+                onPressed: onWalkList,
+                icon: const Icon(Icons.list_alt, size: 18),
+                label: const Text('Walk List'),
+              ),
+              FilledButton.tonalIcon(
+                onPressed: onDownloadTiles,
+                icon: const Icon(Icons.download, size: 18),
+                label: const Text('Offline Tiles'),
+              ),
+              if (isAdmin)
+                FilledButton.tonalIcon(
+                  onPressed: onAssign,
+                  icon: const Icon(Icons.person_add, size: 18),
+                  label: const Text('Assign'),
+                ),
+            ],
+          ),
         ],
       ),
     );
