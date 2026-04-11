@@ -10,7 +10,7 @@ See: .planning/PROJECT.md (updated 2026-04-10)
 ## Current Position
 
 **Objective:** 3 of 10 (Turf Management + Maps)
-**Current Job:** 2
+**Current Job:** 3
 **Total Jobs in Objective:** 3
 **Status:** Ready to execute
 **Last Activity:** 2026-04-11
@@ -37,6 +37,7 @@ Progress: [##........] 13%
 | Objective 02 P02 | 8min | 2 tasks | 19 files |
 | Objective 02 P03 | 9min | 2 tasks | 22 files |
 | Objective 03 P01 | 7min | 2 tasks | 8 files |
+| Objective 03 P02 | 6min | 2 tasks | 7 files |
 
 ## Accumulated Context
 
@@ -68,6 +69,9 @@ Recent decisions affecting current work:
 - [Objective 03]: sqlc spatial columns return interface{} -- use toFloat64 helper for safe type assertion
 - [Objective 03]: Walk list uses Go-side O(n^2) haversine greedy nearest-neighbor (correct for 100-2000 voters)
 - [Objective 03]: GetVotersInTurf and GetVoterDensityGrid use raw pgxpool (not sqlc) for complex spatial JOINs
+- [Objective 03]: PolygonLayer uses generic type parameter <String> for hitValue to satisfy flutter_map 8 nullability constraints
+- [Objective 03]: Map tab positioned for all roles (not just admin) between Voters and Import tabs
+- [Objective 03]: Voter pins loaded per-turf on selection rather than viewport-based to avoid loading all voters at once
 
 ### Pending Todos
 
