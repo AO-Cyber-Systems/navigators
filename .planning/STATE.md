@@ -10,7 +10,7 @@ See: .planning/PROJECT.md (updated 2026-04-10)
 ## Current Position
 
 **Objective:** 2 of 10 (Voter Data Pipeline)
-**Current Job:** 2
+**Current Job:** 3
 **Total Jobs in Objective:** 3
 **Status:** Ready to execute
 **Last Activity:** 2026-04-11
@@ -34,6 +34,7 @@ Progress: [##........] 13%
 - Last 5 jobs: 01-01 (11 min), 01-02 (12 min), 01-03 (8 min)
 - Trend: Improving
 | Objective 02 P01 | 8min | 2 tasks | 18 files |
+| Objective 02 P02 | 8min | 2 tasks | 19 files |
 
 ## Accumulated Context
 
@@ -56,6 +57,9 @@ Recent decisions affecting current work:
 - [Objective 02]: Use MinIO client directly for voter file uploads (not eden upload.Service) because voter files can exceed 100MB
 - [Objective 02]: Configurable field mapping (map[int]string) stored in import_jobs JSONB for CVR/L2 column flexibility
 - [Objective 02]: Dedup key format: LASTNAME|STREETNUM|STREETNAME|ZIP5|YOB with normalization (strip non-alpha, abbreviate street suffixes)
+- [Objective 02-voter-data-pipeline]: Use 'success' (not 'matched') for geocode_status to match DB CHECK constraint
+- [Objective 02-voter-data-pipeline]: Raw pgxpool queries for turf-scoped spatial PostGIS operations (sqlc cannot handle ST_Within JOINs)
+- [Objective 02-voter-data-pipeline]: Tag RPCs added to VoterService proto (not separate service) since tags are voter-domain
 
 ### Pending Todos
 
