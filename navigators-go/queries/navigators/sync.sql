@@ -39,8 +39,8 @@ ON CONFLICT DO NOTHING;
 
 -- name: UpsertContactLogFromSync :exec
 -- Insert a contact log from a client sync push. Append-only: skip if already exists.
-INSERT INTO contact_logs (id, company_id, voter_id, user_id, turf_id, contact_type, outcome, notes, created_at)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+INSERT INTO contact_logs (id, company_id, voter_id, user_id, turf_id, contact_type, outcome, notes, door_status, sentiment, created_at)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
 ON CONFLICT (id) DO NOTHING;
 
 -- name: UpdateVoterUpdatedAtFromSync :exec
@@ -51,3 +51,19 @@ UPDATE voters
 SET updated_at = now()
 WHERE id = $1 AND company_id = $2
   AND updated_at < $3;
+
+-- name: PullSurveyForms :many
+-- Pull active survey forms updated since cursor.
+SELECT id, company_id, title, description, schema, version, is_active, created_by, created_at, updated_at
+FROM survey_forms
+WHERE company_id = $1 AND is_active = true AND updated_at > $2
+ORDER BY updated_at ASC
+LIMIT $3;
+
+-- name: PullSurveyResponses :many
+-- Pull survey responses created since cursor, scoped to turfs.
+SELECT id, company_id, form_id, form_version, voter_id, user_id, turf_id, contact_log_id, responses, created_at
+FROM survey_responses
+WHERE company_id = $1 AND turf_id = ANY($2::uuid[]) AND created_at > $3
+ORDER BY created_at ASC
+LIMIT $4;

@@ -15,17 +15,21 @@ import (
 
 // SyncService provides sync query operations scoped to user's turfs.
 type SyncService struct {
-	queries    *db.Queries
-	pool       *pgxpool.Pool
-	turfFilter *TurfScopedFilter
+	queries           *db.Queries
+	pool              *pgxpool.Pool
+	turfFilter        *TurfScopedFilter
+	surveyService     *SurveyService
+	voterNotesService *VoterNotesService
 }
 
 // NewSyncService creates a new SyncService.
-func NewSyncService(queries *db.Queries, pool *pgxpool.Pool, turfFilter *TurfScopedFilter) *SyncService {
+func NewSyncService(queries *db.Queries, pool *pgxpool.Pool, turfFilter *TurfScopedFilter, surveyService *SurveyService, voterNotesService *VoterNotesService) *SyncService {
 	return &SyncService{
-		queries:    queries,
-		pool:       pool,
-		turfFilter: turfFilter,
+		queries:           queries,
+		pool:              pool,
+		turfFilter:        turfFilter,
+		surveyService:     surveyService,
+		voterNotesService: voterNotesService,
 	}
 }
 
@@ -62,7 +66,49 @@ type SyncContactLogRow struct {
 	ContactType string
 	Outcome     string
 	Notes       string
+	DoorStatus  string
+	Sentiment   *int32
 	CreatedAt   time.Time
+}
+
+// SyncSurveyFormRow represents a survey form row returned for sync pull.
+type SyncSurveyFormRow struct {
+	ID          uuid.UUID
+	CompanyID   uuid.UUID
+	Title       string
+	Description string
+	Schema      json.RawMessage
+	Version     int32
+	IsActive    bool
+	CreatedAt   time.Time
+	UpdatedAt   time.Time
+}
+
+// SyncSurveyResponseRow represents a survey response row returned for sync pull.
+type SyncSurveyResponseRow struct {
+	ID           uuid.UUID
+	FormID       uuid.UUID
+	FormVersion  int32
+	VoterID      uuid.UUID
+	UserID       uuid.UUID
+	TurfID       uuid.UUID
+	ContactLogID *uuid.UUID
+	Responses    json.RawMessage
+	CreatedAt    time.Time
+}
+
+// PullSurveyFormsResult contains the result of a survey form pull operation.
+type PullSurveyFormsResult struct {
+	SurveyForms []SyncSurveyFormRow
+	NextCursor  string
+	HasMore     bool
+}
+
+// PullSurveyResponsesResult contains the result of a survey response pull operation.
+type PullSurveyResponsesResult struct {
+	SurveyResponses []SyncSurveyResponseRow
+	NextCursor      string
+	HasMore         bool
 }
 
 // PullVoterUpdatesResult contains the result of a voter pull operation.
@@ -121,6 +167,8 @@ type contactLogPayload struct {
 	ContactType string `json:"contact_type"`
 	Outcome     string `json:"outcome"`
 	Notes       string `json:"notes"`
+	DoorStatus  string `json:"door_status"`
+	Sentiment   *int32 `json:"sentiment"`
 	CreatedAt   string `json:"created_at"`
 }
 
@@ -164,6 +212,10 @@ func (s *SyncService) PushSyncBatch(ctx context.Context, userID, companyID uuid.
 			err = s.processContactLog(ctx, companyID, userID, op)
 		case "voter_metadata":
 			err = s.processVoterMetadata(ctx, companyID, op)
+		case "survey_response":
+			err = s.surveyService.ProcessSurveyResponse(ctx, companyID, userID, op)
+		case "voter_note":
+			err = s.voterNotesService.ProcessVoterNote(ctx, companyID, userID, op)
 		default:
 			syncErrors = append(syncErrors, SyncError{
 				OperationID: op.ClientOperationID,
@@ -251,6 +303,8 @@ func (s *SyncService) processContactLog(ctx context.Context, companyID, userID u
 		ContactType: payload.ContactType,
 		Outcome:     payload.Outcome,
 		Notes:       payload.Notes,
+		DoorStatus:  payload.DoorStatus,
+		Sentiment:   payload.Sentiment,
 		CreatedAt:   createdAt,
 	})
 }
@@ -404,7 +458,8 @@ func (s *SyncService) PullContactLogs(ctx context.Context, companyID uuid.UUID, 
 
 	query := `
 		SELECT cl.id, cl.voter_id, cl.turf_id, cl.user_id,
-			cl.contact_type, cl.outcome, cl.notes, cl.created_at
+			cl.contact_type, cl.outcome, cl.notes,
+			cl.door_status, cl.sentiment, cl.created_at
 		FROM contact_logs cl
 		WHERE cl.company_id = $1
 			AND cl.turf_id = ANY($2::uuid[])
@@ -423,7 +478,8 @@ func (s *SyncService) PullContactLogs(ctx context.Context, companyID uuid.UUID, 
 		var cl SyncContactLogRow
 		if err := rows.Scan(
 			&cl.ID, &cl.VoterID, &cl.TurfID, &cl.UserID,
-			&cl.ContactType, &cl.Outcome, &cl.Notes, &cl.CreatedAt,
+			&cl.ContactType, &cl.Outcome, &cl.Notes,
+			&cl.DoorStatus, &cl.Sentiment, &cl.CreatedAt,
 		); err != nil {
 			return nil, fmt.Errorf("scan contact log row: %w", err)
 		}
@@ -447,6 +503,133 @@ func (s *SyncService) PullContactLogs(ctx context.Context, companyID uuid.UUID, 
 		ContactLogs: logs,
 		NextCursor:  nextCursor,
 		HasMore:     hasMore,
+	}, nil
+}
+
+// PullSurveyForms returns survey forms updated since cursor for a company.
+func (s *SyncService) PullSurveyForms(ctx context.Context, companyID uuid.UUID, sinceCursor string, batchSize int32) (*PullSurveyFormsResult, error) {
+	if batchSize <= 0 || batchSize > 500 {
+		batchSize = 500
+	}
+
+	var sinceTime time.Time
+	if sinceCursor != "" {
+		var err error
+		sinceTime, err = time.Parse(time.RFC3339Nano, sinceCursor)
+		if err != nil {
+			return nil, fmt.Errorf("parse cursor: %w", err)
+		}
+	} else {
+		sinceTime = time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC)
+	}
+
+	dbForms, err := s.queries.PullSurveyForms(ctx, db.PullSurveyFormsParams{
+		CompanyID: companyID,
+		UpdatedAt: sinceTime,
+		Limit:     batchSize + 1,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("pull survey forms: %w", err)
+	}
+
+	hasMore := len(dbForms) > int(batchSize)
+	if hasMore {
+		dbForms = dbForms[:batchSize]
+	}
+
+	forms := make([]SyncSurveyFormRow, len(dbForms))
+	for i, f := range dbForms {
+		forms[i] = SyncSurveyFormRow{
+			ID:          f.ID,
+			CompanyID:   f.CompanyID,
+			Title:       f.Title,
+			Description: f.Description,
+			Schema:      f.Schema,
+			Version:     f.Version,
+			IsActive:    f.IsActive,
+			CreatedAt:   f.CreatedAt,
+			UpdatedAt:   f.UpdatedAt,
+		}
+	}
+
+	var nextCursor string
+	if len(forms) > 0 {
+		nextCursor = forms[len(forms)-1].UpdatedAt.Format(time.RFC3339Nano)
+	}
+
+	return &PullSurveyFormsResult{
+		SurveyForms: forms,
+		NextCursor:  nextCursor,
+		HasMore:     hasMore,
+	}, nil
+}
+
+// PullSurveyResponses returns survey responses created since cursor, scoped to turfs.
+func (s *SyncService) PullSurveyResponses(ctx context.Context, companyID uuid.UUID, turfIDs []uuid.UUID, sinceCursor string, batchSize int32) (*PullSurveyResponsesResult, error) {
+	if batchSize <= 0 || batchSize > 500 {
+		batchSize = 500
+	}
+
+	if len(turfIDs) == 0 {
+		return &PullSurveyResponsesResult{}, nil
+	}
+
+	var sinceTime time.Time
+	if sinceCursor != "" {
+		var err error
+		sinceTime, err = time.Parse(time.RFC3339Nano, sinceCursor)
+		if err != nil {
+			return nil, fmt.Errorf("parse cursor: %w", err)
+		}
+	} else {
+		sinceTime = time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC)
+	}
+
+	dbResponses, err := s.queries.PullSurveyResponses(ctx, db.PullSurveyResponsesParams{
+		CompanyID: companyID,
+		Column2:   turfIDs,
+		CreatedAt: sinceTime,
+		Limit:     batchSize + 1,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("pull survey responses: %w", err)
+	}
+
+	hasMore := len(dbResponses) > int(batchSize)
+	if hasMore {
+		dbResponses = dbResponses[:batchSize]
+	}
+
+	responses := make([]SyncSurveyResponseRow, len(dbResponses))
+	for i, r := range dbResponses {
+		row := SyncSurveyResponseRow{
+			ID:          r.ID,
+			FormID:      r.FormID,
+			FormVersion: r.FormVersion,
+			VoterID:     r.VoterID,
+			UserID:      r.UserID,
+			Responses:   r.Responses,
+			CreatedAt:   r.CreatedAt,
+		}
+		if r.TurfID.Valid {
+			row.TurfID = uuid.UUID(r.TurfID.Bytes)
+		}
+		if r.ContactLogID.Valid {
+			clID := uuid.UUID(r.ContactLogID.Bytes)
+			row.ContactLogID = &clID
+		}
+		responses[i] = row
+	}
+
+	var nextCursor string
+	if len(responses) > 0 {
+		nextCursor = responses[len(responses)-1].CreatedAt.Format(time.RFC3339Nano)
+	}
+
+	return &PullSurveyResponsesResult{
+		SurveyResponses: responses,
+		NextCursor:      nextCursor,
+		HasMore:         hasMore,
 	}, nil
 }
 

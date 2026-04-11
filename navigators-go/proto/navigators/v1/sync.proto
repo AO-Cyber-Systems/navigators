@@ -15,6 +15,15 @@ service SyncService {
   // PushSyncBatch receives a batch of operations from the client outbox.
   rpc PushSyncBatch(PushSyncBatchRequest) returns (PushSyncBatchResponse);
 
+  // PullSurveyForms returns active survey forms updated since the given cursor.
+  rpc PullSurveyForms(PullSurveyFormsRequest) returns (PullSurveyFormsResponse);
+
+  // PullSurveyResponses returns survey responses created since the given cursor, scoped to turfs.
+  rpc PullSurveyResponses(PullSurveyResponsesRequest) returns (PullSurveyResponsesResponse);
+
+  // PullVoterNotes returns voter notes created since the given cursor, scoped to turfs and role.
+  rpc PullVoterNotes(PullVoterNotesRequest) returns (PullVoterNotesResponse);
+
   // GetSyncManifest returns the user's turf assignments with metadata for initial sync.
   rpc GetSyncManifest(GetSyncManifestRequest) returns (GetSyncManifestResponse);
 }
@@ -81,6 +90,8 @@ message SyncContactLog {
   string outcome = 6;
   string notes = 7;
   string created_at = 8; // ISO timestamp
+  string door_status = 9;
+  int32 sentiment = 10; // 0 means null/unset, 1-5 valid range
 }
 
 // --- Push Sync Batch ---
@@ -123,4 +134,80 @@ message TurfAssignmentInfo {
   string turf_name = 2;
   string boundary_geojson = 3;
   int32 voter_count = 4;
+}
+
+// --- Pull Survey Forms ---
+
+message PullSurveyFormsRequest {
+  string since_cursor = 1;
+  int32 batch_size = 2;
+}
+
+message PullSurveyFormsResponse {
+  repeated SyncSurveyForm survey_forms = 1;
+  string next_cursor = 2;
+  bool has_more = 3;
+}
+
+message SyncSurveyForm {
+  string id = 1;
+  string company_id = 2;
+  string title = 3;
+  string description = 4;
+  string schema = 5;      // JSON string of form definition
+  int32 version = 6;
+  bool is_active = 7;
+  string created_at = 8;
+  string updated_at = 9;
+}
+
+// --- Pull Survey Responses ---
+
+message PullSurveyResponsesRequest {
+  string since_cursor = 1;
+  repeated string turf_ids = 2;
+  int32 batch_size = 3;
+}
+
+message PullSurveyResponsesResponse {
+  repeated SyncSurveyResponse survey_responses = 1;
+  string next_cursor = 2;
+  bool has_more = 3;
+}
+
+message SyncSurveyResponse {
+  string id = 1;
+  string form_id = 2;
+  int32 form_version = 3;
+  string voter_id = 4;
+  string user_id = 5;
+  string turf_id = 6;
+  string contact_log_id = 7;
+  string responses = 8;   // JSON string
+  string created_at = 9;
+}
+
+// --- Pull Voter Notes ---
+
+message PullVoterNotesRequest {
+  string since_cursor = 1;
+  repeated string turf_ids = 2;
+  int32 batch_size = 3;
+}
+
+message PullVoterNotesResponse {
+  repeated SyncVoterNote voter_notes = 1;
+  string next_cursor = 2;
+  bool has_more = 3;
+}
+
+message SyncVoterNote {
+  string id = 1;
+  string voter_id = 2;
+  string user_id = 3;
+  string turf_id = 4;
+  string content = 5;
+  string visibility = 6;  // private, team, org
+  string created_at = 7;
+  string updated_at = 8;
 }

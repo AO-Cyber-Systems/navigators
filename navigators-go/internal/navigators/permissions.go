@@ -12,7 +12,9 @@ const (
 	FeatureTeams  rbac.Feature = "teams"
 	FeatureAudit  rbac.Feature = "audit"
 	FeatureAdmin  rbac.Feature = "admin"
-	FeatureSync   rbac.Feature = "sync"
+	FeatureSync    rbac.Feature = "sync"
+	FeatureSurveys rbac.Feature = "surveys"
+	FeatureNotes   rbac.Feature = "notes"
 )
 
 // NavigatorsPermissionMatrix returns the RBAC permission matrix for the Navigators app.
@@ -54,6 +56,16 @@ func NavigatorsPermissionMatrix() rbac.PermissionMatrix {
 		FeatureSync: {
 			"pull": rbac.RoleLevelMember, // Navigator (40) -- all navigators can sync
 			"push": rbac.RoleLevelMember, // Navigator (40)
+		},
+		FeatureSurveys: {
+			"view":   rbac.RoleLevelMember,  // Navigator (40)
+			"create": rbac.RoleLevelAdmin,   // Admin (80)
+			"admin":  rbac.RoleLevelAdmin,   // Admin (80)
+		},
+		FeatureNotes: {
+			"view":   rbac.RoleLevelMember, // Navigator (40)
+			"create": rbac.RoleLevelMember, // Navigator (40)
+			"admin":  rbac.RoleLevelAdmin,  // Admin (80)
 		},
 	}
 }
@@ -107,10 +119,13 @@ func NavigatorsProcedurePermissions() map[string]server.Permission {
 		"/navigators.v1.VoterService/ListSuppressedVoters":      {Feature: "voters", Action: "admin"},
 
 		// Sync operations
-		"/navigators.v1.SyncService/PullVoterUpdates": {Feature: "sync", Action: "pull"},
-		"/navigators.v1.SyncService/PullContactLogs":  {Feature: "sync", Action: "pull"},
-		"/navigators.v1.SyncService/PushSyncBatch":    {Feature: "sync", Action: "push"},
-		"/navigators.v1.SyncService/GetSyncManifest":  {Feature: "sync", Action: "pull"},
+		"/navigators.v1.SyncService/PullVoterUpdates":    {Feature: "sync", Action: "pull"},
+		"/navigators.v1.SyncService/PullContactLogs":     {Feature: "sync", Action: "pull"},
+		"/navigators.v1.SyncService/PullSurveyForms":     {Feature: "sync", Action: "pull"},
+		"/navigators.v1.SyncService/PullSurveyResponses": {Feature: "sync", Action: "pull"},
+		"/navigators.v1.SyncService/PullVoterNotes":      {Feature: "sync", Action: "pull"},
+		"/navigators.v1.SyncService/PushSyncBatch":       {Feature: "sync", Action: "push"},
+		"/navigators.v1.SyncService/GetSyncManifest":     {Feature: "sync", Action: "pull"},
 
 		// Voter tag management
 		"/navigators.v1.VoterService/CreateTag":          {Feature: "voters", Action: "admin"},

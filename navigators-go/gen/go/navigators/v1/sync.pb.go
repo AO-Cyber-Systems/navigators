@@ -469,6 +469,8 @@ type SyncContactLog struct {
 	Outcome       string                 `protobuf:"bytes,6,opt,name=outcome,proto3" json:"outcome,omitempty"`
 	Notes         string                 `protobuf:"bytes,7,opt,name=notes,proto3" json:"notes,omitempty"`
 	CreatedAt     string                 `protobuf:"bytes,8,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"` // ISO timestamp
+	DoorStatus    string                 `protobuf:"bytes,9,opt,name=door_status,json=doorStatus,proto3" json:"door_status,omitempty"`
+	Sentiment     int32                  `protobuf:"varint,10,opt,name=sentiment,proto3" json:"sentiment,omitempty"` // 0 means null/unset, 1-5 valid range
 	unknownFields protoimpl.UnknownFields
 	sizeCache     protoimpl.SizeCache
 }
@@ -557,6 +559,20 @@ func (x *SyncContactLog) GetCreatedAt() string {
 		return x.CreatedAt
 	}
 	return ""
+}
+
+func (x *SyncContactLog) GetDoorStatus() string {
+	if x != nil {
+		return x.DoorStatus
+	}
+	return ""
+}
+
+func (x *SyncContactLog) GetSentiment() int32 {
+	if x != nil {
+		return x.Sentiment
+	}
+	return 0
 }
 
 type PushSyncBatchRequest struct {
@@ -955,6 +971,674 @@ func (x *TurfAssignmentInfo) GetVoterCount() int32 {
 	return 0
 }
 
+type PullSurveyFormsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SinceCursor   string                 `protobuf:"bytes,1,opt,name=since_cursor,json=sinceCursor,proto3" json:"since_cursor,omitempty"`
+	BatchSize     int32                  `protobuf:"varint,2,opt,name=batch_size,json=batchSize,proto3" json:"batch_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PullSurveyFormsRequest) Reset() {
+	*x = PullSurveyFormsRequest{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PullSurveyFormsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PullSurveyFormsRequest) ProtoMessage() {}
+
+func (x *PullSurveyFormsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PullSurveyFormsRequest.ProtoReflect.Descriptor instead.
+func (*PullSurveyFormsRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *PullSurveyFormsRequest) GetSinceCursor() string {
+	if x != nil {
+		return x.SinceCursor
+	}
+	return ""
+}
+
+func (x *PullSurveyFormsRequest) GetBatchSize() int32 {
+	if x != nil {
+		return x.BatchSize
+	}
+	return 0
+}
+
+type PullSurveyFormsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SurveyForms   []*SyncSurveyForm      `protobuf:"bytes,1,rep,name=survey_forms,json=surveyForms,proto3" json:"survey_forms,omitempty"`
+	NextCursor    string                 `protobuf:"bytes,2,opt,name=next_cursor,json=nextCursor,proto3" json:"next_cursor,omitempty"`
+	HasMore       bool                   `protobuf:"varint,3,opt,name=has_more,json=hasMore,proto3" json:"has_more,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PullSurveyFormsResponse) Reset() {
+	*x = PullSurveyFormsResponse{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PullSurveyFormsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PullSurveyFormsResponse) ProtoMessage() {}
+
+func (x *PullSurveyFormsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PullSurveyFormsResponse.ProtoReflect.Descriptor instead.
+func (*PullSurveyFormsResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *PullSurveyFormsResponse) GetSurveyForms() []*SyncSurveyForm {
+	if x != nil {
+		return x.SurveyForms
+	}
+	return nil
+}
+
+func (x *PullSurveyFormsResponse) GetNextCursor() string {
+	if x != nil {
+		return x.NextCursor
+	}
+	return ""
+}
+
+func (x *PullSurveyFormsResponse) GetHasMore() bool {
+	if x != nil {
+		return x.HasMore
+	}
+	return false
+}
+
+type SyncSurveyForm struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	CompanyId     string                 `protobuf:"bytes,2,opt,name=company_id,json=companyId,proto3" json:"company_id,omitempty"`
+	Title         string                 `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
+	Description   string                 `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
+	Schema        string                 `protobuf:"bytes,5,opt,name=schema,proto3" json:"schema,omitempty"` // JSON string of form definition
+	Version       int32                  `protobuf:"varint,6,opt,name=version,proto3" json:"version,omitempty"`
+	IsActive      bool                   `protobuf:"varint,7,opt,name=is_active,json=isActive,proto3" json:"is_active,omitempty"`
+	CreatedAt     string                 `protobuf:"bytes,8,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt     string                 `protobuf:"bytes,9,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SyncSurveyForm) Reset() {
+	*x = SyncSurveyForm{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SyncSurveyForm) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SyncSurveyForm) ProtoMessage() {}
+
+func (x *SyncSurveyForm) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SyncSurveyForm.ProtoReflect.Descriptor instead.
+func (*SyncSurveyForm) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *SyncSurveyForm) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *SyncSurveyForm) GetCompanyId() string {
+	if x != nil {
+		return x.CompanyId
+	}
+	return ""
+}
+
+func (x *SyncSurveyForm) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *SyncSurveyForm) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *SyncSurveyForm) GetSchema() string {
+	if x != nil {
+		return x.Schema
+	}
+	return ""
+}
+
+func (x *SyncSurveyForm) GetVersion() int32 {
+	if x != nil {
+		return x.Version
+	}
+	return 0
+}
+
+func (x *SyncSurveyForm) GetIsActive() bool {
+	if x != nil {
+		return x.IsActive
+	}
+	return false
+}
+
+func (x *SyncSurveyForm) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
+func (x *SyncSurveyForm) GetUpdatedAt() string {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return ""
+}
+
+type PullSurveyResponsesRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SinceCursor   string                 `protobuf:"bytes,1,opt,name=since_cursor,json=sinceCursor,proto3" json:"since_cursor,omitempty"`
+	TurfIds       []string               `protobuf:"bytes,2,rep,name=turf_ids,json=turfIds,proto3" json:"turf_ids,omitempty"`
+	BatchSize     int32                  `protobuf:"varint,3,opt,name=batch_size,json=batchSize,proto3" json:"batch_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PullSurveyResponsesRequest) Reset() {
+	*x = PullSurveyResponsesRequest{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PullSurveyResponsesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PullSurveyResponsesRequest) ProtoMessage() {}
+
+func (x *PullSurveyResponsesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PullSurveyResponsesRequest.ProtoReflect.Descriptor instead.
+func (*PullSurveyResponsesRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *PullSurveyResponsesRequest) GetSinceCursor() string {
+	if x != nil {
+		return x.SinceCursor
+	}
+	return ""
+}
+
+func (x *PullSurveyResponsesRequest) GetTurfIds() []string {
+	if x != nil {
+		return x.TurfIds
+	}
+	return nil
+}
+
+func (x *PullSurveyResponsesRequest) GetBatchSize() int32 {
+	if x != nil {
+		return x.BatchSize
+	}
+	return 0
+}
+
+type PullSurveyResponsesResponse struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	SurveyResponses []*SyncSurveyResponse  `protobuf:"bytes,1,rep,name=survey_responses,json=surveyResponses,proto3" json:"survey_responses,omitempty"`
+	NextCursor      string                 `protobuf:"bytes,2,opt,name=next_cursor,json=nextCursor,proto3" json:"next_cursor,omitempty"`
+	HasMore         bool                   `protobuf:"varint,3,opt,name=has_more,json=hasMore,proto3" json:"has_more,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *PullSurveyResponsesResponse) Reset() {
+	*x = PullSurveyResponsesResponse{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PullSurveyResponsesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PullSurveyResponsesResponse) ProtoMessage() {}
+
+func (x *PullSurveyResponsesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PullSurveyResponsesResponse.ProtoReflect.Descriptor instead.
+func (*PullSurveyResponsesResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *PullSurveyResponsesResponse) GetSurveyResponses() []*SyncSurveyResponse {
+	if x != nil {
+		return x.SurveyResponses
+	}
+	return nil
+}
+
+func (x *PullSurveyResponsesResponse) GetNextCursor() string {
+	if x != nil {
+		return x.NextCursor
+	}
+	return ""
+}
+
+func (x *PullSurveyResponsesResponse) GetHasMore() bool {
+	if x != nil {
+		return x.HasMore
+	}
+	return false
+}
+
+type SyncSurveyResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	FormId        string                 `protobuf:"bytes,2,opt,name=form_id,json=formId,proto3" json:"form_id,omitempty"`
+	FormVersion   int32                  `protobuf:"varint,3,opt,name=form_version,json=formVersion,proto3" json:"form_version,omitempty"`
+	VoterId       string                 `protobuf:"bytes,4,opt,name=voter_id,json=voterId,proto3" json:"voter_id,omitempty"`
+	UserId        string                 `protobuf:"bytes,5,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	TurfId        string                 `protobuf:"bytes,6,opt,name=turf_id,json=turfId,proto3" json:"turf_id,omitempty"`
+	ContactLogId  string                 `protobuf:"bytes,7,opt,name=contact_log_id,json=contactLogId,proto3" json:"contact_log_id,omitempty"`
+	Responses     string                 `protobuf:"bytes,8,opt,name=responses,proto3" json:"responses,omitempty"` // JSON string
+	CreatedAt     string                 `protobuf:"bytes,9,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SyncSurveyResponse) Reset() {
+	*x = SyncSurveyResponse{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SyncSurveyResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SyncSurveyResponse) ProtoMessage() {}
+
+func (x *SyncSurveyResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SyncSurveyResponse.ProtoReflect.Descriptor instead.
+func (*SyncSurveyResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *SyncSurveyResponse) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *SyncSurveyResponse) GetFormId() string {
+	if x != nil {
+		return x.FormId
+	}
+	return ""
+}
+
+func (x *SyncSurveyResponse) GetFormVersion() int32 {
+	if x != nil {
+		return x.FormVersion
+	}
+	return 0
+}
+
+func (x *SyncSurveyResponse) GetVoterId() string {
+	if x != nil {
+		return x.VoterId
+	}
+	return ""
+}
+
+func (x *SyncSurveyResponse) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *SyncSurveyResponse) GetTurfId() string {
+	if x != nil {
+		return x.TurfId
+	}
+	return ""
+}
+
+func (x *SyncSurveyResponse) GetContactLogId() string {
+	if x != nil {
+		return x.ContactLogId
+	}
+	return ""
+}
+
+func (x *SyncSurveyResponse) GetResponses() string {
+	if x != nil {
+		return x.Responses
+	}
+	return ""
+}
+
+func (x *SyncSurveyResponse) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
+type PullVoterNotesRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SinceCursor   string                 `protobuf:"bytes,1,opt,name=since_cursor,json=sinceCursor,proto3" json:"since_cursor,omitempty"`
+	TurfIds       []string               `protobuf:"bytes,2,rep,name=turf_ids,json=turfIds,proto3" json:"turf_ids,omitempty"`
+	BatchSize     int32                  `protobuf:"varint,3,opt,name=batch_size,json=batchSize,proto3" json:"batch_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PullVoterNotesRequest) Reset() {
+	*x = PullVoterNotesRequest{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PullVoterNotesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PullVoterNotesRequest) ProtoMessage() {}
+
+func (x *PullVoterNotesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PullVoterNotesRequest.ProtoReflect.Descriptor instead.
+func (*PullVoterNotesRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *PullVoterNotesRequest) GetSinceCursor() string {
+	if x != nil {
+		return x.SinceCursor
+	}
+	return ""
+}
+
+func (x *PullVoterNotesRequest) GetTurfIds() []string {
+	if x != nil {
+		return x.TurfIds
+	}
+	return nil
+}
+
+func (x *PullVoterNotesRequest) GetBatchSize() int32 {
+	if x != nil {
+		return x.BatchSize
+	}
+	return 0
+}
+
+type PullVoterNotesResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VoterNotes    []*SyncVoterNote       `protobuf:"bytes,1,rep,name=voter_notes,json=voterNotes,proto3" json:"voter_notes,omitempty"`
+	NextCursor    string                 `protobuf:"bytes,2,opt,name=next_cursor,json=nextCursor,proto3" json:"next_cursor,omitempty"`
+	HasMore       bool                   `protobuf:"varint,3,opt,name=has_more,json=hasMore,proto3" json:"has_more,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PullVoterNotesResponse) Reset() {
+	*x = PullVoterNotesResponse{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PullVoterNotesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PullVoterNotesResponse) ProtoMessage() {}
+
+func (x *PullVoterNotesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PullVoterNotesResponse.ProtoReflect.Descriptor instead.
+func (*PullVoterNotesResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *PullVoterNotesResponse) GetVoterNotes() []*SyncVoterNote {
+	if x != nil {
+		return x.VoterNotes
+	}
+	return nil
+}
+
+func (x *PullVoterNotesResponse) GetNextCursor() string {
+	if x != nil {
+		return x.NextCursor
+	}
+	return ""
+}
+
+func (x *PullVoterNotesResponse) GetHasMore() bool {
+	if x != nil {
+		return x.HasMore
+	}
+	return false
+}
+
+type SyncVoterNote struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	VoterId       string                 `protobuf:"bytes,2,opt,name=voter_id,json=voterId,proto3" json:"voter_id,omitempty"`
+	UserId        string                 `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	TurfId        string                 `protobuf:"bytes,4,opt,name=turf_id,json=turfId,proto3" json:"turf_id,omitempty"`
+	Content       string                 `protobuf:"bytes,5,opt,name=content,proto3" json:"content,omitempty"`
+	Visibility    string                 `protobuf:"bytes,6,opt,name=visibility,proto3" json:"visibility,omitempty"` // private, team, org
+	CreatedAt     string                 `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt     string                 `protobuf:"bytes,8,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SyncVoterNote) Reset() {
+	*x = SyncVoterNote{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SyncVoterNote) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SyncVoterNote) ProtoMessage() {}
+
+func (x *SyncVoterNote) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SyncVoterNote.ProtoReflect.Descriptor instead.
+func (*SyncVoterNote) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *SyncVoterNote) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *SyncVoterNote) GetVoterId() string {
+	if x != nil {
+		return x.VoterId
+	}
+	return ""
+}
+
+func (x *SyncVoterNote) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *SyncVoterNote) GetTurfId() string {
+	if x != nil {
+		return x.TurfId
+	}
+	return ""
+}
+
+func (x *SyncVoterNote) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
+}
+
+func (x *SyncVoterNote) GetVisibility() string {
+	if x != nil {
+		return x.Visibility
+	}
+	return ""
+}
+
+func (x *SyncVoterNote) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
+func (x *SyncVoterNote) GetUpdatedAt() string {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return ""
+}
+
 var File_navigators_v1_sync_proto protoreflect.FileDescriptor
 
 const file_navigators_v1_sync_proto_rawDesc = "" +
@@ -1003,7 +1687,7 @@ const file_navigators_v1_sync_proto_rawDesc = "" +
 	"\fcontact_logs\x18\x01 \x03(\v2\x1d.navigators.v1.SyncContactLogR\vcontactLogs\x12\x1f\n" +
 	"\vnext_cursor\x18\x02 \x01(\tR\n" +
 	"nextCursor\x12\x19\n" +
-	"\bhas_more\x18\x03 \x01(\bR\ahasMore\"\xdf\x01\n" +
+	"\bhas_more\x18\x03 \x01(\bR\ahasMore\"\x9e\x02\n" +
 	"\x0eSyncContactLog\x12\x0e\n" +
 	"\x02id\x18\x01 \x01(\tR\x02id\x12\x19\n" +
 	"\bvoter_id\x18\x02 \x01(\tR\avoterId\x12\x17\n" +
@@ -1013,7 +1697,11 @@ const file_navigators_v1_sync_proto_rawDesc = "" +
 	"\aoutcome\x18\x06 \x01(\tR\aoutcome\x12\x14\n" +
 	"\x05notes\x18\a \x01(\tR\x05notes\x12\x1d\n" +
 	"\n" +
-	"created_at\x18\b \x01(\tR\tcreatedAt\"T\n" +
+	"created_at\x18\b \x01(\tR\tcreatedAt\x12\x1f\n" +
+	"\vdoor_status\x18\t \x01(\tR\n" +
+	"doorStatus\x12\x1c\n" +
+	"\tsentiment\x18\n" +
+	" \x01(\x05R\tsentiment\"T\n" +
 	"\x14PushSyncBatchRequest\x12<\n" +
 	"\n" +
 	"operations\x18\x01 \x03(\v2\x1c.navigators.v1.SyncOperationR\n" +
@@ -1043,11 +1731,81 @@ const file_navigators_v1_sync_proto_rawDesc = "" +
 	"\tturf_name\x18\x02 \x01(\tR\bturfName\x12)\n" +
 	"\x10boundary_geojson\x18\x03 \x01(\tR\x0fboundaryGeojson\x12\x1f\n" +
 	"\vvoter_count\x18\x04 \x01(\x05R\n" +
-	"voterCount2\x92\x03\n" +
+	"voterCount\"Z\n" +
+	"\x16PullSurveyFormsRequest\x12!\n" +
+	"\fsince_cursor\x18\x01 \x01(\tR\vsinceCursor\x12\x1d\n" +
+	"\n" +
+	"batch_size\x18\x02 \x01(\x05R\tbatchSize\"\x97\x01\n" +
+	"\x17PullSurveyFormsResponse\x12@\n" +
+	"\fsurvey_forms\x18\x01 \x03(\v2\x1d.navigators.v1.SyncSurveyFormR\vsurveyForms\x12\x1f\n" +
+	"\vnext_cursor\x18\x02 \x01(\tR\n" +
+	"nextCursor\x12\x19\n" +
+	"\bhas_more\x18\x03 \x01(\bR\ahasMore\"\x84\x02\n" +
+	"\x0eSyncSurveyForm\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
+	"\n" +
+	"company_id\x18\x02 \x01(\tR\tcompanyId\x12\x14\n" +
+	"\x05title\x18\x03 \x01(\tR\x05title\x12 \n" +
+	"\vdescription\x18\x04 \x01(\tR\vdescription\x12\x16\n" +
+	"\x06schema\x18\x05 \x01(\tR\x06schema\x12\x18\n" +
+	"\aversion\x18\x06 \x01(\x05R\aversion\x12\x1b\n" +
+	"\tis_active\x18\a \x01(\bR\bisActive\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\b \x01(\tR\tcreatedAt\x12\x1d\n" +
+	"\n" +
+	"updated_at\x18\t \x01(\tR\tupdatedAt\"y\n" +
+	"\x1aPullSurveyResponsesRequest\x12!\n" +
+	"\fsince_cursor\x18\x01 \x01(\tR\vsinceCursor\x12\x19\n" +
+	"\bturf_ids\x18\x02 \x03(\tR\aturfIds\x12\x1d\n" +
+	"\n" +
+	"batch_size\x18\x03 \x01(\x05R\tbatchSize\"\xa7\x01\n" +
+	"\x1bPullSurveyResponsesResponse\x12L\n" +
+	"\x10survey_responses\x18\x01 \x03(\v2!.navigators.v1.SyncSurveyResponseR\x0fsurveyResponses\x12\x1f\n" +
+	"\vnext_cursor\x18\x02 \x01(\tR\n" +
+	"nextCursor\x12\x19\n" +
+	"\bhas_more\x18\x03 \x01(\bR\ahasMore\"\x90\x02\n" +
+	"\x12SyncSurveyResponse\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
+	"\aform_id\x18\x02 \x01(\tR\x06formId\x12!\n" +
+	"\fform_version\x18\x03 \x01(\x05R\vformVersion\x12\x19\n" +
+	"\bvoter_id\x18\x04 \x01(\tR\avoterId\x12\x17\n" +
+	"\auser_id\x18\x05 \x01(\tR\x06userId\x12\x17\n" +
+	"\aturf_id\x18\x06 \x01(\tR\x06turfId\x12$\n" +
+	"\x0econtact_log_id\x18\a \x01(\tR\fcontactLogId\x12\x1c\n" +
+	"\tresponses\x18\b \x01(\tR\tresponses\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\t \x01(\tR\tcreatedAt\"t\n" +
+	"\x15PullVoterNotesRequest\x12!\n" +
+	"\fsince_cursor\x18\x01 \x01(\tR\vsinceCursor\x12\x19\n" +
+	"\bturf_ids\x18\x02 \x03(\tR\aturfIds\x12\x1d\n" +
+	"\n" +
+	"batch_size\x18\x03 \x01(\x05R\tbatchSize\"\x93\x01\n" +
+	"\x16PullVoterNotesResponse\x12=\n" +
+	"\vvoter_notes\x18\x01 \x03(\v2\x1c.navigators.v1.SyncVoterNoteR\n" +
+	"voterNotes\x12\x1f\n" +
+	"\vnext_cursor\x18\x02 \x01(\tR\n" +
+	"nextCursor\x12\x19\n" +
+	"\bhas_more\x18\x03 \x01(\bR\ahasMore\"\xe4\x01\n" +
+	"\rSyncVoterNote\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x19\n" +
+	"\bvoter_id\x18\x02 \x01(\tR\avoterId\x12\x17\n" +
+	"\auser_id\x18\x03 \x01(\tR\x06userId\x12\x17\n" +
+	"\aturf_id\x18\x04 \x01(\tR\x06turfId\x12\x18\n" +
+	"\acontent\x18\x05 \x01(\tR\acontent\x12\x1e\n" +
+	"\n" +
+	"visibility\x18\x06 \x01(\tR\n" +
+	"visibility\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\a \x01(\tR\tcreatedAt\x12\x1d\n" +
+	"\n" +
+	"updated_at\x18\b \x01(\tR\tupdatedAt2\xc1\x05\n" +
 	"\vSyncService\x12c\n" +
 	"\x10PullVoterUpdates\x12&.navigators.v1.PullVoterUpdatesRequest\x1a'.navigators.v1.PullVoterUpdatesResponse\x12`\n" +
 	"\x0fPullContactLogs\x12%.navigators.v1.PullContactLogsRequest\x1a&.navigators.v1.PullContactLogsResponse\x12Z\n" +
 	"\rPushSyncBatch\x12#.navigators.v1.PushSyncBatchRequest\x1a$.navigators.v1.PushSyncBatchResponse\x12`\n" +
+	"\x0fPullSurveyForms\x12%.navigators.v1.PullSurveyFormsRequest\x1a&.navigators.v1.PullSurveyFormsResponse\x12l\n" +
+	"\x13PullSurveyResponses\x12).navigators.v1.PullSurveyResponsesRequest\x1a*.navigators.v1.PullSurveyResponsesResponse\x12]\n" +
+	"\x0ePullVoterNotes\x12$.navigators.v1.PullVoterNotesRequest\x1a%.navigators.v1.PullVoterNotesResponse\x12`\n" +
 	"\x0fGetSyncManifest\x12%.navigators.v1.GetSyncManifestRequest\x1a&.navigators.v1.GetSyncManifestResponseB1Z/navigators-go/gen/go/navigators/v1;navigatorsv1b\x06proto3"
 
 var (
@@ -1062,21 +1820,30 @@ func file_navigators_v1_sync_proto_rawDescGZIP() []byte {
 	return file_navigators_v1_sync_proto_rawDescData
 }
 
-var file_navigators_v1_sync_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_navigators_v1_sync_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
 var file_navigators_v1_sync_proto_goTypes = []any{
-	(*PullVoterUpdatesRequest)(nil),  // 0: navigators.v1.PullVoterUpdatesRequest
-	(*PullVoterUpdatesResponse)(nil), // 1: navigators.v1.PullVoterUpdatesResponse
-	(*SyncVoter)(nil),                // 2: navigators.v1.SyncVoter
-	(*PullContactLogsRequest)(nil),   // 3: navigators.v1.PullContactLogsRequest
-	(*PullContactLogsResponse)(nil),  // 4: navigators.v1.PullContactLogsResponse
-	(*SyncContactLog)(nil),           // 5: navigators.v1.SyncContactLog
-	(*PushSyncBatchRequest)(nil),     // 6: navigators.v1.PushSyncBatchRequest
-	(*PushSyncBatchResponse)(nil),    // 7: navigators.v1.PushSyncBatchResponse
-	(*SyncOperation)(nil),            // 8: navigators.v1.SyncOperation
-	(*SyncError)(nil),                // 9: navigators.v1.SyncError
-	(*GetSyncManifestRequest)(nil),   // 10: navigators.v1.GetSyncManifestRequest
-	(*GetSyncManifestResponse)(nil),  // 11: navigators.v1.GetSyncManifestResponse
-	(*TurfAssignmentInfo)(nil),       // 12: navigators.v1.TurfAssignmentInfo
+	(*PullVoterUpdatesRequest)(nil),     // 0: navigators.v1.PullVoterUpdatesRequest
+	(*PullVoterUpdatesResponse)(nil),    // 1: navigators.v1.PullVoterUpdatesResponse
+	(*SyncVoter)(nil),                   // 2: navigators.v1.SyncVoter
+	(*PullContactLogsRequest)(nil),      // 3: navigators.v1.PullContactLogsRequest
+	(*PullContactLogsResponse)(nil),     // 4: navigators.v1.PullContactLogsResponse
+	(*SyncContactLog)(nil),              // 5: navigators.v1.SyncContactLog
+	(*PushSyncBatchRequest)(nil),        // 6: navigators.v1.PushSyncBatchRequest
+	(*PushSyncBatchResponse)(nil),       // 7: navigators.v1.PushSyncBatchResponse
+	(*SyncOperation)(nil),               // 8: navigators.v1.SyncOperation
+	(*SyncError)(nil),                   // 9: navigators.v1.SyncError
+	(*GetSyncManifestRequest)(nil),      // 10: navigators.v1.GetSyncManifestRequest
+	(*GetSyncManifestResponse)(nil),     // 11: navigators.v1.GetSyncManifestResponse
+	(*TurfAssignmentInfo)(nil),          // 12: navigators.v1.TurfAssignmentInfo
+	(*PullSurveyFormsRequest)(nil),      // 13: navigators.v1.PullSurveyFormsRequest
+	(*PullSurveyFormsResponse)(nil),     // 14: navigators.v1.PullSurveyFormsResponse
+	(*SyncSurveyForm)(nil),              // 15: navigators.v1.SyncSurveyForm
+	(*PullSurveyResponsesRequest)(nil),  // 16: navigators.v1.PullSurveyResponsesRequest
+	(*PullSurveyResponsesResponse)(nil), // 17: navigators.v1.PullSurveyResponsesResponse
+	(*SyncSurveyResponse)(nil),          // 18: navigators.v1.SyncSurveyResponse
+	(*PullVoterNotesRequest)(nil),       // 19: navigators.v1.PullVoterNotesRequest
+	(*PullVoterNotesResponse)(nil),      // 20: navigators.v1.PullVoterNotesResponse
+	(*SyncVoterNote)(nil),               // 21: navigators.v1.SyncVoterNote
 }
 var file_navigators_v1_sync_proto_depIdxs = []int32{
 	2,  // 0: navigators.v1.PullVoterUpdatesResponse.voters:type_name -> navigators.v1.SyncVoter
@@ -1084,19 +1851,28 @@ var file_navigators_v1_sync_proto_depIdxs = []int32{
 	8,  // 2: navigators.v1.PushSyncBatchRequest.operations:type_name -> navigators.v1.SyncOperation
 	9,  // 3: navigators.v1.PushSyncBatchResponse.errors:type_name -> navigators.v1.SyncError
 	12, // 4: navigators.v1.GetSyncManifestResponse.turf_assignments:type_name -> navigators.v1.TurfAssignmentInfo
-	0,  // 5: navigators.v1.SyncService.PullVoterUpdates:input_type -> navigators.v1.PullVoterUpdatesRequest
-	3,  // 6: navigators.v1.SyncService.PullContactLogs:input_type -> navigators.v1.PullContactLogsRequest
-	6,  // 7: navigators.v1.SyncService.PushSyncBatch:input_type -> navigators.v1.PushSyncBatchRequest
-	10, // 8: navigators.v1.SyncService.GetSyncManifest:input_type -> navigators.v1.GetSyncManifestRequest
-	1,  // 9: navigators.v1.SyncService.PullVoterUpdates:output_type -> navigators.v1.PullVoterUpdatesResponse
-	4,  // 10: navigators.v1.SyncService.PullContactLogs:output_type -> navigators.v1.PullContactLogsResponse
-	7,  // 11: navigators.v1.SyncService.PushSyncBatch:output_type -> navigators.v1.PushSyncBatchResponse
-	11, // 12: navigators.v1.SyncService.GetSyncManifest:output_type -> navigators.v1.GetSyncManifestResponse
-	9,  // [9:13] is the sub-list for method output_type
-	5,  // [5:9] is the sub-list for method input_type
-	5,  // [5:5] is the sub-list for extension type_name
-	5,  // [5:5] is the sub-list for extension extendee
-	0,  // [0:5] is the sub-list for field type_name
+	15, // 5: navigators.v1.PullSurveyFormsResponse.survey_forms:type_name -> navigators.v1.SyncSurveyForm
+	18, // 6: navigators.v1.PullSurveyResponsesResponse.survey_responses:type_name -> navigators.v1.SyncSurveyResponse
+	21, // 7: navigators.v1.PullVoterNotesResponse.voter_notes:type_name -> navigators.v1.SyncVoterNote
+	0,  // 8: navigators.v1.SyncService.PullVoterUpdates:input_type -> navigators.v1.PullVoterUpdatesRequest
+	3,  // 9: navigators.v1.SyncService.PullContactLogs:input_type -> navigators.v1.PullContactLogsRequest
+	6,  // 10: navigators.v1.SyncService.PushSyncBatch:input_type -> navigators.v1.PushSyncBatchRequest
+	13, // 11: navigators.v1.SyncService.PullSurveyForms:input_type -> navigators.v1.PullSurveyFormsRequest
+	16, // 12: navigators.v1.SyncService.PullSurveyResponses:input_type -> navigators.v1.PullSurveyResponsesRequest
+	19, // 13: navigators.v1.SyncService.PullVoterNotes:input_type -> navigators.v1.PullVoterNotesRequest
+	10, // 14: navigators.v1.SyncService.GetSyncManifest:input_type -> navigators.v1.GetSyncManifestRequest
+	1,  // 15: navigators.v1.SyncService.PullVoterUpdates:output_type -> navigators.v1.PullVoterUpdatesResponse
+	4,  // 16: navigators.v1.SyncService.PullContactLogs:output_type -> navigators.v1.PullContactLogsResponse
+	7,  // 17: navigators.v1.SyncService.PushSyncBatch:output_type -> navigators.v1.PushSyncBatchResponse
+	14, // 18: navigators.v1.SyncService.PullSurveyForms:output_type -> navigators.v1.PullSurveyFormsResponse
+	17, // 19: navigators.v1.SyncService.PullSurveyResponses:output_type -> navigators.v1.PullSurveyResponsesResponse
+	20, // 20: navigators.v1.SyncService.PullVoterNotes:output_type -> navigators.v1.PullVoterNotesResponse
+	11, // 21: navigators.v1.SyncService.GetSyncManifest:output_type -> navigators.v1.GetSyncManifestResponse
+	15, // [15:22] is the sub-list for method output_type
+	8,  // [8:15] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_navigators_v1_sync_proto_init() }
@@ -1110,7 +1886,7 @@ func file_navigators_v1_sync_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_navigators_v1_sync_proto_rawDesc), len(file_navigators_v1_sync_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   13,
+			NumMessages:   22,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

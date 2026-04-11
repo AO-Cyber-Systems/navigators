@@ -64,6 +64,8 @@ type ContactLog struct {
 	Outcome     string      `json:"outcome"`
 	Notes       string      `json:"notes"`
 	CreatedAt   time.Time   `json:"created_at"`
+	DoorStatus  string      `json:"door_status"`
+	Sentiment   *int32      `json:"sentiment"`
 }
 
 type DeviceToken struct {
@@ -215,6 +217,42 @@ type SuppressionList struct {
 	AddedAt   time.Time `json:"added_at"`
 }
 
+type SurveyForm struct {
+	ID          uuid.UUID       `json:"id"`
+	CompanyID   uuid.UUID       `json:"company_id"`
+	Title       string          `json:"title"`
+	Description string          `json:"description"`
+	Schema      json.RawMessage `json:"schema"`
+	Version     int32           `json:"version"`
+	IsActive    bool            `json:"is_active"`
+	CreatedBy   uuid.UUID       `json:"created_by"`
+	CreatedAt   time.Time       `json:"created_at"`
+	UpdatedAt   time.Time       `json:"updated_at"`
+}
+
+type SurveyResponse struct {
+	ID           uuid.UUID       `json:"id"`
+	CompanyID    uuid.UUID       `json:"company_id"`
+	FormID       uuid.UUID       `json:"form_id"`
+	FormVersion  int32           `json:"form_version"`
+	VoterID      uuid.UUID       `json:"voter_id"`
+	UserID       uuid.UUID       `json:"user_id"`
+	TurfID       pgtype.UUID     `json:"turf_id"`
+	ContactLogID pgtype.UUID     `json:"contact_log_id"`
+	Responses    json.RawMessage `json:"responses"`
+	CreatedAt    time.Time       `json:"created_at"`
+}
+
+type SyncReceivedOperation struct {
+	ClientOperationID string    `json:"client_operation_id"`
+	UserID            uuid.UUID `json:"user_id"`
+	CompanyID         uuid.UUID `json:"company_id"`
+	EntityType        string    `json:"entity_type"`
+	EntityID          string    `json:"entity_id"`
+	OperationType     string    `json:"operation_type"`
+	ProcessedAt       time.Time `json:"processed_at"`
+}
+
 type SyncServerCursor struct {
 	UserID     uuid.UUID `json:"user_id"`
 	EntityType string    `json:"entity_type"`
@@ -313,6 +351,18 @@ type VoterAccessLog struct {
 	Details    json.RawMessage `json:"details"`
 	IpAddress  string          `json:"ip_address"`
 	CreatedAt  time.Time       `json:"created_at"`
+}
+
+type VoterNote struct {
+	ID         uuid.UUID   `json:"id"`
+	CompanyID  uuid.UUID   `json:"company_id"`
+	VoterID    uuid.UUID   `json:"voter_id"`
+	UserID     uuid.UUID   `json:"user_id"`
+	TurfID     pgtype.UUID `json:"turf_id"`
+	Content    string      `json:"content"`
+	Visibility string      `json:"visibility"`
+	CreatedAt  time.Time   `json:"created_at"`
+	UpdatedAt  time.Time   `json:"updated_at"`
 }
 
 type VoterTag struct {

@@ -115,6 +115,10 @@ func (h *SyncHandler) PullContactLogs(ctx context.Context, req *connect.Request[
 
 	pbLogs := make([]*navigatorsv1.SyncContactLog, len(result.ContactLogs))
 	for i, cl := range result.ContactLogs {
+		var sentiment int32
+		if cl.Sentiment != nil {
+			sentiment = *cl.Sentiment
+		}
 		pbLogs[i] = &navigatorsv1.SyncContactLog{
 			Id:          cl.ID.String(),
 			VoterId:     cl.VoterID.String(),
@@ -123,6 +127,8 @@ func (h *SyncHandler) PullContactLogs(ctx context.Context, req *connect.Request[
 			ContactType: cl.ContactType,
 			Outcome:     cl.Outcome,
 			Notes:       cl.Notes,
+			DoorStatus:  cl.DoorStatus,
+			Sentiment:   sentiment,
 			CreatedAt:   cl.CreatedAt.Format(time.RFC3339),
 		}
 	}
@@ -204,6 +210,149 @@ func (h *SyncHandler) GetSyncManifest(ctx context.Context, req *connect.Request[
 	return connect.NewResponse(&navigatorsv1.GetSyncManifestResponse{
 		TurfAssignments: pbAssignments,
 		ServerTime:      time.Now().UTC().Format(time.RFC3339),
+	}), nil
+}
+
+func (h *SyncHandler) PullSurveyForms(ctx context.Context, req *connect.Request[navigatorsv1.PullSurveyFormsRequest]) (*connect.Response[navigatorsv1.PullSurveyFormsResponse], error) {
+	companyID, err := extractCompanyID(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	batchSize := req.Msg.GetBatchSize()
+	if batchSize <= 0 {
+		batchSize = 500
+	}
+
+	result, err := h.syncService.PullSurveyForms(ctx, companyID, req.Msg.GetSinceCursor(), batchSize)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("pull survey forms: %w", err))
+	}
+
+	pbForms := make([]*navigatorsv1.SyncSurveyForm, len(result.SurveyForms))
+	for i, f := range result.SurveyForms {
+		pbForms[i] = &navigatorsv1.SyncSurveyForm{
+			Id:          f.ID.String(),
+			CompanyId:   f.CompanyID.String(),
+			Title:       f.Title,
+			Description: f.Description,
+			Schema:      string(f.Schema),
+			Version:     f.Version,
+			IsActive:    f.IsActive,
+			CreatedAt:   f.CreatedAt.Format(time.RFC3339),
+			UpdatedAt:   f.UpdatedAt.Format(time.RFC3339),
+		}
+	}
+
+	return connect.NewResponse(&navigatorsv1.PullSurveyFormsResponse{
+		SurveyForms: pbForms,
+		NextCursor:  result.NextCursor,
+		HasMore:     result.HasMore,
+	}), nil
+}
+
+func (h *SyncHandler) PullSurveyResponses(ctx context.Context, req *connect.Request[navigatorsv1.PullSurveyResponsesRequest]) (*connect.Response[navigatorsv1.PullSurveyResponsesResponse], error) {
+	companyID, err := extractCompanyID(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	scope, err := h.syncService.turfFilter.ResolveScope(ctx)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("resolve scope: %w", err))
+	}
+
+	turfIDs, err := h.resolveTurfIDs(req.Msg.GetTurfIds(), scope)
+	if err != nil {
+		return nil, err
+	}
+
+	batchSize := req.Msg.GetBatchSize()
+	if batchSize <= 0 {
+		batchSize = 500
+	}
+
+	result, err := h.syncService.PullSurveyResponses(ctx, companyID, turfIDs, req.Msg.GetSinceCursor(), batchSize)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("pull survey responses: %w", err))
+	}
+
+	pbResponses := make([]*navigatorsv1.SyncSurveyResponse, len(result.SurveyResponses))
+	for i, r := range result.SurveyResponses {
+		pbResp := &navigatorsv1.SyncSurveyResponse{
+			Id:          r.ID.String(),
+			FormId:      r.FormID.String(),
+			FormVersion: r.FormVersion,
+			VoterId:     r.VoterID.String(),
+			UserId:      r.UserID.String(),
+			TurfId:      r.TurfID.String(),
+			Responses:   string(r.Responses),
+			CreatedAt:   r.CreatedAt.Format(time.RFC3339),
+		}
+		if r.ContactLogID != nil {
+			pbResp.ContactLogId = r.ContactLogID.String()
+		}
+		pbResponses[i] = pbResp
+	}
+
+	return connect.NewResponse(&navigatorsv1.PullSurveyResponsesResponse{
+		SurveyResponses: pbResponses,
+		NextCursor:      result.NextCursor,
+		HasMore:         result.HasMore,
+	}), nil
+}
+
+func (h *SyncHandler) PullVoterNotes(ctx context.Context, req *connect.Request[navigatorsv1.PullVoterNotesRequest]) (*connect.Response[navigatorsv1.PullVoterNotesResponse], error) {
+	companyID, err := extractCompanyID(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	scope, err := h.syncService.turfFilter.ResolveScope(ctx)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("resolve scope: %w", err))
+	}
+
+	turfIDs, err := h.resolveTurfIDs(req.Msg.GetTurfIds(), scope)
+	if err != nil {
+		return nil, err
+	}
+
+	// Extract role level from JWT claims for role-scoped note filtering
+	claims := server.ClaimsFromContext(ctx)
+	userID, err := uuid.Parse(claims.UserID)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("parse user ID: %w", err))
+	}
+
+	batchSize := req.Msg.GetBatchSize()
+	if batchSize <= 0 {
+		batchSize = 500
+	}
+
+	result, err := h.syncService.voterNotesService.PullVoterNotes(ctx, companyID, turfIDs, claims.RoleLevel, userID, req.Msg.GetSinceCursor(), batchSize)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("pull voter notes: %w", err))
+	}
+
+	pbNotes := make([]*navigatorsv1.SyncVoterNote, len(result.VoterNotes))
+	for i, n := range result.VoterNotes {
+		pbNotes[i] = &navigatorsv1.SyncVoterNote{
+			Id:         n.ID.String(),
+			VoterId:    n.VoterID.String(),
+			UserId:     n.UserID.String(),
+			TurfId:     n.TurfID.String(),
+			Content:    n.Content,
+			Visibility: n.Visibility,
+			CreatedAt:  n.CreatedAt.Format(time.RFC3339),
+			UpdatedAt:  n.UpdatedAt.Format(time.RFC3339),
+		}
+	}
+
+	return connect.NewResponse(&navigatorsv1.PullVoterNotesResponse{
+		VoterNotes: pbNotes,
+		NextCursor: result.NextCursor,
+		HasMore:    result.HasMore,
 	}), nil
 }
 

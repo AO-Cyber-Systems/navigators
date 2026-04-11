@@ -42,6 +42,15 @@ const (
 	// SyncServicePushSyncBatchProcedure is the fully-qualified name of the SyncService's PushSyncBatch
 	// RPC.
 	SyncServicePushSyncBatchProcedure = "/navigators.v1.SyncService/PushSyncBatch"
+	// SyncServicePullSurveyFormsProcedure is the fully-qualified name of the SyncService's
+	// PullSurveyForms RPC.
+	SyncServicePullSurveyFormsProcedure = "/navigators.v1.SyncService/PullSurveyForms"
+	// SyncServicePullSurveyResponsesProcedure is the fully-qualified name of the SyncService's
+	// PullSurveyResponses RPC.
+	SyncServicePullSurveyResponsesProcedure = "/navigators.v1.SyncService/PullSurveyResponses"
+	// SyncServicePullVoterNotesProcedure is the fully-qualified name of the SyncService's
+	// PullVoterNotes RPC.
+	SyncServicePullVoterNotesProcedure = "/navigators.v1.SyncService/PullVoterNotes"
 	// SyncServiceGetSyncManifestProcedure is the fully-qualified name of the SyncService's
 	// GetSyncManifest RPC.
 	SyncServiceGetSyncManifestProcedure = "/navigators.v1.SyncService/GetSyncManifest"
@@ -55,6 +64,12 @@ type SyncServiceClient interface {
 	PullContactLogs(context.Context, *connect.Request[v1.PullContactLogsRequest]) (*connect.Response[v1.PullContactLogsResponse], error)
 	// PushSyncBatch receives a batch of operations from the client outbox.
 	PushSyncBatch(context.Context, *connect.Request[v1.PushSyncBatchRequest]) (*connect.Response[v1.PushSyncBatchResponse], error)
+	// PullSurveyForms returns active survey forms updated since the given cursor.
+	PullSurveyForms(context.Context, *connect.Request[v1.PullSurveyFormsRequest]) (*connect.Response[v1.PullSurveyFormsResponse], error)
+	// PullSurveyResponses returns survey responses created since the given cursor, scoped to turfs.
+	PullSurveyResponses(context.Context, *connect.Request[v1.PullSurveyResponsesRequest]) (*connect.Response[v1.PullSurveyResponsesResponse], error)
+	// PullVoterNotes returns voter notes created since the given cursor, scoped to turfs and role.
+	PullVoterNotes(context.Context, *connect.Request[v1.PullVoterNotesRequest]) (*connect.Response[v1.PullVoterNotesResponse], error)
 	// GetSyncManifest returns the user's turf assignments with metadata for initial sync.
 	GetSyncManifest(context.Context, *connect.Request[v1.GetSyncManifestRequest]) (*connect.Response[v1.GetSyncManifestResponse], error)
 }
@@ -88,6 +103,24 @@ func NewSyncServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(syncServiceMethods.ByName("PushSyncBatch")),
 			connect.WithClientOptions(opts...),
 		),
+		pullSurveyForms: connect.NewClient[v1.PullSurveyFormsRequest, v1.PullSurveyFormsResponse](
+			httpClient,
+			baseURL+SyncServicePullSurveyFormsProcedure,
+			connect.WithSchema(syncServiceMethods.ByName("PullSurveyForms")),
+			connect.WithClientOptions(opts...),
+		),
+		pullSurveyResponses: connect.NewClient[v1.PullSurveyResponsesRequest, v1.PullSurveyResponsesResponse](
+			httpClient,
+			baseURL+SyncServicePullSurveyResponsesProcedure,
+			connect.WithSchema(syncServiceMethods.ByName("PullSurveyResponses")),
+			connect.WithClientOptions(opts...),
+		),
+		pullVoterNotes: connect.NewClient[v1.PullVoterNotesRequest, v1.PullVoterNotesResponse](
+			httpClient,
+			baseURL+SyncServicePullVoterNotesProcedure,
+			connect.WithSchema(syncServiceMethods.ByName("PullVoterNotes")),
+			connect.WithClientOptions(opts...),
+		),
 		getSyncManifest: connect.NewClient[v1.GetSyncManifestRequest, v1.GetSyncManifestResponse](
 			httpClient,
 			baseURL+SyncServiceGetSyncManifestProcedure,
@@ -99,10 +132,13 @@ func NewSyncServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 
 // syncServiceClient implements SyncServiceClient.
 type syncServiceClient struct {
-	pullVoterUpdates *connect.Client[v1.PullVoterUpdatesRequest, v1.PullVoterUpdatesResponse]
-	pullContactLogs  *connect.Client[v1.PullContactLogsRequest, v1.PullContactLogsResponse]
-	pushSyncBatch    *connect.Client[v1.PushSyncBatchRequest, v1.PushSyncBatchResponse]
-	getSyncManifest  *connect.Client[v1.GetSyncManifestRequest, v1.GetSyncManifestResponse]
+	pullVoterUpdates    *connect.Client[v1.PullVoterUpdatesRequest, v1.PullVoterUpdatesResponse]
+	pullContactLogs     *connect.Client[v1.PullContactLogsRequest, v1.PullContactLogsResponse]
+	pushSyncBatch       *connect.Client[v1.PushSyncBatchRequest, v1.PushSyncBatchResponse]
+	pullSurveyForms     *connect.Client[v1.PullSurveyFormsRequest, v1.PullSurveyFormsResponse]
+	pullSurveyResponses *connect.Client[v1.PullSurveyResponsesRequest, v1.PullSurveyResponsesResponse]
+	pullVoterNotes      *connect.Client[v1.PullVoterNotesRequest, v1.PullVoterNotesResponse]
+	getSyncManifest     *connect.Client[v1.GetSyncManifestRequest, v1.GetSyncManifestResponse]
 }
 
 // PullVoterUpdates calls navigators.v1.SyncService.PullVoterUpdates.
@@ -120,6 +156,21 @@ func (c *syncServiceClient) PushSyncBatch(ctx context.Context, req *connect.Requ
 	return c.pushSyncBatch.CallUnary(ctx, req)
 }
 
+// PullSurveyForms calls navigators.v1.SyncService.PullSurveyForms.
+func (c *syncServiceClient) PullSurveyForms(ctx context.Context, req *connect.Request[v1.PullSurveyFormsRequest]) (*connect.Response[v1.PullSurveyFormsResponse], error) {
+	return c.pullSurveyForms.CallUnary(ctx, req)
+}
+
+// PullSurveyResponses calls navigators.v1.SyncService.PullSurveyResponses.
+func (c *syncServiceClient) PullSurveyResponses(ctx context.Context, req *connect.Request[v1.PullSurveyResponsesRequest]) (*connect.Response[v1.PullSurveyResponsesResponse], error) {
+	return c.pullSurveyResponses.CallUnary(ctx, req)
+}
+
+// PullVoterNotes calls navigators.v1.SyncService.PullVoterNotes.
+func (c *syncServiceClient) PullVoterNotes(ctx context.Context, req *connect.Request[v1.PullVoterNotesRequest]) (*connect.Response[v1.PullVoterNotesResponse], error) {
+	return c.pullVoterNotes.CallUnary(ctx, req)
+}
+
 // GetSyncManifest calls navigators.v1.SyncService.GetSyncManifest.
 func (c *syncServiceClient) GetSyncManifest(ctx context.Context, req *connect.Request[v1.GetSyncManifestRequest]) (*connect.Response[v1.GetSyncManifestResponse], error) {
 	return c.getSyncManifest.CallUnary(ctx, req)
@@ -133,6 +184,12 @@ type SyncServiceHandler interface {
 	PullContactLogs(context.Context, *connect.Request[v1.PullContactLogsRequest]) (*connect.Response[v1.PullContactLogsResponse], error)
 	// PushSyncBatch receives a batch of operations from the client outbox.
 	PushSyncBatch(context.Context, *connect.Request[v1.PushSyncBatchRequest]) (*connect.Response[v1.PushSyncBatchResponse], error)
+	// PullSurveyForms returns active survey forms updated since the given cursor.
+	PullSurveyForms(context.Context, *connect.Request[v1.PullSurveyFormsRequest]) (*connect.Response[v1.PullSurveyFormsResponse], error)
+	// PullSurveyResponses returns survey responses created since the given cursor, scoped to turfs.
+	PullSurveyResponses(context.Context, *connect.Request[v1.PullSurveyResponsesRequest]) (*connect.Response[v1.PullSurveyResponsesResponse], error)
+	// PullVoterNotes returns voter notes created since the given cursor, scoped to turfs and role.
+	PullVoterNotes(context.Context, *connect.Request[v1.PullVoterNotesRequest]) (*connect.Response[v1.PullVoterNotesResponse], error)
 	// GetSyncManifest returns the user's turf assignments with metadata for initial sync.
 	GetSyncManifest(context.Context, *connect.Request[v1.GetSyncManifestRequest]) (*connect.Response[v1.GetSyncManifestResponse], error)
 }
@@ -162,6 +219,24 @@ func NewSyncServiceHandler(svc SyncServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(syncServiceMethods.ByName("PushSyncBatch")),
 		connect.WithHandlerOptions(opts...),
 	)
+	syncServicePullSurveyFormsHandler := connect.NewUnaryHandler(
+		SyncServicePullSurveyFormsProcedure,
+		svc.PullSurveyForms,
+		connect.WithSchema(syncServiceMethods.ByName("PullSurveyForms")),
+		connect.WithHandlerOptions(opts...),
+	)
+	syncServicePullSurveyResponsesHandler := connect.NewUnaryHandler(
+		SyncServicePullSurveyResponsesProcedure,
+		svc.PullSurveyResponses,
+		connect.WithSchema(syncServiceMethods.ByName("PullSurveyResponses")),
+		connect.WithHandlerOptions(opts...),
+	)
+	syncServicePullVoterNotesHandler := connect.NewUnaryHandler(
+		SyncServicePullVoterNotesProcedure,
+		svc.PullVoterNotes,
+		connect.WithSchema(syncServiceMethods.ByName("PullVoterNotes")),
+		connect.WithHandlerOptions(opts...),
+	)
 	syncServiceGetSyncManifestHandler := connect.NewUnaryHandler(
 		SyncServiceGetSyncManifestProcedure,
 		svc.GetSyncManifest,
@@ -176,6 +251,12 @@ func NewSyncServiceHandler(svc SyncServiceHandler, opts ...connect.HandlerOption
 			syncServicePullContactLogsHandler.ServeHTTP(w, r)
 		case SyncServicePushSyncBatchProcedure:
 			syncServicePushSyncBatchHandler.ServeHTTP(w, r)
+		case SyncServicePullSurveyFormsProcedure:
+			syncServicePullSurveyFormsHandler.ServeHTTP(w, r)
+		case SyncServicePullSurveyResponsesProcedure:
+			syncServicePullSurveyResponsesHandler.ServeHTTP(w, r)
+		case SyncServicePullVoterNotesProcedure:
+			syncServicePullVoterNotesHandler.ServeHTTP(w, r)
 		case SyncServiceGetSyncManifestProcedure:
 			syncServiceGetSyncManifestHandler.ServeHTTP(w, r)
 		default:
@@ -197,6 +278,18 @@ func (UnimplementedSyncServiceHandler) PullContactLogs(context.Context, *connect
 
 func (UnimplementedSyncServiceHandler) PushSyncBatch(context.Context, *connect.Request[v1.PushSyncBatchRequest]) (*connect.Response[v1.PushSyncBatchResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SyncService.PushSyncBatch is not implemented"))
+}
+
+func (UnimplementedSyncServiceHandler) PullSurveyForms(context.Context, *connect.Request[v1.PullSurveyFormsRequest]) (*connect.Response[v1.PullSurveyFormsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SyncService.PullSurveyForms is not implemented"))
+}
+
+func (UnimplementedSyncServiceHandler) PullSurveyResponses(context.Context, *connect.Request[v1.PullSurveyResponsesRequest]) (*connect.Response[v1.PullSurveyResponsesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SyncService.PullSurveyResponses is not implemented"))
+}
+
+func (UnimplementedSyncServiceHandler) PullVoterNotes(context.Context, *connect.Request[v1.PullVoterNotesRequest]) (*connect.Response[v1.PullVoterNotesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SyncService.PullVoterNotes is not implemented"))
 }
 
 func (UnimplementedSyncServiceHandler) GetSyncManifest(context.Context, *connect.Request[v1.GetSyncManifestRequest]) (*connect.Response[v1.GetSyncManifestResponse], error) {

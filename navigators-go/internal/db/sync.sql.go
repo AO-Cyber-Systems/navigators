@@ -99,6 +99,104 @@ func (q *Queries) GetSyncTurfAssignments(ctx context.Context, userID uuid.UUID) 
 	return items, nil
 }
 
+const pullSurveyForms = `-- name: PullSurveyForms :many
+SELECT id, company_id, title, description, schema, version, is_active, created_by, created_at, updated_at
+FROM survey_forms
+WHERE company_id = $1 AND is_active = true AND updated_at > $2
+ORDER BY updated_at ASC
+LIMIT $3
+`
+
+type PullSurveyFormsParams struct {
+	CompanyID uuid.UUID `json:"company_id"`
+	UpdatedAt time.Time `json:"updated_at"`
+	Limit     int32     `json:"limit"`
+}
+
+// Pull active survey forms updated since cursor.
+func (q *Queries) PullSurveyForms(ctx context.Context, arg PullSurveyFormsParams) ([]SurveyForm, error) {
+	rows, err := q.db.Query(ctx, pullSurveyForms, arg.CompanyID, arg.UpdatedAt, arg.Limit)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []SurveyForm{}
+	for rows.Next() {
+		var i SurveyForm
+		if err := rows.Scan(
+			&i.ID,
+			&i.CompanyID,
+			&i.Title,
+			&i.Description,
+			&i.Schema,
+			&i.Version,
+			&i.IsActive,
+			&i.CreatedBy,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const pullSurveyResponses = `-- name: PullSurveyResponses :many
+SELECT id, company_id, form_id, form_version, voter_id, user_id, turf_id, contact_log_id, responses, created_at
+FROM survey_responses
+WHERE company_id = $1 AND turf_id = ANY($2::uuid[]) AND created_at > $3
+ORDER BY created_at ASC
+LIMIT $4
+`
+
+type PullSurveyResponsesParams struct {
+	CompanyID uuid.UUID   `json:"company_id"`
+	Column2   []uuid.UUID `json:"column_2"`
+	CreatedAt time.Time   `json:"created_at"`
+	Limit     int32       `json:"limit"`
+}
+
+// Pull survey responses created since cursor, scoped to turfs.
+func (q *Queries) PullSurveyResponses(ctx context.Context, arg PullSurveyResponsesParams) ([]SurveyResponse, error) {
+	rows, err := q.db.Query(ctx, pullSurveyResponses,
+		arg.CompanyID,
+		arg.Column2,
+		arg.CreatedAt,
+		arg.Limit,
+	)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []SurveyResponse{}
+	for rows.Next() {
+		var i SurveyResponse
+		if err := rows.Scan(
+			&i.ID,
+			&i.CompanyID,
+			&i.FormID,
+			&i.FormVersion,
+			&i.VoterID,
+			&i.UserID,
+			&i.TurfID,
+			&i.ContactLogID,
+			&i.Responses,
+			&i.CreatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
 const recordSyncOperationProcessed = `-- name: RecordSyncOperationProcessed :exec
 INSERT INTO sync_received_operations (client_operation_id, user_id, company_id, entity_type, entity_id, operation_type)
 VALUES ($1, $2, $3, $4, $5, $6)
@@ -149,8 +247,8 @@ func (q *Queries) UpdateVoterUpdatedAtFromSync(ctx context.Context, arg UpdateVo
 }
 
 const upsertContactLogFromSync = `-- name: UpsertContactLogFromSync :exec
-INSERT INTO contact_logs (id, company_id, voter_id, user_id, turf_id, contact_type, outcome, notes, created_at)
-VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+INSERT INTO contact_logs (id, company_id, voter_id, user_id, turf_id, contact_type, outcome, notes, door_status, sentiment, created_at)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10, $11)
 ON CONFLICT (id) DO NOTHING
 `
 
@@ -163,6 +261,8 @@ type UpsertContactLogFromSyncParams struct {
 	ContactType string      `json:"contact_type"`
 	Outcome     string      `json:"outcome"`
 	Notes       string      `json:"notes"`
+	DoorStatus  string      `json:"door_status"`
+	Sentiment   *int32      `json:"sentiment"`
 	CreatedAt   time.Time   `json:"created_at"`
 }
 
@@ -177,6 +277,8 @@ func (q *Queries) UpsertContactLogFromSync(ctx context.Context, arg UpsertContac
 		arg.ContactType,
 		arg.Outcome,
 		arg.Notes,
+		arg.DoorStatus,
+		arg.Sentiment,
 		arg.CreatedAt,
 	)
 	return err
