@@ -25,11 +25,11 @@ Requirements for initial release. Each maps to roadmap objectives.
 - [x] **VOTER-02**: Admin can upload L2/vendor CSV voter files
 - [x] **VOTER-03**: System merges/deduplicates voters across sources by name + address + YOB
 - [x] **VOTER-04**: System batch geocodes voter addresses using Census API (primary) + Google (overflow)
-- [ ] **VOTER-05**: User can view full voter profile (name, address, YOB, party enrollment, voting history, electoral districts, registration date, status)
+- [x] **VOTER-05**: User can view full voter profile (name, address, YOB, party enrollment, voting history, electoral districts, registration date, status)
 - [x] **VOTER-06**: User can search voters by name, address, or voter ID
 - [x] **VOTER-07**: User can filter voters by district, party, voting frequency, status, geography, custom tags
 - [x] **VOTER-08**: Admin can create and manage voter tags (e.g., "priority voter", "supporter")
-- [ ] **VOTER-09**: System maintains global suppression list (opt-outs) that gates all outreach
+- [x] **VOTER-09**: System maintains global suppression list (opt-outs) that gates all outreach
 - [x] **VOTER-10**: No prohibited data fields stored (SSN, full DOB, felony info per Maine law)
 
 ### Turf Management & Mapping
@@ -175,11 +175,11 @@ Deferred to future release. Tracked but not in current roadmap.
 | VOTER-02 | Objective 2 | Complete |
 | VOTER-03 | Objective 2 | Complete |
 | VOTER-04 | Objective 2 | Complete |
-| VOTER-05 | Objective 2 | Pending |
+| VOTER-05 | Objective 2 | Complete |
 | VOTER-06 | Objective 2 | Complete |
 | VOTER-07 | Objective 2 | Complete |
 | VOTER-08 | Objective 2 | Complete |
-| VOTER-09 | Objective 2 | Pending |
+| VOTER-09 | Objective 2 | Complete |
 | VOTER-10 | Objective 2 | Complete |
 | TURF-01 | Objective 3 | Pending |
 | TURF-02 | Objective 3 | Pending |

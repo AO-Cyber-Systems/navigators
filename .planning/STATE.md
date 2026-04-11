@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-04-10)
 **Objective:** 2 of 10 (Voter Data Pipeline)
 **Current Job:** 3
 **Total Jobs in Objective:** 3
-**Status:** Ready to execute
+**Status:** Objective complete — ready for verification
 **Last Activity:** 2026-04-11
 
 Progress: [##........] 13%
@@ -35,6 +35,7 @@ Progress: [##........] 13%
 - Trend: Improving
 | Objective 02 P01 | 8min | 2 tasks | 18 files |
 | Objective 02 P02 | 8min | 2 tasks | 19 files |
+| Objective 02 P03 | 9min | 2 tasks | 22 files |
 
 ## Accumulated Context
 
@@ -60,6 +61,9 @@ Recent decisions affecting current work:
 - [Objective 02-voter-data-pipeline]: Use 'success' (not 'matched') for geocode_status to match DB CHECK constraint
 - [Objective 02-voter-data-pipeline]: Raw pgxpool queries for turf-scoped spatial PostGIS operations (sqlc cannot handle ST_Within JOINs)
 - [Objective 02-voter-data-pipeline]: Tag RPCs added to VoterService proto (not separate service) since tags are voter-domain
+- [Objective 02]: Suppression RPCs added to VoterService (not separate proto service) for cohesive voter domain
+- [Objective 02]: IsVoterSuppressed fails closed (returns true on error) -- legal requirement for outreach gating
+- [Objective 02]: Flutter services use ConnectRPC JSON protocol (POST with JSON body) for cross-platform simplicity
 
 ### Pending Todos
 
