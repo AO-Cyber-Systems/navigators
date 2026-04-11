@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-04-10)
 
 **Core value:** Navigators can go into the field with a complete voter list, map, and outreach tools -- work entirely offline in rural Maine -- and have every interaction automatically sync back to give leadership real-time visibility into grassroots organizing efforts.
-**Current focus:** Tasks & Collaboration (Objective 8)
+**Current focus:** Analytics Dashboards (Objective 9)
 
 ## Current Position
 
-**Objective:** 8 of 10 (Tasks & Collaboration)
-**Current Job:** 3
+**Objective:** 9 of 10 (Analytics Dashboards)
+**Current Job:** 2
 **Total Jobs in Objective:** 3
-**Status:** Objective complete — ready for verification
+**Status:** Ready to execute
 **Last Activity:** 2026-04-11
 
 Progress: [##........] 13%
@@ -53,6 +53,7 @@ Progress: [##........] 13%
 | Objective 08 P01 | 11min | 2 tasks | 20 files |
 | Objective 08 P02 | 8min | 2 tasks | 10 files |
 | Objective 08 P03 | 8min | 2 tasks | 11 files |
+| Objective 09 P01 | 7min | 2 tasks | 8 files |
 
 ## Accumulated Context
 
@@ -128,6 +129,10 @@ Recent decisions affecting current work:
 - [Objective 08]: Firebase init commented out pending flutterfire configure -- graceful degradation pattern
 - [Objective 08]: SyncEngine.db made public for SyncScheduler PUSH-03 outbox access
 - [Objective 08]: Tasks tab visible for all roles; FAB create only for Manager/60+ (super_navigator, admin)
+- [Objective 09]: Contact rate computed in Go (sqlc maps float division to int32)
+- [Objective 09]: Separate day/week trend queries (sqlc cannot parameterize date_trunc interval)
+- [Objective 09]: Display names via company_memberships JOIN (eden users has no company_id)
+- [Objective 09]: All analytics SQL compiled by sqlc (FILTER/LATERAL supported); no raw pgxpool fallback needed
 
 ### Pending Todos
 
@@ -142,11 +147,12 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-04-11
-Stopped at: Completed 08-03-TRD.md
+Stopped at: Completed 09-01-TRD.md
 Resume file: None
 
 ## History
 
+- 2026-04-11: Completed 09-01-TRD (Analytics proto, SQL aggregation queries, AnalyticsService with role scoping, ExportService with CSV/Excel streaming, handler + server wiring)
 - 2026-04-11: Completed 08-03-TRD (Flutter task UI screens, NotificationService, TaskService, PUSH-03 sync alert, Tasks tab)
 - 2026-04-11: Completed 08-02-TRD (NATS task events, FCM dispatcher, device token registration, task assignment notifications)
 - 2026-04-11: Completed 08-01-TRD (Task data model, CRUD service, assignment, linking, notes, proto, Drift tables/DAO, pull sync)

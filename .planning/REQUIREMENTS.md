@@ -99,8 +99,8 @@ Requirements for initial release. Each maps to roadmap objectives.
 - [ ] **ANLYT-01**: Navigator sees personal dashboard (my tasks, my stats, my assigned turfs)
 - [ ] **ANLYT-02**: Super Navigator sees team dashboard (performance metrics, task completion, turf coverage)
 - [ ] **ANLYT-03**: Admin sees organization dashboard with geographic heat maps and trend analysis
-- [ ] **ANLYT-04**: System tracks key metrics: doors knocked, texts sent, calls made, contact rate, response rate, sentiment distribution
-- [ ] **ANLYT-05**: Admin can export any filtered dataset as CSV/Excel
+- [x] **ANLYT-04**: System tracks key metrics: doors knocked, texts sent, calls made, contact rate, response rate, sentiment distribution
+- [x] **ANLYT-05**: Admin can export any filtered dataset as CSV/Excel
 
 ### Volunteer Management
 
@@ -228,8 +228,8 @@ Deferred to future release. Tracked but not in current roadmap.
 | ANLYT-01 | Objective 9 | Pending |
 | ANLYT-02 | Objective 9 | Pending |
 | ANLYT-03 | Objective 9 | Pending |
-| ANLYT-04 | Objective 9 | Pending |
-| ANLYT-05 | Objective 9 | Pending |
+| ANLYT-04 | Objective 9 | Complete |
+| ANLYT-05 | Objective 9 | Complete |
 | VOL-01 | Objective 10 | Pending |
 | VOL-02 | Objective 10 | Pending |
 | VOL-03 | Objective 10 | Pending |
