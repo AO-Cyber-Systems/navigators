@@ -9,7 +9,7 @@ Navigators goes from foundation to field-ready in 10 objectives. The first four 
 ## Objectives
 
 - [x] **Objective 1: Foundation + Auth** - Backend skeleton with auth, RBAC, audit logging, and infrastructure services
-- [ ] **Objective 2: Voter Data Pipeline** - Import, geocode, deduplicate, search, and display voter records
+- [x] **Objective 2: Voter Data Pipeline** - Import, geocode, deduplicate, search, and display voter records
 - [ ] **Objective 3: Turf Management + Maps** - Draw turfs, assign Navigators, display voters on interactive maps
 - [ ] **Objective 4: Offline Sync Engine** - Download, work offline, and sync back with conflict resolution
 - [ ] **Objective 5: Door Knocking + Contact Log** - Walk lists, at-the-door surveys, notes, and unified contact timeline
@@ -68,9 +68,9 @@ Jobs:
 **TRDs:** 3 plans in 3 waves
 
 Jobs:
-- [ ] 03-01: TBD
-- [ ] 03-02: TBD
-- [ ] 03-03: TBD
+- [ ] 03-01-TRD.md — Spatial queries + turf CRUD with GeoJSON boundaries + contact logs + walk list + stats
+- [ ] 03-02-TRD.md — Flutter map + polygon drawing + voter pins + clustering + turf assignment UI
+- [ ] 03-03-TRD.md — Offline tiles (FMTC) + heat maps + walk list UI + turf completion dashboard
 
 ### Objective 4: Offline Sync Engine
 **Goal**: Navigators can download everything they need, work entirely offline in the field, and have data sync back automatically when connectivity returns
