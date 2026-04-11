@@ -67,6 +67,16 @@ class SyncDao extends DatabaseAccessor<NavigatorsDatabase>
     }
   }
 
+  /// Get count of pending operations (one-shot, for PUSH-03 sync alert).
+  Future<int> getPendingCount() async {
+    final count = syncOperations.id.count();
+    final query = selectOnly(syncOperations)
+      ..addColumns([count])
+      ..where(syncOperations.status.isIn(['pending', 'in_progress']));
+    final row = await query.getSingle();
+    return row.read(count) ?? 0;
+  }
+
   /// Watch count of pending operations for reactive UI.
   Stream<int> countPending() {
     final count = syncOperations.id.count();

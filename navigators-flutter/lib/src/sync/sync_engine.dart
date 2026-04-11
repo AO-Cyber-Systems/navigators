@@ -49,7 +49,7 @@ class SyncResult {
 /// 2. Pull then gets back the server-authoritative version
 /// 3. No risk of overwriting server data with stale local data
 class SyncEngine {
-  final NavigatorsDatabase _db;
+  final NavigatorsDatabase db;
   final PushSync _pushSync;
   final SyncClient _pullClient;
 
@@ -58,7 +58,7 @@ class SyncEngine {
 
   bool _isSyncing = false;
 
-  SyncEngine(this._db, this._pushSync, this._pullClient) {
+  SyncEngine(this.db, this._pushSync, this._pullClient) {
     instance = this;
   }
 
@@ -139,17 +139,17 @@ class SyncEngine {
         if (turfIds.isNotEmpty) {
           // Pull survey forms and call scripts first (needed before UI can render)
           pulledSurveyForms =
-              await _pullClient.pullAllSurveyForms(_db);
+              await _pullClient.pullAllSurveyForms(db);
           pulledCallScripts =
-              await _pullClient.pullAllCallScripts(_db);
+              await _pullClient.pullAllCallScripts(db);
           pulledVoters =
-              await _pullClient.pullAllVoters(_db, turfIds);
+              await _pullClient.pullAllVoters(db, turfIds);
           pulledContactLogs =
-              await _pullClient.pullAllContactLogs(_db, turfIds);
+              await _pullClient.pullAllContactLogs(db, turfIds);
           pulledSurveyResponses =
-              await _pullClient.pullAllSurveyResponses(_db, turfIds);
+              await _pullClient.pullAllSurveyResponses(db, turfIds);
           pulledVoterNotes =
-              await _pullClient.pullAllVoterNotes(_db, turfIds);
+              await _pullClient.pullAllVoterNotes(db, turfIds);
         }
       } catch (e) {
         errors.add('Pull failed: $e');
@@ -197,7 +197,7 @@ class SyncEngine {
   /// For removed turfs: push pending ops first (critical!), then delete local data.
   /// For new turfs: insert assignment entry (full pull happens in Phase 3 via empty cursor).
   Future<void> handleTurfReassignment(SyncManifest manifest) async {
-    final localAssignments = await _db.select(_db.turfAssignments).get();
+    final localAssignments = await db.select(db.turfAssignments).get();
     final serverTurfIds =
         manifest.turfAssignments.map((t) => t.turfId).toSet();
     final localTurfIds = localAssignments.map((a) => a.turfId).toSet();
@@ -209,10 +209,10 @@ class SyncEngine {
       await _pushSync.pushOperationsForTurf(turfId);
 
       // Delete local voter data for removed turf
-      await _db.voterDao.deleteVotersForTurf(turfId);
+      await db.voterDao.deleteVotersForTurf(turfId);
 
       // Delete turf assignment entry
-      await (_db.delete(_db.turfAssignments)
+      await (db.delete(db.turfAssignments)
             ..where((t) => t.turfId.equals(turfId)))
           .go();
 
@@ -225,7 +225,7 @@ class SyncEngine {
     final added = serverTurfIds.difference(localTurfIds);
     for (final turf
         in manifest.turfAssignments.where((t) => added.contains(t.turfId))) {
-      await _db.into(_db.turfAssignments).insert(
+      await db.into(db.turfAssignments).insert(
             TurfAssignmentsCompanion.insert(
               turfId: turf.turfId,
               turfName: turf.turfName,
@@ -238,7 +238,7 @@ class SyncEngine {
 
   /// Get turf IDs from local turf_assignments table.
   Future<List<String>> _getTurfIds() async {
-    final assignments = await _db.select(_db.turfAssignments).get();
+    final assignments = await db.select(db.turfAssignments).get();
     return assignments.map((a) => a.turfId).toList();
   }
 }

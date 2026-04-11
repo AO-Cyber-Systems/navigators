@@ -7,6 +7,7 @@ import 'package:flutter_secure_storage/flutter_secure_storage.dart';
 import 'package:workmanager/workmanager.dart';
 
 import '../database/database.dart';
+import '../services/notification_service.dart';
 import 'pull_sync.dart';
 import 'push_sync.dart';
 import 'sync_engine.dart';
@@ -68,6 +69,15 @@ class SyncScheduler {
   bool _wasDisconnected = false;
   final Random _random = Random();
 
+  /// Optional NotificationService for PUSH-03 sync alerts.
+  /// Set after initialization via [setNotificationService].
+  NotificationService? _notificationService;
+
+  /// Set the notification service for PUSH-03 local sync alerts.
+  void setNotificationService(NotificationService service) {
+    _notificationService = service;
+  }
+
   /// Initialize WorkManager and register the periodic sync task.
   Future<void> initialize() async {
     await Workmanager().initialize(callbackDispatcher);
@@ -104,6 +114,22 @@ class SyncScheduler {
       // Only trigger sync on reconnect (was disconnected, now connected)
       if (_wasDisconnected && isConnected) {
         _wasDisconnected = false;
+
+        // PUSH-03: Check pending outbox count and show local notification
+        if (_notificationService != null) {
+          try {
+            final engine = SyncEngine.instance;
+            if (engine != null) {
+              final pendingCount =
+                  await engine.db.syncDao.getPendingCount();
+              if (pendingCount > 0) {
+                await _notificationService!.showSyncAlert(pendingCount);
+              }
+            }
+          } catch (_) {
+            // Non-critical: sync alert failed, continue with sync
+          }
+        }
 
         // Apply jitter: random 0-60 second delay to prevent sync storms
         final jitterMs = _random.nextInt(60000);
