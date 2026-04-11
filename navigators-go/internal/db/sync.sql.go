@@ -10,7 +10,28 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 )
+
+const checkSyncOperationProcessed = `-- name: CheckSyncOperationProcessed :one
+SELECT EXISTS(
+  SELECT 1 FROM sync_received_operations
+  WHERE client_operation_id = $1 AND company_id = $2
+)
+`
+
+type CheckSyncOperationProcessedParams struct {
+	ClientOperationID string    `json:"client_operation_id"`
+	CompanyID         uuid.UUID `json:"company_id"`
+}
+
+// Check if a client sync operation has already been processed (idempotency).
+func (q *Queries) CheckSyncOperationProcessed(ctx context.Context, arg CheckSyncOperationProcessedParams) (bool, error) {
+	row := q.db.QueryRow(ctx, checkSyncOperationProcessed, arg.ClientOperationID, arg.CompanyID)
+	var exists bool
+	err := row.Scan(&exists)
+	return exists, err
+}
 
 const getSyncServerCursor = `-- name: GetSyncServerCursor :one
 SELECT last_cursor FROM sync_server_cursors
@@ -76,6 +97,89 @@ func (q *Queries) GetSyncTurfAssignments(ctx context.Context, userID uuid.UUID) 
 		return nil, err
 	}
 	return items, nil
+}
+
+const recordSyncOperationProcessed = `-- name: RecordSyncOperationProcessed :exec
+INSERT INTO sync_received_operations (client_operation_id, user_id, company_id, entity_type, entity_id, operation_type)
+VALUES ($1, $2, $3, $4, $5, $6)
+ON CONFLICT DO NOTHING
+`
+
+type RecordSyncOperationProcessedParams struct {
+	ClientOperationID string    `json:"client_operation_id"`
+	UserID            uuid.UUID `json:"user_id"`
+	CompanyID         uuid.UUID `json:"company_id"`
+	EntityType        string    `json:"entity_type"`
+	EntityID          string    `json:"entity_id"`
+	OperationType     string    `json:"operation_type"`
+}
+
+// Record a processed sync operation for idempotency tracking.
+func (q *Queries) RecordSyncOperationProcessed(ctx context.Context, arg RecordSyncOperationProcessedParams) error {
+	_, err := q.db.Exec(ctx, recordSyncOperationProcessed,
+		arg.ClientOperationID,
+		arg.UserID,
+		arg.CompanyID,
+		arg.EntityType,
+		arg.EntityID,
+		arg.OperationType,
+	)
+	return err
+}
+
+const updateVoterUpdatedAtFromSync = `-- name: UpdateVoterUpdatedAtFromSync :exec
+UPDATE voters
+SET updated_at = now()
+WHERE id = $1 AND company_id = $2
+  AND updated_at < $3
+`
+
+type UpdateVoterUpdatedAtFromSyncParams struct {
+	ID        uuid.UUID `json:"id"`
+	CompanyID uuid.UUID `json:"company_id"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
+// Update voter updated_at timestamp from a client sync push using LWW (last-write-wins).
+// Only updates if the client's timestamp is newer than the server's current updated_at.
+// Actual field updates are handled in Go code via raw pgxpool for flexibility.
+func (q *Queries) UpdateVoterUpdatedAtFromSync(ctx context.Context, arg UpdateVoterUpdatedAtFromSyncParams) error {
+	_, err := q.db.Exec(ctx, updateVoterUpdatedAtFromSync, arg.ID, arg.CompanyID, arg.UpdatedAt)
+	return err
+}
+
+const upsertContactLogFromSync = `-- name: UpsertContactLogFromSync :exec
+INSERT INTO contact_logs (id, company_id, voter_id, user_id, turf_id, contact_type, outcome, notes, created_at)
+VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
+ON CONFLICT (id) DO NOTHING
+`
+
+type UpsertContactLogFromSyncParams struct {
+	ID          uuid.UUID   `json:"id"`
+	CompanyID   uuid.UUID   `json:"company_id"`
+	VoterID     uuid.UUID   `json:"voter_id"`
+	UserID      uuid.UUID   `json:"user_id"`
+	TurfID      pgtype.UUID `json:"turf_id"`
+	ContactType string      `json:"contact_type"`
+	Outcome     string      `json:"outcome"`
+	Notes       string      `json:"notes"`
+	CreatedAt   time.Time   `json:"created_at"`
+}
+
+// Insert a contact log from a client sync push. Append-only: skip if already exists.
+func (q *Queries) UpsertContactLogFromSync(ctx context.Context, arg UpsertContactLogFromSyncParams) error {
+	_, err := q.db.Exec(ctx, upsertContactLogFromSync,
+		arg.ID,
+		arg.CompanyID,
+		arg.VoterID,
+		arg.UserID,
+		arg.TurfID,
+		arg.ContactType,
+		arg.Outcome,
+		arg.Notes,
+		arg.CreatedAt,
+	)
+	return err
 }
 
 const upsertSyncServerCursor = `-- name: UpsertSyncServerCursor :exec

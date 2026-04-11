@@ -6,6 +6,7 @@ import (
 	"time"
 
 	connect "connectrpc.com/connect"
+	"github.com/aocybersystems/eden-platform-go/platform/server"
 	"github.com/google/uuid"
 
 	navigatorsv1 "navigators-go/gen/go/navigators/v1"
@@ -134,9 +135,49 @@ func (h *SyncHandler) PullContactLogs(ctx context.Context, req *connect.Request[
 }
 
 func (h *SyncHandler) PushSyncBatch(ctx context.Context, req *connect.Request[navigatorsv1.PushSyncBatchRequest]) (*connect.Response[navigatorsv1.PushSyncBatchResponse], error) {
-	// PushSyncBatch will be fully implemented in TRD 04-02 (push sync).
-	// For now, return an unimplemented error so the endpoint is registered.
-	return nil, connect.NewError(connect.CodeUnimplemented, fmt.Errorf("PushSyncBatch not yet implemented"))
+	companyID, err := extractCompanyID(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	claims := server.ClaimsFromContext(ctx)
+	userID, err := uuid.Parse(claims.UserID)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("parse user ID: %w", err))
+	}
+
+	// Convert proto operations to domain type
+	ops := make([]SyncOperationInput, len(req.Msg.GetOperations()))
+	for i, pbOp := range req.Msg.GetOperations() {
+		ops[i] = SyncOperationInput{
+			ClientOperationID: pbOp.GetClientOperationId(),
+			EntityType:        pbOp.GetEntityType(),
+			EntityID:          pbOp.GetEntityId(),
+			OperationType:     pbOp.GetOperationType(),
+			Payload:           pbOp.GetPayload(),
+			ClientTimestamp:   pbOp.GetClientTimestamp(),
+		}
+	}
+
+	result, err := h.syncService.PushSyncBatch(ctx, userID, companyID, ops)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, err)
+	}
+
+	// Convert errors to proto format
+	pbErrors := make([]*navigatorsv1.SyncError, len(result.Errors))
+	for i, e := range result.Errors {
+		pbErrors[i] = &navigatorsv1.SyncError{
+			OperationId: e.OperationID,
+			Code:        e.Code,
+			Message:     e.Message,
+		}
+	}
+
+	return connect.NewResponse(&navigatorsv1.PushSyncBatchResponse{
+		ProcessedOperationIds: result.ProcessedIDs,
+		Errors:                pbErrors,
+	}), nil
 }
 
 func (h *SyncHandler) GetSyncManifest(ctx context.Context, req *connect.Request[navigatorsv1.GetSyncManifestRequest]) (*connect.Response[navigatorsv1.GetSyncManifestResponse], error) {

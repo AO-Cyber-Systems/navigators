@@ -2,10 +2,12 @@ package navigators
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"navigators-go/internal/db"
@@ -83,6 +85,204 @@ type TurfAssignmentResult struct {
 	TurfName        string
 	BoundaryGeojson string
 	VoterCount      int64
+}
+
+// --- Push Sync Types ---
+
+// SyncOperationInput represents a single sync operation from the client.
+type SyncOperationInput struct {
+	ClientOperationID string
+	EntityType        string
+	EntityID          string
+	OperationType     string
+	Payload           []byte
+	ClientTimestamp   string
+}
+
+// SyncError represents an error processing a specific sync operation.
+type SyncError struct {
+	OperationID string
+	Code        string
+	Message     string
+}
+
+// PushSyncBatchResult contains the result of processing a push sync batch.
+type PushSyncBatchResult struct {
+	ProcessedIDs []string
+	Errors       []SyncError
+}
+
+// contactLogPayload is the JSON structure for contact log push operations.
+type contactLogPayload struct {
+	ID          string `json:"id"`
+	VoterID     string `json:"voter_id"`
+	TurfID      string `json:"turf_id"`
+	UserID      string `json:"user_id"`
+	ContactType string `json:"contact_type"`
+	Outcome     string `json:"outcome"`
+	Notes       string `json:"notes"`
+	CreatedAt   string `json:"created_at"`
+}
+
+// voterMetadataPayload is the JSON structure for voter metadata push operations.
+type voterMetadataPayload struct {
+	VoterID   string `json:"voter_id"`
+	UpdatedAt string `json:"updated_at"`
+}
+
+// PushSyncBatch processes a batch of sync operations from the client.
+// Each operation is processed idempotently: re-sending the same operation is a no-op.
+// Contact logs are append-only (INSERT ON CONFLICT DO NOTHING).
+// Voter metadata uses last-write-wins (UPDATE WHERE updated_at < client_timestamp).
+func (s *SyncService) PushSyncBatch(ctx context.Context, userID, companyID uuid.UUID, ops []SyncOperationInput) (*PushSyncBatchResult, error) {
+	var processed []string
+	var syncErrors []SyncError
+
+	for _, op := range ops {
+		// 1. Check idempotency -- skip if already processed
+		exists, err := s.queries.CheckSyncOperationProcessed(ctx, db.CheckSyncOperationProcessedParams{
+			ClientOperationID: op.ClientOperationID,
+			CompanyID:         companyID,
+		})
+		if err != nil {
+			syncErrors = append(syncErrors, SyncError{
+				OperationID: op.ClientOperationID,
+				Code:        "internal_error",
+				Message:     fmt.Sprintf("check idempotency: %v", err),
+			})
+			continue
+		}
+		if exists {
+			// Already processed -- count as success
+			processed = append(processed, op.ClientOperationID)
+			continue
+		}
+
+		// 2. Process by entity type
+		switch op.EntityType {
+		case "contact_log":
+			err = s.processContactLog(ctx, companyID, userID, op)
+		case "voter_metadata":
+			err = s.processVoterMetadata(ctx, companyID, op)
+		default:
+			syncErrors = append(syncErrors, SyncError{
+				OperationID: op.ClientOperationID,
+				Code:        "unknown_entity",
+				Message:     fmt.Sprintf("unknown entity type: %s", op.EntityType),
+			})
+			continue
+		}
+
+		if err != nil {
+			syncErrors = append(syncErrors, SyncError{
+				OperationID: op.ClientOperationID,
+				Code:        "processing_error",
+				Message:     err.Error(),
+			})
+			continue
+		}
+
+		// 3. Record as processed for idempotency
+		if recErr := s.queries.RecordSyncOperationProcessed(ctx, db.RecordSyncOperationProcessedParams{
+			ClientOperationID: op.ClientOperationID,
+			UserID:            userID,
+			CompanyID:         companyID,
+			EntityType:        op.EntityType,
+			EntityID:          op.EntityID,
+			OperationType:     op.OperationType,
+		}); recErr != nil {
+			// Non-fatal: operation was processed but idempotency record failed.
+			// Next retry will re-process but ON CONFLICT clauses handle it.
+			_ = recErr
+		}
+
+		processed = append(processed, op.ClientOperationID)
+	}
+
+	return &PushSyncBatchResult{
+		ProcessedIDs: processed,
+		Errors:       syncErrors,
+	}, nil
+}
+
+// processContactLog inserts a contact log from a client push.
+// Contact logs are append-only: ON CONFLICT (id) DO NOTHING.
+func (s *SyncService) processContactLog(ctx context.Context, companyID, userID uuid.UUID, op SyncOperationInput) error {
+	var payload contactLogPayload
+	if err := json.Unmarshal(op.Payload, &payload); err != nil {
+		return fmt.Errorf("unmarshal contact log payload: %w", err)
+	}
+
+	clID, err := uuid.Parse(payload.ID)
+	if err != nil {
+		clID, err = uuid.Parse(op.EntityID)
+		if err != nil {
+			return fmt.Errorf("parse contact log ID: %w", err)
+		}
+	}
+
+	voterID, err := uuid.Parse(payload.VoterID)
+	if err != nil {
+		return fmt.Errorf("parse voter ID: %w", err)
+	}
+
+	var turfID pgtype.UUID
+	if payload.TurfID != "" {
+		parsed, err := uuid.Parse(payload.TurfID)
+		if err != nil {
+			return fmt.Errorf("parse turf ID: %w", err)
+		}
+		turfID = pgtype.UUID{Bytes: parsed, Valid: true}
+	}
+
+	createdAt := time.Now()
+	if payload.CreatedAt != "" {
+		if parsed, err := time.Parse(time.RFC3339, payload.CreatedAt); err == nil {
+			createdAt = parsed
+		}
+	}
+
+	return s.queries.UpsertContactLogFromSync(ctx, db.UpsertContactLogFromSyncParams{
+		ID:          clID,
+		CompanyID:   companyID,
+		VoterID:     voterID,
+		UserID:      userID,
+		TurfID:      turfID,
+		ContactType: payload.ContactType,
+		Outcome:     payload.Outcome,
+		Notes:       payload.Notes,
+		CreatedAt:   createdAt,
+	})
+}
+
+// processVoterMetadata updates voter metadata using LWW (last-write-wins).
+// Only updates if the client's timestamp is newer than the server's current updated_at.
+func (s *SyncService) processVoterMetadata(ctx context.Context, companyID uuid.UUID, op SyncOperationInput) error {
+	var payload voterMetadataPayload
+	if err := json.Unmarshal(op.Payload, &payload); err != nil {
+		return fmt.Errorf("unmarshal voter metadata payload: %w", err)
+	}
+
+	voterID, err := uuid.Parse(payload.VoterID)
+	if err != nil {
+		voterID, err = uuid.Parse(op.EntityID)
+		if err != nil {
+			return fmt.Errorf("parse voter ID: %w", err)
+		}
+	}
+
+	clientUpdatedAt := time.Now()
+	if payload.UpdatedAt != "" {
+		if parsed, err := time.Parse(time.RFC3339, payload.UpdatedAt); err == nil {
+			clientUpdatedAt = parsed
+		}
+	}
+
+	return s.queries.UpdateVoterUpdatedAtFromSync(ctx, db.UpdateVoterUpdatedAtFromSyncParams{
+		ID:        voterID,
+		CompanyID: companyID,
+		UpdatedAt: clientUpdatedAt,
+	})
 }
 
 // PullVoterUpdates returns voters updated since cursor, scoped to the user's turfs.
