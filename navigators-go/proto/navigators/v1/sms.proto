@@ -4,7 +4,8 @@ package navigators.v1;
 
 option go_package = "navigators-go/gen/go/navigators/v1;navigatorsv1";
 
-// SMSService provides P2P texting, conversation management, and SMS configuration.
+// SMSService provides P2P texting, conversation management, SMS configuration,
+// message templates, and A2P broadcast campaigns.
 service SMSService {
   // SendP2PMessage sends a human-initiated text message to a voter.
   rpc SendP2PMessage(SendP2PMessageRequest) returns (SendP2PMessageResponse);
@@ -20,6 +21,54 @@ service SMSService {
 
   // UpdateSMSConfig updates the SMS configuration for the company (admin only).
   rpc UpdateSMSConfig(UpdateSMSConfigRequest) returns (UpdateSMSConfigResponse);
+
+  // --- Template RPCs ---
+
+  // CreateTemplate creates a new message template with merge fields.
+  rpc CreateTemplate(CreateTemplateRequest) returns (CreateTemplateResponse);
+
+  // ListTemplates returns active templates for the company.
+  rpc ListTemplates(ListTemplatesRequest) returns (ListTemplatesResponse);
+
+  // GetTemplate returns a template by ID.
+  rpc GetTemplate(GetTemplateRequest) returns (GetTemplateResponse);
+
+  // UpdateTemplate updates an existing template.
+  rpc UpdateTemplate(UpdateTemplateRequest) returns (UpdateTemplateResponse);
+
+  // DeleteTemplate soft-deletes a template.
+  rpc DeleteTemplate(DeleteTemplateRequest) returns (DeleteTemplateResponse);
+
+  // PreviewTemplate renders a template with sample voter data.
+  rpc PreviewTemplate(PreviewTemplateRequest) returns (PreviewTemplateResponse);
+
+  // --- Campaign RPCs ---
+
+  // CreateCampaign creates a new broadcast campaign in draft status.
+  rpc CreateCampaign(CreateCampaignRequest) returns (CreateCampaignResponse);
+
+  // LaunchCampaign starts sending a draft campaign (gated on 10DLC approval).
+  rpc LaunchCampaign(LaunchCampaignRequest) returns (LaunchCampaignResponse);
+
+  // PauseCampaign pauses a sending campaign.
+  rpc PauseCampaign(PauseCampaignRequest) returns (PauseCampaignResponse);
+
+  // CancelCampaign cancels a campaign.
+  rpc CancelCampaign(CancelCampaignRequest) returns (CancelCampaignResponse);
+
+  // GetCampaign returns a campaign by ID.
+  rpc GetCampaign(GetCampaignRequest) returns (GetCampaignResponse);
+
+  // ListCampaigns returns campaigns for the company.
+  rpc ListCampaigns(ListCampaignsRequest) returns (ListCampaignsResponse);
+
+  // --- 10DLC RPCs ---
+
+  // Get10DLCStatus returns the current 10DLC registration status.
+  rpc Get10DLCStatus(Get10DLCStatusRequest) returns (Get10DLCStatusResponse);
+
+  // Update10DLCStatus updates the 10DLC registration status after checking Twilio dashboard.
+  rpc Update10DLCStatus(Update10DLCStatusRequest) returns (Update10DLCStatusResponse);
 }
 
 // SMSMessage represents an individual SMS message.
@@ -57,6 +106,34 @@ message ConversationSummary {
   string voter_name = 2;
   string last_message_body = 3;
   string last_message_at = 4;
+}
+
+// SMSTemplate represents a message template with merge fields.
+message SMSTemplate {
+  string id = 1;
+  string name = 2;
+  string body = 3;
+  repeated string merge_fields = 4;
+  bool is_active = 5;
+  string created_at = 6;
+  string updated_at = 7;
+}
+
+// SMSCampaign represents a broadcast campaign.
+message SMSCampaign {
+  string id = 1;
+  string name = 2;
+  string template_id = 3;
+  string segment_filters = 4;  // JSON string
+  string status = 5;           // "draft", "sending", "paused", "cancelled", "completed"
+  int32 total_recipients = 6;
+  int32 sent_count = 7;
+  int32 delivered_count = 8;
+  int32 failed_count = 9;
+  string launched_at = 10;
+  string completed_at = 11;
+  string created_at = 12;
+  string updated_at = 13;
 }
 
 // SendP2PMessage
@@ -117,4 +194,127 @@ message UpdateSMSConfigRequest {
 
 message UpdateSMSConfigResponse {
   SMSConfig config = 1;
+}
+
+// --- Template messages ---
+
+message CreateTemplateRequest {
+  string name = 1;
+  string body = 2;
+  repeated string merge_fields = 3;
+}
+
+message CreateTemplateResponse {
+  SMSTemplate template = 1;
+}
+
+message ListTemplatesRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+message ListTemplatesResponse {
+  repeated SMSTemplate templates = 1;
+  string next_page_token = 2;
+}
+
+message GetTemplateRequest {
+  string template_id = 1;
+}
+
+message GetTemplateResponse {
+  SMSTemplate template = 1;
+}
+
+message UpdateTemplateRequest {
+  string template_id = 1;
+  string name = 2;
+  string body = 3;
+  repeated string merge_fields = 4;
+}
+
+message UpdateTemplateResponse {
+  SMSTemplate template = 1;
+}
+
+message DeleteTemplateRequest {
+  string template_id = 1;
+}
+
+message DeleteTemplateResponse {}
+
+message PreviewTemplateRequest {
+  string template_id = 1;
+}
+
+message PreviewTemplateResponse {
+  string rendered_body = 1;
+}
+
+// --- Campaign messages ---
+
+message CreateCampaignRequest {
+  string name = 1;
+  string template_id = 2;
+  string segment_filters = 3;  // JSON string
+}
+
+message CreateCampaignResponse {
+  SMSCampaign campaign = 1;
+}
+
+message LaunchCampaignRequest {
+  string campaign_id = 1;
+}
+
+message LaunchCampaignResponse {}
+
+message PauseCampaignRequest {
+  string campaign_id = 1;
+}
+
+message PauseCampaignResponse {}
+
+message CancelCampaignRequest {
+  string campaign_id = 1;
+}
+
+message CancelCampaignResponse {}
+
+message GetCampaignRequest {
+  string campaign_id = 1;
+}
+
+message GetCampaignResponse {
+  SMSCampaign campaign = 1;
+}
+
+message ListCampaignsRequest {
+  int32 page_size = 1;
+  string page_token = 2;
+}
+
+message ListCampaignsResponse {
+  repeated SMSCampaign campaigns = 1;
+  string next_page_token = 2;
+}
+
+// --- 10DLC messages ---
+
+message Get10DLCStatusRequest {}
+
+message Get10DLCStatusResponse {
+  string status = 1;
+  string brand_sid = 2;
+  string campaign_sid = 3;
+}
+
+message Update10DLCStatusRequest {
+  string brand_sid = 1;
+  string campaign_sid = 2;
+  string status = 3;
+}
+
+message Update10DLCStatusResponse {
+  string status = 1;
 }

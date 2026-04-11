@@ -332,6 +332,240 @@ func (x *ConversationSummary) GetLastMessageAt() string {
 	return ""
 }
 
+// SMSTemplate represents a message template with merge fields.
+type SMSTemplate struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Body          string                 `protobuf:"bytes,3,opt,name=body,proto3" json:"body,omitempty"`
+	MergeFields   []string               `protobuf:"bytes,4,rep,name=merge_fields,json=mergeFields,proto3" json:"merge_fields,omitempty"`
+	IsActive      bool                   `protobuf:"varint,5,opt,name=is_active,json=isActive,proto3" json:"is_active,omitempty"`
+	CreatedAt     string                 `protobuf:"bytes,6,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt     string                 `protobuf:"bytes,7,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SMSTemplate) Reset() {
+	*x = SMSTemplate{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[3]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SMSTemplate) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SMSTemplate) ProtoMessage() {}
+
+func (x *SMSTemplate) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[3]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SMSTemplate.ProtoReflect.Descriptor instead.
+func (*SMSTemplate) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{3}
+}
+
+func (x *SMSTemplate) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *SMSTemplate) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *SMSTemplate) GetBody() string {
+	if x != nil {
+		return x.Body
+	}
+	return ""
+}
+
+func (x *SMSTemplate) GetMergeFields() []string {
+	if x != nil {
+		return x.MergeFields
+	}
+	return nil
+}
+
+func (x *SMSTemplate) GetIsActive() bool {
+	if x != nil {
+		return x.IsActive
+	}
+	return false
+}
+
+func (x *SMSTemplate) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
+func (x *SMSTemplate) GetUpdatedAt() string {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return ""
+}
+
+// SMSCampaign represents a broadcast campaign.
+type SMSCampaign struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Id              string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Name            string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	TemplateId      string                 `protobuf:"bytes,3,opt,name=template_id,json=templateId,proto3" json:"template_id,omitempty"`
+	SegmentFilters  string                 `protobuf:"bytes,4,opt,name=segment_filters,json=segmentFilters,proto3" json:"segment_filters,omitempty"` // JSON string
+	Status          string                 `protobuf:"bytes,5,opt,name=status,proto3" json:"status,omitempty"`                                       // "draft", "sending", "paused", "cancelled", "completed"
+	TotalRecipients int32                  `protobuf:"varint,6,opt,name=total_recipients,json=totalRecipients,proto3" json:"total_recipients,omitempty"`
+	SentCount       int32                  `protobuf:"varint,7,opt,name=sent_count,json=sentCount,proto3" json:"sent_count,omitempty"`
+	DeliveredCount  int32                  `protobuf:"varint,8,opt,name=delivered_count,json=deliveredCount,proto3" json:"delivered_count,omitempty"`
+	FailedCount     int32                  `protobuf:"varint,9,opt,name=failed_count,json=failedCount,proto3" json:"failed_count,omitempty"`
+	LaunchedAt      string                 `protobuf:"bytes,10,opt,name=launched_at,json=launchedAt,proto3" json:"launched_at,omitempty"`
+	CompletedAt     string                 `protobuf:"bytes,11,opt,name=completed_at,json=completedAt,proto3" json:"completed_at,omitempty"`
+	CreatedAt       string                 `protobuf:"bytes,12,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt       string                 `protobuf:"bytes,13,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *SMSCampaign) Reset() {
+	*x = SMSCampaign{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[4]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SMSCampaign) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SMSCampaign) ProtoMessage() {}
+
+func (x *SMSCampaign) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[4]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SMSCampaign.ProtoReflect.Descriptor instead.
+func (*SMSCampaign) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{4}
+}
+
+func (x *SMSCampaign) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *SMSCampaign) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *SMSCampaign) GetTemplateId() string {
+	if x != nil {
+		return x.TemplateId
+	}
+	return ""
+}
+
+func (x *SMSCampaign) GetSegmentFilters() string {
+	if x != nil {
+		return x.SegmentFilters
+	}
+	return ""
+}
+
+func (x *SMSCampaign) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *SMSCampaign) GetTotalRecipients() int32 {
+	if x != nil {
+		return x.TotalRecipients
+	}
+	return 0
+}
+
+func (x *SMSCampaign) GetSentCount() int32 {
+	if x != nil {
+		return x.SentCount
+	}
+	return 0
+}
+
+func (x *SMSCampaign) GetDeliveredCount() int32 {
+	if x != nil {
+		return x.DeliveredCount
+	}
+	return 0
+}
+
+func (x *SMSCampaign) GetFailedCount() int32 {
+	if x != nil {
+		return x.FailedCount
+	}
+	return 0
+}
+
+func (x *SMSCampaign) GetLaunchedAt() string {
+	if x != nil {
+		return x.LaunchedAt
+	}
+	return ""
+}
+
+func (x *SMSCampaign) GetCompletedAt() string {
+	if x != nil {
+		return x.CompletedAt
+	}
+	return ""
+}
+
+func (x *SMSCampaign) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
+func (x *SMSCampaign) GetUpdatedAt() string {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return ""
+}
+
 // SendP2PMessage
 type SendP2PMessageRequest struct {
 	state         protoimpl.MessageState `protogen:"open.v1"`
@@ -343,7 +577,7 @@ type SendP2PMessageRequest struct {
 
 func (x *SendP2PMessageRequest) Reset() {
 	*x = SendP2PMessageRequest{}
-	mi := &file_navigators_v1_sms_proto_msgTypes[3]
+	mi := &file_navigators_v1_sms_proto_msgTypes[5]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -355,7 +589,7 @@ func (x *SendP2PMessageRequest) String() string {
 func (*SendP2PMessageRequest) ProtoMessage() {}
 
 func (x *SendP2PMessageRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_navigators_v1_sms_proto_msgTypes[3]
+	mi := &file_navigators_v1_sms_proto_msgTypes[5]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -368,7 +602,7 @@ func (x *SendP2PMessageRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SendP2PMessageRequest.ProtoReflect.Descriptor instead.
 func (*SendP2PMessageRequest) Descriptor() ([]byte, []int) {
-	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{3}
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{5}
 }
 
 func (x *SendP2PMessageRequest) GetVoterId() string {
@@ -394,7 +628,7 @@ type SendP2PMessageResponse struct {
 
 func (x *SendP2PMessageResponse) Reset() {
 	*x = SendP2PMessageResponse{}
-	mi := &file_navigators_v1_sms_proto_msgTypes[4]
+	mi := &file_navigators_v1_sms_proto_msgTypes[6]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -406,7 +640,7 @@ func (x *SendP2PMessageResponse) String() string {
 func (*SendP2PMessageResponse) ProtoMessage() {}
 
 func (x *SendP2PMessageResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_navigators_v1_sms_proto_msgTypes[4]
+	mi := &file_navigators_v1_sms_proto_msgTypes[6]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -419,7 +653,7 @@ func (x *SendP2PMessageResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use SendP2PMessageResponse.ProtoReflect.Descriptor instead.
 func (*SendP2PMessageResponse) Descriptor() ([]byte, []int) {
-	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{4}
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{6}
 }
 
 func (x *SendP2PMessageResponse) GetMessage() *SMSMessage {
@@ -441,7 +675,7 @@ type GetConversationRequest struct {
 
 func (x *GetConversationRequest) Reset() {
 	*x = GetConversationRequest{}
-	mi := &file_navigators_v1_sms_proto_msgTypes[5]
+	mi := &file_navigators_v1_sms_proto_msgTypes[7]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -453,7 +687,7 @@ func (x *GetConversationRequest) String() string {
 func (*GetConversationRequest) ProtoMessage() {}
 
 func (x *GetConversationRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_navigators_v1_sms_proto_msgTypes[5]
+	mi := &file_navigators_v1_sms_proto_msgTypes[7]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -466,7 +700,7 @@ func (x *GetConversationRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetConversationRequest.ProtoReflect.Descriptor instead.
 func (*GetConversationRequest) Descriptor() ([]byte, []int) {
-	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{5}
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{7}
 }
 
 func (x *GetConversationRequest) GetVoterId() string {
@@ -501,7 +735,7 @@ type GetConversationResponse struct {
 
 func (x *GetConversationResponse) Reset() {
 	*x = GetConversationResponse{}
-	mi := &file_navigators_v1_sms_proto_msgTypes[6]
+	mi := &file_navigators_v1_sms_proto_msgTypes[8]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -513,7 +747,7 @@ func (x *GetConversationResponse) String() string {
 func (*GetConversationResponse) ProtoMessage() {}
 
 func (x *GetConversationResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_navigators_v1_sms_proto_msgTypes[6]
+	mi := &file_navigators_v1_sms_proto_msgTypes[8]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -526,7 +760,7 @@ func (x *GetConversationResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetConversationResponse.ProtoReflect.Descriptor instead.
 func (*GetConversationResponse) Descriptor() ([]byte, []int) {
-	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{6}
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{8}
 }
 
 func (x *GetConversationResponse) GetMessages() []*SMSMessage {
@@ -561,7 +795,7 @@ type ListConversationsRequest struct {
 
 func (x *ListConversationsRequest) Reset() {
 	*x = ListConversationsRequest{}
-	mi := &file_navigators_v1_sms_proto_msgTypes[7]
+	mi := &file_navigators_v1_sms_proto_msgTypes[9]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -573,7 +807,7 @@ func (x *ListConversationsRequest) String() string {
 func (*ListConversationsRequest) ProtoMessage() {}
 
 func (x *ListConversationsRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_navigators_v1_sms_proto_msgTypes[7]
+	mi := &file_navigators_v1_sms_proto_msgTypes[9]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -586,7 +820,7 @@ func (x *ListConversationsRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListConversationsRequest.ProtoReflect.Descriptor instead.
 func (*ListConversationsRequest) Descriptor() ([]byte, []int) {
-	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{7}
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{9}
 }
 
 func (x *ListConversationsRequest) GetPageSize() int32 {
@@ -613,7 +847,7 @@ type ListConversationsResponse struct {
 
 func (x *ListConversationsResponse) Reset() {
 	*x = ListConversationsResponse{}
-	mi := &file_navigators_v1_sms_proto_msgTypes[8]
+	mi := &file_navigators_v1_sms_proto_msgTypes[10]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -625,7 +859,7 @@ func (x *ListConversationsResponse) String() string {
 func (*ListConversationsResponse) ProtoMessage() {}
 
 func (x *ListConversationsResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_navigators_v1_sms_proto_msgTypes[8]
+	mi := &file_navigators_v1_sms_proto_msgTypes[10]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -638,7 +872,7 @@ func (x *ListConversationsResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use ListConversationsResponse.ProtoReflect.Descriptor instead.
 func (*ListConversationsResponse) Descriptor() ([]byte, []int) {
-	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{8}
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{10}
 }
 
 func (x *ListConversationsResponse) GetConversations() []*ConversationSummary {
@@ -664,7 +898,7 @@ type GetSMSConfigRequest struct {
 
 func (x *GetSMSConfigRequest) Reset() {
 	*x = GetSMSConfigRequest{}
-	mi := &file_navigators_v1_sms_proto_msgTypes[9]
+	mi := &file_navigators_v1_sms_proto_msgTypes[11]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -676,7 +910,7 @@ func (x *GetSMSConfigRequest) String() string {
 func (*GetSMSConfigRequest) ProtoMessage() {}
 
 func (x *GetSMSConfigRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_navigators_v1_sms_proto_msgTypes[9]
+	mi := &file_navigators_v1_sms_proto_msgTypes[11]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -689,7 +923,7 @@ func (x *GetSMSConfigRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetSMSConfigRequest.ProtoReflect.Descriptor instead.
 func (*GetSMSConfigRequest) Descriptor() ([]byte, []int) {
-	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{9}
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{11}
 }
 
 type GetSMSConfigResponse struct {
@@ -701,7 +935,7 @@ type GetSMSConfigResponse struct {
 
 func (x *GetSMSConfigResponse) Reset() {
 	*x = GetSMSConfigResponse{}
-	mi := &file_navigators_v1_sms_proto_msgTypes[10]
+	mi := &file_navigators_v1_sms_proto_msgTypes[12]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -713,7 +947,7 @@ func (x *GetSMSConfigResponse) String() string {
 func (*GetSMSConfigResponse) ProtoMessage() {}
 
 func (x *GetSMSConfigResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_navigators_v1_sms_proto_msgTypes[10]
+	mi := &file_navigators_v1_sms_proto_msgTypes[12]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -726,7 +960,7 @@ func (x *GetSMSConfigResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use GetSMSConfigResponse.ProtoReflect.Descriptor instead.
 func (*GetSMSConfigResponse) Descriptor() ([]byte, []int) {
-	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{10}
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{12}
 }
 
 func (x *GetSMSConfigResponse) GetConfig() *SMSConfig {
@@ -756,7 +990,7 @@ type UpdateSMSConfigRequest struct {
 
 func (x *UpdateSMSConfigRequest) Reset() {
 	*x = UpdateSMSConfigRequest{}
-	mi := &file_navigators_v1_sms_proto_msgTypes[11]
+	mi := &file_navigators_v1_sms_proto_msgTypes[13]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -768,7 +1002,7 @@ func (x *UpdateSMSConfigRequest) String() string {
 func (*UpdateSMSConfigRequest) ProtoMessage() {}
 
 func (x *UpdateSMSConfigRequest) ProtoReflect() protoreflect.Message {
-	mi := &file_navigators_v1_sms_proto_msgTypes[11]
+	mi := &file_navigators_v1_sms_proto_msgTypes[13]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -781,7 +1015,7 @@ func (x *UpdateSMSConfigRequest) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateSMSConfigRequest.ProtoReflect.Descriptor instead.
 func (*UpdateSMSConfigRequest) Descriptor() ([]byte, []int) {
-	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{11}
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{13}
 }
 
 func (x *UpdateSMSConfigRequest) GetTwilioAccountSid() string {
@@ -870,7 +1104,7 @@ type UpdateSMSConfigResponse struct {
 
 func (x *UpdateSMSConfigResponse) Reset() {
 	*x = UpdateSMSConfigResponse{}
-	mi := &file_navigators_v1_sms_proto_msgTypes[12]
+	mi := &file_navigators_v1_sms_proto_msgTypes[14]
 	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 	ms.StoreMessageInfo(mi)
 }
@@ -882,7 +1116,7 @@ func (x *UpdateSMSConfigResponse) String() string {
 func (*UpdateSMSConfigResponse) ProtoMessage() {}
 
 func (x *UpdateSMSConfigResponse) ProtoReflect() protoreflect.Message {
-	mi := &file_navigators_v1_sms_proto_msgTypes[12]
+	mi := &file_navigators_v1_sms_proto_msgTypes[14]
 	if x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
 		if ms.LoadMessageInfo() == nil {
@@ -895,7 +1129,7 @@ func (x *UpdateSMSConfigResponse) ProtoReflect() protoreflect.Message {
 
 // Deprecated: Use UpdateSMSConfigResponse.ProtoReflect.Descriptor instead.
 func (*UpdateSMSConfigResponse) Descriptor() ([]byte, []int) {
-	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{12}
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{14}
 }
 
 func (x *UpdateSMSConfigResponse) GetConfig() *SMSConfig {
@@ -903,6 +1137,1318 @@ func (x *UpdateSMSConfigResponse) GetConfig() *SMSConfig {
 		return x.Config
 	}
 	return nil
+}
+
+type CreateTemplateRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Body          string                 `protobuf:"bytes,2,opt,name=body,proto3" json:"body,omitempty"`
+	MergeFields   []string               `protobuf:"bytes,3,rep,name=merge_fields,json=mergeFields,proto3" json:"merge_fields,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateTemplateRequest) Reset() {
+	*x = CreateTemplateRequest{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateTemplateRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateTemplateRequest) ProtoMessage() {}
+
+func (x *CreateTemplateRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateTemplateRequest.ProtoReflect.Descriptor instead.
+func (*CreateTemplateRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *CreateTemplateRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CreateTemplateRequest) GetBody() string {
+	if x != nil {
+		return x.Body
+	}
+	return ""
+}
+
+func (x *CreateTemplateRequest) GetMergeFields() []string {
+	if x != nil {
+		return x.MergeFields
+	}
+	return nil
+}
+
+type CreateTemplateResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Template      *SMSTemplate           `protobuf:"bytes,1,opt,name=template,proto3" json:"template,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateTemplateResponse) Reset() {
+	*x = CreateTemplateResponse{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateTemplateResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateTemplateResponse) ProtoMessage() {}
+
+func (x *CreateTemplateResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateTemplateResponse.ProtoReflect.Descriptor instead.
+func (*CreateTemplateResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *CreateTemplateResponse) GetTemplate() *SMSTemplate {
+	if x != nil {
+		return x.Template
+	}
+	return nil
+}
+
+type ListTemplatesRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PageSize      int32                  `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	PageToken     string                 `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListTemplatesRequest) Reset() {
+	*x = ListTemplatesRequest{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListTemplatesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListTemplatesRequest) ProtoMessage() {}
+
+func (x *ListTemplatesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListTemplatesRequest.ProtoReflect.Descriptor instead.
+func (*ListTemplatesRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *ListTemplatesRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *ListTemplatesRequest) GetPageToken() string {
+	if x != nil {
+		return x.PageToken
+	}
+	return ""
+}
+
+type ListTemplatesResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Templates     []*SMSTemplate         `protobuf:"bytes,1,rep,name=templates,proto3" json:"templates,omitempty"`
+	NextPageToken string                 `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListTemplatesResponse) Reset() {
+	*x = ListTemplatesResponse{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListTemplatesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListTemplatesResponse) ProtoMessage() {}
+
+func (x *ListTemplatesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListTemplatesResponse.ProtoReflect.Descriptor instead.
+func (*ListTemplatesResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *ListTemplatesResponse) GetTemplates() []*SMSTemplate {
+	if x != nil {
+		return x.Templates
+	}
+	return nil
+}
+
+func (x *ListTemplatesResponse) GetNextPageToken() string {
+	if x != nil {
+		return x.NextPageToken
+	}
+	return ""
+}
+
+type GetTemplateRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TemplateId    string                 `protobuf:"bytes,1,opt,name=template_id,json=templateId,proto3" json:"template_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTemplateRequest) Reset() {
+	*x = GetTemplateRequest{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTemplateRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTemplateRequest) ProtoMessage() {}
+
+func (x *GetTemplateRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTemplateRequest.ProtoReflect.Descriptor instead.
+func (*GetTemplateRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *GetTemplateRequest) GetTemplateId() string {
+	if x != nil {
+		return x.TemplateId
+	}
+	return ""
+}
+
+type GetTemplateResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Template      *SMSTemplate           `protobuf:"bytes,1,opt,name=template,proto3" json:"template,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTemplateResponse) Reset() {
+	*x = GetTemplateResponse{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTemplateResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTemplateResponse) ProtoMessage() {}
+
+func (x *GetTemplateResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTemplateResponse.ProtoReflect.Descriptor instead.
+func (*GetTemplateResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *GetTemplateResponse) GetTemplate() *SMSTemplate {
+	if x != nil {
+		return x.Template
+	}
+	return nil
+}
+
+type UpdateTemplateRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TemplateId    string                 `protobuf:"bytes,1,opt,name=template_id,json=templateId,proto3" json:"template_id,omitempty"`
+	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Body          string                 `protobuf:"bytes,3,opt,name=body,proto3" json:"body,omitempty"`
+	MergeFields   []string               `protobuf:"bytes,4,rep,name=merge_fields,json=mergeFields,proto3" json:"merge_fields,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateTemplateRequest) Reset() {
+	*x = UpdateTemplateRequest{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateTemplateRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateTemplateRequest) ProtoMessage() {}
+
+func (x *UpdateTemplateRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateTemplateRequest.ProtoReflect.Descriptor instead.
+func (*UpdateTemplateRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *UpdateTemplateRequest) GetTemplateId() string {
+	if x != nil {
+		return x.TemplateId
+	}
+	return ""
+}
+
+func (x *UpdateTemplateRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *UpdateTemplateRequest) GetBody() string {
+	if x != nil {
+		return x.Body
+	}
+	return ""
+}
+
+func (x *UpdateTemplateRequest) GetMergeFields() []string {
+	if x != nil {
+		return x.MergeFields
+	}
+	return nil
+}
+
+type UpdateTemplateResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Template      *SMSTemplate           `protobuf:"bytes,1,opt,name=template,proto3" json:"template,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateTemplateResponse) Reset() {
+	*x = UpdateTemplateResponse{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateTemplateResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateTemplateResponse) ProtoMessage() {}
+
+func (x *UpdateTemplateResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateTemplateResponse.ProtoReflect.Descriptor instead.
+func (*UpdateTemplateResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *UpdateTemplateResponse) GetTemplate() *SMSTemplate {
+	if x != nil {
+		return x.Template
+	}
+	return nil
+}
+
+type DeleteTemplateRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TemplateId    string                 `protobuf:"bytes,1,opt,name=template_id,json=templateId,proto3" json:"template_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteTemplateRequest) Reset() {
+	*x = DeleteTemplateRequest{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteTemplateRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteTemplateRequest) ProtoMessage() {}
+
+func (x *DeleteTemplateRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteTemplateRequest.ProtoReflect.Descriptor instead.
+func (*DeleteTemplateRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *DeleteTemplateRequest) GetTemplateId() string {
+	if x != nil {
+		return x.TemplateId
+	}
+	return ""
+}
+
+type DeleteTemplateResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteTemplateResponse) Reset() {
+	*x = DeleteTemplateResponse{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteTemplateResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteTemplateResponse) ProtoMessage() {}
+
+func (x *DeleteTemplateResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteTemplateResponse.ProtoReflect.Descriptor instead.
+func (*DeleteTemplateResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{24}
+}
+
+type PreviewTemplateRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TemplateId    string                 `protobuf:"bytes,1,opt,name=template_id,json=templateId,proto3" json:"template_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PreviewTemplateRequest) Reset() {
+	*x = PreviewTemplateRequest{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PreviewTemplateRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PreviewTemplateRequest) ProtoMessage() {}
+
+func (x *PreviewTemplateRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PreviewTemplateRequest.ProtoReflect.Descriptor instead.
+func (*PreviewTemplateRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *PreviewTemplateRequest) GetTemplateId() string {
+	if x != nil {
+		return x.TemplateId
+	}
+	return ""
+}
+
+type PreviewTemplateResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	RenderedBody  string                 `protobuf:"bytes,1,opt,name=rendered_body,json=renderedBody,proto3" json:"rendered_body,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PreviewTemplateResponse) Reset() {
+	*x = PreviewTemplateResponse{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PreviewTemplateResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PreviewTemplateResponse) ProtoMessage() {}
+
+func (x *PreviewTemplateResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PreviewTemplateResponse.ProtoReflect.Descriptor instead.
+func (*PreviewTemplateResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *PreviewTemplateResponse) GetRenderedBody() string {
+	if x != nil {
+		return x.RenderedBody
+	}
+	return ""
+}
+
+type CreateCampaignRequest struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	Name           string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	TemplateId     string                 `protobuf:"bytes,2,opt,name=template_id,json=templateId,proto3" json:"template_id,omitempty"`
+	SegmentFilters string                 `protobuf:"bytes,3,opt,name=segment_filters,json=segmentFilters,proto3" json:"segment_filters,omitempty"` // JSON string
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *CreateCampaignRequest) Reset() {
+	*x = CreateCampaignRequest{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[27]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateCampaignRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateCampaignRequest) ProtoMessage() {}
+
+func (x *CreateCampaignRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[27]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateCampaignRequest.ProtoReflect.Descriptor instead.
+func (*CreateCampaignRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *CreateCampaignRequest) GetName() string {
+	if x != nil {
+		return x.Name
+	}
+	return ""
+}
+
+func (x *CreateCampaignRequest) GetTemplateId() string {
+	if x != nil {
+		return x.TemplateId
+	}
+	return ""
+}
+
+func (x *CreateCampaignRequest) GetSegmentFilters() string {
+	if x != nil {
+		return x.SegmentFilters
+	}
+	return ""
+}
+
+type CreateCampaignResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Campaign      *SMSCampaign           `protobuf:"bytes,1,opt,name=campaign,proto3" json:"campaign,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CreateCampaignResponse) Reset() {
+	*x = CreateCampaignResponse{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[28]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CreateCampaignResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CreateCampaignResponse) ProtoMessage() {}
+
+func (x *CreateCampaignResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[28]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CreateCampaignResponse.ProtoReflect.Descriptor instead.
+func (*CreateCampaignResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{28}
+}
+
+func (x *CreateCampaignResponse) GetCampaign() *SMSCampaign {
+	if x != nil {
+		return x.Campaign
+	}
+	return nil
+}
+
+type LaunchCampaignRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	CampaignId    string                 `protobuf:"bytes,1,opt,name=campaign_id,json=campaignId,proto3" json:"campaign_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LaunchCampaignRequest) Reset() {
+	*x = LaunchCampaignRequest{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[29]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LaunchCampaignRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LaunchCampaignRequest) ProtoMessage() {}
+
+func (x *LaunchCampaignRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[29]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LaunchCampaignRequest.ProtoReflect.Descriptor instead.
+func (*LaunchCampaignRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{29}
+}
+
+func (x *LaunchCampaignRequest) GetCampaignId() string {
+	if x != nil {
+		return x.CampaignId
+	}
+	return ""
+}
+
+type LaunchCampaignResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *LaunchCampaignResponse) Reset() {
+	*x = LaunchCampaignResponse{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[30]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *LaunchCampaignResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*LaunchCampaignResponse) ProtoMessage() {}
+
+func (x *LaunchCampaignResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[30]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use LaunchCampaignResponse.ProtoReflect.Descriptor instead.
+func (*LaunchCampaignResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{30}
+}
+
+type PauseCampaignRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	CampaignId    string                 `protobuf:"bytes,1,opt,name=campaign_id,json=campaignId,proto3" json:"campaign_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PauseCampaignRequest) Reset() {
+	*x = PauseCampaignRequest{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[31]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PauseCampaignRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PauseCampaignRequest) ProtoMessage() {}
+
+func (x *PauseCampaignRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[31]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PauseCampaignRequest.ProtoReflect.Descriptor instead.
+func (*PauseCampaignRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{31}
+}
+
+func (x *PauseCampaignRequest) GetCampaignId() string {
+	if x != nil {
+		return x.CampaignId
+	}
+	return ""
+}
+
+type PauseCampaignResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PauseCampaignResponse) Reset() {
+	*x = PauseCampaignResponse{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[32]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PauseCampaignResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PauseCampaignResponse) ProtoMessage() {}
+
+func (x *PauseCampaignResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[32]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PauseCampaignResponse.ProtoReflect.Descriptor instead.
+func (*PauseCampaignResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{32}
+}
+
+type CancelCampaignRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	CampaignId    string                 `protobuf:"bytes,1,opt,name=campaign_id,json=campaignId,proto3" json:"campaign_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CancelCampaignRequest) Reset() {
+	*x = CancelCampaignRequest{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[33]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CancelCampaignRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CancelCampaignRequest) ProtoMessage() {}
+
+func (x *CancelCampaignRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[33]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CancelCampaignRequest.ProtoReflect.Descriptor instead.
+func (*CancelCampaignRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{33}
+}
+
+func (x *CancelCampaignRequest) GetCampaignId() string {
+	if x != nil {
+		return x.CampaignId
+	}
+	return ""
+}
+
+type CancelCampaignResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *CancelCampaignResponse) Reset() {
+	*x = CancelCampaignResponse{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[34]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *CancelCampaignResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*CancelCampaignResponse) ProtoMessage() {}
+
+func (x *CancelCampaignResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[34]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use CancelCampaignResponse.ProtoReflect.Descriptor instead.
+func (*CancelCampaignResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{34}
+}
+
+type GetCampaignRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	CampaignId    string                 `protobuf:"bytes,1,opt,name=campaign_id,json=campaignId,proto3" json:"campaign_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetCampaignRequest) Reset() {
+	*x = GetCampaignRequest{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[35]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetCampaignRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetCampaignRequest) ProtoMessage() {}
+
+func (x *GetCampaignRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[35]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetCampaignRequest.ProtoReflect.Descriptor instead.
+func (*GetCampaignRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{35}
+}
+
+func (x *GetCampaignRequest) GetCampaignId() string {
+	if x != nil {
+		return x.CampaignId
+	}
+	return ""
+}
+
+type GetCampaignResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Campaign      *SMSCampaign           `protobuf:"bytes,1,opt,name=campaign,proto3" json:"campaign,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetCampaignResponse) Reset() {
+	*x = GetCampaignResponse{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[36]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetCampaignResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetCampaignResponse) ProtoMessage() {}
+
+func (x *GetCampaignResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[36]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetCampaignResponse.ProtoReflect.Descriptor instead.
+func (*GetCampaignResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{36}
+}
+
+func (x *GetCampaignResponse) GetCampaign() *SMSCampaign {
+	if x != nil {
+		return x.Campaign
+	}
+	return nil
+}
+
+type ListCampaignsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	PageSize      int32                  `protobuf:"varint,1,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	PageToken     string                 `protobuf:"bytes,2,opt,name=page_token,json=pageToken,proto3" json:"page_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListCampaignsRequest) Reset() {
+	*x = ListCampaignsRequest{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[37]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListCampaignsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListCampaignsRequest) ProtoMessage() {}
+
+func (x *ListCampaignsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[37]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListCampaignsRequest.ProtoReflect.Descriptor instead.
+func (*ListCampaignsRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{37}
+}
+
+func (x *ListCampaignsRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *ListCampaignsRequest) GetPageToken() string {
+	if x != nil {
+		return x.PageToken
+	}
+	return ""
+}
+
+type ListCampaignsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Campaigns     []*SMSCampaign         `protobuf:"bytes,1,rep,name=campaigns,proto3" json:"campaigns,omitempty"`
+	NextPageToken string                 `protobuf:"bytes,2,opt,name=next_page_token,json=nextPageToken,proto3" json:"next_page_token,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *ListCampaignsResponse) Reset() {
+	*x = ListCampaignsResponse{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[38]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *ListCampaignsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*ListCampaignsResponse) ProtoMessage() {}
+
+func (x *ListCampaignsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[38]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use ListCampaignsResponse.ProtoReflect.Descriptor instead.
+func (*ListCampaignsResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{38}
+}
+
+func (x *ListCampaignsResponse) GetCampaigns() []*SMSCampaign {
+	if x != nil {
+		return x.Campaigns
+	}
+	return nil
+}
+
+func (x *ListCampaignsResponse) GetNextPageToken() string {
+	if x != nil {
+		return x.NextPageToken
+	}
+	return ""
+}
+
+type Get10DLCStatusRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Get10DLCStatusRequest) Reset() {
+	*x = Get10DLCStatusRequest{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[39]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Get10DLCStatusRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Get10DLCStatusRequest) ProtoMessage() {}
+
+func (x *Get10DLCStatusRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[39]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Get10DLCStatusRequest.ProtoReflect.Descriptor instead.
+func (*Get10DLCStatusRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{39}
+}
+
+type Get10DLCStatusResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Status        string                 `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
+	BrandSid      string                 `protobuf:"bytes,2,opt,name=brand_sid,json=brandSid,proto3" json:"brand_sid,omitempty"`
+	CampaignSid   string                 `protobuf:"bytes,3,opt,name=campaign_sid,json=campaignSid,proto3" json:"campaign_sid,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Get10DLCStatusResponse) Reset() {
+	*x = Get10DLCStatusResponse{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[40]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Get10DLCStatusResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Get10DLCStatusResponse) ProtoMessage() {}
+
+func (x *Get10DLCStatusResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[40]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Get10DLCStatusResponse.ProtoReflect.Descriptor instead.
+func (*Get10DLCStatusResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{40}
+}
+
+func (x *Get10DLCStatusResponse) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *Get10DLCStatusResponse) GetBrandSid() string {
+	if x != nil {
+		return x.BrandSid
+	}
+	return ""
+}
+
+func (x *Get10DLCStatusResponse) GetCampaignSid() string {
+	if x != nil {
+		return x.CampaignSid
+	}
+	return ""
+}
+
+type Update10DLCStatusRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	BrandSid      string                 `protobuf:"bytes,1,opt,name=brand_sid,json=brandSid,proto3" json:"brand_sid,omitempty"`
+	CampaignSid   string                 `protobuf:"bytes,2,opt,name=campaign_sid,json=campaignSid,proto3" json:"campaign_sid,omitempty"`
+	Status        string                 `protobuf:"bytes,3,opt,name=status,proto3" json:"status,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Update10DLCStatusRequest) Reset() {
+	*x = Update10DLCStatusRequest{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[41]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Update10DLCStatusRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Update10DLCStatusRequest) ProtoMessage() {}
+
+func (x *Update10DLCStatusRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[41]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Update10DLCStatusRequest.ProtoReflect.Descriptor instead.
+func (*Update10DLCStatusRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{41}
+}
+
+func (x *Update10DLCStatusRequest) GetBrandSid() string {
+	if x != nil {
+		return x.BrandSid
+	}
+	return ""
+}
+
+func (x *Update10DLCStatusRequest) GetCampaignSid() string {
+	if x != nil {
+		return x.CampaignSid
+	}
+	return ""
+}
+
+func (x *Update10DLCStatusRequest) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+type Update10DLCStatusResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Status        string                 `protobuf:"bytes,1,opt,name=status,proto3" json:"status,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *Update10DLCStatusResponse) Reset() {
+	*x = Update10DLCStatusResponse{}
+	mi := &file_navigators_v1_sms_proto_msgTypes[42]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *Update10DLCStatusResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*Update10DLCStatusResponse) ProtoMessage() {}
+
+func (x *Update10DLCStatusResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sms_proto_msgTypes[42]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use Update10DLCStatusResponse.ProtoReflect.Descriptor instead.
+func (*Update10DLCStatusResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sms_proto_rawDescGZIP(), []int{42}
+}
+
+func (x *Update10DLCStatusResponse) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
 }
 
 var File_navigators_v1_sms_proto protoreflect.FileDescriptor
@@ -944,7 +2490,37 @@ const file_navigators_v1_sms_proto_rawDesc = "" +
 	"\n" +
 	"voter_name\x18\x02 \x01(\tR\tvoterName\x12*\n" +
 	"\x11last_message_body\x18\x03 \x01(\tR\x0flastMessageBody\x12&\n" +
-	"\x0flast_message_at\x18\x04 \x01(\tR\rlastMessageAt\"F\n" +
+	"\x0flast_message_at\x18\x04 \x01(\tR\rlastMessageAt\"\xc3\x01\n" +
+	"\vSMSTemplate\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x12\n" +
+	"\x04body\x18\x03 \x01(\tR\x04body\x12!\n" +
+	"\fmerge_fields\x18\x04 \x03(\tR\vmergeFields\x12\x1b\n" +
+	"\tis_active\x18\x05 \x01(\bR\bisActive\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\x06 \x01(\tR\tcreatedAt\x12\x1d\n" +
+	"\n" +
+	"updated_at\x18\a \x01(\tR\tupdatedAt\"\xab\x03\n" +
+	"\vSMSCampaign\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x1f\n" +
+	"\vtemplate_id\x18\x03 \x01(\tR\n" +
+	"templateId\x12'\n" +
+	"\x0fsegment_filters\x18\x04 \x01(\tR\x0esegmentFilters\x12\x16\n" +
+	"\x06status\x18\x05 \x01(\tR\x06status\x12)\n" +
+	"\x10total_recipients\x18\x06 \x01(\x05R\x0ftotalRecipients\x12\x1d\n" +
+	"\n" +
+	"sent_count\x18\a \x01(\x05R\tsentCount\x12'\n" +
+	"\x0fdelivered_count\x18\b \x01(\x05R\x0edeliveredCount\x12!\n" +
+	"\ffailed_count\x18\t \x01(\x05R\vfailedCount\x12\x1f\n" +
+	"\vlaunched_at\x18\n" +
+	" \x01(\tR\n" +
+	"launchedAt\x12!\n" +
+	"\fcompleted_at\x18\v \x01(\tR\vcompletedAt\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\f \x01(\tR\tcreatedAt\x12\x1d\n" +
+	"\n" +
+	"updated_at\x18\r \x01(\tR\tupdatedAt\"F\n" +
 	"\x15SendP2PMessageRequest\x12\x19\n" +
 	"\bvoter_id\x18\x01 \x01(\tR\avoterId\x12\x12\n" +
 	"\x04body\x18\x02 \x01(\tR\x04body\"M\n" +
@@ -984,14 +2560,105 @@ const file_navigators_v1_sms_proto_rawDesc = "" +
 	" \x01(\tR\x11tenDlcCampaignSid\x12$\n" +
 	"\x0eten_dlc_status\x18\v \x01(\tR\ftenDlcStatus\"K\n" +
 	"\x17UpdateSMSConfigResponse\x120\n" +
-	"\x06config\x18\x01 \x01(\v2\x18.navigators.v1.SMSConfigR\x06config2\xf0\x03\n" +
+	"\x06config\x18\x01 \x01(\v2\x18.navigators.v1.SMSConfigR\x06config\"b\n" +
+	"\x15CreateTemplateRequest\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x12\n" +
+	"\x04body\x18\x02 \x01(\tR\x04body\x12!\n" +
+	"\fmerge_fields\x18\x03 \x03(\tR\vmergeFields\"P\n" +
+	"\x16CreateTemplateResponse\x126\n" +
+	"\btemplate\x18\x01 \x01(\v2\x1a.navigators.v1.SMSTemplateR\btemplate\"R\n" +
+	"\x14ListTemplatesRequest\x12\x1b\n" +
+	"\tpage_size\x18\x01 \x01(\x05R\bpageSize\x12\x1d\n" +
+	"\n" +
+	"page_token\x18\x02 \x01(\tR\tpageToken\"y\n" +
+	"\x15ListTemplatesResponse\x128\n" +
+	"\ttemplates\x18\x01 \x03(\v2\x1a.navigators.v1.SMSTemplateR\ttemplates\x12&\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"5\n" +
+	"\x12GetTemplateRequest\x12\x1f\n" +
+	"\vtemplate_id\x18\x01 \x01(\tR\n" +
+	"templateId\"M\n" +
+	"\x13GetTemplateResponse\x126\n" +
+	"\btemplate\x18\x01 \x01(\v2\x1a.navigators.v1.SMSTemplateR\btemplate\"\x83\x01\n" +
+	"\x15UpdateTemplateRequest\x12\x1f\n" +
+	"\vtemplate_id\x18\x01 \x01(\tR\n" +
+	"templateId\x12\x12\n" +
+	"\x04name\x18\x02 \x01(\tR\x04name\x12\x12\n" +
+	"\x04body\x18\x03 \x01(\tR\x04body\x12!\n" +
+	"\fmerge_fields\x18\x04 \x03(\tR\vmergeFields\"P\n" +
+	"\x16UpdateTemplateResponse\x126\n" +
+	"\btemplate\x18\x01 \x01(\v2\x1a.navigators.v1.SMSTemplateR\btemplate\"8\n" +
+	"\x15DeleteTemplateRequest\x12\x1f\n" +
+	"\vtemplate_id\x18\x01 \x01(\tR\n" +
+	"templateId\"\x18\n" +
+	"\x16DeleteTemplateResponse\"9\n" +
+	"\x16PreviewTemplateRequest\x12\x1f\n" +
+	"\vtemplate_id\x18\x01 \x01(\tR\n" +
+	"templateId\">\n" +
+	"\x17PreviewTemplateResponse\x12#\n" +
+	"\rrendered_body\x18\x01 \x01(\tR\frenderedBody\"u\n" +
+	"\x15CreateCampaignRequest\x12\x12\n" +
+	"\x04name\x18\x01 \x01(\tR\x04name\x12\x1f\n" +
+	"\vtemplate_id\x18\x02 \x01(\tR\n" +
+	"templateId\x12'\n" +
+	"\x0fsegment_filters\x18\x03 \x01(\tR\x0esegmentFilters\"P\n" +
+	"\x16CreateCampaignResponse\x126\n" +
+	"\bcampaign\x18\x01 \x01(\v2\x1a.navigators.v1.SMSCampaignR\bcampaign\"8\n" +
+	"\x15LaunchCampaignRequest\x12\x1f\n" +
+	"\vcampaign_id\x18\x01 \x01(\tR\n" +
+	"campaignId\"\x18\n" +
+	"\x16LaunchCampaignResponse\"7\n" +
+	"\x14PauseCampaignRequest\x12\x1f\n" +
+	"\vcampaign_id\x18\x01 \x01(\tR\n" +
+	"campaignId\"\x17\n" +
+	"\x15PauseCampaignResponse\"8\n" +
+	"\x15CancelCampaignRequest\x12\x1f\n" +
+	"\vcampaign_id\x18\x01 \x01(\tR\n" +
+	"campaignId\"\x18\n" +
+	"\x16CancelCampaignResponse\"5\n" +
+	"\x12GetCampaignRequest\x12\x1f\n" +
+	"\vcampaign_id\x18\x01 \x01(\tR\n" +
+	"campaignId\"M\n" +
+	"\x13GetCampaignResponse\x126\n" +
+	"\bcampaign\x18\x01 \x01(\v2\x1a.navigators.v1.SMSCampaignR\bcampaign\"R\n" +
+	"\x14ListCampaignsRequest\x12\x1b\n" +
+	"\tpage_size\x18\x01 \x01(\x05R\bpageSize\x12\x1d\n" +
+	"\n" +
+	"page_token\x18\x02 \x01(\tR\tpageToken\"y\n" +
+	"\x15ListCampaignsResponse\x128\n" +
+	"\tcampaigns\x18\x01 \x03(\v2\x1a.navigators.v1.SMSCampaignR\tcampaigns\x12&\n" +
+	"\x0fnext_page_token\x18\x02 \x01(\tR\rnextPageToken\"\x17\n" +
+	"\x15Get10DLCStatusRequest\"p\n" +
+	"\x16Get10DLCStatusResponse\x12\x16\n" +
+	"\x06status\x18\x01 \x01(\tR\x06status\x12\x1b\n" +
+	"\tbrand_sid\x18\x02 \x01(\tR\bbrandSid\x12!\n" +
+	"\fcampaign_sid\x18\x03 \x01(\tR\vcampaignSid\"r\n" +
+	"\x18Update10DLCStatusRequest\x12\x1b\n" +
+	"\tbrand_sid\x18\x01 \x01(\tR\bbrandSid\x12!\n" +
+	"\fcampaign_sid\x18\x02 \x01(\tR\vcampaignSid\x12\x16\n" +
+	"\x06status\x18\x03 \x01(\tR\x06status\"3\n" +
+	"\x19Update10DLCStatusResponse\x12\x16\n" +
+	"\x06status\x18\x01 \x01(\tR\x06status2\x93\x0e\n" +
 	"\n" +
 	"SMSService\x12]\n" +
 	"\x0eSendP2PMessage\x12$.navigators.v1.SendP2PMessageRequest\x1a%.navigators.v1.SendP2PMessageResponse\x12`\n" +
 	"\x0fGetConversation\x12%.navigators.v1.GetConversationRequest\x1a&.navigators.v1.GetConversationResponse\x12f\n" +
 	"\x11ListConversations\x12'.navigators.v1.ListConversationsRequest\x1a(.navigators.v1.ListConversationsResponse\x12W\n" +
 	"\fGetSMSConfig\x12\".navigators.v1.GetSMSConfigRequest\x1a#.navigators.v1.GetSMSConfigResponse\x12`\n" +
-	"\x0fUpdateSMSConfig\x12%.navigators.v1.UpdateSMSConfigRequest\x1a&.navigators.v1.UpdateSMSConfigResponseB1Z/navigators-go/gen/go/navigators/v1;navigatorsv1b\x06proto3"
+	"\x0fUpdateSMSConfig\x12%.navigators.v1.UpdateSMSConfigRequest\x1a&.navigators.v1.UpdateSMSConfigResponse\x12]\n" +
+	"\x0eCreateTemplate\x12$.navigators.v1.CreateTemplateRequest\x1a%.navigators.v1.CreateTemplateResponse\x12Z\n" +
+	"\rListTemplates\x12#.navigators.v1.ListTemplatesRequest\x1a$.navigators.v1.ListTemplatesResponse\x12T\n" +
+	"\vGetTemplate\x12!.navigators.v1.GetTemplateRequest\x1a\".navigators.v1.GetTemplateResponse\x12]\n" +
+	"\x0eUpdateTemplate\x12$.navigators.v1.UpdateTemplateRequest\x1a%.navigators.v1.UpdateTemplateResponse\x12]\n" +
+	"\x0eDeleteTemplate\x12$.navigators.v1.DeleteTemplateRequest\x1a%.navigators.v1.DeleteTemplateResponse\x12`\n" +
+	"\x0fPreviewTemplate\x12%.navigators.v1.PreviewTemplateRequest\x1a&.navigators.v1.PreviewTemplateResponse\x12]\n" +
+	"\x0eCreateCampaign\x12$.navigators.v1.CreateCampaignRequest\x1a%.navigators.v1.CreateCampaignResponse\x12]\n" +
+	"\x0eLaunchCampaign\x12$.navigators.v1.LaunchCampaignRequest\x1a%.navigators.v1.LaunchCampaignResponse\x12Z\n" +
+	"\rPauseCampaign\x12#.navigators.v1.PauseCampaignRequest\x1a$.navigators.v1.PauseCampaignResponse\x12]\n" +
+	"\x0eCancelCampaign\x12$.navigators.v1.CancelCampaignRequest\x1a%.navigators.v1.CancelCampaignResponse\x12T\n" +
+	"\vGetCampaign\x12!.navigators.v1.GetCampaignRequest\x1a\".navigators.v1.GetCampaignResponse\x12Z\n" +
+	"\rListCampaigns\x12#.navigators.v1.ListCampaignsRequest\x1a$.navigators.v1.ListCampaignsResponse\x12]\n" +
+	"\x0eGet10DLCStatus\x12$.navigators.v1.Get10DLCStatusRequest\x1a%.navigators.v1.Get10DLCStatusResponse\x12f\n" +
+	"\x11Update10DLCStatus\x12'.navigators.v1.Update10DLCStatusRequest\x1a(.navigators.v1.Update10DLCStatusResponseB1Z/navigators-go/gen/go/navigators/v1;navigatorsv1b\x06proto3"
 
 var (
 	file_navigators_v1_sms_proto_rawDescOnce sync.Once
@@ -1005,21 +2672,51 @@ func file_navigators_v1_sms_proto_rawDescGZIP() []byte {
 	return file_navigators_v1_sms_proto_rawDescData
 }
 
-var file_navigators_v1_sms_proto_msgTypes = make([]protoimpl.MessageInfo, 13)
+var file_navigators_v1_sms_proto_msgTypes = make([]protoimpl.MessageInfo, 43)
 var file_navigators_v1_sms_proto_goTypes = []any{
 	(*SMSMessage)(nil),                // 0: navigators.v1.SMSMessage
 	(*SMSConfig)(nil),                 // 1: navigators.v1.SMSConfig
 	(*ConversationSummary)(nil),       // 2: navigators.v1.ConversationSummary
-	(*SendP2PMessageRequest)(nil),     // 3: navigators.v1.SendP2PMessageRequest
-	(*SendP2PMessageResponse)(nil),    // 4: navigators.v1.SendP2PMessageResponse
-	(*GetConversationRequest)(nil),    // 5: navigators.v1.GetConversationRequest
-	(*GetConversationResponse)(nil),   // 6: navigators.v1.GetConversationResponse
-	(*ListConversationsRequest)(nil),  // 7: navigators.v1.ListConversationsRequest
-	(*ListConversationsResponse)(nil), // 8: navigators.v1.ListConversationsResponse
-	(*GetSMSConfigRequest)(nil),       // 9: navigators.v1.GetSMSConfigRequest
-	(*GetSMSConfigResponse)(nil),      // 10: navigators.v1.GetSMSConfigResponse
-	(*UpdateSMSConfigRequest)(nil),    // 11: navigators.v1.UpdateSMSConfigRequest
-	(*UpdateSMSConfigResponse)(nil),   // 12: navigators.v1.UpdateSMSConfigResponse
+	(*SMSTemplate)(nil),               // 3: navigators.v1.SMSTemplate
+	(*SMSCampaign)(nil),               // 4: navigators.v1.SMSCampaign
+	(*SendP2PMessageRequest)(nil),     // 5: navigators.v1.SendP2PMessageRequest
+	(*SendP2PMessageResponse)(nil),    // 6: navigators.v1.SendP2PMessageResponse
+	(*GetConversationRequest)(nil),    // 7: navigators.v1.GetConversationRequest
+	(*GetConversationResponse)(nil),   // 8: navigators.v1.GetConversationResponse
+	(*ListConversationsRequest)(nil),  // 9: navigators.v1.ListConversationsRequest
+	(*ListConversationsResponse)(nil), // 10: navigators.v1.ListConversationsResponse
+	(*GetSMSConfigRequest)(nil),       // 11: navigators.v1.GetSMSConfigRequest
+	(*GetSMSConfigResponse)(nil),      // 12: navigators.v1.GetSMSConfigResponse
+	(*UpdateSMSConfigRequest)(nil),    // 13: navigators.v1.UpdateSMSConfigRequest
+	(*UpdateSMSConfigResponse)(nil),   // 14: navigators.v1.UpdateSMSConfigResponse
+	(*CreateTemplateRequest)(nil),     // 15: navigators.v1.CreateTemplateRequest
+	(*CreateTemplateResponse)(nil),    // 16: navigators.v1.CreateTemplateResponse
+	(*ListTemplatesRequest)(nil),      // 17: navigators.v1.ListTemplatesRequest
+	(*ListTemplatesResponse)(nil),     // 18: navigators.v1.ListTemplatesResponse
+	(*GetTemplateRequest)(nil),        // 19: navigators.v1.GetTemplateRequest
+	(*GetTemplateResponse)(nil),       // 20: navigators.v1.GetTemplateResponse
+	(*UpdateTemplateRequest)(nil),     // 21: navigators.v1.UpdateTemplateRequest
+	(*UpdateTemplateResponse)(nil),    // 22: navigators.v1.UpdateTemplateResponse
+	(*DeleteTemplateRequest)(nil),     // 23: navigators.v1.DeleteTemplateRequest
+	(*DeleteTemplateResponse)(nil),    // 24: navigators.v1.DeleteTemplateResponse
+	(*PreviewTemplateRequest)(nil),    // 25: navigators.v1.PreviewTemplateRequest
+	(*PreviewTemplateResponse)(nil),   // 26: navigators.v1.PreviewTemplateResponse
+	(*CreateCampaignRequest)(nil),     // 27: navigators.v1.CreateCampaignRequest
+	(*CreateCampaignResponse)(nil),    // 28: navigators.v1.CreateCampaignResponse
+	(*LaunchCampaignRequest)(nil),     // 29: navigators.v1.LaunchCampaignRequest
+	(*LaunchCampaignResponse)(nil),    // 30: navigators.v1.LaunchCampaignResponse
+	(*PauseCampaignRequest)(nil),      // 31: navigators.v1.PauseCampaignRequest
+	(*PauseCampaignResponse)(nil),     // 32: navigators.v1.PauseCampaignResponse
+	(*CancelCampaignRequest)(nil),     // 33: navigators.v1.CancelCampaignRequest
+	(*CancelCampaignResponse)(nil),    // 34: navigators.v1.CancelCampaignResponse
+	(*GetCampaignRequest)(nil),        // 35: navigators.v1.GetCampaignRequest
+	(*GetCampaignResponse)(nil),       // 36: navigators.v1.GetCampaignResponse
+	(*ListCampaignsRequest)(nil),      // 37: navigators.v1.ListCampaignsRequest
+	(*ListCampaignsResponse)(nil),     // 38: navigators.v1.ListCampaignsResponse
+	(*Get10DLCStatusRequest)(nil),     // 39: navigators.v1.Get10DLCStatusRequest
+	(*Get10DLCStatusResponse)(nil),    // 40: navigators.v1.Get10DLCStatusResponse
+	(*Update10DLCStatusRequest)(nil),  // 41: navigators.v1.Update10DLCStatusRequest
+	(*Update10DLCStatusResponse)(nil), // 42: navigators.v1.Update10DLCStatusResponse
 }
 var file_navigators_v1_sms_proto_depIdxs = []int32{
 	0,  // 0: navigators.v1.SendP2PMessageResponse.message:type_name -> navigators.v1.SMSMessage
@@ -1027,21 +2724,56 @@ var file_navigators_v1_sms_proto_depIdxs = []int32{
 	2,  // 2: navigators.v1.ListConversationsResponse.conversations:type_name -> navigators.v1.ConversationSummary
 	1,  // 3: navigators.v1.GetSMSConfigResponse.config:type_name -> navigators.v1.SMSConfig
 	1,  // 4: navigators.v1.UpdateSMSConfigResponse.config:type_name -> navigators.v1.SMSConfig
-	3,  // 5: navigators.v1.SMSService.SendP2PMessage:input_type -> navigators.v1.SendP2PMessageRequest
-	5,  // 6: navigators.v1.SMSService.GetConversation:input_type -> navigators.v1.GetConversationRequest
-	7,  // 7: navigators.v1.SMSService.ListConversations:input_type -> navigators.v1.ListConversationsRequest
-	9,  // 8: navigators.v1.SMSService.GetSMSConfig:input_type -> navigators.v1.GetSMSConfigRequest
-	11, // 9: navigators.v1.SMSService.UpdateSMSConfig:input_type -> navigators.v1.UpdateSMSConfigRequest
-	4,  // 10: navigators.v1.SMSService.SendP2PMessage:output_type -> navigators.v1.SendP2PMessageResponse
-	6,  // 11: navigators.v1.SMSService.GetConversation:output_type -> navigators.v1.GetConversationResponse
-	8,  // 12: navigators.v1.SMSService.ListConversations:output_type -> navigators.v1.ListConversationsResponse
-	10, // 13: navigators.v1.SMSService.GetSMSConfig:output_type -> navigators.v1.GetSMSConfigResponse
-	12, // 14: navigators.v1.SMSService.UpdateSMSConfig:output_type -> navigators.v1.UpdateSMSConfigResponse
-	10, // [10:15] is the sub-list for method output_type
-	5,  // [5:10] is the sub-list for method input_type
-	5,  // [5:5] is the sub-list for extension type_name
-	5,  // [5:5] is the sub-list for extension extendee
-	0,  // [0:5] is the sub-list for field type_name
+	3,  // 5: navigators.v1.CreateTemplateResponse.template:type_name -> navigators.v1.SMSTemplate
+	3,  // 6: navigators.v1.ListTemplatesResponse.templates:type_name -> navigators.v1.SMSTemplate
+	3,  // 7: navigators.v1.GetTemplateResponse.template:type_name -> navigators.v1.SMSTemplate
+	3,  // 8: navigators.v1.UpdateTemplateResponse.template:type_name -> navigators.v1.SMSTemplate
+	4,  // 9: navigators.v1.CreateCampaignResponse.campaign:type_name -> navigators.v1.SMSCampaign
+	4,  // 10: navigators.v1.GetCampaignResponse.campaign:type_name -> navigators.v1.SMSCampaign
+	4,  // 11: navigators.v1.ListCampaignsResponse.campaigns:type_name -> navigators.v1.SMSCampaign
+	5,  // 12: navigators.v1.SMSService.SendP2PMessage:input_type -> navigators.v1.SendP2PMessageRequest
+	7,  // 13: navigators.v1.SMSService.GetConversation:input_type -> navigators.v1.GetConversationRequest
+	9,  // 14: navigators.v1.SMSService.ListConversations:input_type -> navigators.v1.ListConversationsRequest
+	11, // 15: navigators.v1.SMSService.GetSMSConfig:input_type -> navigators.v1.GetSMSConfigRequest
+	13, // 16: navigators.v1.SMSService.UpdateSMSConfig:input_type -> navigators.v1.UpdateSMSConfigRequest
+	15, // 17: navigators.v1.SMSService.CreateTemplate:input_type -> navigators.v1.CreateTemplateRequest
+	17, // 18: navigators.v1.SMSService.ListTemplates:input_type -> navigators.v1.ListTemplatesRequest
+	19, // 19: navigators.v1.SMSService.GetTemplate:input_type -> navigators.v1.GetTemplateRequest
+	21, // 20: navigators.v1.SMSService.UpdateTemplate:input_type -> navigators.v1.UpdateTemplateRequest
+	23, // 21: navigators.v1.SMSService.DeleteTemplate:input_type -> navigators.v1.DeleteTemplateRequest
+	25, // 22: navigators.v1.SMSService.PreviewTemplate:input_type -> navigators.v1.PreviewTemplateRequest
+	27, // 23: navigators.v1.SMSService.CreateCampaign:input_type -> navigators.v1.CreateCampaignRequest
+	29, // 24: navigators.v1.SMSService.LaunchCampaign:input_type -> navigators.v1.LaunchCampaignRequest
+	31, // 25: navigators.v1.SMSService.PauseCampaign:input_type -> navigators.v1.PauseCampaignRequest
+	33, // 26: navigators.v1.SMSService.CancelCampaign:input_type -> navigators.v1.CancelCampaignRequest
+	35, // 27: navigators.v1.SMSService.GetCampaign:input_type -> navigators.v1.GetCampaignRequest
+	37, // 28: navigators.v1.SMSService.ListCampaigns:input_type -> navigators.v1.ListCampaignsRequest
+	39, // 29: navigators.v1.SMSService.Get10DLCStatus:input_type -> navigators.v1.Get10DLCStatusRequest
+	41, // 30: navigators.v1.SMSService.Update10DLCStatus:input_type -> navigators.v1.Update10DLCStatusRequest
+	6,  // 31: navigators.v1.SMSService.SendP2PMessage:output_type -> navigators.v1.SendP2PMessageResponse
+	8,  // 32: navigators.v1.SMSService.GetConversation:output_type -> navigators.v1.GetConversationResponse
+	10, // 33: navigators.v1.SMSService.ListConversations:output_type -> navigators.v1.ListConversationsResponse
+	12, // 34: navigators.v1.SMSService.GetSMSConfig:output_type -> navigators.v1.GetSMSConfigResponse
+	14, // 35: navigators.v1.SMSService.UpdateSMSConfig:output_type -> navigators.v1.UpdateSMSConfigResponse
+	16, // 36: navigators.v1.SMSService.CreateTemplate:output_type -> navigators.v1.CreateTemplateResponse
+	18, // 37: navigators.v1.SMSService.ListTemplates:output_type -> navigators.v1.ListTemplatesResponse
+	20, // 38: navigators.v1.SMSService.GetTemplate:output_type -> navigators.v1.GetTemplateResponse
+	22, // 39: navigators.v1.SMSService.UpdateTemplate:output_type -> navigators.v1.UpdateTemplateResponse
+	24, // 40: navigators.v1.SMSService.DeleteTemplate:output_type -> navigators.v1.DeleteTemplateResponse
+	26, // 41: navigators.v1.SMSService.PreviewTemplate:output_type -> navigators.v1.PreviewTemplateResponse
+	28, // 42: navigators.v1.SMSService.CreateCampaign:output_type -> navigators.v1.CreateCampaignResponse
+	30, // 43: navigators.v1.SMSService.LaunchCampaign:output_type -> navigators.v1.LaunchCampaignResponse
+	32, // 44: navigators.v1.SMSService.PauseCampaign:output_type -> navigators.v1.PauseCampaignResponse
+	34, // 45: navigators.v1.SMSService.CancelCampaign:output_type -> navigators.v1.CancelCampaignResponse
+	36, // 46: navigators.v1.SMSService.GetCampaign:output_type -> navigators.v1.GetCampaignResponse
+	38, // 47: navigators.v1.SMSService.ListCampaigns:output_type -> navigators.v1.ListCampaignsResponse
+	40, // 48: navigators.v1.SMSService.Get10DLCStatus:output_type -> navigators.v1.Get10DLCStatusResponse
+	42, // 49: navigators.v1.SMSService.Update10DLCStatus:output_type -> navigators.v1.Update10DLCStatusResponse
+	31, // [31:50] is the sub-list for method output_type
+	12, // [12:31] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_navigators_v1_sms_proto_init() }
@@ -1055,7 +2787,7 @@ func file_navigators_v1_sms_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_navigators_v1_sms_proto_rawDesc), len(file_navigators_v1_sms_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   13,
+			NumMessages:   43,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

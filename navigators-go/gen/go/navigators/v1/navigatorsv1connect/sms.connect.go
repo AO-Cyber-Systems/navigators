@@ -47,6 +47,46 @@ const (
 	// SMSServiceUpdateSMSConfigProcedure is the fully-qualified name of the SMSService's
 	// UpdateSMSConfig RPC.
 	SMSServiceUpdateSMSConfigProcedure = "/navigators.v1.SMSService/UpdateSMSConfig"
+	// SMSServiceCreateTemplateProcedure is the fully-qualified name of the SMSService's CreateTemplate
+	// RPC.
+	SMSServiceCreateTemplateProcedure = "/navigators.v1.SMSService/CreateTemplate"
+	// SMSServiceListTemplatesProcedure is the fully-qualified name of the SMSService's ListTemplates
+	// RPC.
+	SMSServiceListTemplatesProcedure = "/navigators.v1.SMSService/ListTemplates"
+	// SMSServiceGetTemplateProcedure is the fully-qualified name of the SMSService's GetTemplate RPC.
+	SMSServiceGetTemplateProcedure = "/navigators.v1.SMSService/GetTemplate"
+	// SMSServiceUpdateTemplateProcedure is the fully-qualified name of the SMSService's UpdateTemplate
+	// RPC.
+	SMSServiceUpdateTemplateProcedure = "/navigators.v1.SMSService/UpdateTemplate"
+	// SMSServiceDeleteTemplateProcedure is the fully-qualified name of the SMSService's DeleteTemplate
+	// RPC.
+	SMSServiceDeleteTemplateProcedure = "/navigators.v1.SMSService/DeleteTemplate"
+	// SMSServicePreviewTemplateProcedure is the fully-qualified name of the SMSService's
+	// PreviewTemplate RPC.
+	SMSServicePreviewTemplateProcedure = "/navigators.v1.SMSService/PreviewTemplate"
+	// SMSServiceCreateCampaignProcedure is the fully-qualified name of the SMSService's CreateCampaign
+	// RPC.
+	SMSServiceCreateCampaignProcedure = "/navigators.v1.SMSService/CreateCampaign"
+	// SMSServiceLaunchCampaignProcedure is the fully-qualified name of the SMSService's LaunchCampaign
+	// RPC.
+	SMSServiceLaunchCampaignProcedure = "/navigators.v1.SMSService/LaunchCampaign"
+	// SMSServicePauseCampaignProcedure is the fully-qualified name of the SMSService's PauseCampaign
+	// RPC.
+	SMSServicePauseCampaignProcedure = "/navigators.v1.SMSService/PauseCampaign"
+	// SMSServiceCancelCampaignProcedure is the fully-qualified name of the SMSService's CancelCampaign
+	// RPC.
+	SMSServiceCancelCampaignProcedure = "/navigators.v1.SMSService/CancelCampaign"
+	// SMSServiceGetCampaignProcedure is the fully-qualified name of the SMSService's GetCampaign RPC.
+	SMSServiceGetCampaignProcedure = "/navigators.v1.SMSService/GetCampaign"
+	// SMSServiceListCampaignsProcedure is the fully-qualified name of the SMSService's ListCampaigns
+	// RPC.
+	SMSServiceListCampaignsProcedure = "/navigators.v1.SMSService/ListCampaigns"
+	// SMSServiceGet10DLCStatusProcedure is the fully-qualified name of the SMSService's Get10DLCStatus
+	// RPC.
+	SMSServiceGet10DLCStatusProcedure = "/navigators.v1.SMSService/Get10DLCStatus"
+	// SMSServiceUpdate10DLCStatusProcedure is the fully-qualified name of the SMSService's
+	// Update10DLCStatus RPC.
+	SMSServiceUpdate10DLCStatusProcedure = "/navigators.v1.SMSService/Update10DLCStatus"
 )
 
 // SMSServiceClient is a client for the navigators.v1.SMSService service.
@@ -61,6 +101,34 @@ type SMSServiceClient interface {
 	GetSMSConfig(context.Context, *connect.Request[v1.GetSMSConfigRequest]) (*connect.Response[v1.GetSMSConfigResponse], error)
 	// UpdateSMSConfig updates the SMS configuration for the company (admin only).
 	UpdateSMSConfig(context.Context, *connect.Request[v1.UpdateSMSConfigRequest]) (*connect.Response[v1.UpdateSMSConfigResponse], error)
+	// CreateTemplate creates a new message template with merge fields.
+	CreateTemplate(context.Context, *connect.Request[v1.CreateTemplateRequest]) (*connect.Response[v1.CreateTemplateResponse], error)
+	// ListTemplates returns active templates for the company.
+	ListTemplates(context.Context, *connect.Request[v1.ListTemplatesRequest]) (*connect.Response[v1.ListTemplatesResponse], error)
+	// GetTemplate returns a template by ID.
+	GetTemplate(context.Context, *connect.Request[v1.GetTemplateRequest]) (*connect.Response[v1.GetTemplateResponse], error)
+	// UpdateTemplate updates an existing template.
+	UpdateTemplate(context.Context, *connect.Request[v1.UpdateTemplateRequest]) (*connect.Response[v1.UpdateTemplateResponse], error)
+	// DeleteTemplate soft-deletes a template.
+	DeleteTemplate(context.Context, *connect.Request[v1.DeleteTemplateRequest]) (*connect.Response[v1.DeleteTemplateResponse], error)
+	// PreviewTemplate renders a template with sample voter data.
+	PreviewTemplate(context.Context, *connect.Request[v1.PreviewTemplateRequest]) (*connect.Response[v1.PreviewTemplateResponse], error)
+	// CreateCampaign creates a new broadcast campaign in draft status.
+	CreateCampaign(context.Context, *connect.Request[v1.CreateCampaignRequest]) (*connect.Response[v1.CreateCampaignResponse], error)
+	// LaunchCampaign starts sending a draft campaign (gated on 10DLC approval).
+	LaunchCampaign(context.Context, *connect.Request[v1.LaunchCampaignRequest]) (*connect.Response[v1.LaunchCampaignResponse], error)
+	// PauseCampaign pauses a sending campaign.
+	PauseCampaign(context.Context, *connect.Request[v1.PauseCampaignRequest]) (*connect.Response[v1.PauseCampaignResponse], error)
+	// CancelCampaign cancels a campaign.
+	CancelCampaign(context.Context, *connect.Request[v1.CancelCampaignRequest]) (*connect.Response[v1.CancelCampaignResponse], error)
+	// GetCampaign returns a campaign by ID.
+	GetCampaign(context.Context, *connect.Request[v1.GetCampaignRequest]) (*connect.Response[v1.GetCampaignResponse], error)
+	// ListCampaigns returns campaigns for the company.
+	ListCampaigns(context.Context, *connect.Request[v1.ListCampaignsRequest]) (*connect.Response[v1.ListCampaignsResponse], error)
+	// Get10DLCStatus returns the current 10DLC registration status.
+	Get10DLCStatus(context.Context, *connect.Request[v1.Get10DLCStatusRequest]) (*connect.Response[v1.Get10DLCStatusResponse], error)
+	// Update10DLCStatus updates the 10DLC registration status after checking Twilio dashboard.
+	Update10DLCStatus(context.Context, *connect.Request[v1.Update10DLCStatusRequest]) (*connect.Response[v1.Update10DLCStatusResponse], error)
 }
 
 // NewSMSServiceClient constructs a client for the navigators.v1.SMSService service. By default, it
@@ -104,6 +172,90 @@ func NewSMSServiceClient(httpClient connect.HTTPClient, baseURL string, opts ...
 			connect.WithSchema(sMSServiceMethods.ByName("UpdateSMSConfig")),
 			connect.WithClientOptions(opts...),
 		),
+		createTemplate: connect.NewClient[v1.CreateTemplateRequest, v1.CreateTemplateResponse](
+			httpClient,
+			baseURL+SMSServiceCreateTemplateProcedure,
+			connect.WithSchema(sMSServiceMethods.ByName("CreateTemplate")),
+			connect.WithClientOptions(opts...),
+		),
+		listTemplates: connect.NewClient[v1.ListTemplatesRequest, v1.ListTemplatesResponse](
+			httpClient,
+			baseURL+SMSServiceListTemplatesProcedure,
+			connect.WithSchema(sMSServiceMethods.ByName("ListTemplates")),
+			connect.WithClientOptions(opts...),
+		),
+		getTemplate: connect.NewClient[v1.GetTemplateRequest, v1.GetTemplateResponse](
+			httpClient,
+			baseURL+SMSServiceGetTemplateProcedure,
+			connect.WithSchema(sMSServiceMethods.ByName("GetTemplate")),
+			connect.WithClientOptions(opts...),
+		),
+		updateTemplate: connect.NewClient[v1.UpdateTemplateRequest, v1.UpdateTemplateResponse](
+			httpClient,
+			baseURL+SMSServiceUpdateTemplateProcedure,
+			connect.WithSchema(sMSServiceMethods.ByName("UpdateTemplate")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteTemplate: connect.NewClient[v1.DeleteTemplateRequest, v1.DeleteTemplateResponse](
+			httpClient,
+			baseURL+SMSServiceDeleteTemplateProcedure,
+			connect.WithSchema(sMSServiceMethods.ByName("DeleteTemplate")),
+			connect.WithClientOptions(opts...),
+		),
+		previewTemplate: connect.NewClient[v1.PreviewTemplateRequest, v1.PreviewTemplateResponse](
+			httpClient,
+			baseURL+SMSServicePreviewTemplateProcedure,
+			connect.WithSchema(sMSServiceMethods.ByName("PreviewTemplate")),
+			connect.WithClientOptions(opts...),
+		),
+		createCampaign: connect.NewClient[v1.CreateCampaignRequest, v1.CreateCampaignResponse](
+			httpClient,
+			baseURL+SMSServiceCreateCampaignProcedure,
+			connect.WithSchema(sMSServiceMethods.ByName("CreateCampaign")),
+			connect.WithClientOptions(opts...),
+		),
+		launchCampaign: connect.NewClient[v1.LaunchCampaignRequest, v1.LaunchCampaignResponse](
+			httpClient,
+			baseURL+SMSServiceLaunchCampaignProcedure,
+			connect.WithSchema(sMSServiceMethods.ByName("LaunchCampaign")),
+			connect.WithClientOptions(opts...),
+		),
+		pauseCampaign: connect.NewClient[v1.PauseCampaignRequest, v1.PauseCampaignResponse](
+			httpClient,
+			baseURL+SMSServicePauseCampaignProcedure,
+			connect.WithSchema(sMSServiceMethods.ByName("PauseCampaign")),
+			connect.WithClientOptions(opts...),
+		),
+		cancelCampaign: connect.NewClient[v1.CancelCampaignRequest, v1.CancelCampaignResponse](
+			httpClient,
+			baseURL+SMSServiceCancelCampaignProcedure,
+			connect.WithSchema(sMSServiceMethods.ByName("CancelCampaign")),
+			connect.WithClientOptions(opts...),
+		),
+		getCampaign: connect.NewClient[v1.GetCampaignRequest, v1.GetCampaignResponse](
+			httpClient,
+			baseURL+SMSServiceGetCampaignProcedure,
+			connect.WithSchema(sMSServiceMethods.ByName("GetCampaign")),
+			connect.WithClientOptions(opts...),
+		),
+		listCampaigns: connect.NewClient[v1.ListCampaignsRequest, v1.ListCampaignsResponse](
+			httpClient,
+			baseURL+SMSServiceListCampaignsProcedure,
+			connect.WithSchema(sMSServiceMethods.ByName("ListCampaigns")),
+			connect.WithClientOptions(opts...),
+		),
+		get10DLCStatus: connect.NewClient[v1.Get10DLCStatusRequest, v1.Get10DLCStatusResponse](
+			httpClient,
+			baseURL+SMSServiceGet10DLCStatusProcedure,
+			connect.WithSchema(sMSServiceMethods.ByName("Get10DLCStatus")),
+			connect.WithClientOptions(opts...),
+		),
+		update10DLCStatus: connect.NewClient[v1.Update10DLCStatusRequest, v1.Update10DLCStatusResponse](
+			httpClient,
+			baseURL+SMSServiceUpdate10DLCStatusProcedure,
+			connect.WithSchema(sMSServiceMethods.ByName("Update10DLCStatus")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -114,6 +266,20 @@ type sMSServiceClient struct {
 	listConversations *connect.Client[v1.ListConversationsRequest, v1.ListConversationsResponse]
 	getSMSConfig      *connect.Client[v1.GetSMSConfigRequest, v1.GetSMSConfigResponse]
 	updateSMSConfig   *connect.Client[v1.UpdateSMSConfigRequest, v1.UpdateSMSConfigResponse]
+	createTemplate    *connect.Client[v1.CreateTemplateRequest, v1.CreateTemplateResponse]
+	listTemplates     *connect.Client[v1.ListTemplatesRequest, v1.ListTemplatesResponse]
+	getTemplate       *connect.Client[v1.GetTemplateRequest, v1.GetTemplateResponse]
+	updateTemplate    *connect.Client[v1.UpdateTemplateRequest, v1.UpdateTemplateResponse]
+	deleteTemplate    *connect.Client[v1.DeleteTemplateRequest, v1.DeleteTemplateResponse]
+	previewTemplate   *connect.Client[v1.PreviewTemplateRequest, v1.PreviewTemplateResponse]
+	createCampaign    *connect.Client[v1.CreateCampaignRequest, v1.CreateCampaignResponse]
+	launchCampaign    *connect.Client[v1.LaunchCampaignRequest, v1.LaunchCampaignResponse]
+	pauseCampaign     *connect.Client[v1.PauseCampaignRequest, v1.PauseCampaignResponse]
+	cancelCampaign    *connect.Client[v1.CancelCampaignRequest, v1.CancelCampaignResponse]
+	getCampaign       *connect.Client[v1.GetCampaignRequest, v1.GetCampaignResponse]
+	listCampaigns     *connect.Client[v1.ListCampaignsRequest, v1.ListCampaignsResponse]
+	get10DLCStatus    *connect.Client[v1.Get10DLCStatusRequest, v1.Get10DLCStatusResponse]
+	update10DLCStatus *connect.Client[v1.Update10DLCStatusRequest, v1.Update10DLCStatusResponse]
 }
 
 // SendP2PMessage calls navigators.v1.SMSService.SendP2PMessage.
@@ -141,6 +307,76 @@ func (c *sMSServiceClient) UpdateSMSConfig(ctx context.Context, req *connect.Req
 	return c.updateSMSConfig.CallUnary(ctx, req)
 }
 
+// CreateTemplate calls navigators.v1.SMSService.CreateTemplate.
+func (c *sMSServiceClient) CreateTemplate(ctx context.Context, req *connect.Request[v1.CreateTemplateRequest]) (*connect.Response[v1.CreateTemplateResponse], error) {
+	return c.createTemplate.CallUnary(ctx, req)
+}
+
+// ListTemplates calls navigators.v1.SMSService.ListTemplates.
+func (c *sMSServiceClient) ListTemplates(ctx context.Context, req *connect.Request[v1.ListTemplatesRequest]) (*connect.Response[v1.ListTemplatesResponse], error) {
+	return c.listTemplates.CallUnary(ctx, req)
+}
+
+// GetTemplate calls navigators.v1.SMSService.GetTemplate.
+func (c *sMSServiceClient) GetTemplate(ctx context.Context, req *connect.Request[v1.GetTemplateRequest]) (*connect.Response[v1.GetTemplateResponse], error) {
+	return c.getTemplate.CallUnary(ctx, req)
+}
+
+// UpdateTemplate calls navigators.v1.SMSService.UpdateTemplate.
+func (c *sMSServiceClient) UpdateTemplate(ctx context.Context, req *connect.Request[v1.UpdateTemplateRequest]) (*connect.Response[v1.UpdateTemplateResponse], error) {
+	return c.updateTemplate.CallUnary(ctx, req)
+}
+
+// DeleteTemplate calls navigators.v1.SMSService.DeleteTemplate.
+func (c *sMSServiceClient) DeleteTemplate(ctx context.Context, req *connect.Request[v1.DeleteTemplateRequest]) (*connect.Response[v1.DeleteTemplateResponse], error) {
+	return c.deleteTemplate.CallUnary(ctx, req)
+}
+
+// PreviewTemplate calls navigators.v1.SMSService.PreviewTemplate.
+func (c *sMSServiceClient) PreviewTemplate(ctx context.Context, req *connect.Request[v1.PreviewTemplateRequest]) (*connect.Response[v1.PreviewTemplateResponse], error) {
+	return c.previewTemplate.CallUnary(ctx, req)
+}
+
+// CreateCampaign calls navigators.v1.SMSService.CreateCampaign.
+func (c *sMSServiceClient) CreateCampaign(ctx context.Context, req *connect.Request[v1.CreateCampaignRequest]) (*connect.Response[v1.CreateCampaignResponse], error) {
+	return c.createCampaign.CallUnary(ctx, req)
+}
+
+// LaunchCampaign calls navigators.v1.SMSService.LaunchCampaign.
+func (c *sMSServiceClient) LaunchCampaign(ctx context.Context, req *connect.Request[v1.LaunchCampaignRequest]) (*connect.Response[v1.LaunchCampaignResponse], error) {
+	return c.launchCampaign.CallUnary(ctx, req)
+}
+
+// PauseCampaign calls navigators.v1.SMSService.PauseCampaign.
+func (c *sMSServiceClient) PauseCampaign(ctx context.Context, req *connect.Request[v1.PauseCampaignRequest]) (*connect.Response[v1.PauseCampaignResponse], error) {
+	return c.pauseCampaign.CallUnary(ctx, req)
+}
+
+// CancelCampaign calls navigators.v1.SMSService.CancelCampaign.
+func (c *sMSServiceClient) CancelCampaign(ctx context.Context, req *connect.Request[v1.CancelCampaignRequest]) (*connect.Response[v1.CancelCampaignResponse], error) {
+	return c.cancelCampaign.CallUnary(ctx, req)
+}
+
+// GetCampaign calls navigators.v1.SMSService.GetCampaign.
+func (c *sMSServiceClient) GetCampaign(ctx context.Context, req *connect.Request[v1.GetCampaignRequest]) (*connect.Response[v1.GetCampaignResponse], error) {
+	return c.getCampaign.CallUnary(ctx, req)
+}
+
+// ListCampaigns calls navigators.v1.SMSService.ListCampaigns.
+func (c *sMSServiceClient) ListCampaigns(ctx context.Context, req *connect.Request[v1.ListCampaignsRequest]) (*connect.Response[v1.ListCampaignsResponse], error) {
+	return c.listCampaigns.CallUnary(ctx, req)
+}
+
+// Get10DLCStatus calls navigators.v1.SMSService.Get10DLCStatus.
+func (c *sMSServiceClient) Get10DLCStatus(ctx context.Context, req *connect.Request[v1.Get10DLCStatusRequest]) (*connect.Response[v1.Get10DLCStatusResponse], error) {
+	return c.get10DLCStatus.CallUnary(ctx, req)
+}
+
+// Update10DLCStatus calls navigators.v1.SMSService.Update10DLCStatus.
+func (c *sMSServiceClient) Update10DLCStatus(ctx context.Context, req *connect.Request[v1.Update10DLCStatusRequest]) (*connect.Response[v1.Update10DLCStatusResponse], error) {
+	return c.update10DLCStatus.CallUnary(ctx, req)
+}
+
 // SMSServiceHandler is an implementation of the navigators.v1.SMSService service.
 type SMSServiceHandler interface {
 	// SendP2PMessage sends a human-initiated text message to a voter.
@@ -153,6 +389,34 @@ type SMSServiceHandler interface {
 	GetSMSConfig(context.Context, *connect.Request[v1.GetSMSConfigRequest]) (*connect.Response[v1.GetSMSConfigResponse], error)
 	// UpdateSMSConfig updates the SMS configuration for the company (admin only).
 	UpdateSMSConfig(context.Context, *connect.Request[v1.UpdateSMSConfigRequest]) (*connect.Response[v1.UpdateSMSConfigResponse], error)
+	// CreateTemplate creates a new message template with merge fields.
+	CreateTemplate(context.Context, *connect.Request[v1.CreateTemplateRequest]) (*connect.Response[v1.CreateTemplateResponse], error)
+	// ListTemplates returns active templates for the company.
+	ListTemplates(context.Context, *connect.Request[v1.ListTemplatesRequest]) (*connect.Response[v1.ListTemplatesResponse], error)
+	// GetTemplate returns a template by ID.
+	GetTemplate(context.Context, *connect.Request[v1.GetTemplateRequest]) (*connect.Response[v1.GetTemplateResponse], error)
+	// UpdateTemplate updates an existing template.
+	UpdateTemplate(context.Context, *connect.Request[v1.UpdateTemplateRequest]) (*connect.Response[v1.UpdateTemplateResponse], error)
+	// DeleteTemplate soft-deletes a template.
+	DeleteTemplate(context.Context, *connect.Request[v1.DeleteTemplateRequest]) (*connect.Response[v1.DeleteTemplateResponse], error)
+	// PreviewTemplate renders a template with sample voter data.
+	PreviewTemplate(context.Context, *connect.Request[v1.PreviewTemplateRequest]) (*connect.Response[v1.PreviewTemplateResponse], error)
+	// CreateCampaign creates a new broadcast campaign in draft status.
+	CreateCampaign(context.Context, *connect.Request[v1.CreateCampaignRequest]) (*connect.Response[v1.CreateCampaignResponse], error)
+	// LaunchCampaign starts sending a draft campaign (gated on 10DLC approval).
+	LaunchCampaign(context.Context, *connect.Request[v1.LaunchCampaignRequest]) (*connect.Response[v1.LaunchCampaignResponse], error)
+	// PauseCampaign pauses a sending campaign.
+	PauseCampaign(context.Context, *connect.Request[v1.PauseCampaignRequest]) (*connect.Response[v1.PauseCampaignResponse], error)
+	// CancelCampaign cancels a campaign.
+	CancelCampaign(context.Context, *connect.Request[v1.CancelCampaignRequest]) (*connect.Response[v1.CancelCampaignResponse], error)
+	// GetCampaign returns a campaign by ID.
+	GetCampaign(context.Context, *connect.Request[v1.GetCampaignRequest]) (*connect.Response[v1.GetCampaignResponse], error)
+	// ListCampaigns returns campaigns for the company.
+	ListCampaigns(context.Context, *connect.Request[v1.ListCampaignsRequest]) (*connect.Response[v1.ListCampaignsResponse], error)
+	// Get10DLCStatus returns the current 10DLC registration status.
+	Get10DLCStatus(context.Context, *connect.Request[v1.Get10DLCStatusRequest]) (*connect.Response[v1.Get10DLCStatusResponse], error)
+	// Update10DLCStatus updates the 10DLC registration status after checking Twilio dashboard.
+	Update10DLCStatus(context.Context, *connect.Request[v1.Update10DLCStatusRequest]) (*connect.Response[v1.Update10DLCStatusResponse], error)
 }
 
 // NewSMSServiceHandler builds an HTTP handler from the service implementation. It returns the path
@@ -192,6 +456,90 @@ func NewSMSServiceHandler(svc SMSServiceHandler, opts ...connect.HandlerOption) 
 		connect.WithSchema(sMSServiceMethods.ByName("UpdateSMSConfig")),
 		connect.WithHandlerOptions(opts...),
 	)
+	sMSServiceCreateTemplateHandler := connect.NewUnaryHandler(
+		SMSServiceCreateTemplateProcedure,
+		svc.CreateTemplate,
+		connect.WithSchema(sMSServiceMethods.ByName("CreateTemplate")),
+		connect.WithHandlerOptions(opts...),
+	)
+	sMSServiceListTemplatesHandler := connect.NewUnaryHandler(
+		SMSServiceListTemplatesProcedure,
+		svc.ListTemplates,
+		connect.WithSchema(sMSServiceMethods.ByName("ListTemplates")),
+		connect.WithHandlerOptions(opts...),
+	)
+	sMSServiceGetTemplateHandler := connect.NewUnaryHandler(
+		SMSServiceGetTemplateProcedure,
+		svc.GetTemplate,
+		connect.WithSchema(sMSServiceMethods.ByName("GetTemplate")),
+		connect.WithHandlerOptions(opts...),
+	)
+	sMSServiceUpdateTemplateHandler := connect.NewUnaryHandler(
+		SMSServiceUpdateTemplateProcedure,
+		svc.UpdateTemplate,
+		connect.WithSchema(sMSServiceMethods.ByName("UpdateTemplate")),
+		connect.WithHandlerOptions(opts...),
+	)
+	sMSServiceDeleteTemplateHandler := connect.NewUnaryHandler(
+		SMSServiceDeleteTemplateProcedure,
+		svc.DeleteTemplate,
+		connect.WithSchema(sMSServiceMethods.ByName("DeleteTemplate")),
+		connect.WithHandlerOptions(opts...),
+	)
+	sMSServicePreviewTemplateHandler := connect.NewUnaryHandler(
+		SMSServicePreviewTemplateProcedure,
+		svc.PreviewTemplate,
+		connect.WithSchema(sMSServiceMethods.ByName("PreviewTemplate")),
+		connect.WithHandlerOptions(opts...),
+	)
+	sMSServiceCreateCampaignHandler := connect.NewUnaryHandler(
+		SMSServiceCreateCampaignProcedure,
+		svc.CreateCampaign,
+		connect.WithSchema(sMSServiceMethods.ByName("CreateCampaign")),
+		connect.WithHandlerOptions(opts...),
+	)
+	sMSServiceLaunchCampaignHandler := connect.NewUnaryHandler(
+		SMSServiceLaunchCampaignProcedure,
+		svc.LaunchCampaign,
+		connect.WithSchema(sMSServiceMethods.ByName("LaunchCampaign")),
+		connect.WithHandlerOptions(opts...),
+	)
+	sMSServicePauseCampaignHandler := connect.NewUnaryHandler(
+		SMSServicePauseCampaignProcedure,
+		svc.PauseCampaign,
+		connect.WithSchema(sMSServiceMethods.ByName("PauseCampaign")),
+		connect.WithHandlerOptions(opts...),
+	)
+	sMSServiceCancelCampaignHandler := connect.NewUnaryHandler(
+		SMSServiceCancelCampaignProcedure,
+		svc.CancelCampaign,
+		connect.WithSchema(sMSServiceMethods.ByName("CancelCampaign")),
+		connect.WithHandlerOptions(opts...),
+	)
+	sMSServiceGetCampaignHandler := connect.NewUnaryHandler(
+		SMSServiceGetCampaignProcedure,
+		svc.GetCampaign,
+		connect.WithSchema(sMSServiceMethods.ByName("GetCampaign")),
+		connect.WithHandlerOptions(opts...),
+	)
+	sMSServiceListCampaignsHandler := connect.NewUnaryHandler(
+		SMSServiceListCampaignsProcedure,
+		svc.ListCampaigns,
+		connect.WithSchema(sMSServiceMethods.ByName("ListCampaigns")),
+		connect.WithHandlerOptions(opts...),
+	)
+	sMSServiceGet10DLCStatusHandler := connect.NewUnaryHandler(
+		SMSServiceGet10DLCStatusProcedure,
+		svc.Get10DLCStatus,
+		connect.WithSchema(sMSServiceMethods.ByName("Get10DLCStatus")),
+		connect.WithHandlerOptions(opts...),
+	)
+	sMSServiceUpdate10DLCStatusHandler := connect.NewUnaryHandler(
+		SMSServiceUpdate10DLCStatusProcedure,
+		svc.Update10DLCStatus,
+		connect.WithSchema(sMSServiceMethods.ByName("Update10DLCStatus")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/navigators.v1.SMSService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case SMSServiceSendP2PMessageProcedure:
@@ -204,6 +552,34 @@ func NewSMSServiceHandler(svc SMSServiceHandler, opts ...connect.HandlerOption) 
 			sMSServiceGetSMSConfigHandler.ServeHTTP(w, r)
 		case SMSServiceUpdateSMSConfigProcedure:
 			sMSServiceUpdateSMSConfigHandler.ServeHTTP(w, r)
+		case SMSServiceCreateTemplateProcedure:
+			sMSServiceCreateTemplateHandler.ServeHTTP(w, r)
+		case SMSServiceListTemplatesProcedure:
+			sMSServiceListTemplatesHandler.ServeHTTP(w, r)
+		case SMSServiceGetTemplateProcedure:
+			sMSServiceGetTemplateHandler.ServeHTTP(w, r)
+		case SMSServiceUpdateTemplateProcedure:
+			sMSServiceUpdateTemplateHandler.ServeHTTP(w, r)
+		case SMSServiceDeleteTemplateProcedure:
+			sMSServiceDeleteTemplateHandler.ServeHTTP(w, r)
+		case SMSServicePreviewTemplateProcedure:
+			sMSServicePreviewTemplateHandler.ServeHTTP(w, r)
+		case SMSServiceCreateCampaignProcedure:
+			sMSServiceCreateCampaignHandler.ServeHTTP(w, r)
+		case SMSServiceLaunchCampaignProcedure:
+			sMSServiceLaunchCampaignHandler.ServeHTTP(w, r)
+		case SMSServicePauseCampaignProcedure:
+			sMSServicePauseCampaignHandler.ServeHTTP(w, r)
+		case SMSServiceCancelCampaignProcedure:
+			sMSServiceCancelCampaignHandler.ServeHTTP(w, r)
+		case SMSServiceGetCampaignProcedure:
+			sMSServiceGetCampaignHandler.ServeHTTP(w, r)
+		case SMSServiceListCampaignsProcedure:
+			sMSServiceListCampaignsHandler.ServeHTTP(w, r)
+		case SMSServiceGet10DLCStatusProcedure:
+			sMSServiceGet10DLCStatusHandler.ServeHTTP(w, r)
+		case SMSServiceUpdate10DLCStatusProcedure:
+			sMSServiceUpdate10DLCStatusHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -231,4 +607,60 @@ func (UnimplementedSMSServiceHandler) GetSMSConfig(context.Context, *connect.Req
 
 func (UnimplementedSMSServiceHandler) UpdateSMSConfig(context.Context, *connect.Request[v1.UpdateSMSConfigRequest]) (*connect.Response[v1.UpdateSMSConfigResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SMSService.UpdateSMSConfig is not implemented"))
+}
+
+func (UnimplementedSMSServiceHandler) CreateTemplate(context.Context, *connect.Request[v1.CreateTemplateRequest]) (*connect.Response[v1.CreateTemplateResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SMSService.CreateTemplate is not implemented"))
+}
+
+func (UnimplementedSMSServiceHandler) ListTemplates(context.Context, *connect.Request[v1.ListTemplatesRequest]) (*connect.Response[v1.ListTemplatesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SMSService.ListTemplates is not implemented"))
+}
+
+func (UnimplementedSMSServiceHandler) GetTemplate(context.Context, *connect.Request[v1.GetTemplateRequest]) (*connect.Response[v1.GetTemplateResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SMSService.GetTemplate is not implemented"))
+}
+
+func (UnimplementedSMSServiceHandler) UpdateTemplate(context.Context, *connect.Request[v1.UpdateTemplateRequest]) (*connect.Response[v1.UpdateTemplateResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SMSService.UpdateTemplate is not implemented"))
+}
+
+func (UnimplementedSMSServiceHandler) DeleteTemplate(context.Context, *connect.Request[v1.DeleteTemplateRequest]) (*connect.Response[v1.DeleteTemplateResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SMSService.DeleteTemplate is not implemented"))
+}
+
+func (UnimplementedSMSServiceHandler) PreviewTemplate(context.Context, *connect.Request[v1.PreviewTemplateRequest]) (*connect.Response[v1.PreviewTemplateResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SMSService.PreviewTemplate is not implemented"))
+}
+
+func (UnimplementedSMSServiceHandler) CreateCampaign(context.Context, *connect.Request[v1.CreateCampaignRequest]) (*connect.Response[v1.CreateCampaignResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SMSService.CreateCampaign is not implemented"))
+}
+
+func (UnimplementedSMSServiceHandler) LaunchCampaign(context.Context, *connect.Request[v1.LaunchCampaignRequest]) (*connect.Response[v1.LaunchCampaignResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SMSService.LaunchCampaign is not implemented"))
+}
+
+func (UnimplementedSMSServiceHandler) PauseCampaign(context.Context, *connect.Request[v1.PauseCampaignRequest]) (*connect.Response[v1.PauseCampaignResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SMSService.PauseCampaign is not implemented"))
+}
+
+func (UnimplementedSMSServiceHandler) CancelCampaign(context.Context, *connect.Request[v1.CancelCampaignRequest]) (*connect.Response[v1.CancelCampaignResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SMSService.CancelCampaign is not implemented"))
+}
+
+func (UnimplementedSMSServiceHandler) GetCampaign(context.Context, *connect.Request[v1.GetCampaignRequest]) (*connect.Response[v1.GetCampaignResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SMSService.GetCampaign is not implemented"))
+}
+
+func (UnimplementedSMSServiceHandler) ListCampaigns(context.Context, *connect.Request[v1.ListCampaignsRequest]) (*connect.Response[v1.ListCampaignsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SMSService.ListCampaigns is not implemented"))
+}
+
+func (UnimplementedSMSServiceHandler) Get10DLCStatus(context.Context, *connect.Request[v1.Get10DLCStatusRequest]) (*connect.Response[v1.Get10DLCStatusResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SMSService.Get10DLCStatus is not implemented"))
+}
+
+func (UnimplementedSMSServiceHandler) Update10DLCStatus(context.Context, *connect.Request[v1.Update10DLCStatusRequest]) (*connect.Response[v1.Update10DLCStatusResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SMSService.Update10DLCStatus is not implemented"))
 }

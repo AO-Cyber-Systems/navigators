@@ -226,7 +226,9 @@ func main() {
 	// --- SMS services ---
 	smsCompliance := navpkg.NewSMSComplianceService(navQueries, suppressionService)
 	smsService := navpkg.NewSMSService(navQueries, pgBackend.Pool(), twilioAccountSid, twilioAuthToken, smsCompliance, navAuditService)
-	smsHandler := navpkg.NewSMSHandler(smsService)
+	smsTemplateService := navpkg.NewSMSTemplateService(navQueries)
+	smsCampaignService := navpkg.NewSMSCampaignService(navQueries, pgBackend.Pool(), js, smsTemplateService, smsCompliance)
+	smsHandler := navpkg.NewSMSHandler(smsService, smsTemplateService, smsCampaignService)
 	smsPath, smsHTTPHandler := navigatorsv1connect.NewSMSServiceHandler(smsHandler, interceptors)
 	mux.Handle(smsPath, smsHTTPHandler)
 
@@ -237,7 +239,7 @@ func main() {
 		mux.HandleFunc("/webhooks/twilio/status", webhookHandler.HandleStatus)
 
 		// --- SMS NATS worker ---
-		smsWorker := navpkg.NewSMSWorker(js, navQueries, pgBackend.Pool(), smsCompliance)
+		smsWorker := navpkg.NewSMSWorker(js, navQueries, pgBackend.Pool(), smsCompliance, smsTemplateService, smsService.TwilioClient())
 		if err := smsWorker.Start(ctx); err != nil {
 			slog.Warn("SMS NATS worker failed to start", "error", err)
 		} else {

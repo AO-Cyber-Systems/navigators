@@ -69,10 +69,12 @@ func NavigatorsPermissionMatrix() rbac.PermissionMatrix {
 			"admin":  rbac.RoleLevelAdmin,  // Admin (80)
 		},
 		FeatureSMS: {
-			"send":   rbac.RoleLevelMember, // Navigator (40) -- can send P2P
-			"view":   rbac.RoleLevelMember, // Navigator (40) -- can view conversations
-			"config": rbac.RoleLevelAdmin,  // Admin (80) -- configures Twilio
-			"admin":  rbac.RoleLevelAdmin,  // Admin (80) -- manages all SMS
+			"send":     rbac.RoleLevelMember, // Navigator (40) -- can send P2P
+			"view":     rbac.RoleLevelMember, // Navigator (40) -- can view conversations
+			"config":   rbac.RoleLevelAdmin,  // Admin (80) -- configures Twilio
+			"template": rbac.RoleLevelAdmin,  // Admin (80) -- manages message templates
+			"campaign": rbac.RoleLevelAdmin,  // Admin (80) -- manages campaigns
+			"admin":    rbac.RoleLevelAdmin,  // Admin (80) -- manages all SMS
 		},
 	}
 }
@@ -148,6 +150,26 @@ func NavigatorsProcedurePermissions() map[string]server.Permission {
 		"/navigators.v1.SMSService/ListConversations": {Feature: "sms", Action: "view"},
 		"/navigators.v1.SMSService/GetSMSConfig":      {Feature: "sms", Action: "config"},
 		"/navigators.v1.SMSService/UpdateSMSConfig":   {Feature: "sms", Action: "config"},
+
+		// Template management (Admin only)
+		"/navigators.v1.SMSService/CreateTemplate":   {Feature: "sms", Action: "template"},
+		"/navigators.v1.SMSService/ListTemplates":    {Feature: "sms", Action: "template"},
+		"/navigators.v1.SMSService/GetTemplate":      {Feature: "sms", Action: "template"},
+		"/navigators.v1.SMSService/UpdateTemplate":   {Feature: "sms", Action: "template"},
+		"/navigators.v1.SMSService/DeleteTemplate":   {Feature: "sms", Action: "template"},
+		"/navigators.v1.SMSService/PreviewTemplate":  {Feature: "sms", Action: "template"},
+
+		// Campaign management (Admin only)
+		"/navigators.v1.SMSService/CreateCampaign":   {Feature: "sms", Action: "campaign"},
+		"/navigators.v1.SMSService/LaunchCampaign":   {Feature: "sms", Action: "campaign"},
+		"/navigators.v1.SMSService/PauseCampaign":    {Feature: "sms", Action: "campaign"},
+		"/navigators.v1.SMSService/CancelCampaign":   {Feature: "sms", Action: "campaign"},
+		"/navigators.v1.SMSService/GetCampaign":      {Feature: "sms", Action: "campaign"},
+		"/navigators.v1.SMSService/ListCampaigns":    {Feature: "sms", Action: "campaign"},
+
+		// 10DLC status (Admin only)
+		"/navigators.v1.SMSService/Get10DLCStatus":    {Feature: "sms", Action: "config"},
+		"/navigators.v1.SMSService/Update10DLCStatus": {Feature: "sms", Action: "config"},
 	}
 }
 

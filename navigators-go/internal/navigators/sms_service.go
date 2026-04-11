@@ -50,6 +50,11 @@ func NewSMSService(
 	}
 }
 
+// TwilioClient returns the underlying Twilio REST client for shared use (e.g., campaign worker).
+func (s *SMSService) TwilioClient() *twilio.RestClient {
+	return s.twilioClient
+}
+
 // SendP2P sends a human-initiated P2P text message to a voter.
 func (s *SMSService) SendP2P(ctx context.Context, voterID uuid.UUID, body string) (*db.SmsMessage, error) {
 	claims := server.ClaimsFromContext(ctx)
