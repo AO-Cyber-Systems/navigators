@@ -15,7 +15,7 @@ Navigators goes from foundation to field-ready in 10 objectives. The first four 
 - [x] **Objective 5: Door Knocking + Contact Log** - Walk lists, at-the-door surveys, notes, and unified contact timeline
 - [x] **Objective 6: SMS Integration** - P2P texting, A2P broadcasts, templates, opt-out handling, and 10DLC
 - [x] **Objective 7: Phone Calls + Scripts** - Click-to-call, post-call dispositions, and call scripts
-- [ ] **Objective 8: Tasks + Collaboration** - Task CRUD, auto-progress, push notifications
+- [x] **Objective 8: Tasks + Collaboration** - Task CRUD, auto-progress, push notifications
 - [ ] **Objective 9: Analytics + Dashboards** - Per-role dashboards, heat maps, metrics, and data export
 - [ ] **Objective 10: Volunteer Management + Events** - Onboarding flow, events, leaderboards, training materials
 
@@ -171,9 +171,9 @@ Jobs:
 **TRDs:** 3 plans in 3 waves
 
 Jobs:
-- [ ] 09-01: TBD
-- [ ] 09-02: TBD
-- [ ] 09-03: TBD
+- [ ] 09-01-TRD.md — Analytics backend: proto + SQL aggregation queries + role-scoped service + CSV/Excel export
+- [ ] 09-02-TRD.md — Flutter Navigator + Super Navigator dashboards (fl_chart, metric cards, trend/sentiment charts)
+- [ ] 09-03-TRD.md — Admin dashboard (heat maps, leaderboard, org metrics) + export UI (filter builder, download)
 
 ### Objective 10: Volunteer Management + Events
 **Goal**: New volunteers go through a compliant onboarding flow, events can be organized and tracked, and engagement features motivate participation
@@ -207,4 +207,4 @@ Jobs:
 
 ---
 *Roadmap created: 2026-04-10*
-*Last updated: 2026-04-11 — Objective 8 planned*
+*Last updated: 2026-04-11 — Objective 9 planned*
