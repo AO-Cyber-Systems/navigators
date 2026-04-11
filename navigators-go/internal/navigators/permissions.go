@@ -15,7 +15,8 @@ const (
 	FeatureSync    rbac.Feature = "sync"
 	FeatureSurveys rbac.Feature = "surveys"
 	FeatureNotes   rbac.Feature = "notes"
-	FeatureSMS     rbac.Feature = "sms"
+	FeatureSMS         rbac.Feature = "sms"
+	FeatureCallScripts rbac.Feature = "call_scripts"
 )
 
 // NavigatorsPermissionMatrix returns the RBAC permission matrix for the Navigators app.
@@ -76,6 +77,11 @@ func NavigatorsPermissionMatrix() rbac.PermissionMatrix {
 			"campaign": rbac.RoleLevelAdmin,  // Admin (80) -- manages campaigns
 			"admin":    rbac.RoleLevelAdmin,  // Admin (80) -- manages all SMS
 		},
+		FeatureCallScripts: {
+			"view":   rbac.RoleLevelMember, // Navigator (40)
+			"create": rbac.RoleLevelAdmin,  // Admin (80)
+			"admin":  rbac.RoleLevelAdmin,  // Admin (80)
+		},
 	}
 }
 
@@ -133,6 +139,7 @@ func NavigatorsProcedurePermissions() map[string]server.Permission {
 		"/navigators.v1.SyncService/PullSurveyForms":     {Feature: "sync", Action: "pull"},
 		"/navigators.v1.SyncService/PullSurveyResponses": {Feature: "sync", Action: "pull"},
 		"/navigators.v1.SyncService/PullVoterNotes":      {Feature: "sync", Action: "pull"},
+		"/navigators.v1.SyncService/PullCallScripts":     {Feature: "sync", Action: "pull"},
 		"/navigators.v1.SyncService/PushSyncBatch":       {Feature: "sync", Action: "push"},
 		"/navigators.v1.SyncService/GetSyncManifest":     {Feature: "sync", Action: "pull"},
 

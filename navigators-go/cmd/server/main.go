@@ -189,12 +189,13 @@ func main() {
 	voterPath, voterHTTPHandler := navigatorsv1connect.NewVoterServiceHandler(voterHandler, interceptors)
 	mux.Handle(voterPath, voterHTTPHandler)
 
-	// --- Survey + Notes services ---
+	// --- Survey + Notes + Call Script services ---
 	surveyService := navpkg.NewSurveyService(navQueries, pgBackend.Pool())
 	voterNotesService := navpkg.NewVoterNotesService(navQueries, pgBackend.Pool())
+	callScriptService := navpkg.NewCallScriptService(navQueries, pgBackend.Pool())
 
 	// --- Sync service ---
-	syncService := navpkg.NewSyncService(navQueries, pgBackend.Pool(), turfScopedFilter, surveyService, voterNotesService)
+	syncService := navpkg.NewSyncService(navQueries, pgBackend.Pool(), turfScopedFilter, surveyService, voterNotesService, callScriptService)
 	syncHandler := navpkg.NewSyncHandler(syncService)
 	syncPath, syncHTTPHandler := navigatorsv1connect.NewSyncServiceHandler(syncHandler, interceptors)
 	mux.Handle(syncPath, syncHTTPHandler)

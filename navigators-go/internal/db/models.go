@@ -24,6 +24,18 @@ type AuditLog struct {
 	CreatedAt  time.Time       `json:"created_at"`
 }
 
+type CallScript struct {
+	ID        uuid.UUID `json:"id"`
+	CompanyID uuid.UUID `json:"company_id"`
+	Title     string    `json:"title"`
+	Content   string    `json:"content"`
+	Version   int32     `json:"version"`
+	IsActive  bool      `json:"is_active"`
+	CreatedBy uuid.UUID `json:"created_by"`
+	CreatedAt time.Time `json:"created_at"`
+	UpdatedAt time.Time `json:"updated_at"`
+}
+
 type Company struct {
 	ID                   uuid.UUID       `json:"id"`
 	Name                 string          `json:"name"`

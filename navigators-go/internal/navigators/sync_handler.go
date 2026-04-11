@@ -356,6 +356,43 @@ func (h *SyncHandler) PullVoterNotes(ctx context.Context, req *connect.Request[n
 	}), nil
 }
 
+func (h *SyncHandler) PullCallScripts(ctx context.Context, req *connect.Request[navigatorsv1.PullCallScriptsRequest]) (*connect.Response[navigatorsv1.PullCallScriptsResponse], error) {
+	companyID, err := extractCompanyID(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	batchSize := req.Msg.GetBatchSize()
+	if batchSize <= 0 {
+		batchSize = 500
+	}
+
+	result, err := h.syncService.PullCallScripts(ctx, companyID, req.Msg.GetSinceCursor(), batchSize)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("pull call scripts: %w", err))
+	}
+
+	pbScripts := make([]*navigatorsv1.SyncCallScript, len(result.CallScripts))
+	for i, s := range result.CallScripts {
+		pbScripts[i] = &navigatorsv1.SyncCallScript{
+			Id:        s.ID.String(),
+			CompanyId: s.CompanyID.String(),
+			Title:     s.Title,
+			Content:   s.Content,
+			Version:   s.Version,
+			IsActive:  s.IsActive,
+			CreatedAt: s.CreatedAt.Format(time.RFC3339),
+			UpdatedAt: s.UpdatedAt.Format(time.RFC3339),
+		}
+	}
+
+	return connect.NewResponse(&navigatorsv1.PullCallScriptsResponse{
+		CallScripts: pbScripts,
+		NextCursor:  result.NextCursor,
+		HasMore:     result.HasMore,
+	}), nil
+}
+
 // resolveTurfIDs validates and filters the requested turf IDs against the user's scope.
 // For ScopeAll (admins), it uses whatever IDs the client requested.
 // For ScopeOwn/ScopeTeam, it intersects with the user's allowed turfs.

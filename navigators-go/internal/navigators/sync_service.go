@@ -20,16 +20,18 @@ type SyncService struct {
 	turfFilter        *TurfScopedFilter
 	surveyService     *SurveyService
 	voterNotesService *VoterNotesService
+	callScriptService *CallScriptService
 }
 
 // NewSyncService creates a new SyncService.
-func NewSyncService(queries *db.Queries, pool *pgxpool.Pool, turfFilter *TurfScopedFilter, surveyService *SurveyService, voterNotesService *VoterNotesService) *SyncService {
+func NewSyncService(queries *db.Queries, pool *pgxpool.Pool, turfFilter *TurfScopedFilter, surveyService *SurveyService, voterNotesService *VoterNotesService, callScriptService *CallScriptService) *SyncService {
 	return &SyncService{
 		queries:           queries,
 		pool:              pool,
 		turfFilter:        turfFilter,
 		surveyService:     surveyService,
 		voterNotesService: voterNotesService,
+		callScriptService: callScriptService,
 	}
 }
 
@@ -95,6 +97,25 @@ type SyncSurveyResponseRow struct {
 	ContactLogID *uuid.UUID
 	Responses    json.RawMessage
 	CreatedAt    time.Time
+}
+
+// SyncCallScriptRow represents a call script row returned for sync pull.
+type SyncCallScriptRow struct {
+	ID        uuid.UUID
+	CompanyID uuid.UUID
+	Title     string
+	Content   string
+	Version   int32
+	IsActive  bool
+	CreatedAt time.Time
+	UpdatedAt time.Time
+}
+
+// PullCallScriptsResult contains the result of a call script pull operation.
+type PullCallScriptsResult struct {
+	CallScripts []SyncCallScriptRow
+	NextCursor  string
+	HasMore     bool
 }
 
 // PullSurveyFormsResult contains the result of a survey form pull operation.
@@ -630,6 +651,63 @@ func (s *SyncService) PullSurveyResponses(ctx context.Context, companyID uuid.UU
 		SurveyResponses: responses,
 		NextCursor:      nextCursor,
 		HasMore:         hasMore,
+	}, nil
+}
+
+// PullCallScripts returns call scripts updated since cursor for a company.
+func (s *SyncService) PullCallScripts(ctx context.Context, companyID uuid.UUID, sinceCursor string, batchSize int32) (*PullCallScriptsResult, error) {
+	if batchSize <= 0 || batchSize > 500 {
+		batchSize = 500
+	}
+
+	var sinceTime time.Time
+	if sinceCursor != "" {
+		var err error
+		sinceTime, err = time.Parse(time.RFC3339Nano, sinceCursor)
+		if err != nil {
+			return nil, fmt.Errorf("parse cursor: %w", err)
+		}
+	} else {
+		sinceTime = time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC)
+	}
+
+	dbScripts, err := s.queries.PullCallScriptsUpdated(ctx, db.PullCallScriptsUpdatedParams{
+		CompanyID: companyID,
+		UpdatedAt: sinceTime,
+		Limit:     batchSize + 1,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("pull call scripts: %w", err)
+	}
+
+	hasMore := len(dbScripts) > int(batchSize)
+	if hasMore {
+		dbScripts = dbScripts[:batchSize]
+	}
+
+	scripts := make([]SyncCallScriptRow, len(dbScripts))
+	for i, s := range dbScripts {
+		scripts[i] = SyncCallScriptRow{
+			ID:        s.ID,
+			CompanyID: s.CompanyID,
+			Title:     s.Title,
+			Content:   s.Content,
+			Version:   s.Version,
+			IsActive:  s.IsActive,
+			CreatedAt: s.CreatedAt,
+			UpdatedAt: s.UpdatedAt,
+		}
+	}
+
+	var nextCursor string
+	if len(scripts) > 0 {
+		nextCursor = scripts[len(scripts)-1].UpdatedAt.Format(time.RFC3339Nano)
+	}
+
+	return &PullCallScriptsResult{
+		CallScripts: scripts,
+		NextCursor:  nextCursor,
+		HasMore:     hasMore,
 	}, nil
 }
 

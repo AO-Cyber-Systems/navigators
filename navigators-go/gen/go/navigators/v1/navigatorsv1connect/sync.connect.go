@@ -51,6 +51,9 @@ const (
 	// SyncServicePullVoterNotesProcedure is the fully-qualified name of the SyncService's
 	// PullVoterNotes RPC.
 	SyncServicePullVoterNotesProcedure = "/navigators.v1.SyncService/PullVoterNotes"
+	// SyncServicePullCallScriptsProcedure is the fully-qualified name of the SyncService's
+	// PullCallScripts RPC.
+	SyncServicePullCallScriptsProcedure = "/navigators.v1.SyncService/PullCallScripts"
 	// SyncServiceGetSyncManifestProcedure is the fully-qualified name of the SyncService's
 	// GetSyncManifest RPC.
 	SyncServiceGetSyncManifestProcedure = "/navigators.v1.SyncService/GetSyncManifest"
@@ -70,6 +73,8 @@ type SyncServiceClient interface {
 	PullSurveyResponses(context.Context, *connect.Request[v1.PullSurveyResponsesRequest]) (*connect.Response[v1.PullSurveyResponsesResponse], error)
 	// PullVoterNotes returns voter notes created since the given cursor, scoped to turfs and role.
 	PullVoterNotes(context.Context, *connect.Request[v1.PullVoterNotesRequest]) (*connect.Response[v1.PullVoterNotesResponse], error)
+	// PullCallScripts returns call scripts updated since the given cursor.
+	PullCallScripts(context.Context, *connect.Request[v1.PullCallScriptsRequest]) (*connect.Response[v1.PullCallScriptsResponse], error)
 	// GetSyncManifest returns the user's turf assignments with metadata for initial sync.
 	GetSyncManifest(context.Context, *connect.Request[v1.GetSyncManifestRequest]) (*connect.Response[v1.GetSyncManifestResponse], error)
 }
@@ -121,6 +126,12 @@ func NewSyncServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(syncServiceMethods.ByName("PullVoterNotes")),
 			connect.WithClientOptions(opts...),
 		),
+		pullCallScripts: connect.NewClient[v1.PullCallScriptsRequest, v1.PullCallScriptsResponse](
+			httpClient,
+			baseURL+SyncServicePullCallScriptsProcedure,
+			connect.WithSchema(syncServiceMethods.ByName("PullCallScripts")),
+			connect.WithClientOptions(opts...),
+		),
 		getSyncManifest: connect.NewClient[v1.GetSyncManifestRequest, v1.GetSyncManifestResponse](
 			httpClient,
 			baseURL+SyncServiceGetSyncManifestProcedure,
@@ -138,6 +149,7 @@ type syncServiceClient struct {
 	pullSurveyForms     *connect.Client[v1.PullSurveyFormsRequest, v1.PullSurveyFormsResponse]
 	pullSurveyResponses *connect.Client[v1.PullSurveyResponsesRequest, v1.PullSurveyResponsesResponse]
 	pullVoterNotes      *connect.Client[v1.PullVoterNotesRequest, v1.PullVoterNotesResponse]
+	pullCallScripts     *connect.Client[v1.PullCallScriptsRequest, v1.PullCallScriptsResponse]
 	getSyncManifest     *connect.Client[v1.GetSyncManifestRequest, v1.GetSyncManifestResponse]
 }
 
@@ -171,6 +183,11 @@ func (c *syncServiceClient) PullVoterNotes(ctx context.Context, req *connect.Req
 	return c.pullVoterNotes.CallUnary(ctx, req)
 }
 
+// PullCallScripts calls navigators.v1.SyncService.PullCallScripts.
+func (c *syncServiceClient) PullCallScripts(ctx context.Context, req *connect.Request[v1.PullCallScriptsRequest]) (*connect.Response[v1.PullCallScriptsResponse], error) {
+	return c.pullCallScripts.CallUnary(ctx, req)
+}
+
 // GetSyncManifest calls navigators.v1.SyncService.GetSyncManifest.
 func (c *syncServiceClient) GetSyncManifest(ctx context.Context, req *connect.Request[v1.GetSyncManifestRequest]) (*connect.Response[v1.GetSyncManifestResponse], error) {
 	return c.getSyncManifest.CallUnary(ctx, req)
@@ -190,6 +207,8 @@ type SyncServiceHandler interface {
 	PullSurveyResponses(context.Context, *connect.Request[v1.PullSurveyResponsesRequest]) (*connect.Response[v1.PullSurveyResponsesResponse], error)
 	// PullVoterNotes returns voter notes created since the given cursor, scoped to turfs and role.
 	PullVoterNotes(context.Context, *connect.Request[v1.PullVoterNotesRequest]) (*connect.Response[v1.PullVoterNotesResponse], error)
+	// PullCallScripts returns call scripts updated since the given cursor.
+	PullCallScripts(context.Context, *connect.Request[v1.PullCallScriptsRequest]) (*connect.Response[v1.PullCallScriptsResponse], error)
 	// GetSyncManifest returns the user's turf assignments with metadata for initial sync.
 	GetSyncManifest(context.Context, *connect.Request[v1.GetSyncManifestRequest]) (*connect.Response[v1.GetSyncManifestResponse], error)
 }
@@ -237,6 +256,12 @@ func NewSyncServiceHandler(svc SyncServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(syncServiceMethods.ByName("PullVoterNotes")),
 		connect.WithHandlerOptions(opts...),
 	)
+	syncServicePullCallScriptsHandler := connect.NewUnaryHandler(
+		SyncServicePullCallScriptsProcedure,
+		svc.PullCallScripts,
+		connect.WithSchema(syncServiceMethods.ByName("PullCallScripts")),
+		connect.WithHandlerOptions(opts...),
+	)
 	syncServiceGetSyncManifestHandler := connect.NewUnaryHandler(
 		SyncServiceGetSyncManifestProcedure,
 		svc.GetSyncManifest,
@@ -257,6 +282,8 @@ func NewSyncServiceHandler(svc SyncServiceHandler, opts ...connect.HandlerOption
 			syncServicePullSurveyResponsesHandler.ServeHTTP(w, r)
 		case SyncServicePullVoterNotesProcedure:
 			syncServicePullVoterNotesHandler.ServeHTTP(w, r)
+		case SyncServicePullCallScriptsProcedure:
+			syncServicePullCallScriptsHandler.ServeHTTP(w, r)
 		case SyncServiceGetSyncManifestProcedure:
 			syncServiceGetSyncManifestHandler.ServeHTTP(w, r)
 		default:
@@ -290,6 +317,10 @@ func (UnimplementedSyncServiceHandler) PullSurveyResponses(context.Context, *con
 
 func (UnimplementedSyncServiceHandler) PullVoterNotes(context.Context, *connect.Request[v1.PullVoterNotesRequest]) (*connect.Response[v1.PullVoterNotesResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SyncService.PullVoterNotes is not implemented"))
+}
+
+func (UnimplementedSyncServiceHandler) PullCallScripts(context.Context, *connect.Request[v1.PullCallScriptsRequest]) (*connect.Response[v1.PullCallScriptsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SyncService.PullCallScripts is not implemented"))
 }
 
 func (UnimplementedSyncServiceHandler) GetSyncManifest(context.Context, *connect.Request[v1.GetSyncManifestRequest]) (*connect.Response[v1.GetSyncManifestResponse], error) {

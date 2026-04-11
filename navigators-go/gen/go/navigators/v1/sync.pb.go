@@ -1639,6 +1639,218 @@ func (x *SyncVoterNote) GetUpdatedAt() string {
 	return ""
 }
 
+type PullCallScriptsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SinceCursor   string                 `protobuf:"bytes,1,opt,name=since_cursor,json=sinceCursor,proto3" json:"since_cursor,omitempty"`
+	BatchSize     int32                  `protobuf:"varint,2,opt,name=batch_size,json=batchSize,proto3" json:"batch_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PullCallScriptsRequest) Reset() {
+	*x = PullCallScriptsRequest{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PullCallScriptsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PullCallScriptsRequest) ProtoMessage() {}
+
+func (x *PullCallScriptsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PullCallScriptsRequest.ProtoReflect.Descriptor instead.
+func (*PullCallScriptsRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *PullCallScriptsRequest) GetSinceCursor() string {
+	if x != nil {
+		return x.SinceCursor
+	}
+	return ""
+}
+
+func (x *PullCallScriptsRequest) GetBatchSize() int32 {
+	if x != nil {
+		return x.BatchSize
+	}
+	return 0
+}
+
+type PullCallScriptsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	CallScripts   []*SyncCallScript      `protobuf:"bytes,1,rep,name=call_scripts,json=callScripts,proto3" json:"call_scripts,omitempty"`
+	NextCursor    string                 `protobuf:"bytes,2,opt,name=next_cursor,json=nextCursor,proto3" json:"next_cursor,omitempty"`
+	HasMore       bool                   `protobuf:"varint,3,opt,name=has_more,json=hasMore,proto3" json:"has_more,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PullCallScriptsResponse) Reset() {
+	*x = PullCallScriptsResponse{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PullCallScriptsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PullCallScriptsResponse) ProtoMessage() {}
+
+func (x *PullCallScriptsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PullCallScriptsResponse.ProtoReflect.Descriptor instead.
+func (*PullCallScriptsResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *PullCallScriptsResponse) GetCallScripts() []*SyncCallScript {
+	if x != nil {
+		return x.CallScripts
+	}
+	return nil
+}
+
+func (x *PullCallScriptsResponse) GetNextCursor() string {
+	if x != nil {
+		return x.NextCursor
+	}
+	return ""
+}
+
+func (x *PullCallScriptsResponse) GetHasMore() bool {
+	if x != nil {
+		return x.HasMore
+	}
+	return false
+}
+
+type SyncCallScript struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	CompanyId     string                 `protobuf:"bytes,2,opt,name=company_id,json=companyId,proto3" json:"company_id,omitempty"`
+	Title         string                 `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
+	Content       string                 `protobuf:"bytes,4,opt,name=content,proto3" json:"content,omitempty"`
+	Version       int32                  `protobuf:"varint,5,opt,name=version,proto3" json:"version,omitempty"`
+	IsActive      bool                   `protobuf:"varint,6,opt,name=is_active,json=isActive,proto3" json:"is_active,omitempty"`
+	CreatedAt     string                 `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt     string                 `protobuf:"bytes,8,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SyncCallScript) Reset() {
+	*x = SyncCallScript{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SyncCallScript) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SyncCallScript) ProtoMessage() {}
+
+func (x *SyncCallScript) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SyncCallScript.ProtoReflect.Descriptor instead.
+func (*SyncCallScript) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *SyncCallScript) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *SyncCallScript) GetCompanyId() string {
+	if x != nil {
+		return x.CompanyId
+	}
+	return ""
+}
+
+func (x *SyncCallScript) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *SyncCallScript) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
+}
+
+func (x *SyncCallScript) GetVersion() int32 {
+	if x != nil {
+		return x.Version
+	}
+	return 0
+}
+
+func (x *SyncCallScript) GetIsActive() bool {
+	if x != nil {
+		return x.IsActive
+	}
+	return false
+}
+
+func (x *SyncCallScript) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
+func (x *SyncCallScript) GetUpdatedAt() string {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return ""
+}
+
 var File_navigators_v1_sync_proto protoreflect.FileDescriptor
 
 const file_navigators_v1_sync_proto_rawDesc = "" +
@@ -1798,7 +2010,28 @@ const file_navigators_v1_sync_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\a \x01(\tR\tcreatedAt\x12\x1d\n" +
 	"\n" +
-	"updated_at\x18\b \x01(\tR\tupdatedAt2\xc1\x05\n" +
+	"updated_at\x18\b \x01(\tR\tupdatedAt\"Z\n" +
+	"\x16PullCallScriptsRequest\x12!\n" +
+	"\fsince_cursor\x18\x01 \x01(\tR\vsinceCursor\x12\x1d\n" +
+	"\n" +
+	"batch_size\x18\x02 \x01(\x05R\tbatchSize\"\x97\x01\n" +
+	"\x17PullCallScriptsResponse\x12@\n" +
+	"\fcall_scripts\x18\x01 \x03(\v2\x1d.navigators.v1.SyncCallScriptR\vcallScripts\x12\x1f\n" +
+	"\vnext_cursor\x18\x02 \x01(\tR\n" +
+	"nextCursor\x12\x19\n" +
+	"\bhas_more\x18\x03 \x01(\bR\ahasMore\"\xe4\x01\n" +
+	"\x0eSyncCallScript\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
+	"\n" +
+	"company_id\x18\x02 \x01(\tR\tcompanyId\x12\x14\n" +
+	"\x05title\x18\x03 \x01(\tR\x05title\x12\x18\n" +
+	"\acontent\x18\x04 \x01(\tR\acontent\x12\x18\n" +
+	"\aversion\x18\x05 \x01(\x05R\aversion\x12\x1b\n" +
+	"\tis_active\x18\x06 \x01(\bR\bisActive\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\a \x01(\tR\tcreatedAt\x12\x1d\n" +
+	"\n" +
+	"updated_at\x18\b \x01(\tR\tupdatedAt2\xa3\x06\n" +
 	"\vSyncService\x12c\n" +
 	"\x10PullVoterUpdates\x12&.navigators.v1.PullVoterUpdatesRequest\x1a'.navigators.v1.PullVoterUpdatesResponse\x12`\n" +
 	"\x0fPullContactLogs\x12%.navigators.v1.PullContactLogsRequest\x1a&.navigators.v1.PullContactLogsResponse\x12Z\n" +
@@ -1806,6 +2039,7 @@ const file_navigators_v1_sync_proto_rawDesc = "" +
 	"\x0fPullSurveyForms\x12%.navigators.v1.PullSurveyFormsRequest\x1a&.navigators.v1.PullSurveyFormsResponse\x12l\n" +
 	"\x13PullSurveyResponses\x12).navigators.v1.PullSurveyResponsesRequest\x1a*.navigators.v1.PullSurveyResponsesResponse\x12]\n" +
 	"\x0ePullVoterNotes\x12$.navigators.v1.PullVoterNotesRequest\x1a%.navigators.v1.PullVoterNotesResponse\x12`\n" +
+	"\x0fPullCallScripts\x12%.navigators.v1.PullCallScriptsRequest\x1a&.navigators.v1.PullCallScriptsResponse\x12`\n" +
 	"\x0fGetSyncManifest\x12%.navigators.v1.GetSyncManifestRequest\x1a&.navigators.v1.GetSyncManifestResponseB1Z/navigators-go/gen/go/navigators/v1;navigatorsv1b\x06proto3"
 
 var (
@@ -1820,7 +2054,7 @@ func file_navigators_v1_sync_proto_rawDescGZIP() []byte {
 	return file_navigators_v1_sync_proto_rawDescData
 }
 
-var file_navigators_v1_sync_proto_msgTypes = make([]protoimpl.MessageInfo, 22)
+var file_navigators_v1_sync_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
 var file_navigators_v1_sync_proto_goTypes = []any{
 	(*PullVoterUpdatesRequest)(nil),     // 0: navigators.v1.PullVoterUpdatesRequest
 	(*PullVoterUpdatesResponse)(nil),    // 1: navigators.v1.PullVoterUpdatesResponse
@@ -1844,6 +2078,9 @@ var file_navigators_v1_sync_proto_goTypes = []any{
 	(*PullVoterNotesRequest)(nil),       // 19: navigators.v1.PullVoterNotesRequest
 	(*PullVoterNotesResponse)(nil),      // 20: navigators.v1.PullVoterNotesResponse
 	(*SyncVoterNote)(nil),               // 21: navigators.v1.SyncVoterNote
+	(*PullCallScriptsRequest)(nil),      // 22: navigators.v1.PullCallScriptsRequest
+	(*PullCallScriptsResponse)(nil),     // 23: navigators.v1.PullCallScriptsResponse
+	(*SyncCallScript)(nil),              // 24: navigators.v1.SyncCallScript
 }
 var file_navigators_v1_sync_proto_depIdxs = []int32{
 	2,  // 0: navigators.v1.PullVoterUpdatesResponse.voters:type_name -> navigators.v1.SyncVoter
@@ -1854,25 +2091,28 @@ var file_navigators_v1_sync_proto_depIdxs = []int32{
 	15, // 5: navigators.v1.PullSurveyFormsResponse.survey_forms:type_name -> navigators.v1.SyncSurveyForm
 	18, // 6: navigators.v1.PullSurveyResponsesResponse.survey_responses:type_name -> navigators.v1.SyncSurveyResponse
 	21, // 7: navigators.v1.PullVoterNotesResponse.voter_notes:type_name -> navigators.v1.SyncVoterNote
-	0,  // 8: navigators.v1.SyncService.PullVoterUpdates:input_type -> navigators.v1.PullVoterUpdatesRequest
-	3,  // 9: navigators.v1.SyncService.PullContactLogs:input_type -> navigators.v1.PullContactLogsRequest
-	6,  // 10: navigators.v1.SyncService.PushSyncBatch:input_type -> navigators.v1.PushSyncBatchRequest
-	13, // 11: navigators.v1.SyncService.PullSurveyForms:input_type -> navigators.v1.PullSurveyFormsRequest
-	16, // 12: navigators.v1.SyncService.PullSurveyResponses:input_type -> navigators.v1.PullSurveyResponsesRequest
-	19, // 13: navigators.v1.SyncService.PullVoterNotes:input_type -> navigators.v1.PullVoterNotesRequest
-	10, // 14: navigators.v1.SyncService.GetSyncManifest:input_type -> navigators.v1.GetSyncManifestRequest
-	1,  // 15: navigators.v1.SyncService.PullVoterUpdates:output_type -> navigators.v1.PullVoterUpdatesResponse
-	4,  // 16: navigators.v1.SyncService.PullContactLogs:output_type -> navigators.v1.PullContactLogsResponse
-	7,  // 17: navigators.v1.SyncService.PushSyncBatch:output_type -> navigators.v1.PushSyncBatchResponse
-	14, // 18: navigators.v1.SyncService.PullSurveyForms:output_type -> navigators.v1.PullSurveyFormsResponse
-	17, // 19: navigators.v1.SyncService.PullSurveyResponses:output_type -> navigators.v1.PullSurveyResponsesResponse
-	20, // 20: navigators.v1.SyncService.PullVoterNotes:output_type -> navigators.v1.PullVoterNotesResponse
-	11, // 21: navigators.v1.SyncService.GetSyncManifest:output_type -> navigators.v1.GetSyncManifestResponse
-	15, // [15:22] is the sub-list for method output_type
-	8,  // [8:15] is the sub-list for method input_type
-	8,  // [8:8] is the sub-list for extension type_name
-	8,  // [8:8] is the sub-list for extension extendee
-	0,  // [0:8] is the sub-list for field type_name
+	24, // 8: navigators.v1.PullCallScriptsResponse.call_scripts:type_name -> navigators.v1.SyncCallScript
+	0,  // 9: navigators.v1.SyncService.PullVoterUpdates:input_type -> navigators.v1.PullVoterUpdatesRequest
+	3,  // 10: navigators.v1.SyncService.PullContactLogs:input_type -> navigators.v1.PullContactLogsRequest
+	6,  // 11: navigators.v1.SyncService.PushSyncBatch:input_type -> navigators.v1.PushSyncBatchRequest
+	13, // 12: navigators.v1.SyncService.PullSurveyForms:input_type -> navigators.v1.PullSurveyFormsRequest
+	16, // 13: navigators.v1.SyncService.PullSurveyResponses:input_type -> navigators.v1.PullSurveyResponsesRequest
+	19, // 14: navigators.v1.SyncService.PullVoterNotes:input_type -> navigators.v1.PullVoterNotesRequest
+	22, // 15: navigators.v1.SyncService.PullCallScripts:input_type -> navigators.v1.PullCallScriptsRequest
+	10, // 16: navigators.v1.SyncService.GetSyncManifest:input_type -> navigators.v1.GetSyncManifestRequest
+	1,  // 17: navigators.v1.SyncService.PullVoterUpdates:output_type -> navigators.v1.PullVoterUpdatesResponse
+	4,  // 18: navigators.v1.SyncService.PullContactLogs:output_type -> navigators.v1.PullContactLogsResponse
+	7,  // 19: navigators.v1.SyncService.PushSyncBatch:output_type -> navigators.v1.PushSyncBatchResponse
+	14, // 20: navigators.v1.SyncService.PullSurveyForms:output_type -> navigators.v1.PullSurveyFormsResponse
+	17, // 21: navigators.v1.SyncService.PullSurveyResponses:output_type -> navigators.v1.PullSurveyResponsesResponse
+	20, // 22: navigators.v1.SyncService.PullVoterNotes:output_type -> navigators.v1.PullVoterNotesResponse
+	23, // 23: navigators.v1.SyncService.PullCallScripts:output_type -> navigators.v1.PullCallScriptsResponse
+	11, // 24: navigators.v1.SyncService.GetSyncManifest:output_type -> navigators.v1.GetSyncManifestResponse
+	17, // [17:25] is the sub-list for method output_type
+	9,  // [9:17] is the sub-list for method input_type
+	9,  // [9:9] is the sub-list for extension type_name
+	9,  // [9:9] is the sub-list for extension extendee
+	0,  // [0:9] is the sub-list for field type_name
 }
 
 func init() { file_navigators_v1_sync_proto_init() }
@@ -1886,7 +2126,7 @@ func file_navigators_v1_sync_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_navigators_v1_sync_proto_rawDesc), len(file_navigators_v1_sync_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   22,
+			NumMessages:   25,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

@@ -24,6 +24,9 @@ service SyncService {
   // PullVoterNotes returns voter notes created since the given cursor, scoped to turfs and role.
   rpc PullVoterNotes(PullVoterNotesRequest) returns (PullVoterNotesResponse);
 
+  // PullCallScripts returns call scripts updated since the given cursor.
+  rpc PullCallScripts(PullCallScriptsRequest) returns (PullCallScriptsResponse);
+
   // GetSyncManifest returns the user's turf assignments with metadata for initial sync.
   rpc GetSyncManifest(GetSyncManifestRequest) returns (GetSyncManifestResponse);
 }
@@ -208,6 +211,30 @@ message SyncVoterNote {
   string turf_id = 4;
   string content = 5;
   string visibility = 6;  // private, team, org
+  string created_at = 7;
+  string updated_at = 8;
+}
+
+// --- Pull Call Scripts ---
+
+message PullCallScriptsRequest {
+  string since_cursor = 1;
+  int32 batch_size = 2;
+}
+
+message PullCallScriptsResponse {
+  repeated SyncCallScript call_scripts = 1;
+  string next_cursor = 2;
+  bool has_more = 3;
+}
+
+message SyncCallScript {
+  string id = 1;
+  string company_id = 2;
+  string title = 3;
+  string content = 4;
+  int32 version = 5;
+  bool is_active = 6;
   string created_at = 7;
   string updated_at = 8;
 }
