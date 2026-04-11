@@ -118,7 +118,7 @@ Requirements for initial release. Each maps to roadmap objectives.
 
 - [x] **PUSH-01**: System sends push notifications for task reminders (upcoming due dates)
 - [x] **PUSH-02**: System sends push notifications for new turf/task assignments
-- [ ] **PUSH-03**: System alerts Navigator when unsynced data exists and connectivity is available
+- [x] **PUSH-03**: System alerts Navigator when unsynced data exists and connectivity is available
 
 ## v2 Requirements
 
@@ -224,7 +224,7 @@ Deferred to future release. Tracked but not in current roadmap.
 | TASK-05 | Objective 8 | Complete |
 | PUSH-01 | Objective 8 | Complete |
 | PUSH-02 | Objective 8 | Complete |
-| PUSH-03 | Objective 8 | Pending |
+| PUSH-03 | Objective 8 | Complete |
 | ANLYT-01 | Objective 9 | Pending |
 | ANLYT-02 | Objective 9 | Pending |
 | ANLYT-03 | Objective 9 | Pending |

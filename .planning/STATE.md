@@ -12,7 +12,7 @@ See: .planning/PROJECT.md (updated 2026-04-10)
 **Objective:** 8 of 10 (Tasks & Collaboration)
 **Current Job:** 3
 **Total Jobs in Objective:** 3
-**Status:** Ready to execute
+**Status:** Objective complete — ready for verification
 **Last Activity:** 2026-04-11
 
 Progress: [##........] 13%
@@ -52,6 +52,7 @@ Progress: [##........] 13%
 | Objective 07 P02 | 7min | 2 tasks | 8 files |
 | Objective 08 P01 | 11min | 2 tasks | 20 files |
 | Objective 08 P02 | 8min | 2 tasks | 10 files |
+| Objective 08 P03 | 8min | 2 tasks | 11 files |
 
 ## Accumulated Context
 
@@ -124,6 +125,9 @@ Recent decisions affecting current work:
 - [Objective 08]: Firebase init moved before service wiring for dependency order (NATS, Firebase, then services)
 - [Objective 08]: FCMDispatcher uses raw pgxpool queries for device_tokens (eden pgstore.Backend has no NotificationStore)
 - [Objective 08]: TaskService.AssignTask signature expanded to include companyID for task title lookup in NATS event
+- [Objective 08]: Firebase init commented out pending flutterfire configure -- graceful degradation pattern
+- [Objective 08]: SyncEngine.db made public for SyncScheduler PUSH-03 outbox access
+- [Objective 08]: Tasks tab visible for all roles; FAB create only for Manager/60+ (super_navigator, admin)
 
 ### Pending Todos
 
@@ -138,11 +142,13 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-04-11
-Stopped at: Completed 08-01-TRD.md
+Stopped at: Completed 08-03-TRD.md
 Resume file: None
 
 ## History
 
+- 2026-04-11: Completed 08-03-TRD (Flutter task UI screens, NotificationService, TaskService, PUSH-03 sync alert, Tasks tab)
+- 2026-04-11: Completed 08-02-TRD (NATS task events, FCM dispatcher, device token registration, task assignment notifications)
 - 2026-04-11: Completed 08-01-TRD (Task data model, CRUD service, assignment, linking, notes, proto, Drift tables/DAO, pull sync)
 - 2026-04-11: Completed 07-01-TRD (Call scripts backend + phone call data layer: migration 014, CallScriptService, PullCallScripts sync, Drift table/DAO)
 - 2026-04-11: Completed 06-01-TRD (SMS infrastructure: migration 013, Twilio SDK, P2P send, webhooks, NATS workers, compliance)
