@@ -393,6 +393,106 @@ func (h *SyncHandler) PullCallScripts(ctx context.Context, req *connect.Request[
 	}), nil
 }
 
+func (h *SyncHandler) PullTasks(ctx context.Context, req *connect.Request[navigatorsv1.PullTasksRequest]) (*connect.Response[navigatorsv1.PullTasksResponse], error) {
+	companyID, err := extractCompanyID(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	batchSize := req.Msg.GetBatchSize()
+	if batchSize <= 0 {
+		batchSize = 500
+	}
+
+	result, err := h.syncService.PullTasks(ctx, companyID, req.Msg.GetSinceCursor(), batchSize)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("pull tasks: %w", err))
+	}
+
+	pbTasks := make([]*navigatorsv1.SyncTask, len(result.Tasks))
+	for i, t := range result.Tasks {
+		pt := &navigatorsv1.SyncTask{
+			Id:             t.ID.String(),
+			CompanyId:      t.CompanyID.String(),
+			Title:          t.Title,
+			Description:    t.Description,
+			TaskType:       t.TaskType,
+			Priority:       t.Priority,
+			Status:         t.Status,
+			ProgressPct:    t.ProgressPct,
+			TotalCount:     t.TotalCount,
+			CompletedCount: t.CompletedCount,
+			CreatedBy:      t.CreatedBy.String(),
+			CreatedAt:      t.CreatedAt.Format(time.RFC3339),
+			UpdatedAt:      t.UpdatedAt.Format(time.RFC3339),
+		}
+		if t.DueDate != nil {
+			pt.DueDate = t.DueDate.Format(time.RFC3339)
+		}
+		if t.LinkedEntityType != nil {
+			pt.LinkedEntityType = *t.LinkedEntityType
+		}
+		if t.LinkedEntityID != nil {
+			pt.LinkedEntityId = t.LinkedEntityID.String()
+		}
+		pbTasks[i] = pt
+	}
+
+	pbAssignments := make([]*navigatorsv1.SyncTaskAssignment, len(result.TaskAssignments))
+	for i, a := range result.TaskAssignments {
+		pbAssignments[i] = &navigatorsv1.SyncTaskAssignment{
+			Id:         a.ID.String(),
+			TaskId:     a.TaskID.String(),
+			UserId:     a.UserID.String(),
+			AssignedBy: a.AssignedBy.String(),
+			AssignedAt: a.AssignedAt.Format(time.RFC3339),
+		}
+	}
+
+	return connect.NewResponse(&navigatorsv1.PullTasksResponse{
+		Tasks:           pbTasks,
+		TaskAssignments: pbAssignments,
+		NextCursor:      result.NextCursor,
+		HasMore:         result.HasMore,
+	}), nil
+}
+
+func (h *SyncHandler) PullTaskNotes(ctx context.Context, req *connect.Request[navigatorsv1.PullTaskNotesRequest]) (*connect.Response[navigatorsv1.PullTaskNotesResponse], error) {
+	companyID, err := extractCompanyID(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	batchSize := req.Msg.GetBatchSize()
+	if batchSize <= 0 {
+		batchSize = 500
+	}
+
+	result, err := h.syncService.PullTaskNotes(ctx, companyID, req.Msg.GetSinceCursor(), batchSize)
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("pull task notes: %w", err))
+	}
+
+	pbNotes := make([]*navigatorsv1.SyncTaskNote, len(result.TaskNotes))
+	for i, n := range result.TaskNotes {
+		pbNotes[i] = &navigatorsv1.SyncTaskNote{
+			Id:         n.ID.String(),
+			CompanyId:  n.CompanyID.String(),
+			TaskId:     n.TaskID.String(),
+			UserId:     n.UserID.String(),
+			Content:    n.Content,
+			Visibility: n.Visibility,
+			CreatedAt:  n.CreatedAt.Format(time.RFC3339),
+		}
+	}
+
+	return connect.NewResponse(&navigatorsv1.PullTaskNotesResponse{
+		TaskNotes:  pbNotes,
+		NextCursor: result.NextCursor,
+		HasMore:    result.HasMore,
+	}), nil
+}
+
 // resolveTurfIDs validates and filters the requested turf IDs against the user's scope.
 // For ScopeAll (admins), it uses whatever IDs the client requested.
 // For ScopeOwn/ScopeTeam, it intersects with the user's allowed turfs.

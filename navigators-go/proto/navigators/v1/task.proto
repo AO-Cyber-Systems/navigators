@@ -1,0 +1,193 @@
+syntax = "proto3";
+
+package navigators.v1;
+
+option go_package = "navigators-go/gen/go/navigators/v1;navigatorsv1";
+
+// TaskService manages tasks, assignments, linking, and notes.
+service TaskService {
+  // CreateTask creates a new task.
+  rpc CreateTask(CreateTaskRequest) returns (CreateTaskResponse);
+
+  // GetTask returns a task by ID.
+  rpc GetTask(GetTaskRequest) returns (GetTaskResponse);
+
+  // ListTasks returns tasks for the user's company (scoped by role).
+  rpc ListTasks(ListTasksRequest) returns (ListTasksResponse);
+
+  // UpdateTaskStatus updates a task's status.
+  rpc UpdateTaskStatus(UpdateTaskStatusRequest) returns (UpdateTaskStatusResponse);
+
+  // DeleteTask deletes a task.
+  rpc DeleteTask(DeleteTaskRequest) returns (DeleteTaskResponse);
+
+  // AssignTask assigns a user to a task.
+  rpc AssignTask(AssignTaskRequest) returns (AssignTaskResponse);
+
+  // UnassignTask removes a user from a task.
+  rpc UnassignTask(UnassignTaskRequest) returns (UnassignTaskResponse);
+
+  // GetTaskAssignments returns all assignments for a task.
+  rpc GetTaskAssignments(GetTaskAssignmentsRequest) returns (GetTaskAssignmentsResponse);
+
+  // LinkTaskVoters adds voter IDs to a contact_list task.
+  rpc LinkTaskVoters(LinkTaskVotersRequest) returns (LinkTaskVotersResponse);
+
+  // CreateTaskNote creates a note on a task.
+  rpc CreateTaskNote(CreateTaskNoteRequest) returns (CreateTaskNoteResponse);
+
+  // ListTaskNotes returns notes for a task.
+  rpc ListTaskNotes(ListTaskNotesRequest) returns (ListTaskNotesResponse);
+}
+
+// --- Messages ---
+
+message Task {
+  string id = 1;
+  string company_id = 2;
+  string title = 3;
+  string description = 4;
+  string task_type = 5;     // contact_list, event, data_entry, custom
+  string priority = 6;      // low, medium, high, urgent
+  string status = 7;        // open, in_progress, completed, cancelled
+  string due_date = 8;      // ISO timestamp, empty if not set
+  string linked_entity_type = 9;  // turf, voter, voter_list
+  string linked_entity_id = 10;
+  int32 progress_pct = 11;
+  int32 total_count = 12;
+  int32 completed_count = 13;
+  string created_by = 14;
+  string created_at = 15;
+  string updated_at = 16;
+}
+
+message TaskAssignment {
+  string id = 1;
+  string task_id = 2;
+  string user_id = 3;
+  string assigned_by = 4;
+  string assigned_at = 5;
+  string user_display_name = 6;
+}
+
+message TaskNote {
+  string id = 1;
+  string company_id = 2;
+  string task_id = 3;
+  string user_id = 4;
+  string content = 5;
+  string visibility = 6;  // team, org
+  string created_at = 7;
+}
+
+// --- CreateTask ---
+
+message CreateTaskRequest {
+  string title = 1;
+  string description = 2;
+  string task_type = 3;
+  string priority = 4;
+  string due_date = 5;
+  string linked_entity_type = 6;
+  string linked_entity_id = 7;
+}
+
+message CreateTaskResponse {
+  Task task = 1;
+}
+
+// --- GetTask ---
+
+message GetTaskRequest {
+  string task_id = 1;
+}
+
+message GetTaskResponse {
+  Task task = 1;
+}
+
+// --- ListTasks ---
+
+message ListTasksRequest {}
+
+message ListTasksResponse {
+  repeated Task tasks = 1;
+}
+
+// --- UpdateTaskStatus ---
+
+message UpdateTaskStatusRequest {
+  string task_id = 1;
+  string status = 2;
+}
+
+message UpdateTaskStatusResponse {}
+
+// --- DeleteTask ---
+
+message DeleteTaskRequest {
+  string task_id = 1;
+}
+
+message DeleteTaskResponse {}
+
+// --- AssignTask ---
+
+message AssignTaskRequest {
+  string task_id = 1;
+  string user_id = 2;
+}
+
+message AssignTaskResponse {}
+
+// --- UnassignTask ---
+
+message UnassignTaskRequest {
+  string task_id = 1;
+  string user_id = 2;
+}
+
+message UnassignTaskResponse {}
+
+// --- GetTaskAssignments ---
+
+message GetTaskAssignmentsRequest {
+  string task_id = 1;
+}
+
+message GetTaskAssignmentsResponse {
+  repeated TaskAssignment assignments = 1;
+}
+
+// --- LinkTaskVoters ---
+
+message LinkTaskVotersRequest {
+  string task_id = 1;
+  repeated string voter_ids = 2;
+}
+
+message LinkTaskVotersResponse {
+  int32 linked_count = 1;
+}
+
+// --- CreateTaskNote ---
+
+message CreateTaskNoteRequest {
+  string task_id = 1;
+  string content = 2;
+  string visibility = 3;  // team, org
+}
+
+message CreateTaskNoteResponse {
+  TaskNote note = 1;
+}
+
+// --- ListTaskNotes ---
+
+message ListTaskNotesRequest {
+  string task_id = 1;
+}
+
+message ListTaskNotesResponse {
+  repeated TaskNote notes = 1;
+}

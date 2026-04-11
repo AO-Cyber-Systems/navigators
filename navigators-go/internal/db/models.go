@@ -337,6 +337,50 @@ type SyncServerCursor struct {
 	LastCursor time.Time `json:"last_cursor"`
 }
 
+type Task struct {
+	ID               uuid.UUID          `json:"id"`
+	CompanyID        uuid.UUID          `json:"company_id"`
+	Title            string             `json:"title"`
+	Description      string             `json:"description"`
+	TaskType         string             `json:"task_type"`
+	Priority         string             `json:"priority"`
+	Status           string             `json:"status"`
+	DueDate          pgtype.Timestamptz `json:"due_date"`
+	LinkedEntityType *string            `json:"linked_entity_type"`
+	LinkedEntityID   pgtype.UUID        `json:"linked_entity_id"`
+	ProgressPct      int32              `json:"progress_pct"`
+	TotalCount       int32              `json:"total_count"`
+	CompletedCount   int32              `json:"completed_count"`
+	CreatedBy        uuid.UUID          `json:"created_by"`
+	CreatedAt        time.Time          `json:"created_at"`
+	UpdatedAt        time.Time          `json:"updated_at"`
+}
+
+type TaskAssignment struct {
+	ID         uuid.UUID `json:"id"`
+	TaskID     uuid.UUID `json:"task_id"`
+	UserID     uuid.UUID `json:"user_id"`
+	AssignedBy uuid.UUID `json:"assigned_by"`
+	AssignedAt time.Time `json:"assigned_at"`
+}
+
+type TaskNote struct {
+	ID         uuid.UUID `json:"id"`
+	CompanyID  uuid.UUID `json:"company_id"`
+	TaskID     uuid.UUID `json:"task_id"`
+	UserID     uuid.UUID `json:"user_id"`
+	Content    string    `json:"content"`
+	Visibility string    `json:"visibility"`
+	CreatedAt  time.Time `json:"created_at"`
+}
+
+type TaskVoter struct {
+	TaskID      uuid.UUID          `json:"task_id"`
+	VoterID     uuid.UUID          `json:"voter_id"`
+	IsContacted bool               `json:"is_contacted"`
+	ContactedAt pgtype.Timestamptz `json:"contacted_at"`
+}
+
 type TeamAssignment struct {
 	ID               uuid.UUID `json:"id"`
 	SuperNavigatorID uuid.UUID `json:"super_navigator_id"`

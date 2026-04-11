@@ -27,6 +27,12 @@ service SyncService {
   // PullCallScripts returns call scripts updated since the given cursor.
   rpc PullCallScripts(PullCallScriptsRequest) returns (PullCallScriptsResponse);
 
+  // PullTasks returns tasks and their assignments updated since the given cursor.
+  rpc PullTasks(PullTasksRequest) returns (PullTasksResponse);
+
+  // PullTaskNotes returns task notes created since the given cursor.
+  rpc PullTaskNotes(PullTaskNotesRequest) returns (PullTaskNotesResponse);
+
   // GetSyncManifest returns the user's turf assignments with metadata for initial sync.
   rpc GetSyncManifest(GetSyncManifestRequest) returns (GetSyncManifestResponse);
 }
@@ -237,4 +243,68 @@ message SyncCallScript {
   bool is_active = 6;
   string created_at = 7;
   string updated_at = 8;
+}
+
+// --- Pull Tasks ---
+
+message PullTasksRequest {
+  string since_cursor = 1;
+  int32 batch_size = 2;
+}
+
+message PullTasksResponse {
+  repeated SyncTask tasks = 1;
+  repeated SyncTaskAssignment task_assignments = 2;
+  string next_cursor = 3;
+  bool has_more = 4;
+}
+
+message SyncTask {
+  string id = 1;
+  string company_id = 2;
+  string title = 3;
+  string description = 4;
+  string task_type = 5;
+  string priority = 6;
+  string status = 7;
+  string due_date = 8;
+  string linked_entity_type = 9;
+  string linked_entity_id = 10;
+  int32 progress_pct = 11;
+  int32 total_count = 12;
+  int32 completed_count = 13;
+  string created_by = 14;
+  string created_at = 15;
+  string updated_at = 16;
+}
+
+message SyncTaskAssignment {
+  string id = 1;
+  string task_id = 2;
+  string user_id = 3;
+  string assigned_by = 4;
+  string assigned_at = 5;
+}
+
+// --- Pull Task Notes ---
+
+message PullTaskNotesRequest {
+  string since_cursor = 1;
+  int32 batch_size = 2;
+}
+
+message PullTaskNotesResponse {
+  repeated SyncTaskNote task_notes = 1;
+  string next_cursor = 2;
+  bool has_more = 3;
+}
+
+message SyncTaskNote {
+  string id = 1;
+  string company_id = 2;
+  string task_id = 3;
+  string user_id = 4;
+  string content = 5;
+  string visibility = 6;
+  string created_at = 7;
 }

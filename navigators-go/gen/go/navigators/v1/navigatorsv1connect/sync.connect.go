@@ -54,6 +54,11 @@ const (
 	// SyncServicePullCallScriptsProcedure is the fully-qualified name of the SyncService's
 	// PullCallScripts RPC.
 	SyncServicePullCallScriptsProcedure = "/navigators.v1.SyncService/PullCallScripts"
+	// SyncServicePullTasksProcedure is the fully-qualified name of the SyncService's PullTasks RPC.
+	SyncServicePullTasksProcedure = "/navigators.v1.SyncService/PullTasks"
+	// SyncServicePullTaskNotesProcedure is the fully-qualified name of the SyncService's PullTaskNotes
+	// RPC.
+	SyncServicePullTaskNotesProcedure = "/navigators.v1.SyncService/PullTaskNotes"
 	// SyncServiceGetSyncManifestProcedure is the fully-qualified name of the SyncService's
 	// GetSyncManifest RPC.
 	SyncServiceGetSyncManifestProcedure = "/navigators.v1.SyncService/GetSyncManifest"
@@ -75,6 +80,10 @@ type SyncServiceClient interface {
 	PullVoterNotes(context.Context, *connect.Request[v1.PullVoterNotesRequest]) (*connect.Response[v1.PullVoterNotesResponse], error)
 	// PullCallScripts returns call scripts updated since the given cursor.
 	PullCallScripts(context.Context, *connect.Request[v1.PullCallScriptsRequest]) (*connect.Response[v1.PullCallScriptsResponse], error)
+	// PullTasks returns tasks and their assignments updated since the given cursor.
+	PullTasks(context.Context, *connect.Request[v1.PullTasksRequest]) (*connect.Response[v1.PullTasksResponse], error)
+	// PullTaskNotes returns task notes created since the given cursor.
+	PullTaskNotes(context.Context, *connect.Request[v1.PullTaskNotesRequest]) (*connect.Response[v1.PullTaskNotesResponse], error)
 	// GetSyncManifest returns the user's turf assignments with metadata for initial sync.
 	GetSyncManifest(context.Context, *connect.Request[v1.GetSyncManifestRequest]) (*connect.Response[v1.GetSyncManifestResponse], error)
 }
@@ -132,6 +141,18 @@ func NewSyncServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(syncServiceMethods.ByName("PullCallScripts")),
 			connect.WithClientOptions(opts...),
 		),
+		pullTasks: connect.NewClient[v1.PullTasksRequest, v1.PullTasksResponse](
+			httpClient,
+			baseURL+SyncServicePullTasksProcedure,
+			connect.WithSchema(syncServiceMethods.ByName("PullTasks")),
+			connect.WithClientOptions(opts...),
+		),
+		pullTaskNotes: connect.NewClient[v1.PullTaskNotesRequest, v1.PullTaskNotesResponse](
+			httpClient,
+			baseURL+SyncServicePullTaskNotesProcedure,
+			connect.WithSchema(syncServiceMethods.ByName("PullTaskNotes")),
+			connect.WithClientOptions(opts...),
+		),
 		getSyncManifest: connect.NewClient[v1.GetSyncManifestRequest, v1.GetSyncManifestResponse](
 			httpClient,
 			baseURL+SyncServiceGetSyncManifestProcedure,
@@ -150,6 +171,8 @@ type syncServiceClient struct {
 	pullSurveyResponses *connect.Client[v1.PullSurveyResponsesRequest, v1.PullSurveyResponsesResponse]
 	pullVoterNotes      *connect.Client[v1.PullVoterNotesRequest, v1.PullVoterNotesResponse]
 	pullCallScripts     *connect.Client[v1.PullCallScriptsRequest, v1.PullCallScriptsResponse]
+	pullTasks           *connect.Client[v1.PullTasksRequest, v1.PullTasksResponse]
+	pullTaskNotes       *connect.Client[v1.PullTaskNotesRequest, v1.PullTaskNotesResponse]
 	getSyncManifest     *connect.Client[v1.GetSyncManifestRequest, v1.GetSyncManifestResponse]
 }
 
@@ -188,6 +211,16 @@ func (c *syncServiceClient) PullCallScripts(ctx context.Context, req *connect.Re
 	return c.pullCallScripts.CallUnary(ctx, req)
 }
 
+// PullTasks calls navigators.v1.SyncService.PullTasks.
+func (c *syncServiceClient) PullTasks(ctx context.Context, req *connect.Request[v1.PullTasksRequest]) (*connect.Response[v1.PullTasksResponse], error) {
+	return c.pullTasks.CallUnary(ctx, req)
+}
+
+// PullTaskNotes calls navigators.v1.SyncService.PullTaskNotes.
+func (c *syncServiceClient) PullTaskNotes(ctx context.Context, req *connect.Request[v1.PullTaskNotesRequest]) (*connect.Response[v1.PullTaskNotesResponse], error) {
+	return c.pullTaskNotes.CallUnary(ctx, req)
+}
+
 // GetSyncManifest calls navigators.v1.SyncService.GetSyncManifest.
 func (c *syncServiceClient) GetSyncManifest(ctx context.Context, req *connect.Request[v1.GetSyncManifestRequest]) (*connect.Response[v1.GetSyncManifestResponse], error) {
 	return c.getSyncManifest.CallUnary(ctx, req)
@@ -209,6 +242,10 @@ type SyncServiceHandler interface {
 	PullVoterNotes(context.Context, *connect.Request[v1.PullVoterNotesRequest]) (*connect.Response[v1.PullVoterNotesResponse], error)
 	// PullCallScripts returns call scripts updated since the given cursor.
 	PullCallScripts(context.Context, *connect.Request[v1.PullCallScriptsRequest]) (*connect.Response[v1.PullCallScriptsResponse], error)
+	// PullTasks returns tasks and their assignments updated since the given cursor.
+	PullTasks(context.Context, *connect.Request[v1.PullTasksRequest]) (*connect.Response[v1.PullTasksResponse], error)
+	// PullTaskNotes returns task notes created since the given cursor.
+	PullTaskNotes(context.Context, *connect.Request[v1.PullTaskNotesRequest]) (*connect.Response[v1.PullTaskNotesResponse], error)
 	// GetSyncManifest returns the user's turf assignments with metadata for initial sync.
 	GetSyncManifest(context.Context, *connect.Request[v1.GetSyncManifestRequest]) (*connect.Response[v1.GetSyncManifestResponse], error)
 }
@@ -262,6 +299,18 @@ func NewSyncServiceHandler(svc SyncServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(syncServiceMethods.ByName("PullCallScripts")),
 		connect.WithHandlerOptions(opts...),
 	)
+	syncServicePullTasksHandler := connect.NewUnaryHandler(
+		SyncServicePullTasksProcedure,
+		svc.PullTasks,
+		connect.WithSchema(syncServiceMethods.ByName("PullTasks")),
+		connect.WithHandlerOptions(opts...),
+	)
+	syncServicePullTaskNotesHandler := connect.NewUnaryHandler(
+		SyncServicePullTaskNotesProcedure,
+		svc.PullTaskNotes,
+		connect.WithSchema(syncServiceMethods.ByName("PullTaskNotes")),
+		connect.WithHandlerOptions(opts...),
+	)
 	syncServiceGetSyncManifestHandler := connect.NewUnaryHandler(
 		SyncServiceGetSyncManifestProcedure,
 		svc.GetSyncManifest,
@@ -284,6 +333,10 @@ func NewSyncServiceHandler(svc SyncServiceHandler, opts ...connect.HandlerOption
 			syncServicePullVoterNotesHandler.ServeHTTP(w, r)
 		case SyncServicePullCallScriptsProcedure:
 			syncServicePullCallScriptsHandler.ServeHTTP(w, r)
+		case SyncServicePullTasksProcedure:
+			syncServicePullTasksHandler.ServeHTTP(w, r)
+		case SyncServicePullTaskNotesProcedure:
+			syncServicePullTaskNotesHandler.ServeHTTP(w, r)
 		case SyncServiceGetSyncManifestProcedure:
 			syncServiceGetSyncManifestHandler.ServeHTTP(w, r)
 		default:
@@ -321,6 +374,14 @@ func (UnimplementedSyncServiceHandler) PullVoterNotes(context.Context, *connect.
 
 func (UnimplementedSyncServiceHandler) PullCallScripts(context.Context, *connect.Request[v1.PullCallScriptsRequest]) (*connect.Response[v1.PullCallScriptsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SyncService.PullCallScripts is not implemented"))
+}
+
+func (UnimplementedSyncServiceHandler) PullTasks(context.Context, *connect.Request[v1.PullTasksRequest]) (*connect.Response[v1.PullTasksResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SyncService.PullTasks is not implemented"))
+}
+
+func (UnimplementedSyncServiceHandler) PullTaskNotes(context.Context, *connect.Request[v1.PullTaskNotesRequest]) (*connect.Response[v1.PullTaskNotesResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.SyncService.PullTaskNotes is not implemented"))
 }
 
 func (UnimplementedSyncServiceHandler) GetSyncManifest(context.Context, *connect.Request[v1.GetSyncManifestRequest]) (*connect.Response[v1.GetSyncManifestResponse], error) {

@@ -17,6 +17,7 @@ const (
 	FeatureNotes   rbac.Feature = "notes"
 	FeatureSMS         rbac.Feature = "sms"
 	FeatureCallScripts rbac.Feature = "call_scripts"
+	FeatureTasks       rbac.Feature = "tasks"
 )
 
 // NavigatorsPermissionMatrix returns the RBAC permission matrix for the Navigators app.
@@ -81,6 +82,12 @@ func NavigatorsPermissionMatrix() rbac.PermissionMatrix {
 			"view":   rbac.RoleLevelMember, // Navigator (40)
 			"create": rbac.RoleLevelAdmin,  // Admin (80)
 			"admin":  rbac.RoleLevelAdmin,  // Admin (80)
+		},
+		FeatureTasks: {
+			"view":   rbac.RoleLevelMember,  // Navigator (40)
+			"create": rbac.RoleLevelManager, // Super Navigator (60)
+			"assign": rbac.RoleLevelManager, // Super Navigator (60)
+			"admin":  rbac.RoleLevelAdmin,   // Admin (80)
 		},
 	}
 }
@@ -177,6 +184,23 @@ func NavigatorsProcedurePermissions() map[string]server.Permission {
 		// 10DLC status (Admin only)
 		"/navigators.v1.SMSService/Get10DLCStatus":    {Feature: "sms", Action: "config"},
 		"/navigators.v1.SMSService/Update10DLCStatus": {Feature: "sms", Action: "config"},
+
+		// Task management
+		"/navigators.v1.TaskService/CreateTask":         {Feature: "tasks", Action: "create"},
+		"/navigators.v1.TaskService/GetTask":             {Feature: "tasks", Action: "view"},
+		"/navigators.v1.TaskService/ListTasks":            {Feature: "tasks", Action: "view"},
+		"/navigators.v1.TaskService/UpdateTaskStatus":     {Feature: "tasks", Action: "create"},
+		"/navigators.v1.TaskService/DeleteTask":            {Feature: "tasks", Action: "admin"},
+		"/navigators.v1.TaskService/AssignTask":            {Feature: "tasks", Action: "assign"},
+		"/navigators.v1.TaskService/UnassignTask":          {Feature: "tasks", Action: "assign"},
+		"/navigators.v1.TaskService/GetTaskAssignments":    {Feature: "tasks", Action: "view"},
+		"/navigators.v1.TaskService/LinkTaskVoters":        {Feature: "tasks", Action: "create"},
+		"/navigators.v1.TaskService/CreateTaskNote":        {Feature: "tasks", Action: "view"},
+		"/navigators.v1.TaskService/ListTaskNotes":         {Feature: "tasks", Action: "view"},
+
+		// Task sync
+		"/navigators.v1.SyncService/PullTasks":     {Feature: "sync", Action: "pull"},
+		"/navigators.v1.SyncService/PullTaskNotes": {Feature: "sync", Action: "pull"},
 	}
 }
 

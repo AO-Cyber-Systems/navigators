@@ -1851,6 +1851,570 @@ func (x *SyncCallScript) GetUpdatedAt() string {
 	return ""
 }
 
+type PullTasksRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SinceCursor   string                 `protobuf:"bytes,1,opt,name=since_cursor,json=sinceCursor,proto3" json:"since_cursor,omitempty"`
+	BatchSize     int32                  `protobuf:"varint,2,opt,name=batch_size,json=batchSize,proto3" json:"batch_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PullTasksRequest) Reset() {
+	*x = PullTasksRequest{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PullTasksRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PullTasksRequest) ProtoMessage() {}
+
+func (x *PullTasksRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PullTasksRequest.ProtoReflect.Descriptor instead.
+func (*PullTasksRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *PullTasksRequest) GetSinceCursor() string {
+	if x != nil {
+		return x.SinceCursor
+	}
+	return ""
+}
+
+func (x *PullTasksRequest) GetBatchSize() int32 {
+	if x != nil {
+		return x.BatchSize
+	}
+	return 0
+}
+
+type PullTasksResponse struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Tasks           []*SyncTask            `protobuf:"bytes,1,rep,name=tasks,proto3" json:"tasks,omitempty"`
+	TaskAssignments []*SyncTaskAssignment  `protobuf:"bytes,2,rep,name=task_assignments,json=taskAssignments,proto3" json:"task_assignments,omitempty"`
+	NextCursor      string                 `protobuf:"bytes,3,opt,name=next_cursor,json=nextCursor,proto3" json:"next_cursor,omitempty"`
+	HasMore         bool                   `protobuf:"varint,4,opt,name=has_more,json=hasMore,proto3" json:"has_more,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *PullTasksResponse) Reset() {
+	*x = PullTasksResponse{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PullTasksResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PullTasksResponse) ProtoMessage() {}
+
+func (x *PullTasksResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PullTasksResponse.ProtoReflect.Descriptor instead.
+func (*PullTasksResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *PullTasksResponse) GetTasks() []*SyncTask {
+	if x != nil {
+		return x.Tasks
+	}
+	return nil
+}
+
+func (x *PullTasksResponse) GetTaskAssignments() []*SyncTaskAssignment {
+	if x != nil {
+		return x.TaskAssignments
+	}
+	return nil
+}
+
+func (x *PullTasksResponse) GetNextCursor() string {
+	if x != nil {
+		return x.NextCursor
+	}
+	return ""
+}
+
+func (x *PullTasksResponse) GetHasMore() bool {
+	if x != nil {
+		return x.HasMore
+	}
+	return false
+}
+
+type SyncTask struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	Id               string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	CompanyId        string                 `protobuf:"bytes,2,opt,name=company_id,json=companyId,proto3" json:"company_id,omitempty"`
+	Title            string                 `protobuf:"bytes,3,opt,name=title,proto3" json:"title,omitempty"`
+	Description      string                 `protobuf:"bytes,4,opt,name=description,proto3" json:"description,omitempty"`
+	TaskType         string                 `protobuf:"bytes,5,opt,name=task_type,json=taskType,proto3" json:"task_type,omitempty"`
+	Priority         string                 `protobuf:"bytes,6,opt,name=priority,proto3" json:"priority,omitempty"`
+	Status           string                 `protobuf:"bytes,7,opt,name=status,proto3" json:"status,omitempty"`
+	DueDate          string                 `protobuf:"bytes,8,opt,name=due_date,json=dueDate,proto3" json:"due_date,omitempty"`
+	LinkedEntityType string                 `protobuf:"bytes,9,opt,name=linked_entity_type,json=linkedEntityType,proto3" json:"linked_entity_type,omitempty"`
+	LinkedEntityId   string                 `protobuf:"bytes,10,opt,name=linked_entity_id,json=linkedEntityId,proto3" json:"linked_entity_id,omitempty"`
+	ProgressPct      int32                  `protobuf:"varint,11,opt,name=progress_pct,json=progressPct,proto3" json:"progress_pct,omitempty"`
+	TotalCount       int32                  `protobuf:"varint,12,opt,name=total_count,json=totalCount,proto3" json:"total_count,omitempty"`
+	CompletedCount   int32                  `protobuf:"varint,13,opt,name=completed_count,json=completedCount,proto3" json:"completed_count,omitempty"`
+	CreatedBy        string                 `protobuf:"bytes,14,opt,name=created_by,json=createdBy,proto3" json:"created_by,omitempty"`
+	CreatedAt        string                 `protobuf:"bytes,15,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt        string                 `protobuf:"bytes,16,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *SyncTask) Reset() {
+	*x = SyncTask{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[27]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SyncTask) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SyncTask) ProtoMessage() {}
+
+func (x *SyncTask) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[27]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SyncTask.ProtoReflect.Descriptor instead.
+func (*SyncTask) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *SyncTask) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *SyncTask) GetCompanyId() string {
+	if x != nil {
+		return x.CompanyId
+	}
+	return ""
+}
+
+func (x *SyncTask) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *SyncTask) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *SyncTask) GetTaskType() string {
+	if x != nil {
+		return x.TaskType
+	}
+	return ""
+}
+
+func (x *SyncTask) GetPriority() string {
+	if x != nil {
+		return x.Priority
+	}
+	return ""
+}
+
+func (x *SyncTask) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+func (x *SyncTask) GetDueDate() string {
+	if x != nil {
+		return x.DueDate
+	}
+	return ""
+}
+
+func (x *SyncTask) GetLinkedEntityType() string {
+	if x != nil {
+		return x.LinkedEntityType
+	}
+	return ""
+}
+
+func (x *SyncTask) GetLinkedEntityId() string {
+	if x != nil {
+		return x.LinkedEntityId
+	}
+	return ""
+}
+
+func (x *SyncTask) GetProgressPct() int32 {
+	if x != nil {
+		return x.ProgressPct
+	}
+	return 0
+}
+
+func (x *SyncTask) GetTotalCount() int32 {
+	if x != nil {
+		return x.TotalCount
+	}
+	return 0
+}
+
+func (x *SyncTask) GetCompletedCount() int32 {
+	if x != nil {
+		return x.CompletedCount
+	}
+	return 0
+}
+
+func (x *SyncTask) GetCreatedBy() string {
+	if x != nil {
+		return x.CreatedBy
+	}
+	return ""
+}
+
+func (x *SyncTask) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
+func (x *SyncTask) GetUpdatedAt() string {
+	if x != nil {
+		return x.UpdatedAt
+	}
+	return ""
+}
+
+type SyncTaskAssignment struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	TaskId        string                 `protobuf:"bytes,2,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"`
+	UserId        string                 `protobuf:"bytes,3,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	AssignedBy    string                 `protobuf:"bytes,4,opt,name=assigned_by,json=assignedBy,proto3" json:"assigned_by,omitempty"`
+	AssignedAt    string                 `protobuf:"bytes,5,opt,name=assigned_at,json=assignedAt,proto3" json:"assigned_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SyncTaskAssignment) Reset() {
+	*x = SyncTaskAssignment{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[28]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SyncTaskAssignment) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SyncTaskAssignment) ProtoMessage() {}
+
+func (x *SyncTaskAssignment) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[28]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SyncTaskAssignment.ProtoReflect.Descriptor instead.
+func (*SyncTaskAssignment) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{28}
+}
+
+func (x *SyncTaskAssignment) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *SyncTaskAssignment) GetTaskId() string {
+	if x != nil {
+		return x.TaskId
+	}
+	return ""
+}
+
+func (x *SyncTaskAssignment) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *SyncTaskAssignment) GetAssignedBy() string {
+	if x != nil {
+		return x.AssignedBy
+	}
+	return ""
+}
+
+func (x *SyncTaskAssignment) GetAssignedAt() string {
+	if x != nil {
+		return x.AssignedAt
+	}
+	return ""
+}
+
+type PullTaskNotesRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	SinceCursor   string                 `protobuf:"bytes,1,opt,name=since_cursor,json=sinceCursor,proto3" json:"since_cursor,omitempty"`
+	BatchSize     int32                  `protobuf:"varint,2,opt,name=batch_size,json=batchSize,proto3" json:"batch_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PullTaskNotesRequest) Reset() {
+	*x = PullTaskNotesRequest{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[29]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PullTaskNotesRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PullTaskNotesRequest) ProtoMessage() {}
+
+func (x *PullTaskNotesRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[29]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PullTaskNotesRequest.ProtoReflect.Descriptor instead.
+func (*PullTaskNotesRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{29}
+}
+
+func (x *PullTaskNotesRequest) GetSinceCursor() string {
+	if x != nil {
+		return x.SinceCursor
+	}
+	return ""
+}
+
+func (x *PullTaskNotesRequest) GetBatchSize() int32 {
+	if x != nil {
+		return x.BatchSize
+	}
+	return 0
+}
+
+type PullTaskNotesResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TaskNotes     []*SyncTaskNote        `protobuf:"bytes,1,rep,name=task_notes,json=taskNotes,proto3" json:"task_notes,omitempty"`
+	NextCursor    string                 `protobuf:"bytes,2,opt,name=next_cursor,json=nextCursor,proto3" json:"next_cursor,omitempty"`
+	HasMore       bool                   `protobuf:"varint,3,opt,name=has_more,json=hasMore,proto3" json:"has_more,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *PullTaskNotesResponse) Reset() {
+	*x = PullTaskNotesResponse{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[30]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *PullTaskNotesResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*PullTaskNotesResponse) ProtoMessage() {}
+
+func (x *PullTaskNotesResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[30]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use PullTaskNotesResponse.ProtoReflect.Descriptor instead.
+func (*PullTaskNotesResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{30}
+}
+
+func (x *PullTaskNotesResponse) GetTaskNotes() []*SyncTaskNote {
+	if x != nil {
+		return x.TaskNotes
+	}
+	return nil
+}
+
+func (x *PullTaskNotesResponse) GetNextCursor() string {
+	if x != nil {
+		return x.NextCursor
+	}
+	return ""
+}
+
+func (x *PullTaskNotesResponse) GetHasMore() bool {
+	if x != nil {
+		return x.HasMore
+	}
+	return false
+}
+
+type SyncTaskNote struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	CompanyId     string                 `protobuf:"bytes,2,opt,name=company_id,json=companyId,proto3" json:"company_id,omitempty"`
+	TaskId        string                 `protobuf:"bytes,3,opt,name=task_id,json=taskId,proto3" json:"task_id,omitempty"`
+	UserId        string                 `protobuf:"bytes,4,opt,name=user_id,json=userId,proto3" json:"user_id,omitempty"`
+	Content       string                 `protobuf:"bytes,5,opt,name=content,proto3" json:"content,omitempty"`
+	Visibility    string                 `protobuf:"bytes,6,opt,name=visibility,proto3" json:"visibility,omitempty"`
+	CreatedAt     string                 `protobuf:"bytes,7,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *SyncTaskNote) Reset() {
+	*x = SyncTaskNote{}
+	mi := &file_navigators_v1_sync_proto_msgTypes[31]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *SyncTaskNote) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*SyncTaskNote) ProtoMessage() {}
+
+func (x *SyncTaskNote) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_sync_proto_msgTypes[31]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use SyncTaskNote.ProtoReflect.Descriptor instead.
+func (*SyncTaskNote) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_sync_proto_rawDescGZIP(), []int{31}
+}
+
+func (x *SyncTaskNote) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *SyncTaskNote) GetCompanyId() string {
+	if x != nil {
+		return x.CompanyId
+	}
+	return ""
+}
+
+func (x *SyncTaskNote) GetTaskId() string {
+	if x != nil {
+		return x.TaskId
+	}
+	return ""
+}
+
+func (x *SyncTaskNote) GetUserId() string {
+	if x != nil {
+		return x.UserId
+	}
+	return ""
+}
+
+func (x *SyncTaskNote) GetContent() string {
+	if x != nil {
+		return x.Content
+	}
+	return ""
+}
+
+func (x *SyncTaskNote) GetVisibility() string {
+	if x != nil {
+		return x.Visibility
+	}
+	return ""
+}
+
+func (x *SyncTaskNote) GetCreatedAt() string {
+	if x != nil {
+		return x.CreatedAt
+	}
+	return ""
+}
+
 var File_navigators_v1_sync_proto protoreflect.FileDescriptor
 
 const file_navigators_v1_sync_proto_rawDesc = "" +
@@ -2031,7 +2595,70 @@ const file_navigators_v1_sync_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\a \x01(\tR\tcreatedAt\x12\x1d\n" +
 	"\n" +
-	"updated_at\x18\b \x01(\tR\tupdatedAt2\xa3\x06\n" +
+	"updated_at\x18\b \x01(\tR\tupdatedAt\"T\n" +
+	"\x10PullTasksRequest\x12!\n" +
+	"\fsince_cursor\x18\x01 \x01(\tR\vsinceCursor\x12\x1d\n" +
+	"\n" +
+	"batch_size\x18\x02 \x01(\x05R\tbatchSize\"\xcc\x01\n" +
+	"\x11PullTasksResponse\x12-\n" +
+	"\x05tasks\x18\x01 \x03(\v2\x17.navigators.v1.SyncTaskR\x05tasks\x12L\n" +
+	"\x10task_assignments\x18\x02 \x03(\v2!.navigators.v1.SyncTaskAssignmentR\x0ftaskAssignments\x12\x1f\n" +
+	"\vnext_cursor\x18\x03 \x01(\tR\n" +
+	"nextCursor\x12\x19\n" +
+	"\bhas_more\x18\x04 \x01(\bR\ahasMore\"\xff\x03\n" +
+	"\bSyncTask\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
+	"\n" +
+	"company_id\x18\x02 \x01(\tR\tcompanyId\x12\x14\n" +
+	"\x05title\x18\x03 \x01(\tR\x05title\x12 \n" +
+	"\vdescription\x18\x04 \x01(\tR\vdescription\x12\x1b\n" +
+	"\ttask_type\x18\x05 \x01(\tR\btaskType\x12\x1a\n" +
+	"\bpriority\x18\x06 \x01(\tR\bpriority\x12\x16\n" +
+	"\x06status\x18\a \x01(\tR\x06status\x12\x19\n" +
+	"\bdue_date\x18\b \x01(\tR\adueDate\x12,\n" +
+	"\x12linked_entity_type\x18\t \x01(\tR\x10linkedEntityType\x12(\n" +
+	"\x10linked_entity_id\x18\n" +
+	" \x01(\tR\x0elinkedEntityId\x12!\n" +
+	"\fprogress_pct\x18\v \x01(\x05R\vprogressPct\x12\x1f\n" +
+	"\vtotal_count\x18\f \x01(\x05R\n" +
+	"totalCount\x12'\n" +
+	"\x0fcompleted_count\x18\r \x01(\x05R\x0ecompletedCount\x12\x1d\n" +
+	"\n" +
+	"created_by\x18\x0e \x01(\tR\tcreatedBy\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\x0f \x01(\tR\tcreatedAt\x12\x1d\n" +
+	"\n" +
+	"updated_at\x18\x10 \x01(\tR\tupdatedAt\"\x98\x01\n" +
+	"\x12SyncTaskAssignment\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x17\n" +
+	"\atask_id\x18\x02 \x01(\tR\x06taskId\x12\x17\n" +
+	"\auser_id\x18\x03 \x01(\tR\x06userId\x12\x1f\n" +
+	"\vassigned_by\x18\x04 \x01(\tR\n" +
+	"assignedBy\x12\x1f\n" +
+	"\vassigned_at\x18\x05 \x01(\tR\n" +
+	"assignedAt\"X\n" +
+	"\x14PullTaskNotesRequest\x12!\n" +
+	"\fsince_cursor\x18\x01 \x01(\tR\vsinceCursor\x12\x1d\n" +
+	"\n" +
+	"batch_size\x18\x02 \x01(\x05R\tbatchSize\"\x8f\x01\n" +
+	"\x15PullTaskNotesResponse\x12:\n" +
+	"\n" +
+	"task_notes\x18\x01 \x03(\v2\x1b.navigators.v1.SyncTaskNoteR\ttaskNotes\x12\x1f\n" +
+	"\vnext_cursor\x18\x02 \x01(\tR\n" +
+	"nextCursor\x12\x19\n" +
+	"\bhas_more\x18\x03 \x01(\bR\ahasMore\"\xc8\x01\n" +
+	"\fSyncTaskNote\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x1d\n" +
+	"\n" +
+	"company_id\x18\x02 \x01(\tR\tcompanyId\x12\x17\n" +
+	"\atask_id\x18\x03 \x01(\tR\x06taskId\x12\x17\n" +
+	"\auser_id\x18\x04 \x01(\tR\x06userId\x12\x18\n" +
+	"\acontent\x18\x05 \x01(\tR\acontent\x12\x1e\n" +
+	"\n" +
+	"visibility\x18\x06 \x01(\tR\n" +
+	"visibility\x12\x1d\n" +
+	"\n" +
+	"created_at\x18\a \x01(\tR\tcreatedAt2\xcf\a\n" +
 	"\vSyncService\x12c\n" +
 	"\x10PullVoterUpdates\x12&.navigators.v1.PullVoterUpdatesRequest\x1a'.navigators.v1.PullVoterUpdatesResponse\x12`\n" +
 	"\x0fPullContactLogs\x12%.navigators.v1.PullContactLogsRequest\x1a&.navigators.v1.PullContactLogsResponse\x12Z\n" +
@@ -2039,7 +2666,9 @@ const file_navigators_v1_sync_proto_rawDesc = "" +
 	"\x0fPullSurveyForms\x12%.navigators.v1.PullSurveyFormsRequest\x1a&.navigators.v1.PullSurveyFormsResponse\x12l\n" +
 	"\x13PullSurveyResponses\x12).navigators.v1.PullSurveyResponsesRequest\x1a*.navigators.v1.PullSurveyResponsesResponse\x12]\n" +
 	"\x0ePullVoterNotes\x12$.navigators.v1.PullVoterNotesRequest\x1a%.navigators.v1.PullVoterNotesResponse\x12`\n" +
-	"\x0fPullCallScripts\x12%.navigators.v1.PullCallScriptsRequest\x1a&.navigators.v1.PullCallScriptsResponse\x12`\n" +
+	"\x0fPullCallScripts\x12%.navigators.v1.PullCallScriptsRequest\x1a&.navigators.v1.PullCallScriptsResponse\x12N\n" +
+	"\tPullTasks\x12\x1f.navigators.v1.PullTasksRequest\x1a .navigators.v1.PullTasksResponse\x12Z\n" +
+	"\rPullTaskNotes\x12#.navigators.v1.PullTaskNotesRequest\x1a$.navigators.v1.PullTaskNotesResponse\x12`\n" +
 	"\x0fGetSyncManifest\x12%.navigators.v1.GetSyncManifestRequest\x1a&.navigators.v1.GetSyncManifestResponseB1Z/navigators-go/gen/go/navigators/v1;navigatorsv1b\x06proto3"
 
 var (
@@ -2054,7 +2683,7 @@ func file_navigators_v1_sync_proto_rawDescGZIP() []byte {
 	return file_navigators_v1_sync_proto_rawDescData
 }
 
-var file_navigators_v1_sync_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
+var file_navigators_v1_sync_proto_msgTypes = make([]protoimpl.MessageInfo, 32)
 var file_navigators_v1_sync_proto_goTypes = []any{
 	(*PullVoterUpdatesRequest)(nil),     // 0: navigators.v1.PullVoterUpdatesRequest
 	(*PullVoterUpdatesResponse)(nil),    // 1: navigators.v1.PullVoterUpdatesResponse
@@ -2081,6 +2710,13 @@ var file_navigators_v1_sync_proto_goTypes = []any{
 	(*PullCallScriptsRequest)(nil),      // 22: navigators.v1.PullCallScriptsRequest
 	(*PullCallScriptsResponse)(nil),     // 23: navigators.v1.PullCallScriptsResponse
 	(*SyncCallScript)(nil),              // 24: navigators.v1.SyncCallScript
+	(*PullTasksRequest)(nil),            // 25: navigators.v1.PullTasksRequest
+	(*PullTasksResponse)(nil),           // 26: navigators.v1.PullTasksResponse
+	(*SyncTask)(nil),                    // 27: navigators.v1.SyncTask
+	(*SyncTaskAssignment)(nil),          // 28: navigators.v1.SyncTaskAssignment
+	(*PullTaskNotesRequest)(nil),        // 29: navigators.v1.PullTaskNotesRequest
+	(*PullTaskNotesResponse)(nil),       // 30: navigators.v1.PullTaskNotesResponse
+	(*SyncTaskNote)(nil),                // 31: navigators.v1.SyncTaskNote
 }
 var file_navigators_v1_sync_proto_depIdxs = []int32{
 	2,  // 0: navigators.v1.PullVoterUpdatesResponse.voters:type_name -> navigators.v1.SyncVoter
@@ -2092,27 +2728,34 @@ var file_navigators_v1_sync_proto_depIdxs = []int32{
 	18, // 6: navigators.v1.PullSurveyResponsesResponse.survey_responses:type_name -> navigators.v1.SyncSurveyResponse
 	21, // 7: navigators.v1.PullVoterNotesResponse.voter_notes:type_name -> navigators.v1.SyncVoterNote
 	24, // 8: navigators.v1.PullCallScriptsResponse.call_scripts:type_name -> navigators.v1.SyncCallScript
-	0,  // 9: navigators.v1.SyncService.PullVoterUpdates:input_type -> navigators.v1.PullVoterUpdatesRequest
-	3,  // 10: navigators.v1.SyncService.PullContactLogs:input_type -> navigators.v1.PullContactLogsRequest
-	6,  // 11: navigators.v1.SyncService.PushSyncBatch:input_type -> navigators.v1.PushSyncBatchRequest
-	13, // 12: navigators.v1.SyncService.PullSurveyForms:input_type -> navigators.v1.PullSurveyFormsRequest
-	16, // 13: navigators.v1.SyncService.PullSurveyResponses:input_type -> navigators.v1.PullSurveyResponsesRequest
-	19, // 14: navigators.v1.SyncService.PullVoterNotes:input_type -> navigators.v1.PullVoterNotesRequest
-	22, // 15: navigators.v1.SyncService.PullCallScripts:input_type -> navigators.v1.PullCallScriptsRequest
-	10, // 16: navigators.v1.SyncService.GetSyncManifest:input_type -> navigators.v1.GetSyncManifestRequest
-	1,  // 17: navigators.v1.SyncService.PullVoterUpdates:output_type -> navigators.v1.PullVoterUpdatesResponse
-	4,  // 18: navigators.v1.SyncService.PullContactLogs:output_type -> navigators.v1.PullContactLogsResponse
-	7,  // 19: navigators.v1.SyncService.PushSyncBatch:output_type -> navigators.v1.PushSyncBatchResponse
-	14, // 20: navigators.v1.SyncService.PullSurveyForms:output_type -> navigators.v1.PullSurveyFormsResponse
-	17, // 21: navigators.v1.SyncService.PullSurveyResponses:output_type -> navigators.v1.PullSurveyResponsesResponse
-	20, // 22: navigators.v1.SyncService.PullVoterNotes:output_type -> navigators.v1.PullVoterNotesResponse
-	23, // 23: navigators.v1.SyncService.PullCallScripts:output_type -> navigators.v1.PullCallScriptsResponse
-	11, // 24: navigators.v1.SyncService.GetSyncManifest:output_type -> navigators.v1.GetSyncManifestResponse
-	17, // [17:25] is the sub-list for method output_type
-	9,  // [9:17] is the sub-list for method input_type
-	9,  // [9:9] is the sub-list for extension type_name
-	9,  // [9:9] is the sub-list for extension extendee
-	0,  // [0:9] is the sub-list for field type_name
+	27, // 9: navigators.v1.PullTasksResponse.tasks:type_name -> navigators.v1.SyncTask
+	28, // 10: navigators.v1.PullTasksResponse.task_assignments:type_name -> navigators.v1.SyncTaskAssignment
+	31, // 11: navigators.v1.PullTaskNotesResponse.task_notes:type_name -> navigators.v1.SyncTaskNote
+	0,  // 12: navigators.v1.SyncService.PullVoterUpdates:input_type -> navigators.v1.PullVoterUpdatesRequest
+	3,  // 13: navigators.v1.SyncService.PullContactLogs:input_type -> navigators.v1.PullContactLogsRequest
+	6,  // 14: navigators.v1.SyncService.PushSyncBatch:input_type -> navigators.v1.PushSyncBatchRequest
+	13, // 15: navigators.v1.SyncService.PullSurveyForms:input_type -> navigators.v1.PullSurveyFormsRequest
+	16, // 16: navigators.v1.SyncService.PullSurveyResponses:input_type -> navigators.v1.PullSurveyResponsesRequest
+	19, // 17: navigators.v1.SyncService.PullVoterNotes:input_type -> navigators.v1.PullVoterNotesRequest
+	22, // 18: navigators.v1.SyncService.PullCallScripts:input_type -> navigators.v1.PullCallScriptsRequest
+	25, // 19: navigators.v1.SyncService.PullTasks:input_type -> navigators.v1.PullTasksRequest
+	29, // 20: navigators.v1.SyncService.PullTaskNotes:input_type -> navigators.v1.PullTaskNotesRequest
+	10, // 21: navigators.v1.SyncService.GetSyncManifest:input_type -> navigators.v1.GetSyncManifestRequest
+	1,  // 22: navigators.v1.SyncService.PullVoterUpdates:output_type -> navigators.v1.PullVoterUpdatesResponse
+	4,  // 23: navigators.v1.SyncService.PullContactLogs:output_type -> navigators.v1.PullContactLogsResponse
+	7,  // 24: navigators.v1.SyncService.PushSyncBatch:output_type -> navigators.v1.PushSyncBatchResponse
+	14, // 25: navigators.v1.SyncService.PullSurveyForms:output_type -> navigators.v1.PullSurveyFormsResponse
+	17, // 26: navigators.v1.SyncService.PullSurveyResponses:output_type -> navigators.v1.PullSurveyResponsesResponse
+	20, // 27: navigators.v1.SyncService.PullVoterNotes:output_type -> navigators.v1.PullVoterNotesResponse
+	23, // 28: navigators.v1.SyncService.PullCallScripts:output_type -> navigators.v1.PullCallScriptsResponse
+	26, // 29: navigators.v1.SyncService.PullTasks:output_type -> navigators.v1.PullTasksResponse
+	30, // 30: navigators.v1.SyncService.PullTaskNotes:output_type -> navigators.v1.PullTaskNotesResponse
+	11, // 31: navigators.v1.SyncService.GetSyncManifest:output_type -> navigators.v1.GetSyncManifestResponse
+	22, // [22:32] is the sub-list for method output_type
+	12, // [12:22] is the sub-list for method input_type
+	12, // [12:12] is the sub-list for extension type_name
+	12, // [12:12] is the sub-list for extension extendee
+	0,  // [0:12] is the sub-list for field type_name
 }
 
 func init() { file_navigators_v1_sync_proto_init() }
@@ -2126,7 +2769,7 @@ func file_navigators_v1_sync_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_navigators_v1_sync_proto_rawDesc), len(file_navigators_v1_sync_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   25,
+			NumMessages:   32,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

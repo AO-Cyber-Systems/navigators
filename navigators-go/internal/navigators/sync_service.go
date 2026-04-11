@@ -21,10 +21,11 @@ type SyncService struct {
 	surveyService     *SurveyService
 	voterNotesService *VoterNotesService
 	callScriptService *CallScriptService
+	taskService       *TaskService
 }
 
 // NewSyncService creates a new SyncService.
-func NewSyncService(queries *db.Queries, pool *pgxpool.Pool, turfFilter *TurfScopedFilter, surveyService *SurveyService, voterNotesService *VoterNotesService, callScriptService *CallScriptService) *SyncService {
+func NewSyncService(queries *db.Queries, pool *pgxpool.Pool, turfFilter *TurfScopedFilter, surveyService *SurveyService, voterNotesService *VoterNotesService, callScriptService *CallScriptService, taskService *TaskService) *SyncService {
 	return &SyncService{
 		queries:           queries,
 		pool:              pool,
@@ -32,6 +33,7 @@ func NewSyncService(queries *db.Queries, pool *pgxpool.Pool, turfFilter *TurfSco
 		surveyService:     surveyService,
 		voterNotesService: voterNotesService,
 		callScriptService: callScriptService,
+		taskService:       taskService,
 	}
 }
 
@@ -237,6 +239,8 @@ func (s *SyncService) PushSyncBatch(ctx context.Context, userID, companyID uuid.
 			err = s.surveyService.ProcessSurveyResponse(ctx, companyID, userID, op)
 		case "voter_note":
 			err = s.voterNotesService.ProcessVoterNote(ctx, companyID, userID, op)
+		case "task_note":
+			err = s.processTaskNote(ctx, companyID, userID, op)
 		default:
 			syncErrors = append(syncErrors, SyncError{
 				OperationID: op.ClientOperationID,
@@ -733,4 +737,255 @@ func (s *SyncService) GetSyncManifest(ctx context.Context, userID uuid.UUID) ([]
 	}
 
 	return results, nil
+}
+
+// --- Task sync types ---
+
+// SyncTaskRow represents a task row returned for sync pull.
+type SyncTaskRow struct {
+	ID               uuid.UUID
+	CompanyID        uuid.UUID
+	Title            string
+	Description      string
+	TaskType         string
+	Priority         string
+	Status           string
+	DueDate          *time.Time
+	LinkedEntityType *string
+	LinkedEntityID   *uuid.UUID
+	ProgressPct      int32
+	TotalCount       int32
+	CompletedCount   int32
+	CreatedBy        uuid.UUID
+	CreatedAt        time.Time
+	UpdatedAt        time.Time
+}
+
+// SyncTaskAssignmentRow represents a task assignment row for sync pull.
+type SyncTaskAssignmentRow struct {
+	ID         uuid.UUID
+	TaskID     uuid.UUID
+	UserID     uuid.UUID
+	AssignedBy uuid.UUID
+	AssignedAt time.Time
+}
+
+// SyncTaskNoteRow represents a task note row for sync pull.
+type SyncTaskNoteRow struct {
+	ID         uuid.UUID
+	CompanyID  uuid.UUID
+	TaskID     uuid.UUID
+	UserID     uuid.UUID
+	Content    string
+	Visibility string
+	CreatedAt  time.Time
+}
+
+// PullTasksResult contains the result of a tasks pull operation.
+type PullTasksResult struct {
+	Tasks           []SyncTaskRow
+	TaskAssignments []SyncTaskAssignmentRow
+	NextCursor      string
+	HasMore         bool
+}
+
+// PullTaskNotesResult contains the result of a task notes pull operation.
+type PullTaskNotesResult struct {
+	TaskNotes  []SyncTaskNoteRow
+	NextCursor string
+	HasMore    bool
+}
+
+// PullTasks returns tasks updated since cursor for a company, along with their assignments.
+func (s *SyncService) PullTasks(ctx context.Context, companyID uuid.UUID, sinceCursor string, batchSize int32) (*PullTasksResult, error) {
+	if batchSize <= 0 || batchSize > 500 {
+		batchSize = 500
+	}
+
+	var sinceTime time.Time
+	if sinceCursor != "" {
+		var err error
+		sinceTime, err = time.Parse(time.RFC3339Nano, sinceCursor)
+		if err != nil {
+			return nil, fmt.Errorf("parse cursor: %w", err)
+		}
+	} else {
+		sinceTime = time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC)
+	}
+
+	dbTasks, err := s.queries.PullTasksUpdated(ctx, db.PullTasksUpdatedParams{
+		CompanyID: companyID,
+		UpdatedAt: sinceTime,
+		Limit:     batchSize + 1,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("pull tasks: %w", err)
+	}
+
+	hasMore := len(dbTasks) > int(batchSize)
+	if hasMore {
+		dbTasks = dbTasks[:batchSize]
+	}
+
+	tasks := make([]SyncTaskRow, len(dbTasks))
+	for i, t := range dbTasks {
+		row := SyncTaskRow{
+			ID:             t.ID,
+			CompanyID:      t.CompanyID,
+			Title:          t.Title,
+			Description:    t.Description,
+			TaskType:       t.TaskType,
+			Priority:       t.Priority,
+			Status:         t.Status,
+			ProgressPct:    t.ProgressPct,
+			TotalCount:     t.TotalCount,
+			CompletedCount: t.CompletedCount,
+			CreatedBy:      t.CreatedBy,
+			CreatedAt:      t.CreatedAt,
+			UpdatedAt:      t.UpdatedAt,
+		}
+		if t.DueDate.Valid {
+			dd := t.DueDate.Time
+			row.DueDate = &dd
+		}
+		if t.LinkedEntityType != nil {
+			row.LinkedEntityType = t.LinkedEntityType
+		}
+		if t.LinkedEntityID.Valid {
+			eid := uuid.UUID(t.LinkedEntityID.Bytes)
+			row.LinkedEntityID = &eid
+		}
+		tasks[i] = row
+	}
+
+	// Also pull assignments updated since cursor
+	var assignments []SyncTaskAssignmentRow
+	if len(tasks) > 0 {
+		dbAssignments, err := s.queries.PullTaskAssignmentsUpdated(ctx, db.PullTaskAssignmentsUpdatedParams{
+			CompanyID:  companyID,
+			AssignedAt: sinceTime,
+			Limit:      batchSize * 5, // Tasks can have multiple assignments
+		})
+		if err != nil {
+			return nil, fmt.Errorf("pull task assignments: %w", err)
+		}
+		assignments = make([]SyncTaskAssignmentRow, len(dbAssignments))
+		for i, a := range dbAssignments {
+			assignments[i] = SyncTaskAssignmentRow{
+				ID:         a.ID,
+				TaskID:     a.TaskID,
+				UserID:     a.UserID,
+				AssignedBy: a.AssignedBy,
+				AssignedAt: a.AssignedAt,
+			}
+		}
+	}
+
+	var nextCursor string
+	if len(tasks) > 0 {
+		nextCursor = tasks[len(tasks)-1].UpdatedAt.Format(time.RFC3339Nano)
+	}
+
+	return &PullTasksResult{
+		Tasks:           tasks,
+		TaskAssignments: assignments,
+		NextCursor:      nextCursor,
+		HasMore:         hasMore,
+	}, nil
+}
+
+// PullTaskNotes returns task notes created since cursor for a company.
+func (s *SyncService) PullTaskNotes(ctx context.Context, companyID uuid.UUID, sinceCursor string, batchSize int32) (*PullTaskNotesResult, error) {
+	if batchSize <= 0 || batchSize > 500 {
+		batchSize = 500
+	}
+
+	var sinceTime time.Time
+	if sinceCursor != "" {
+		var err error
+		sinceTime, err = time.Parse(time.RFC3339Nano, sinceCursor)
+		if err != nil {
+			return nil, fmt.Errorf("parse cursor: %w", err)
+		}
+	} else {
+		sinceTime = time.Date(1970, 1, 1, 0, 0, 0, 0, time.UTC)
+	}
+
+	dbNotes, err := s.queries.PullTaskNotesUpdated(ctx, db.PullTaskNotesUpdatedParams{
+		CompanyID: companyID,
+		CreatedAt: sinceTime,
+		Limit:     batchSize + 1,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("pull task notes: %w", err)
+	}
+
+	hasMore := len(dbNotes) > int(batchSize)
+	if hasMore {
+		dbNotes = dbNotes[:batchSize]
+	}
+
+	notes := make([]SyncTaskNoteRow, len(dbNotes))
+	for i, n := range dbNotes {
+		notes[i] = SyncTaskNoteRow{
+			ID:         n.ID,
+			CompanyID:  n.CompanyID,
+			TaskID:     n.TaskID,
+			UserID:     n.UserID,
+			Content:    n.Content,
+			Visibility: n.Visibility,
+			CreatedAt:  n.CreatedAt,
+		}
+	}
+
+	var nextCursor string
+	if len(notes) > 0 {
+		nextCursor = notes[len(notes)-1].CreatedAt.Format(time.RFC3339Nano)
+	}
+
+	return &PullTaskNotesResult{
+		TaskNotes:  notes,
+		NextCursor: nextCursor,
+		HasMore:    hasMore,
+	}, nil
+}
+
+// taskNotePayload is the JSON structure for task note push operations.
+type taskNotePayload struct {
+	ID         string `json:"id"`
+	TaskID     string `json:"task_id"`
+	Content    string `json:"content"`
+	Visibility string `json:"visibility"`
+	CreatedAt  string `json:"created_at"`
+}
+
+// processTaskNote handles a task note push sync operation.
+func (s *SyncService) processTaskNote(ctx context.Context, companyID, userID uuid.UUID, op SyncOperationInput) error {
+	var payload taskNotePayload
+	if err := json.Unmarshal(op.Payload, &payload); err != nil {
+		return fmt.Errorf("unmarshal task note payload: %w", err)
+	}
+
+	taskID, err := uuid.Parse(payload.TaskID)
+	if err != nil {
+		return fmt.Errorf("parse task ID: %w", err)
+	}
+
+	visibility := payload.Visibility
+	if visibility == "" {
+		visibility = "team"
+	}
+
+	_, err = s.queries.CreateTaskNote(ctx, db.CreateTaskNoteParams{
+		CompanyID:  companyID,
+		TaskID:     taskID,
+		UserID:     userID,
+		Content:    payload.Content,
+		Visibility: visibility,
+	})
+	if err != nil {
+		return fmt.Errorf("create task note from sync: %w", err)
+	}
+
+	return nil
 }
