@@ -5,16 +5,17 @@
 See: .planning/PROJECT.md (updated 2026-04-10)
 
 **Core value:** Navigators can go into the field with a complete voter list, map, and outreach tools -- work entirely offline in rural Maine -- and have every interaction automatically sync back to give leadership real-time visibility into grassroots organizing efforts.
-**Current focus:** Foundation + Auth (Objective 1)
+**Current focus:** Voter Data Pipeline (Objective 2)
 
 ## Current Position
 
-Objective: 1 of 10 (Foundation + Auth) -- COMPLETE
-TRD: 3 of 3 in current objective
-Status: Objective Complete
-Last activity: 2026-04-10 -- Completed 01-03-TRD (turfs, teams, audit)
+**Objective:** 2 of 10 (Voter Data Pipeline)
+**Current Job:** 2
+**Total Jobs in Objective:** 3
+**Status:** Ready to execute
+**Last Activity:** 2026-04-11
 
-Progress: [##........] 10%
+Progress: [##........] 13%
 
 ## Performance Metrics
 
@@ -32,6 +33,7 @@ Progress: [##........] 10%
 **Recent Trend:**
 - Last 5 jobs: 01-01 (11 min), 01-02 (12 min), 01-03 (8 min)
 - Trend: Improving
+| Objective 02 P01 | 8min | 2 tasks | 18 files |
 
 ## Accumulated Context
 
@@ -51,6 +53,9 @@ Recent decisions affecting current work:
 - Dual audit trail: voter_access_log table (domain-specific) + eden audit.Logger (general events)
 - sqlc.yaml includes eden migrations for FK resolution; geometry type overridden to string
 - Migration numbered 004 (not 003 as TRD specified, because 003 was already taken)
+- [Objective 02]: Use MinIO client directly for voter file uploads (not eden upload.Service) because voter files can exceed 100MB
+- [Objective 02]: Configurable field mapping (map[int]string) stored in import_jobs JSONB for CVR/L2 column flexibility
+- [Objective 02]: Dedup key format: LASTNAME|STREETNUM|STREETNAME|ZIP5|YOB with normalization (strip non-alpha, abbreviate street suffixes)
 
 ### Pending Todos
 
@@ -65,11 +70,12 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-04-10
-Stopped at: Completed 01-03-TRD.md (Objective 01 COMPLETE)
+Stopped at: Completed 02-01-TRD.md (voter data model + import pipeline)
 Resume file: None
 
 ## History
 
+- 2026-04-10: Completed 02-01-TRD (voter data model, import pipeline: voters table with PostGIS/pg_trgm, CVR/L2 parsers, CopyFrom staging, UPSERT merge)
 - 2026-04-10: Completed 01-03-TRD (turfs, teams, audit: domain schema, turf-scoped filter, audit service, handlers)
 - 2026-04-10: Completed 01-02-TRD (auth RBAC + admin services: permission matrix, admin user CRUD, password reset, session management)
 - 2026-04-10: Completed 01-01-TRD (project scaffold: Go backend, Flutter app, Docker Compose, Justfile)

@@ -21,16 +21,16 @@ Requirements for initial release. Each maps to roadmap objectives.
 
 ### Voter Data Management
 
-- [ ] **VOTER-01**: Admin can upload Maine CVR pipe-delimited voter files
-- [ ] **VOTER-02**: Admin can upload L2/vendor CSV voter files
-- [ ] **VOTER-03**: System merges/deduplicates voters across sources by name + address + YOB
+- [x] **VOTER-01**: Admin can upload Maine CVR pipe-delimited voter files
+- [x] **VOTER-02**: Admin can upload L2/vendor CSV voter files
+- [x] **VOTER-03**: System merges/deduplicates voters across sources by name + address + YOB
 - [ ] **VOTER-04**: System batch geocodes voter addresses using Census API (primary) + Google (overflow)
 - [ ] **VOTER-05**: User can view full voter profile (name, address, YOB, party enrollment, voting history, electoral districts, registration date, status)
 - [ ] **VOTER-06**: User can search voters by name, address, or voter ID
 - [ ] **VOTER-07**: User can filter voters by district, party, voting frequency, status, geography, custom tags
 - [ ] **VOTER-08**: Admin can create and manage voter tags (e.g., "priority voter", "supporter")
 - [ ] **VOTER-09**: System maintains global suppression list (opt-outs) that gates all outreach
-- [ ] **VOTER-10**: No prohibited data fields stored (SSN, full DOB, felony info per Maine law)
+- [x] **VOTER-10**: No prohibited data fields stored (SSN, full DOB, felony info per Maine law)
 
 ### Turf Management & Mapping
 
@@ -171,16 +171,16 @@ Deferred to future release. Tracked but not in current roadmap.
 | AUTH-07 | Objective 1 | Complete |
 | AUTH-08 | Objective 1 | Complete |
 | AUTH-09 | Objective 1 | Complete |
-| VOTER-01 | Objective 2 | Pending |
-| VOTER-02 | Objective 2 | Pending |
-| VOTER-03 | Objective 2 | Pending |
+| VOTER-01 | Objective 2 | Complete |
+| VOTER-02 | Objective 2 | Complete |
+| VOTER-03 | Objective 2 | Complete |
 | VOTER-04 | Objective 2 | Pending |
 | VOTER-05 | Objective 2 | Pending |
 | VOTER-06 | Objective 2 | Pending |
 | VOTER-07 | Objective 2 | Pending |
 | VOTER-08 | Objective 2 | Pending |
 | VOTER-09 | Objective 2 | Pending |
-| VOTER-10 | Objective 2 | Pending |
+| VOTER-10 | Objective 2 | Complete |
 | TURF-01 | Objective 3 | Pending |
 | TURF-02 | Objective 3 | Pending |
 | TURF-03 | Objective 3 | Pending |
