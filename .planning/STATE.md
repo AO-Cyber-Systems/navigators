@@ -5,14 +5,14 @@
 See: .planning/PROJECT.md (updated 2026-04-10)
 
 **Core value:** Navigators can go into the field with a complete voter list, map, and outreach tools -- work entirely offline in rural Maine -- and have every interaction automatically sync back to give leadership real-time visibility into grassroots organizing efforts.
-**Current focus:** SMS Integration (Objective 6)
+**Current focus:** Phone Calls & Scripts (Objective 7)
 
 ## Current Position
 
-**Objective:** 6 of 10 (SMS Integration)
-**Current Job:** 3
-**Total Jobs in Objective:** 3
-**Status:** Objective complete — ready for verification
+**Objective:** 7 of 10 (Phone Calls & Scripts)
+**Current Job:** 1
+**Total Jobs in Objective:** 2
+**Status:** In progress
 **Last Activity:** 2026-04-11
 
 Progress: [##........] 13%
@@ -48,6 +48,7 @@ Progress: [##........] 13%
 | Objective 06 P01 | 12min | 2 tasks | 12 files |
 | Objective 06 P02 | 8min | 2 tasks | 10 files |
 | Objective 06-sms-integration P03 | 6min | 2 tasks | 9 files |
+| Objective 07 P01 | 6min | 2 tasks | 19 files |
 
 ## Accumulated Context
 
@@ -110,6 +111,9 @@ Recent decisions affecting current work:
 - [Objective 06-sms-integration]: Admin sees Templates/Campaigns via AppBar IconButtons (not sub-tabs) for simplicity
 - [Objective 06-sms-integration]: Optimistic message add in thread screen with rollback on send error
 - [Objective 06-sms-integration]: Local template preview with sample data for unsaved templates
+- [Objective 07]: Call scripts use TEXT content (not JSONB) with {{variable}} interpolation at display time
+- [Objective 07]: door_status CHECK extended with voicemail/no_answer/busy for phone dispositions; answered/refused shared
+- [Objective 07]: PullCallScriptsUpdated returns all scripts (not just active) so client detects deactivations during sync
 
 ### Pending Todos
 
@@ -124,11 +128,12 @@ None yet.
 ## Session Continuity
 
 Last session: 2026-04-11
-Stopped at: Completed 06-01-TRD.md
+Stopped at: Completed 07-01-TRD.md
 Resume file: None
 
 ## History
 
+- 2026-04-11: Completed 07-01-TRD (Call scripts backend + phone call data layer: migration 014, CallScriptService, PullCallScripts sync, Drift table/DAO)
 - 2026-04-11: Completed 06-01-TRD (SMS infrastructure: migration 013, Twilio SDK, P2P send, webhooks, NATS workers, compliance)
 - 2026-04-11: Completed 05-01-TRD (Door knocking data layer: migration 012, survey/notes services, sync endpoints, Drift tables/DAOs)
 - 2026-04-11: Completed 04-03-TRD (Sync status UI, offline-first screens, turf reassignment -- checkpoint approved, Objective 04 complete)
