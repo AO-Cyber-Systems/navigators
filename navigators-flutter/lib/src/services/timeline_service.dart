@@ -75,8 +75,26 @@ TimelineEntry _contactLogToTimeline(ContactLog log) {
       }
     case 'phone':
       icon = Icons.phone;
-      color = Colors.blue;
-      typeSummary = 'Phone Call';
+      switch (log.doorStatus) {
+        case 'answered':
+          color = Colors.green;
+          typeSummary = 'Phone Call - Answered';
+        case 'voicemail':
+          color = Colors.blue;
+          typeSummary = 'Phone Call - Voicemail';
+        case 'no_answer':
+          color = Colors.grey;
+          typeSummary = 'Phone Call - No Answer';
+        case 'refused':
+          color = Colors.red;
+          typeSummary = 'Phone Call - Refused';
+        case 'busy':
+          color = Colors.orange;
+          typeSummary = 'Phone Call - Busy';
+        default:
+          color = Colors.blue;
+          typeSummary = 'Phone Call';
+      }
     case 'text':
       icon = Icons.sms;
       color = Colors.teal;

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../services/voter_service.dart';
+import '../phone_calls/phone_call_screen.dart';
 import 'contact_timeline_widget.dart';
 import 'voter_notes_tab.dart';
 
@@ -48,6 +49,25 @@ class VoterDetailScreen extends ConsumerWidget {
         child: Scaffold(
           appBar: AppBar(
             title: Text(voter.fullName),
+            actions: [
+              if (voter.phone.isNotEmpty)
+                IconButton(
+                  icon: const Icon(Icons.phone),
+                  tooltip: 'Call voter',
+                  onPressed: () async {
+                    await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => PhoneCallScreen(
+                          voterId: voter.id,
+                          voterName: voter.fullName,
+                          voterPhone: voter.phone,
+                          turfId: turfId ?? '',
+                        ),
+                      ),
+                    );
+                  },
+                ),
+            ],
             bottom: const TabBar(
               tabs: [
                 Tab(icon: Icon(Icons.person), text: 'Profile'),
