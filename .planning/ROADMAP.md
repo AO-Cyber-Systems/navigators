@@ -13,7 +13,7 @@ Navigators goes from foundation to field-ready in 10 objectives. The first four 
 - [x] **Objective 3: Turf Management + Maps** - Draw turfs, assign Navigators, display voters on interactive maps
 - [x] **Objective 4: Offline Sync Engine** - Download, work offline, and sync back with conflict resolution
 - [x] **Objective 5: Door Knocking + Contact Log** - Walk lists, at-the-door surveys, notes, and unified contact timeline
-- [ ] **Objective 6: SMS Integration** - P2P texting, A2P broadcasts, templates, opt-out handling, and 10DLC
+- [x] **Objective 6: SMS Integration** - P2P texting, A2P broadcasts, templates, opt-out handling, and 10DLC
 - [ ] **Objective 7: Phone Calls + Scripts** - Click-to-call, post-call dispositions, and call scripts
 - [ ] **Objective 8: Tasks + Collaboration** - Task CRUD, auto-progress, push notifications
 - [ ] **Objective 9: Analytics + Dashboards** - Per-role dashboards, heat maps, metrics, and data export
@@ -137,11 +137,11 @@ Jobs:
   2. Call script displays to the Navigator during the call with relevant voter context
   3. Navigator completes a post-call disposition form capturing outcome, sentiment, and free-text notes
   4. Call interactions appear in the voter's unified contact timeline
-**TRDs:** 3 plans in 3 waves
+**TRDs:** 2 plans in 2 waves
 
 Jobs:
-- [ ] 07-01: TBD
-- [ ] 07-02: TBD
+- [ ] 07-01-TRD.md — Call scripts backend + phone call data layer (migration 014, CallScriptService, sync proto, Drift table/DAO)
+- [ ] 07-02-TRD.md — Flutter call UI + script display + disposition (PhoneCallScreen, call script manager, voter detail integration, timeline)
 
 ### Objective 8: Tasks + Collaboration
 **Goal**: Admins and Super Navigators can create and assign tasks that auto-track progress, and Navigators receive push notifications for assignments and reminders
@@ -194,7 +194,7 @@ Jobs:
 
 | Objective | Jobs Complete | Status | Completed |
 |-----------|--------------|--------|-----------|
-| 1. Foundation + Auth | 3/3 | ✓ Complete | 2026-04-10 |
+| 1. Foundation + Auth | 3/3 | Complete | 2026-04-10 |
 | 2. Voter Data Pipeline | 0/3 | Not started | - |
 | 3. Turf Management + Maps | 0/3 | Not started | - |
 | 4. Offline Sync Engine | 0/3 | Not started | - |
@@ -207,4 +207,4 @@ Jobs:
 
 ---
 *Roadmap created: 2026-04-10*
-*Last updated: 2026-04-10 — Objective 6 planned*
+*Last updated: 2026-04-11 — Objective 7 planned*
