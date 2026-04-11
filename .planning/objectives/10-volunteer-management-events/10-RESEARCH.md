@@ -1,0 +1,394 @@
+# Objective 10: Volunteer Management + Events - Research
+
+**Researched:** 2026-04-10
+**Domain:** Onboarding flows, event CRUD, leaderboards, training content
+**Confidence:** HIGH
+
+## Summary
+
+Objective 10 adds four features to the existing Navigators codebase: (1) a multi-step onboarding flow that gates app access until a new Navigator completes signup, Title 21-A acknowledgment, role assignment, and training review; (2) event management CRUD with RSVP and check-in; (3) opt-in leaderboards aggregating existing contact_logs data; (4) in-app training materials. All four follow established patterns already in the codebase -- ConnectRPC proto + Go handler/service + sqlc queries + Drift local tables + Flutter UI.
+
+This is primarily CRUD and UI work. The only novel element is the onboarding gate -- a server-side `onboarding_completed_at` field on the user profile that the Flutter app checks post-login to decide whether to show the main app or the onboarding wizard. Everything else (events, leaderboards, training) follows the exact same handler/service/migration/proto pattern used by Tasks (Obj 8).
+
+**Primary recommendation:** Follow the Task module pattern exactly. New proto `volunteer.proto` and `event.proto`, new migration `016_volunteer_events.up.sql`, new Drift tables, new feature folders. Gate onboarding via a user metadata field, not a separate table.
+
+<phase_requirements>
+## Objective Requirements
+
+| ID | Description | Research Support |
+|----|-------------|-----------------|
+| VOL-01 | New Navigator onboarding: signup -> Title 21-A acknowledgment -> role assignment -> training | Onboarding wizard pattern (Stepper widget), `onboarding_completed_at` user field, legal consent table for audit |
+| VOL-02 | Opt-in leaderboards with engagement metrics | Aggregation query over contact_logs + door_knocks + sms_messages, user preference flag for opt-in |
+| VOL-03 | In-app training materials and best practices guides | Markdown content in MinIO or bundled assets, simple list/detail Flutter screens |
+| EVT-01 | Admin/Super Nav creates events (canvass, phone banks, meetings) | Event CRUD following Task pattern -- proto, handler, service, migration |
+| EVT-02 | Navigators RSVP with reminder notifications | event_rsvps join table, NATS event for reminder, reuse FCMDispatcher |
+| EVT-03 | Check-in at events, attendance tracking | event_checkins table with timestamp, location optional |
+</phase_requirements>
+
+## Standard Stack
+
+### Core (Already in Codebase)
+| Library | Version | Purpose | Why Standard |
+|---------|---------|---------|--------------|
+| ConnectRPC | latest | Proto-based RPC | Already used for all services |
+| sqlc | latest | Type-safe SQL queries | Already used via `internal/db` |
+| pgx/v5 | latest | PostgreSQL driver | Already used throughout |
+| NATS JetStream | latest | Event bus for notifications | Already used by TaskWorker |
+| FCM (firebase-admin-go) | v4 | Push notifications | Already implemented in FCMDispatcher |
+| Drift (Flutter) | latest | Local SQLite with encryption | Already used for offline tables |
+| Riverpod (Flutter) | latest | State management | Already used throughout Flutter app |
+| eden-ui-flutter | local | UI component library | Already used for theming, bottom nav |
+| eden-platform-flutter | local | Auth, platform shell | Already provides authProvider |
+
+### Supporting (New for Obj 10)
+| Library | Version | Purpose | When to Use |
+|---------|---------|---------|-------------|
+| flutter/material Stepper | built-in | Multi-step onboarding wizard | VOL-01 onboarding flow |
+| MinIO (existing) | in infra | Training document storage | VOL-03 if PDFs/docs needed |
+| flutter_markdown | ^0.7.0 | Render markdown training content | VOL-03 for in-app guides |
+
+### Alternatives Considered
+| Instead of | Could Use | Tradeoff |
+|------------|-----------|----------|
+| Stepper widget | PageView + custom indicators | Stepper is simpler for linear flows, PageView better for swipeable onboarding |
+| MinIO for training docs | Bundled assets in app | MinIO allows admin updates without app release; bundled is simpler but static |
+| Server-side leaderboard query | Materialized view | Materialized view better at scale but overkill for 200 Navigators |
+
+## Architecture Patterns
+
+### Recommended Project Structure
+
+**Backend additions:**
+```
+navigators-go/
+├── proto/navigators/v1/
+│   ├── volunteer.proto        # OnboardingService + LeaderboardService
+│   └── event.proto            # EventService (CRUD, RSVP, check-in)
+├── migrations/navigators/
+│   └── 016_volunteer_events.up.sql
+├── internal/navigators/
+│   ├── volunteer_handler.go   # Onboarding + leaderboard handlers
+│   ├── volunteer_service.go   # Onboarding + leaderboard business logic
+│   ├── event_handler.go       # Event CRUD + RSVP + check-in handlers
+│   ├── event_service.go       # Event business logic
+│   └── event_worker.go        # NATS consumer for event reminders
+└── internal/db/
+    ├── events.sql.go          # Generated by sqlc
+    └── volunteers.sql.go      # Generated by sqlc
+```
+
+**Frontend additions:**
+```
+navigators-flutter/lib/src/
+├── features/
+│   ├── onboarding/
+│   │   ├── onboarding_screen.dart       # Stepper-based wizard
+│   │   ├── legal_acknowledgment_step.dart
+│   │   └── training_overview_step.dart
+│   ├── events/
+│   │   ├── event_list_screen.dart
+│   │   ├── event_detail_screen.dart
+│   │   └── event_create_screen.dart
+│   ├── training/
+│   │   ├── training_list_screen.dart
+│   │   └── training_detail_screen.dart
+│   └── leaderboard/
+│       └── leaderboard_screen.dart
+├── database/
+│   ├── tables/
+│   │   ├── events.dart
+│   │   ├── event_rsvps.dart
+│   │   └── training_materials.dart
+│   └── daos/
+│       ├── event_dao.dart
+│       └── training_dao.dart
+└── services/
+    ├── event_service.dart
+    └── volunteer_service.dart
+```
+
+### Pattern 1: Onboarding Gate
+
+**What:** After login, check if user has completed onboarding. If not, show onboarding wizard instead of main app.
+**When to use:** VOL-01
+
+The gate lives in `_NavigatorsHomeState.build()` in `app.dart`, right after the `auth.isAuthenticated` check:
+
+```dart
+// In app.dart, after auth check
+if (auth.isAuthenticated) {
+  // Check onboarding status (stored in auth claims or fetched once)
+  if (!auth.onboardingCompleted) {
+    return const OnboardingScreen();
+  }
+  // ... existing tab-based UI
+}
+```
+
+**Server side:** Add `onboarding_completed_at TIMESTAMPTZ` column to the eden `users` table (or a navigators-specific `navigator_profiles` table). Include this in the JWT claims or fetch on app start.
+
+**Recommendation:** Use a `navigator_profiles` table rather than modifying the shared eden `users` table. This keeps navigators-specific fields isolated:
+
+```sql
+CREATE TABLE navigator_profiles (
+    user_id UUID PRIMARY KEY REFERENCES users(id),
+    company_id UUID NOT NULL REFERENCES companies(id),
+    onboarding_completed_at TIMESTAMPTZ,
+    legal_acknowledgment_at TIMESTAMPTZ,
+    legal_acknowledgment_version TEXT,
+    leaderboard_opt_in BOOLEAN NOT NULL DEFAULT false,
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+```
+
+### Pattern 2: Event CRUD (Following Task Pattern)
+
+**What:** Events with RSVP and check-in, mirroring the Task CRUD pattern exactly.
+**When to use:** EVT-01, EVT-02, EVT-03
+
+```sql
+CREATE TABLE events (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    company_id UUID NOT NULL REFERENCES companies(id),
+    title TEXT NOT NULL,
+    description TEXT NOT NULL DEFAULT '',
+    event_type TEXT NOT NULL CHECK (event_type IN ('canvass', 'phone_bank', 'meeting', 'other')),
+    status TEXT NOT NULL DEFAULT 'scheduled' CHECK (status IN ('scheduled', 'in_progress', 'completed', 'cancelled')),
+    starts_at TIMESTAMPTZ NOT NULL,
+    ends_at TIMESTAMPTZ NOT NULL,
+    location_name TEXT,
+    location_lat DOUBLE PRECISION,
+    location_lng DOUBLE PRECISION,
+    linked_turf_id UUID REFERENCES turfs(id),
+    max_attendees INT,
+    created_by UUID NOT NULL REFERENCES users(id),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    updated_at TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
+CREATE TABLE event_rsvps (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    event_id UUID NOT NULL REFERENCES events(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id),
+    status TEXT NOT NULL DEFAULT 'going' CHECK (status IN ('going', 'maybe', 'declined')),
+    created_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    UNIQUE (event_id, user_id)
+);
+
+CREATE TABLE event_checkins (
+    id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
+    event_id UUID NOT NULL REFERENCES events(id) ON DELETE CASCADE,
+    user_id UUID NOT NULL REFERENCES users(id),
+    checked_in_at TIMESTAMPTZ NOT NULL DEFAULT now(),
+    UNIQUE (event_id, user_id)
+);
+```
+
+### Pattern 3: Leaderboard Aggregation
+
+**What:** Query existing tables (contact_logs, door knocks, SMS) to compute per-Navigator metrics.
+**When to use:** VOL-02
+
+```sql
+-- Leaderboard query: aggregate from existing data
+SELECT
+    u.id AS user_id,
+    u.display_name,
+    COALESCE(d.doors_knocked, 0) AS doors_knocked,
+    COALESCE(s.texts_sent, 0) AS texts_sent,
+    COALESCE(c.calls_made, 0) AS calls_made,
+    COALESCE(d.doors_knocked, 0) + COALESCE(s.texts_sent, 0) + COALESCE(c.calls_made, 0) AS total_actions
+FROM users u
+JOIN navigator_profiles np ON np.user_id = u.id AND np.leaderboard_opt_in = true
+LEFT JOIN (
+    SELECT user_id, COUNT(*) AS doors_knocked
+    FROM contact_logs WHERE contact_type = 'door_knock'
+    AND created_at >= $1  -- time window
+    GROUP BY user_id
+) d ON d.user_id = u.id
+LEFT JOIN (
+    SELECT sender_id AS user_id, COUNT(*) AS texts_sent
+    FROM sms_messages WHERE direction = 'outbound'
+    AND created_at >= $1
+    GROUP BY sender_id
+) s ON s.user_id = u.id
+LEFT JOIN (
+    SELECT user_id, COUNT(*) AS calls_made
+    FROM contact_logs WHERE contact_type = 'phone_call'
+    AND created_at >= $1
+    GROUP BY user_id
+) c ON c.user_id = u.id
+WHERE u.company_id = $2
+ORDER BY total_actions DESC;
+```
+
+**Key:** Only show users who have `leaderboard_opt_in = true` in their navigator_profile.
+
+### Pattern 4: NATS Event Reminders (Following TaskWorker)
+
+**What:** Background worker publishes event reminder notifications via NATS, consumed by a worker that sends FCM push.
+**When to use:** EVT-02
+
+Follow the TaskWorker pattern exactly:
+- Add subjects: `navigators.event.reminder`, `navigators.event.rsvp`
+- Create EventWorker with reminder ticker (check events starting in next 24h, 1h)
+- Reuse FCMDispatcher for push delivery
+
+### Anti-Patterns to Avoid
+- **Separate auth system for onboarding:** Do NOT create a separate login flow. Use the existing eden auth, then gate post-login with onboarding status.
+- **Storing training content in PostgreSQL:** Large text/PDFs belong in MinIO or as bundled assets, not in the database.
+- **Complex gamification:** Leaderboards should be simple aggregation queries, not a points/badges/rewards system. Keep scope minimal.
+
+## Don't Hand-Roll
+
+| Problem | Don't Build | Use Instead | Why |
+|---------|-------------|-------------|-----|
+| Push notifications | Custom WebSocket push | FCMDispatcher (already built) | Token management, stale cleanup already handled |
+| Event bus | Custom polling | NATS JetStream (already wired) | Durable consumers, at-least-once delivery |
+| Stepper UI | Custom wizard framework | Flutter Stepper widget | Built-in, handles back/next/validation |
+| Markdown rendering | Custom parser | flutter_markdown package | Battle-tested, supports images, links |
+| Leaderboard caching | Redis/custom cache | Direct SQL query | 200 users max, query is fast enough |
+
+## Common Pitfalls
+
+### Pitfall 1: Onboarding Race Condition
+**What goes wrong:** User completes onboarding on one device, other device still shows wizard.
+**Why it happens:** Onboarding status cached in JWT or local state.
+**How to avoid:** Fetch onboarding status from server on app launch (not just from JWT). Or include `onboarding_completed_at` in token claims and refresh token after onboarding completes.
+**Warning signs:** QA reports "stuck in onboarding" on second device.
+
+### Pitfall 2: Legal Acknowledgment Versioning
+**What goes wrong:** Law changes, old acknowledgments invalid, no way to re-prompt.
+**Why it happens:** Stored as boolean without version tracking.
+**How to avoid:** Store `legal_acknowledgment_version` alongside the timestamp. When the version changes, the onboarding gate re-triggers the legal step only.
+**Warning signs:** Compliance team asks "which version did user X acknowledge?"
+
+### Pitfall 3: Leaderboard Privacy
+**What goes wrong:** Navigators feel surveilled, morale drops.
+**Why it happens:** Leaderboard is opt-out or mandatory.
+**How to avoid:** Make it strictly opt-in (`leaderboard_opt_in` defaults to false). Show only opted-in users. Let users change preference anytime.
+**Warning signs:** Volunteer complaints about feeling watched.
+
+### Pitfall 4: Event Reminder Spam
+**What goes wrong:** User gets multiple reminders for the same event.
+**Why it happens:** Reminder ticker fires, no dedup tracking.
+**How to avoid:** Track `last_reminder_sent_at` per event_rsvp. Only send if not sent within window.
+**Warning signs:** Users report duplicate notifications.
+
+### Pitfall 5: Training Content Updates
+**What goes wrong:** Training content changes require app updates.
+**Why it happens:** Content bundled as static assets.
+**How to avoid:** Store training content metadata in DB, actual content in MinIO. Admin can upload new versions without app release. Fall back to bundled content if offline.
+**Warning signs:** Admin asks "how do I update the training guide?"
+
+## Code Examples
+
+### ConnectRPC Handler Pattern (from existing TaskHandler)
+```go
+// Source: navigators-go/internal/navigators/task_handler.go
+// All handlers follow this exact pattern:
+func (h *EventHandler) CreateEvent(ctx context.Context, req *connect.Request[navigatorsv1.CreateEventRequest]) (*connect.Response[navigatorsv1.CreateEventResponse], error) {
+    companyID, err := extractCompanyID(ctx)
+    if err != nil {
+        return nil, err
+    }
+    claims := server.ClaimsFromContext(ctx)
+    // ... validate inputs ...
+    // ... call service layer ...
+    // ... convert db model to proto ...
+    return connect.NewResponse(&navigatorsv1.CreateEventResponse{Event: proto}), nil
+}
+```
+
+### Flutter Feature Screen Pattern (from existing TaskListScreen)
+```dart
+// Source: navigators-flutter/lib/src/features/tasks/task_list_screen.dart
+// All feature screens follow this pattern:
+class EventListScreen extends ConsumerStatefulWidget {
+  // Uses Riverpod for state (ref.watch)
+  // Reads from local Drift database via DAO
+  // Filter chips for status filtering
+  // FAB for creation (role-gated)
+  // Empty state when no data
+}
+```
+
+### Drift Table Pattern (from existing Tasks table)
+```dart
+// Source: navigators-flutter/lib/src/database/tables/tasks.dart
+class Events extends Table {
+  TextColumn get id => text()();
+  TextColumn get companyId => text()();
+  TextColumn get title => text()();
+  // ... fields match server schema ...
+  DateTimeColumn get syncedAt => dateTime().nullable()();
+  @override
+  Set<Column> get primaryKey => {id};
+}
+```
+
+### NATS Worker Pattern (from existing TaskWorker)
+```go
+// Source: navigators-go/internal/navigators/task_worker.go
+// EventWorker follows the same pattern:
+// 1. CreateOrUpdateStream with event subjects
+// 2. CreateOrUpdateConsumer with durable name
+// 3. Consume loop with ACK/NAK
+// 4. Reminder ticker goroutine
+```
+
+## State of the Art
+
+| Old Approach | Current Approach | When Changed | Impact |
+|--------------|------------------|--------------|--------|
+| Custom wizard widgets | Flutter Stepper / PageView | Stable | Use built-in Stepper for linear flows |
+| REST for CRUD | ConnectRPC (already in codebase) | N/A | Continue with ConnectRPC |
+| Polling for reminders | NATS JetStream (already in codebase) | N/A | Continue with NATS |
+
+No deprecated patterns to worry about -- this objective uses only established codebase patterns.
+
+## Open Questions
+
+1. **Training content format**
+   - What we know: MinIO is available in infrastructure, flutter_markdown can render .md files
+   - What's unclear: Does admin need a CMS-like editor, or are pre-written markdown files sufficient?
+   - Recommendation: Start with admin-uploaded markdown files in MinIO. Add editor later if needed.
+
+2. **Onboarding field location**
+   - What we know: Eden `users` table is shared across all eden apps. Navigators should not modify it.
+   - What's unclear: Whether eden-platform-go supports user metadata/profile extensions
+   - Recommendation: Use a `navigator_profiles` table (navigators-specific) rather than modifying eden shared tables.
+
+3. **Event-to-turf linking**
+   - What we know: Canvass events naturally link to turfs. The events table can have `linked_turf_id`.
+   - What's unclear: Should event creation auto-assign turfs to RSVPed navigators?
+   - Recommendation: Store the link but don't auto-assign turfs. Keep manual turf assignment from Obj 3.
+
+## Sources
+
+### Primary (HIGH confidence)
+- Existing codebase: `navigators-go/internal/navigators/task_handler.go` -- handler pattern
+- Existing codebase: `navigators-go/internal/navigators/task_worker.go` -- NATS worker pattern
+- Existing codebase: `navigators-go/migrations/navigators/015_tasks.up.sql` -- migration pattern
+- Existing codebase: `navigators-go/proto/navigators/v1/task.proto` -- proto service pattern
+- Existing codebase: `navigators-flutter/lib/src/features/tasks/` -- Flutter feature pattern
+- Existing codebase: `navigators-flutter/lib/src/database/tables/tasks.dart` -- Drift table pattern
+- Existing codebase: `navigators-go/internal/navigators/notification_service.go` -- FCM pattern
+- Project requirements: `.planning/REQUIREMENTS.md` -- VOL-01 through VOL-03, EVT-01 through EVT-03
+- Maine law reference: Title 21-A Section 196-A -- voter data usage restrictions
+
+### Secondary (MEDIUM confidence)
+- Flutter Stepper widget -- built-in, well-documented in Flutter API docs
+- flutter_markdown package -- widely used, stable
+
+## Metadata
+
+**Confidence breakdown:**
+- Standard stack: HIGH - all libraries already in codebase, no new dependencies except flutter_markdown
+- Architecture: HIGH - follows established task/handler/service/worker patterns exactly
+- Pitfalls: HIGH - based on common patterns in volunteer management apps and existing codebase gotchas
+- Database schema: HIGH - follows existing migration patterns (tasks migration as template)
+
+**Research date:** 2026-04-10
+**Valid until:** 2026-05-10 (stable -- no fast-moving dependencies)
