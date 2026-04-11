@@ -13,6 +13,7 @@ import 'features/sms/conversation_list_screen.dart';
 import 'features/sms/template_list_screen.dart';
 import 'features/sync/sync_status_widget.dart';
 import 'features/sync/turf_download_screen.dart';
+import 'features/tasks/task_list_screen.dart';
 import 'features/voters/voter_list_screen.dart';
 import 'sync/sync_engine.dart';
 import 'sync/sync_status.dart';
@@ -190,6 +191,11 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
         icon: Icons.chat_bubble_outline,
         activeIcon: Icons.chat_bubble,
       ),
+      const _TabItem(
+        label: 'Tasks',
+        icon: Icons.task_alt_outlined,
+        activeIcon: Icons.task_alt,
+      ),
       if (isAdmin)
         const _TabItem(
           label: 'Import',
@@ -211,6 +217,7 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
           const VoterListScreen(),
           const TurfMapScreen(),
           _buildSmsTab(isAdmin),
+          const TaskListScreen(),
           if (isAdmin) const ImportScreen(),
         ],
       ),
