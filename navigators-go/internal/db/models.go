@@ -192,6 +192,72 @@ type RolePermission struct {
 	PermissionID uuid.UUID `json:"permission_id"`
 }
 
+type SmsCampaign struct {
+	ID              uuid.UUID          `json:"id"`
+	CompanyID       uuid.UUID          `json:"company_id"`
+	Name            string             `json:"name"`
+	TemplateID      pgtype.UUID        `json:"template_id"`
+	SegmentFilters  json.RawMessage    `json:"segment_filters"`
+	Status          string             `json:"status"`
+	TotalRecipients int32              `json:"total_recipients"`
+	SentCount       int32              `json:"sent_count"`
+	DeliveredCount  int32              `json:"delivered_count"`
+	FailedCount     int32              `json:"failed_count"`
+	CreatedBy       uuid.UUID          `json:"created_by"`
+	LaunchedAt      pgtype.Timestamptz `json:"launched_at"`
+	CompletedAt     pgtype.Timestamptz `json:"completed_at"`
+	CreatedAt       time.Time          `json:"created_at"`
+	UpdatedAt       time.Time          `json:"updated_at"`
+}
+
+type SmsConfig struct {
+	CompanyID                uuid.UUID `json:"company_id"`
+	TwilioAccountSid         string    `json:"twilio_account_sid"`
+	TwilioAuthTokenEncrypted string    `json:"twilio_auth_token_encrypted"`
+	P2pMessagingServiceSid   string    `json:"p2p_messaging_service_sid"`
+	A2pMessagingServiceSid   string    `json:"a2p_messaging_service_sid"`
+	InboundWebhookUrl        string    `json:"inbound_webhook_url"`
+	StatusWebhookUrl         string    `json:"status_webhook_url"`
+	QuietHoursStart          int32     `json:"quiet_hours_start"`
+	QuietHoursEnd            int32     `json:"quiet_hours_end"`
+	TenDlcBrandSid           string    `json:"ten_dlc_brand_sid"`
+	TenDlcCampaignSid        string    `json:"ten_dlc_campaign_sid"`
+	TenDlcStatus             string    `json:"ten_dlc_status"`
+	CreatedAt                time.Time `json:"created_at"`
+	UpdatedAt                time.Time `json:"updated_at"`
+}
+
+type SmsMessage struct {
+	ID               uuid.UUID   `json:"id"`
+	CompanyID        uuid.UUID   `json:"company_id"`
+	VoterID          uuid.UUID   `json:"voter_id"`
+	UserID           pgtype.UUID `json:"user_id"`
+	CampaignID       pgtype.UUID `json:"campaign_id"`
+	Direction        string      `json:"direction"`
+	MessageType      string      `json:"message_type"`
+	FromNumber       string      `json:"from_number"`
+	ToNumber         string      `json:"to_number"`
+	Body             string      `json:"body"`
+	TwilioMessageSid *string     `json:"twilio_message_sid"`
+	Status           string      `json:"status"`
+	ErrorCode        string      `json:"error_code"`
+	Segments         int32       `json:"segments"`
+	CreatedAt        time.Time   `json:"created_at"`
+	UpdatedAt        time.Time   `json:"updated_at"`
+}
+
+type SmsTemplate struct {
+	ID          uuid.UUID `json:"id"`
+	CompanyID   uuid.UUID `json:"company_id"`
+	Name        string    `json:"name"`
+	Body        string    `json:"body"`
+	MergeFields []string  `json:"merge_fields"`
+	CreatedBy   uuid.UUID `json:"created_by"`
+	IsActive    bool      `json:"is_active"`
+	CreatedAt   time.Time `json:"created_at"`
+	UpdatedAt   time.Time `json:"updated_at"`
+}
+
 type SsoConfig struct {
 	ID           uuid.UUID `json:"id"`
 	CompanyID    uuid.UUID `json:"company_id"`
