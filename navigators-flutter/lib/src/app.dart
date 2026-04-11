@@ -11,6 +11,8 @@ import 'features/map/turf_map_screen.dart';
 import 'features/sms/campaign_list_screen.dart';
 import 'features/sms/conversation_list_screen.dart';
 import 'features/sms/template_list_screen.dart';
+import 'features/dashboard/navigator_dashboard_screen.dart';
+import 'features/dashboard/team_dashboard_screen.dart';
 import 'features/sync/sync_status_widget.dart';
 import 'features/sync/turf_download_screen.dart';
 import 'features/tasks/task_list_screen.dart';
@@ -271,9 +273,10 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
   }
 
   Widget _buildHomeTab(AuthState auth) {
+    final role = auth.role?.toLowerCase() ?? '';
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Navigators'),
+        title: const Text('Dashboard'),
         actions: [
           const SyncStatusWidget(),
           IconButton(
@@ -285,22 +288,11 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
           ),
         ],
       ),
-      body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Text(
-              'Welcome to Navigators',
-              style: Theme.of(context).textTheme.headlineMedium,
-            ),
-            const SizedBox(height: 12),
-            Text(
-              'Signed in as ${auth.user?.email ?? 'Unknown'}',
-              style: Theme.of(context).textTheme.bodyLarge,
-            ),
-          ],
-        ),
-      ),
+      body: switch (role) {
+        'admin' => const _AdminDashboardPlaceholder(),
+        'super_navigator' => const TeamDashboardScreen(),
+        _ => const NavigatorDashboardScreen(),
+      },
     );
   }
 }
@@ -315,4 +307,14 @@ class _TabItem {
     required this.icon,
     required this.activeIcon,
   });
+}
+
+/// Placeholder for Admin dashboard until TRD 09-03 delivers AdminDashboardScreen.
+class _AdminDashboardPlaceholder extends StatelessWidget {
+  const _AdminDashboardPlaceholder();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(child: Text('Admin dashboard coming soon'));
+  }
 }

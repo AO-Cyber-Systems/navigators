@@ -172,22 +172,22 @@ class AnalyticsService {
   }
 
   /// Format a DateTime as RFC3339 string.
-  static String _toRfc3339(DateTime dt) => dt.toUtc().toIso8601String();
+  static String toRfc3339(DateTime dt) => dt.toUtc().toIso8601String();
 
   /// Default date range: last 30 days.
-  static Map<String, String> _defaultRange({String? since, String? until}) {
+  static Map<String, String> _defaultDateRange({String? since, String? until}) {
     final now = DateTime.now().toUtc();
     final thirtyDaysAgo = now.subtract(const Duration(days: 30));
     return {
-      'since': since ?? _toRfc3339(thirtyDaysAgo),
-      'until': until ?? _toRfc3339(now),
+      'since': since ?? toRfc3339(thirtyDaysAgo),
+      'until': until ?? toRfc3339(now),
     };
   }
 
   /// Fetch aggregate dashboard metrics (contact stats, tasks, turfs).
   Future<DashboardMetrics> getDashboardMetrics(
       {String? since, String? until}) async {
-    final range = _defaultRange(since: since, until: until);
+    final range = _defaultDateRange(since: since, until: until);
     final json = await _post('GetDashboardMetrics', range);
     return DashboardMetrics.fromJson(json);
   }
