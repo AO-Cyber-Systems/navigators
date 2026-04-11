@@ -20,6 +20,24 @@ service TurfService {
 
   // GetUserTurfs returns all turfs assigned to a user.
   rpc GetUserTurfs(GetUserTurfsRequest) returns (GetUserTurfsResponse);
+
+  // GetTurf returns a single turf with boundary and stats.
+  rpc GetTurf(GetTurfRequest) returns (GetTurfResponse);
+
+  // UpdateTurfBoundary sets or updates the polygon boundary for a turf.
+  rpc UpdateTurfBoundary(UpdateTurfBoundaryRequest) returns (UpdateTurfBoundaryResponse);
+
+  // GetVotersInTurf returns geocoded voters spatially contained by a turf boundary.
+  rpc GetVotersInTurf(GetVotersInTurfRequest) returns (GetVotersInTurfResponse);
+
+  // GenerateWalkList returns voters ordered by nearest-neighbor route for door-knocking.
+  rpc GenerateWalkList(GenerateWalkListRequest) returns (GenerateWalkListResponse);
+
+  // GetTurfStats returns completion statistics for a turf.
+  rpc GetTurfStats(GetTurfStatsRequest) returns (GetTurfStatsResponse);
+
+  // GetVoterDensityGrid returns aggregated voter density cells for heat map rendering.
+  rpc GetVoterDensityGrid(GetVoterDensityGridRequest) returns (GetVoterDensityGridResponse);
 }
 
 // --- Turf CRUD ---
@@ -27,6 +45,7 @@ service TurfService {
 message CreateTurfRequest {
   string name = 1;
   string description = 2;
+  string boundary_geojson = 3;
 }
 
 message CreateTurfResponse {
@@ -47,6 +66,11 @@ message TurfInfo {
   bool is_active = 4;
   string created_at = 5;
   string updated_at = 6;
+  string boundary_geojson = 7;
+  double center_lat = 8;
+  double center_lng = 9;
+  double area_sq_meters = 10;
+  int32 voter_count = 11;
 }
 
 // --- Turf Assignments ---
@@ -76,4 +100,110 @@ message GetUserTurfsResponse {
 message TurfAssignment {
   string turf_id = 1;
   string turf_name = 2;
+}
+
+// --- GetTurf ---
+
+message GetTurfRequest {
+  string turf_id = 1;
+}
+
+message GetTurfResponse {
+  TurfInfo turf = 1;
+}
+
+// --- UpdateTurfBoundary ---
+
+message UpdateTurfBoundaryRequest {
+  string turf_id = 1;
+  string boundary_geojson = 2;
+}
+
+message UpdateTurfBoundaryResponse {
+  TurfInfo turf = 1;
+}
+
+// --- GetVotersInTurf ---
+
+message GetVotersInTurfRequest {
+  string turf_id = 1;
+  int32 page_size = 2;
+  int32 page = 3;
+}
+
+message GetVotersInTurfResponse {
+  repeated VoterPin voters = 1;
+  int32 total_count = 2;
+}
+
+message VoterPin {
+  string voter_id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  double latitude = 4;
+  double longitude = 5;
+  string party = 6;
+  string status = 7;
+}
+
+// --- GenerateWalkList ---
+
+message GenerateWalkListRequest {
+  string turf_id = 1;
+  double start_lat = 2;
+  double start_lng = 3;
+}
+
+message GenerateWalkListResponse {
+  repeated WalkListVoter voters = 1;
+  int32 total_voters = 2;
+}
+
+message WalkListVoter {
+  string voter_id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  double latitude = 4;
+  double longitude = 5;
+  string res_street_address = 6;
+  int32 sequence = 7;
+}
+
+// --- GetTurfStats ---
+
+message GetTurfStatsRequest {
+  string turf_id = 1;
+}
+
+message GetTurfStatsResponse {
+  TurfStats stats = 1;
+}
+
+message TurfStats {
+  string turf_id = 1;
+  int32 total_voters = 2;
+  int32 contacted_voters = 3;
+  float completion_percentage = 4;
+}
+
+// --- GetVoterDensityGrid ---
+
+message GetVoterDensityGridRequest {
+  double min_lat = 1;
+  double min_lng = 2;
+  double max_lat = 3;
+  double max_lng = 4;
+  double grid_size = 5;
+}
+
+message GetVoterDensityGridResponse {
+  repeated DensityGridCell cells = 1;
+}
+
+message DensityGridCell {
+  double grid_lat = 1;
+  double grid_lng = 2;
+  int32 voter_count = 3;
+  int32 contacted_count = 4;
+  int32 support_count = 5;
 }

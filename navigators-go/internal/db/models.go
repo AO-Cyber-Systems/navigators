@@ -54,6 +54,18 @@ type CompanyMembership struct {
 	UpdatedAt           time.Time `json:"updated_at"`
 }
 
+type ContactLog struct {
+	ID          uuid.UUID   `json:"id"`
+	CompanyID   uuid.UUID   `json:"company_id"`
+	VoterID     uuid.UUID   `json:"voter_id"`
+	UserID      uuid.UUID   `json:"user_id"`
+	TurfID      pgtype.UUID `json:"turf_id"`
+	ContactType string      `json:"contact_type"`
+	Outcome     string      `json:"outcome"`
+	Notes       string      `json:"notes"`
+	CreatedAt   time.Time   `json:"created_at"`
+}
+
 type DeviceToken struct {
 	ID        uuid.UUID `json:"id"`
 	UserID    uuid.UUID `json:"user_id"`
@@ -192,6 +204,15 @@ type SsoConfig struct {
 	ExtraScopes  []string  `json:"extra_scopes"`
 	EnforceSso   bool      `json:"enforce_sso"`
 	UpdatedAt    time.Time `json:"updated_at"`
+}
+
+type SuppressionList struct {
+	ID        uuid.UUID `json:"id"`
+	CompanyID uuid.UUID `json:"company_id"`
+	VoterID   uuid.UUID `json:"voter_id"`
+	Reason    string    `json:"reason"`
+	AddedBy   uuid.UUID `json:"added_by"`
+	AddedAt   time.Time `json:"added_at"`
 }
 
 type TeamAssignment struct {

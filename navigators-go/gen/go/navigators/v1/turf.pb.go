@@ -22,11 +22,12 @@ const (
 )
 
 type CreateTurfRequest struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	Name          string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
-	Description   string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	Name            string                 `protobuf:"bytes,1,opt,name=name,proto3" json:"name,omitempty"`
+	Description     string                 `protobuf:"bytes,2,opt,name=description,proto3" json:"description,omitempty"`
+	BoundaryGeojson string                 `protobuf:"bytes,3,opt,name=boundary_geojson,json=boundaryGeojson,proto3" json:"boundary_geojson,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *CreateTurfRequest) Reset() {
@@ -69,6 +70,13 @@ func (x *CreateTurfRequest) GetName() string {
 func (x *CreateTurfRequest) GetDescription() string {
 	if x != nil {
 		return x.Description
+	}
+	return ""
+}
+
+func (x *CreateTurfRequest) GetBoundaryGeojson() string {
+	if x != nil {
+		return x.BoundaryGeojson
 	}
 	return ""
 }
@@ -206,15 +214,20 @@ func (x *ListTurfsResponse) GetTurfs() []*TurfInfo {
 }
 
 type TurfInfo struct {
-	state         protoimpl.MessageState `protogen:"open.v1"`
-	TurfId        string                 `protobuf:"bytes,1,opt,name=turf_id,json=turfId,proto3" json:"turf_id,omitempty"`
-	Name          string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
-	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
-	IsActive      bool                   `protobuf:"varint,4,opt,name=is_active,json=isActive,proto3" json:"is_active,omitempty"`
-	CreatedAt     string                 `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
-	UpdatedAt     string                 `protobuf:"bytes,6,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
-	unknownFields protoimpl.UnknownFields
-	sizeCache     protoimpl.SizeCache
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	TurfId          string                 `protobuf:"bytes,1,opt,name=turf_id,json=turfId,proto3" json:"turf_id,omitempty"`
+	Name            string                 `protobuf:"bytes,2,opt,name=name,proto3" json:"name,omitempty"`
+	Description     string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	IsActive        bool                   `protobuf:"varint,4,opt,name=is_active,json=isActive,proto3" json:"is_active,omitempty"`
+	CreatedAt       string                 `protobuf:"bytes,5,opt,name=created_at,json=createdAt,proto3" json:"created_at,omitempty"`
+	UpdatedAt       string                 `protobuf:"bytes,6,opt,name=updated_at,json=updatedAt,proto3" json:"updated_at,omitempty"`
+	BoundaryGeojson string                 `protobuf:"bytes,7,opt,name=boundary_geojson,json=boundaryGeojson,proto3" json:"boundary_geojson,omitempty"`
+	CenterLat       float64                `protobuf:"fixed64,8,opt,name=center_lat,json=centerLat,proto3" json:"center_lat,omitempty"`
+	CenterLng       float64                `protobuf:"fixed64,9,opt,name=center_lng,json=centerLng,proto3" json:"center_lng,omitempty"`
+	AreaSqMeters    float64                `protobuf:"fixed64,10,opt,name=area_sq_meters,json=areaSqMeters,proto3" json:"area_sq_meters,omitempty"`
+	VoterCount      int32                  `protobuf:"varint,11,opt,name=voter_count,json=voterCount,proto3" json:"voter_count,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
 }
 
 func (x *TurfInfo) Reset() {
@@ -287,6 +300,41 @@ func (x *TurfInfo) GetUpdatedAt() string {
 		return x.UpdatedAt
 	}
 	return ""
+}
+
+func (x *TurfInfo) GetBoundaryGeojson() string {
+	if x != nil {
+		return x.BoundaryGeojson
+	}
+	return ""
+}
+
+func (x *TurfInfo) GetCenterLat() float64 {
+	if x != nil {
+		return x.CenterLat
+	}
+	return 0
+}
+
+func (x *TurfInfo) GetCenterLng() float64 {
+	if x != nil {
+		return x.CenterLng
+	}
+	return 0
+}
+
+func (x *TurfInfo) GetAreaSqMeters() float64 {
+	if x != nil {
+		return x.AreaSqMeters
+	}
+	return 0
+}
+
+func (x *TurfInfo) GetVoterCount() int32 {
+	if x != nil {
+		return x.VoterCount
+	}
+	return 0
 }
 
 type AssignUserToTurfRequest struct {
@@ -605,20 +653,965 @@ func (x *TurfAssignment) GetTurfName() string {
 	return ""
 }
 
+type GetTurfRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TurfId        string                 `protobuf:"bytes,1,opt,name=turf_id,json=turfId,proto3" json:"turf_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTurfRequest) Reset() {
+	*x = GetTurfRequest{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[12]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTurfRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTurfRequest) ProtoMessage() {}
+
+func (x *GetTurfRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[12]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTurfRequest.ProtoReflect.Descriptor instead.
+func (*GetTurfRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{12}
+}
+
+func (x *GetTurfRequest) GetTurfId() string {
+	if x != nil {
+		return x.TurfId
+	}
+	return ""
+}
+
+type GetTurfResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Turf          *TurfInfo              `protobuf:"bytes,1,opt,name=turf,proto3" json:"turf,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTurfResponse) Reset() {
+	*x = GetTurfResponse{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[13]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTurfResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTurfResponse) ProtoMessage() {}
+
+func (x *GetTurfResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[13]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTurfResponse.ProtoReflect.Descriptor instead.
+func (*GetTurfResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{13}
+}
+
+func (x *GetTurfResponse) GetTurf() *TurfInfo {
+	if x != nil {
+		return x.Turf
+	}
+	return nil
+}
+
+type UpdateTurfBoundaryRequest struct {
+	state           protoimpl.MessageState `protogen:"open.v1"`
+	TurfId          string                 `protobuf:"bytes,1,opt,name=turf_id,json=turfId,proto3" json:"turf_id,omitempty"`
+	BoundaryGeojson string                 `protobuf:"bytes,2,opt,name=boundary_geojson,json=boundaryGeojson,proto3" json:"boundary_geojson,omitempty"`
+	unknownFields   protoimpl.UnknownFields
+	sizeCache       protoimpl.SizeCache
+}
+
+func (x *UpdateTurfBoundaryRequest) Reset() {
+	*x = UpdateTurfBoundaryRequest{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[14]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateTurfBoundaryRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateTurfBoundaryRequest) ProtoMessage() {}
+
+func (x *UpdateTurfBoundaryRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[14]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateTurfBoundaryRequest.ProtoReflect.Descriptor instead.
+func (*UpdateTurfBoundaryRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{14}
+}
+
+func (x *UpdateTurfBoundaryRequest) GetTurfId() string {
+	if x != nil {
+		return x.TurfId
+	}
+	return ""
+}
+
+func (x *UpdateTurfBoundaryRequest) GetBoundaryGeojson() string {
+	if x != nil {
+		return x.BoundaryGeojson
+	}
+	return ""
+}
+
+type UpdateTurfBoundaryResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Turf          *TurfInfo              `protobuf:"bytes,1,opt,name=turf,proto3" json:"turf,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateTurfBoundaryResponse) Reset() {
+	*x = UpdateTurfBoundaryResponse{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[15]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateTurfBoundaryResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateTurfBoundaryResponse) ProtoMessage() {}
+
+func (x *UpdateTurfBoundaryResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[15]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateTurfBoundaryResponse.ProtoReflect.Descriptor instead.
+func (*UpdateTurfBoundaryResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{15}
+}
+
+func (x *UpdateTurfBoundaryResponse) GetTurf() *TurfInfo {
+	if x != nil {
+		return x.Turf
+	}
+	return nil
+}
+
+type GetVotersInTurfRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TurfId        string                 `protobuf:"bytes,1,opt,name=turf_id,json=turfId,proto3" json:"turf_id,omitempty"`
+	PageSize      int32                  `protobuf:"varint,2,opt,name=page_size,json=pageSize,proto3" json:"page_size,omitempty"`
+	Page          int32                  `protobuf:"varint,3,opt,name=page,proto3" json:"page,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetVotersInTurfRequest) Reset() {
+	*x = GetVotersInTurfRequest{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[16]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetVotersInTurfRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetVotersInTurfRequest) ProtoMessage() {}
+
+func (x *GetVotersInTurfRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[16]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetVotersInTurfRequest.ProtoReflect.Descriptor instead.
+func (*GetVotersInTurfRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{16}
+}
+
+func (x *GetVotersInTurfRequest) GetTurfId() string {
+	if x != nil {
+		return x.TurfId
+	}
+	return ""
+}
+
+func (x *GetVotersInTurfRequest) GetPageSize() int32 {
+	if x != nil {
+		return x.PageSize
+	}
+	return 0
+}
+
+func (x *GetVotersInTurfRequest) GetPage() int32 {
+	if x != nil {
+		return x.Page
+	}
+	return 0
+}
+
+type GetVotersInTurfResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Voters        []*VoterPin            `protobuf:"bytes,1,rep,name=voters,proto3" json:"voters,omitempty"`
+	TotalCount    int32                  `protobuf:"varint,2,opt,name=total_count,json=totalCount,proto3" json:"total_count,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetVotersInTurfResponse) Reset() {
+	*x = GetVotersInTurfResponse{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[17]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetVotersInTurfResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetVotersInTurfResponse) ProtoMessage() {}
+
+func (x *GetVotersInTurfResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[17]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetVotersInTurfResponse.ProtoReflect.Descriptor instead.
+func (*GetVotersInTurfResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{17}
+}
+
+func (x *GetVotersInTurfResponse) GetVoters() []*VoterPin {
+	if x != nil {
+		return x.Voters
+	}
+	return nil
+}
+
+func (x *GetVotersInTurfResponse) GetTotalCount() int32 {
+	if x != nil {
+		return x.TotalCount
+	}
+	return 0
+}
+
+type VoterPin struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	VoterId       string                 `protobuf:"bytes,1,opt,name=voter_id,json=voterId,proto3" json:"voter_id,omitempty"`
+	FirstName     string                 `protobuf:"bytes,2,opt,name=first_name,json=firstName,proto3" json:"first_name,omitempty"`
+	LastName      string                 `protobuf:"bytes,3,opt,name=last_name,json=lastName,proto3" json:"last_name,omitempty"`
+	Latitude      float64                `protobuf:"fixed64,4,opt,name=latitude,proto3" json:"latitude,omitempty"`
+	Longitude     float64                `protobuf:"fixed64,5,opt,name=longitude,proto3" json:"longitude,omitempty"`
+	Party         string                 `protobuf:"bytes,6,opt,name=party,proto3" json:"party,omitempty"`
+	Status        string                 `protobuf:"bytes,7,opt,name=status,proto3" json:"status,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *VoterPin) Reset() {
+	*x = VoterPin{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[18]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *VoterPin) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*VoterPin) ProtoMessage() {}
+
+func (x *VoterPin) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[18]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use VoterPin.ProtoReflect.Descriptor instead.
+func (*VoterPin) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{18}
+}
+
+func (x *VoterPin) GetVoterId() string {
+	if x != nil {
+		return x.VoterId
+	}
+	return ""
+}
+
+func (x *VoterPin) GetFirstName() string {
+	if x != nil {
+		return x.FirstName
+	}
+	return ""
+}
+
+func (x *VoterPin) GetLastName() string {
+	if x != nil {
+		return x.LastName
+	}
+	return ""
+}
+
+func (x *VoterPin) GetLatitude() float64 {
+	if x != nil {
+		return x.Latitude
+	}
+	return 0
+}
+
+func (x *VoterPin) GetLongitude() float64 {
+	if x != nil {
+		return x.Longitude
+	}
+	return 0
+}
+
+func (x *VoterPin) GetParty() string {
+	if x != nil {
+		return x.Party
+	}
+	return ""
+}
+
+func (x *VoterPin) GetStatus() string {
+	if x != nil {
+		return x.Status
+	}
+	return ""
+}
+
+type GenerateWalkListRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TurfId        string                 `protobuf:"bytes,1,opt,name=turf_id,json=turfId,proto3" json:"turf_id,omitempty"`
+	StartLat      float64                `protobuf:"fixed64,2,opt,name=start_lat,json=startLat,proto3" json:"start_lat,omitempty"`
+	StartLng      float64                `protobuf:"fixed64,3,opt,name=start_lng,json=startLng,proto3" json:"start_lng,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GenerateWalkListRequest) Reset() {
+	*x = GenerateWalkListRequest{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GenerateWalkListRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GenerateWalkListRequest) ProtoMessage() {}
+
+func (x *GenerateWalkListRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GenerateWalkListRequest.ProtoReflect.Descriptor instead.
+func (*GenerateWalkListRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *GenerateWalkListRequest) GetTurfId() string {
+	if x != nil {
+		return x.TurfId
+	}
+	return ""
+}
+
+func (x *GenerateWalkListRequest) GetStartLat() float64 {
+	if x != nil {
+		return x.StartLat
+	}
+	return 0
+}
+
+func (x *GenerateWalkListRequest) GetStartLng() float64 {
+	if x != nil {
+		return x.StartLng
+	}
+	return 0
+}
+
+type GenerateWalkListResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Voters        []*WalkListVoter       `protobuf:"bytes,1,rep,name=voters,proto3" json:"voters,omitempty"`
+	TotalVoters   int32                  `protobuf:"varint,2,opt,name=total_voters,json=totalVoters,proto3" json:"total_voters,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GenerateWalkListResponse) Reset() {
+	*x = GenerateWalkListResponse{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GenerateWalkListResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GenerateWalkListResponse) ProtoMessage() {}
+
+func (x *GenerateWalkListResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GenerateWalkListResponse.ProtoReflect.Descriptor instead.
+func (*GenerateWalkListResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *GenerateWalkListResponse) GetVoters() []*WalkListVoter {
+	if x != nil {
+		return x.Voters
+	}
+	return nil
+}
+
+func (x *GenerateWalkListResponse) GetTotalVoters() int32 {
+	if x != nil {
+		return x.TotalVoters
+	}
+	return 0
+}
+
+type WalkListVoter struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	VoterId          string                 `protobuf:"bytes,1,opt,name=voter_id,json=voterId,proto3" json:"voter_id,omitempty"`
+	FirstName        string                 `protobuf:"bytes,2,opt,name=first_name,json=firstName,proto3" json:"first_name,omitempty"`
+	LastName         string                 `protobuf:"bytes,3,opt,name=last_name,json=lastName,proto3" json:"last_name,omitempty"`
+	Latitude         float64                `protobuf:"fixed64,4,opt,name=latitude,proto3" json:"latitude,omitempty"`
+	Longitude        float64                `protobuf:"fixed64,5,opt,name=longitude,proto3" json:"longitude,omitempty"`
+	ResStreetAddress string                 `protobuf:"bytes,6,opt,name=res_street_address,json=resStreetAddress,proto3" json:"res_street_address,omitempty"`
+	Sequence         int32                  `protobuf:"varint,7,opt,name=sequence,proto3" json:"sequence,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *WalkListVoter) Reset() {
+	*x = WalkListVoter{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *WalkListVoter) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*WalkListVoter) ProtoMessage() {}
+
+func (x *WalkListVoter) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use WalkListVoter.ProtoReflect.Descriptor instead.
+func (*WalkListVoter) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *WalkListVoter) GetVoterId() string {
+	if x != nil {
+		return x.VoterId
+	}
+	return ""
+}
+
+func (x *WalkListVoter) GetFirstName() string {
+	if x != nil {
+		return x.FirstName
+	}
+	return ""
+}
+
+func (x *WalkListVoter) GetLastName() string {
+	if x != nil {
+		return x.LastName
+	}
+	return ""
+}
+
+func (x *WalkListVoter) GetLatitude() float64 {
+	if x != nil {
+		return x.Latitude
+	}
+	return 0
+}
+
+func (x *WalkListVoter) GetLongitude() float64 {
+	if x != nil {
+		return x.Longitude
+	}
+	return 0
+}
+
+func (x *WalkListVoter) GetResStreetAddress() string {
+	if x != nil {
+		return x.ResStreetAddress
+	}
+	return ""
+}
+
+func (x *WalkListVoter) GetSequence() int32 {
+	if x != nil {
+		return x.Sequence
+	}
+	return 0
+}
+
+type GetTurfStatsRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	TurfId        string                 `protobuf:"bytes,1,opt,name=turf_id,json=turfId,proto3" json:"turf_id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTurfStatsRequest) Reset() {
+	*x = GetTurfStatsRequest{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTurfStatsRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTurfStatsRequest) ProtoMessage() {}
+
+func (x *GetTurfStatsRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTurfStatsRequest.ProtoReflect.Descriptor instead.
+func (*GetTurfStatsRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{22}
+}
+
+func (x *GetTurfStatsRequest) GetTurfId() string {
+	if x != nil {
+		return x.TurfId
+	}
+	return ""
+}
+
+type GetTurfStatsResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Stats         *TurfStats             `protobuf:"bytes,1,opt,name=stats,proto3" json:"stats,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTurfStatsResponse) Reset() {
+	*x = GetTurfStatsResponse{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTurfStatsResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTurfStatsResponse) ProtoMessage() {}
+
+func (x *GetTurfStatsResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTurfStatsResponse.ProtoReflect.Descriptor instead.
+func (*GetTurfStatsResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *GetTurfStatsResponse) GetStats() *TurfStats {
+	if x != nil {
+		return x.Stats
+	}
+	return nil
+}
+
+type TurfStats struct {
+	state                protoimpl.MessageState `protogen:"open.v1"`
+	TurfId               string                 `protobuf:"bytes,1,opt,name=turf_id,json=turfId,proto3" json:"turf_id,omitempty"`
+	TotalVoters          int32                  `protobuf:"varint,2,opt,name=total_voters,json=totalVoters,proto3" json:"total_voters,omitempty"`
+	ContactedVoters      int32                  `protobuf:"varint,3,opt,name=contacted_voters,json=contactedVoters,proto3" json:"contacted_voters,omitempty"`
+	CompletionPercentage float32                `protobuf:"fixed32,4,opt,name=completion_percentage,json=completionPercentage,proto3" json:"completion_percentage,omitempty"`
+	unknownFields        protoimpl.UnknownFields
+	sizeCache            protoimpl.SizeCache
+}
+
+func (x *TurfStats) Reset() {
+	*x = TurfStats{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *TurfStats) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*TurfStats) ProtoMessage() {}
+
+func (x *TurfStats) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use TurfStats.ProtoReflect.Descriptor instead.
+func (*TurfStats) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *TurfStats) GetTurfId() string {
+	if x != nil {
+		return x.TurfId
+	}
+	return ""
+}
+
+func (x *TurfStats) GetTotalVoters() int32 {
+	if x != nil {
+		return x.TotalVoters
+	}
+	return 0
+}
+
+func (x *TurfStats) GetContactedVoters() int32 {
+	if x != nil {
+		return x.ContactedVoters
+	}
+	return 0
+}
+
+func (x *TurfStats) GetCompletionPercentage() float32 {
+	if x != nil {
+		return x.CompletionPercentage
+	}
+	return 0
+}
+
+type GetVoterDensityGridRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	MinLat        float64                `protobuf:"fixed64,1,opt,name=min_lat,json=minLat,proto3" json:"min_lat,omitempty"`
+	MinLng        float64                `protobuf:"fixed64,2,opt,name=min_lng,json=minLng,proto3" json:"min_lng,omitempty"`
+	MaxLat        float64                `protobuf:"fixed64,3,opt,name=max_lat,json=maxLat,proto3" json:"max_lat,omitempty"`
+	MaxLng        float64                `protobuf:"fixed64,4,opt,name=max_lng,json=maxLng,proto3" json:"max_lng,omitempty"`
+	GridSize      float64                `protobuf:"fixed64,5,opt,name=grid_size,json=gridSize,proto3" json:"grid_size,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetVoterDensityGridRequest) Reset() {
+	*x = GetVoterDensityGridRequest{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[25]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetVoterDensityGridRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetVoterDensityGridRequest) ProtoMessage() {}
+
+func (x *GetVoterDensityGridRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[25]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetVoterDensityGridRequest.ProtoReflect.Descriptor instead.
+func (*GetVoterDensityGridRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{25}
+}
+
+func (x *GetVoterDensityGridRequest) GetMinLat() float64 {
+	if x != nil {
+		return x.MinLat
+	}
+	return 0
+}
+
+func (x *GetVoterDensityGridRequest) GetMinLng() float64 {
+	if x != nil {
+		return x.MinLng
+	}
+	return 0
+}
+
+func (x *GetVoterDensityGridRequest) GetMaxLat() float64 {
+	if x != nil {
+		return x.MaxLat
+	}
+	return 0
+}
+
+func (x *GetVoterDensityGridRequest) GetMaxLng() float64 {
+	if x != nil {
+		return x.MaxLng
+	}
+	return 0
+}
+
+func (x *GetVoterDensityGridRequest) GetGridSize() float64 {
+	if x != nil {
+		return x.GridSize
+	}
+	return 0
+}
+
+type GetVoterDensityGridResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Cells         []*DensityGridCell     `protobuf:"bytes,1,rep,name=cells,proto3" json:"cells,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetVoterDensityGridResponse) Reset() {
+	*x = GetVoterDensityGridResponse{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[26]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetVoterDensityGridResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetVoterDensityGridResponse) ProtoMessage() {}
+
+func (x *GetVoterDensityGridResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[26]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetVoterDensityGridResponse.ProtoReflect.Descriptor instead.
+func (*GetVoterDensityGridResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{26}
+}
+
+func (x *GetVoterDensityGridResponse) GetCells() []*DensityGridCell {
+	if x != nil {
+		return x.Cells
+	}
+	return nil
+}
+
+type DensityGridCell struct {
+	state          protoimpl.MessageState `protogen:"open.v1"`
+	GridLat        float64                `protobuf:"fixed64,1,opt,name=grid_lat,json=gridLat,proto3" json:"grid_lat,omitempty"`
+	GridLng        float64                `protobuf:"fixed64,2,opt,name=grid_lng,json=gridLng,proto3" json:"grid_lng,omitempty"`
+	VoterCount     int32                  `protobuf:"varint,3,opt,name=voter_count,json=voterCount,proto3" json:"voter_count,omitempty"`
+	ContactedCount int32                  `protobuf:"varint,4,opt,name=contacted_count,json=contactedCount,proto3" json:"contacted_count,omitempty"`
+	SupportCount   int32                  `protobuf:"varint,5,opt,name=support_count,json=supportCount,proto3" json:"support_count,omitempty"`
+	unknownFields  protoimpl.UnknownFields
+	sizeCache      protoimpl.SizeCache
+}
+
+func (x *DensityGridCell) Reset() {
+	*x = DensityGridCell{}
+	mi := &file_navigators_v1_turf_proto_msgTypes[27]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DensityGridCell) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DensityGridCell) ProtoMessage() {}
+
+func (x *DensityGridCell) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_turf_proto_msgTypes[27]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DensityGridCell.ProtoReflect.Descriptor instead.
+func (*DensityGridCell) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_turf_proto_rawDescGZIP(), []int{27}
+}
+
+func (x *DensityGridCell) GetGridLat() float64 {
+	if x != nil {
+		return x.GridLat
+	}
+	return 0
+}
+
+func (x *DensityGridCell) GetGridLng() float64 {
+	if x != nil {
+		return x.GridLng
+	}
+	return 0
+}
+
+func (x *DensityGridCell) GetVoterCount() int32 {
+	if x != nil {
+		return x.VoterCount
+	}
+	return 0
+}
+
+func (x *DensityGridCell) GetContactedCount() int32 {
+	if x != nil {
+		return x.ContactedCount
+	}
+	return 0
+}
+
+func (x *DensityGridCell) GetSupportCount() int32 {
+	if x != nil {
+		return x.SupportCount
+	}
+	return 0
+}
+
 var File_navigators_v1_turf_proto protoreflect.FileDescriptor
 
 const file_navigators_v1_turf_proto_rawDesc = "" +
 	"\n" +
-	"\x18navigators/v1/turf.proto\x12\rnavigators.v1\"I\n" +
+	"\x18navigators/v1/turf.proto\x12\rnavigators.v1\"t\n" +
 	"\x11CreateTurfRequest\x12\x12\n" +
 	"\x04name\x18\x01 \x01(\tR\x04name\x12 \n" +
-	"\vdescription\x18\x02 \x01(\tR\vdescription\"A\n" +
+	"\vdescription\x18\x02 \x01(\tR\vdescription\x12)\n" +
+	"\x10boundary_geojson\x18\x03 \x01(\tR\x0fboundaryGeojson\"A\n" +
 	"\x12CreateTurfResponse\x12\x17\n" +
 	"\aturf_id\x18\x01 \x01(\tR\x06turfId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\"\x12\n" +
 	"\x10ListTurfsRequest\"B\n" +
 	"\x11ListTurfsResponse\x12-\n" +
-	"\x05turfs\x18\x01 \x03(\v2\x17.navigators.v1.TurfInfoR\x05turfs\"\xb4\x01\n" +
+	"\x05turfs\x18\x01 \x03(\v2\x17.navigators.v1.TurfInfoR\x05turfs\"\xe4\x02\n" +
 	"\bTurfInfo\x12\x17\n" +
 	"\aturf_id\x18\x01 \x01(\tR\x06turfId\x12\x12\n" +
 	"\x04name\x18\x02 \x01(\tR\x04name\x12 \n" +
@@ -627,7 +1620,16 @@ const file_navigators_v1_turf_proto_rawDesc = "" +
 	"\n" +
 	"created_at\x18\x05 \x01(\tR\tcreatedAt\x12\x1d\n" +
 	"\n" +
-	"updated_at\x18\x06 \x01(\tR\tupdatedAt\"K\n" +
+	"updated_at\x18\x06 \x01(\tR\tupdatedAt\x12)\n" +
+	"\x10boundary_geojson\x18\a \x01(\tR\x0fboundaryGeojson\x12\x1d\n" +
+	"\n" +
+	"center_lat\x18\b \x01(\x01R\tcenterLat\x12\x1d\n" +
+	"\n" +
+	"center_lng\x18\t \x01(\x01R\tcenterLng\x12$\n" +
+	"\x0earea_sq_meters\x18\n" +
+	" \x01(\x01R\fareaSqMeters\x12\x1f\n" +
+	"\vvoter_count\x18\v \x01(\x05R\n" +
+	"voterCount\"K\n" +
 	"\x17AssignUserToTurfRequest\x12\x17\n" +
 	"\aturf_id\x18\x01 \x01(\tR\x06turfId\x12\x17\n" +
 	"\auser_id\x18\x02 \x01(\tR\x06userId\"\x1a\n" +
@@ -642,14 +1644,86 @@ const file_navigators_v1_turf_proto_rawDesc = "" +
 	"\vassignments\x18\x01 \x03(\v2\x1d.navigators.v1.TurfAssignmentR\vassignments\"F\n" +
 	"\x0eTurfAssignment\x12\x17\n" +
 	"\aturf_id\x18\x01 \x01(\tR\x06turfId\x12\x1b\n" +
-	"\tturf_name\x18\x02 \x01(\tR\bturfName2\xd9\x03\n" +
+	"\tturf_name\x18\x02 \x01(\tR\bturfName\")\n" +
+	"\x0eGetTurfRequest\x12\x17\n" +
+	"\aturf_id\x18\x01 \x01(\tR\x06turfId\">\n" +
+	"\x0fGetTurfResponse\x12+\n" +
+	"\x04turf\x18\x01 \x01(\v2\x17.navigators.v1.TurfInfoR\x04turf\"_\n" +
+	"\x19UpdateTurfBoundaryRequest\x12\x17\n" +
+	"\aturf_id\x18\x01 \x01(\tR\x06turfId\x12)\n" +
+	"\x10boundary_geojson\x18\x02 \x01(\tR\x0fboundaryGeojson\"I\n" +
+	"\x1aUpdateTurfBoundaryResponse\x12+\n" +
+	"\x04turf\x18\x01 \x01(\v2\x17.navigators.v1.TurfInfoR\x04turf\"b\n" +
+	"\x16GetVotersInTurfRequest\x12\x17\n" +
+	"\aturf_id\x18\x01 \x01(\tR\x06turfId\x12\x1b\n" +
+	"\tpage_size\x18\x02 \x01(\x05R\bpageSize\x12\x12\n" +
+	"\x04page\x18\x03 \x01(\x05R\x04page\"k\n" +
+	"\x17GetVotersInTurfResponse\x12/\n" +
+	"\x06voters\x18\x01 \x03(\v2\x17.navigators.v1.VoterPinR\x06voters\x12\x1f\n" +
+	"\vtotal_count\x18\x02 \x01(\x05R\n" +
+	"totalCount\"\xc9\x01\n" +
+	"\bVoterPin\x12\x19\n" +
+	"\bvoter_id\x18\x01 \x01(\tR\avoterId\x12\x1d\n" +
+	"\n" +
+	"first_name\x18\x02 \x01(\tR\tfirstName\x12\x1b\n" +
+	"\tlast_name\x18\x03 \x01(\tR\blastName\x12\x1a\n" +
+	"\blatitude\x18\x04 \x01(\x01R\blatitude\x12\x1c\n" +
+	"\tlongitude\x18\x05 \x01(\x01R\tlongitude\x12\x14\n" +
+	"\x05party\x18\x06 \x01(\tR\x05party\x12\x16\n" +
+	"\x06status\x18\a \x01(\tR\x06status\"l\n" +
+	"\x17GenerateWalkListRequest\x12\x17\n" +
+	"\aturf_id\x18\x01 \x01(\tR\x06turfId\x12\x1b\n" +
+	"\tstart_lat\x18\x02 \x01(\x01R\bstartLat\x12\x1b\n" +
+	"\tstart_lng\x18\x03 \x01(\x01R\bstartLng\"s\n" +
+	"\x18GenerateWalkListResponse\x124\n" +
+	"\x06voters\x18\x01 \x03(\v2\x1c.navigators.v1.WalkListVoterR\x06voters\x12!\n" +
+	"\ftotal_voters\x18\x02 \x01(\x05R\vtotalVoters\"\xea\x01\n" +
+	"\rWalkListVoter\x12\x19\n" +
+	"\bvoter_id\x18\x01 \x01(\tR\avoterId\x12\x1d\n" +
+	"\n" +
+	"first_name\x18\x02 \x01(\tR\tfirstName\x12\x1b\n" +
+	"\tlast_name\x18\x03 \x01(\tR\blastName\x12\x1a\n" +
+	"\blatitude\x18\x04 \x01(\x01R\blatitude\x12\x1c\n" +
+	"\tlongitude\x18\x05 \x01(\x01R\tlongitude\x12,\n" +
+	"\x12res_street_address\x18\x06 \x01(\tR\x10resStreetAddress\x12\x1a\n" +
+	"\bsequence\x18\a \x01(\x05R\bsequence\".\n" +
+	"\x13GetTurfStatsRequest\x12\x17\n" +
+	"\aturf_id\x18\x01 \x01(\tR\x06turfId\"F\n" +
+	"\x14GetTurfStatsResponse\x12.\n" +
+	"\x05stats\x18\x01 \x01(\v2\x18.navigators.v1.TurfStatsR\x05stats\"\xa7\x01\n" +
+	"\tTurfStats\x12\x17\n" +
+	"\aturf_id\x18\x01 \x01(\tR\x06turfId\x12!\n" +
+	"\ftotal_voters\x18\x02 \x01(\x05R\vtotalVoters\x12)\n" +
+	"\x10contacted_voters\x18\x03 \x01(\x05R\x0fcontactedVoters\x123\n" +
+	"\x15completion_percentage\x18\x04 \x01(\x02R\x14completionPercentage\"\x9d\x01\n" +
+	"\x1aGetVoterDensityGridRequest\x12\x17\n" +
+	"\amin_lat\x18\x01 \x01(\x01R\x06minLat\x12\x17\n" +
+	"\amin_lng\x18\x02 \x01(\x01R\x06minLng\x12\x17\n" +
+	"\amax_lat\x18\x03 \x01(\x01R\x06maxLat\x12\x17\n" +
+	"\amax_lng\x18\x04 \x01(\x01R\x06maxLng\x12\x1b\n" +
+	"\tgrid_size\x18\x05 \x01(\x01R\bgridSize\"S\n" +
+	"\x1bGetVoterDensityGridResponse\x124\n" +
+	"\x05cells\x18\x01 \x03(\v2\x1e.navigators.v1.DensityGridCellR\x05cells\"\xb6\x01\n" +
+	"\x0fDensityGridCell\x12\x19\n" +
+	"\bgrid_lat\x18\x01 \x01(\x01R\agridLat\x12\x19\n" +
+	"\bgrid_lng\x18\x02 \x01(\x01R\agridLng\x12\x1f\n" +
+	"\vvoter_count\x18\x03 \x01(\x05R\n" +
+	"voterCount\x12'\n" +
+	"\x0fcontacted_count\x18\x04 \x01(\x05R\x0econtactedCount\x12#\n" +
+	"\rsupport_count\x18\x05 \x01(\x05R\fsupportCount2\x9c\b\n" +
 	"\vTurfService\x12Q\n" +
 	"\n" +
 	"CreateTurf\x12 .navigators.v1.CreateTurfRequest\x1a!.navigators.v1.CreateTurfResponse\x12N\n" +
 	"\tListTurfs\x12\x1f.navigators.v1.ListTurfsRequest\x1a .navigators.v1.ListTurfsResponse\x12c\n" +
 	"\x10AssignUserToTurf\x12&.navigators.v1.AssignUserToTurfRequest\x1a'.navigators.v1.AssignUserToTurfResponse\x12i\n" +
 	"\x12RemoveUserFromTurf\x12(.navigators.v1.RemoveUserFromTurfRequest\x1a).navigators.v1.RemoveUserFromTurfResponse\x12W\n" +
-	"\fGetUserTurfs\x12\".navigators.v1.GetUserTurfsRequest\x1a#.navigators.v1.GetUserTurfsResponseB1Z/navigators-go/gen/go/navigators/v1;navigatorsv1b\x06proto3"
+	"\fGetUserTurfs\x12\".navigators.v1.GetUserTurfsRequest\x1a#.navigators.v1.GetUserTurfsResponse\x12H\n" +
+	"\aGetTurf\x12\x1d.navigators.v1.GetTurfRequest\x1a\x1e.navigators.v1.GetTurfResponse\x12i\n" +
+	"\x12UpdateTurfBoundary\x12(.navigators.v1.UpdateTurfBoundaryRequest\x1a).navigators.v1.UpdateTurfBoundaryResponse\x12`\n" +
+	"\x0fGetVotersInTurf\x12%.navigators.v1.GetVotersInTurfRequest\x1a&.navigators.v1.GetVotersInTurfResponse\x12c\n" +
+	"\x10GenerateWalkList\x12&.navigators.v1.GenerateWalkListRequest\x1a'.navigators.v1.GenerateWalkListResponse\x12W\n" +
+	"\fGetTurfStats\x12\".navigators.v1.GetTurfStatsRequest\x1a#.navigators.v1.GetTurfStatsResponse\x12l\n" +
+	"\x13GetVoterDensityGrid\x12).navigators.v1.GetVoterDensityGridRequest\x1a*.navigators.v1.GetVoterDensityGridResponseB1Z/navigators-go/gen/go/navigators/v1;navigatorsv1b\x06proto3"
 
 var (
 	file_navigators_v1_turf_proto_rawDescOnce sync.Once
@@ -663,39 +1737,73 @@ func file_navigators_v1_turf_proto_rawDescGZIP() []byte {
 	return file_navigators_v1_turf_proto_rawDescData
 }
 
-var file_navigators_v1_turf_proto_msgTypes = make([]protoimpl.MessageInfo, 12)
+var file_navigators_v1_turf_proto_msgTypes = make([]protoimpl.MessageInfo, 28)
 var file_navigators_v1_turf_proto_goTypes = []any{
-	(*CreateTurfRequest)(nil),          // 0: navigators.v1.CreateTurfRequest
-	(*CreateTurfResponse)(nil),         // 1: navigators.v1.CreateTurfResponse
-	(*ListTurfsRequest)(nil),           // 2: navigators.v1.ListTurfsRequest
-	(*ListTurfsResponse)(nil),          // 3: navigators.v1.ListTurfsResponse
-	(*TurfInfo)(nil),                   // 4: navigators.v1.TurfInfo
-	(*AssignUserToTurfRequest)(nil),    // 5: navigators.v1.AssignUserToTurfRequest
-	(*AssignUserToTurfResponse)(nil),   // 6: navigators.v1.AssignUserToTurfResponse
-	(*RemoveUserFromTurfRequest)(nil),  // 7: navigators.v1.RemoveUserFromTurfRequest
-	(*RemoveUserFromTurfResponse)(nil), // 8: navigators.v1.RemoveUserFromTurfResponse
-	(*GetUserTurfsRequest)(nil),        // 9: navigators.v1.GetUserTurfsRequest
-	(*GetUserTurfsResponse)(nil),       // 10: navigators.v1.GetUserTurfsResponse
-	(*TurfAssignment)(nil),             // 11: navigators.v1.TurfAssignment
+	(*CreateTurfRequest)(nil),           // 0: navigators.v1.CreateTurfRequest
+	(*CreateTurfResponse)(nil),          // 1: navigators.v1.CreateTurfResponse
+	(*ListTurfsRequest)(nil),            // 2: navigators.v1.ListTurfsRequest
+	(*ListTurfsResponse)(nil),           // 3: navigators.v1.ListTurfsResponse
+	(*TurfInfo)(nil),                    // 4: navigators.v1.TurfInfo
+	(*AssignUserToTurfRequest)(nil),     // 5: navigators.v1.AssignUserToTurfRequest
+	(*AssignUserToTurfResponse)(nil),    // 6: navigators.v1.AssignUserToTurfResponse
+	(*RemoveUserFromTurfRequest)(nil),   // 7: navigators.v1.RemoveUserFromTurfRequest
+	(*RemoveUserFromTurfResponse)(nil),  // 8: navigators.v1.RemoveUserFromTurfResponse
+	(*GetUserTurfsRequest)(nil),         // 9: navigators.v1.GetUserTurfsRequest
+	(*GetUserTurfsResponse)(nil),        // 10: navigators.v1.GetUserTurfsResponse
+	(*TurfAssignment)(nil),              // 11: navigators.v1.TurfAssignment
+	(*GetTurfRequest)(nil),              // 12: navigators.v1.GetTurfRequest
+	(*GetTurfResponse)(nil),             // 13: navigators.v1.GetTurfResponse
+	(*UpdateTurfBoundaryRequest)(nil),   // 14: navigators.v1.UpdateTurfBoundaryRequest
+	(*UpdateTurfBoundaryResponse)(nil),  // 15: navigators.v1.UpdateTurfBoundaryResponse
+	(*GetVotersInTurfRequest)(nil),      // 16: navigators.v1.GetVotersInTurfRequest
+	(*GetVotersInTurfResponse)(nil),     // 17: navigators.v1.GetVotersInTurfResponse
+	(*VoterPin)(nil),                    // 18: navigators.v1.VoterPin
+	(*GenerateWalkListRequest)(nil),     // 19: navigators.v1.GenerateWalkListRequest
+	(*GenerateWalkListResponse)(nil),    // 20: navigators.v1.GenerateWalkListResponse
+	(*WalkListVoter)(nil),               // 21: navigators.v1.WalkListVoter
+	(*GetTurfStatsRequest)(nil),         // 22: navigators.v1.GetTurfStatsRequest
+	(*GetTurfStatsResponse)(nil),        // 23: navigators.v1.GetTurfStatsResponse
+	(*TurfStats)(nil),                   // 24: navigators.v1.TurfStats
+	(*GetVoterDensityGridRequest)(nil),  // 25: navigators.v1.GetVoterDensityGridRequest
+	(*GetVoterDensityGridResponse)(nil), // 26: navigators.v1.GetVoterDensityGridResponse
+	(*DensityGridCell)(nil),             // 27: navigators.v1.DensityGridCell
 }
 var file_navigators_v1_turf_proto_depIdxs = []int32{
 	4,  // 0: navigators.v1.ListTurfsResponse.turfs:type_name -> navigators.v1.TurfInfo
 	11, // 1: navigators.v1.GetUserTurfsResponse.assignments:type_name -> navigators.v1.TurfAssignment
-	0,  // 2: navigators.v1.TurfService.CreateTurf:input_type -> navigators.v1.CreateTurfRequest
-	2,  // 3: navigators.v1.TurfService.ListTurfs:input_type -> navigators.v1.ListTurfsRequest
-	5,  // 4: navigators.v1.TurfService.AssignUserToTurf:input_type -> navigators.v1.AssignUserToTurfRequest
-	7,  // 5: navigators.v1.TurfService.RemoveUserFromTurf:input_type -> navigators.v1.RemoveUserFromTurfRequest
-	9,  // 6: navigators.v1.TurfService.GetUserTurfs:input_type -> navigators.v1.GetUserTurfsRequest
-	1,  // 7: navigators.v1.TurfService.CreateTurf:output_type -> navigators.v1.CreateTurfResponse
-	3,  // 8: navigators.v1.TurfService.ListTurfs:output_type -> navigators.v1.ListTurfsResponse
-	6,  // 9: navigators.v1.TurfService.AssignUserToTurf:output_type -> navigators.v1.AssignUserToTurfResponse
-	8,  // 10: navigators.v1.TurfService.RemoveUserFromTurf:output_type -> navigators.v1.RemoveUserFromTurfResponse
-	10, // 11: navigators.v1.TurfService.GetUserTurfs:output_type -> navigators.v1.GetUserTurfsResponse
-	7,  // [7:12] is the sub-list for method output_type
-	2,  // [2:7] is the sub-list for method input_type
-	2,  // [2:2] is the sub-list for extension type_name
-	2,  // [2:2] is the sub-list for extension extendee
-	0,  // [0:2] is the sub-list for field type_name
+	4,  // 2: navigators.v1.GetTurfResponse.turf:type_name -> navigators.v1.TurfInfo
+	4,  // 3: navigators.v1.UpdateTurfBoundaryResponse.turf:type_name -> navigators.v1.TurfInfo
+	18, // 4: navigators.v1.GetVotersInTurfResponse.voters:type_name -> navigators.v1.VoterPin
+	21, // 5: navigators.v1.GenerateWalkListResponse.voters:type_name -> navigators.v1.WalkListVoter
+	24, // 6: navigators.v1.GetTurfStatsResponse.stats:type_name -> navigators.v1.TurfStats
+	27, // 7: navigators.v1.GetVoterDensityGridResponse.cells:type_name -> navigators.v1.DensityGridCell
+	0,  // 8: navigators.v1.TurfService.CreateTurf:input_type -> navigators.v1.CreateTurfRequest
+	2,  // 9: navigators.v1.TurfService.ListTurfs:input_type -> navigators.v1.ListTurfsRequest
+	5,  // 10: navigators.v1.TurfService.AssignUserToTurf:input_type -> navigators.v1.AssignUserToTurfRequest
+	7,  // 11: navigators.v1.TurfService.RemoveUserFromTurf:input_type -> navigators.v1.RemoveUserFromTurfRequest
+	9,  // 12: navigators.v1.TurfService.GetUserTurfs:input_type -> navigators.v1.GetUserTurfsRequest
+	12, // 13: navigators.v1.TurfService.GetTurf:input_type -> navigators.v1.GetTurfRequest
+	14, // 14: navigators.v1.TurfService.UpdateTurfBoundary:input_type -> navigators.v1.UpdateTurfBoundaryRequest
+	16, // 15: navigators.v1.TurfService.GetVotersInTurf:input_type -> navigators.v1.GetVotersInTurfRequest
+	19, // 16: navigators.v1.TurfService.GenerateWalkList:input_type -> navigators.v1.GenerateWalkListRequest
+	22, // 17: navigators.v1.TurfService.GetTurfStats:input_type -> navigators.v1.GetTurfStatsRequest
+	25, // 18: navigators.v1.TurfService.GetVoterDensityGrid:input_type -> navigators.v1.GetVoterDensityGridRequest
+	1,  // 19: navigators.v1.TurfService.CreateTurf:output_type -> navigators.v1.CreateTurfResponse
+	3,  // 20: navigators.v1.TurfService.ListTurfs:output_type -> navigators.v1.ListTurfsResponse
+	6,  // 21: navigators.v1.TurfService.AssignUserToTurf:output_type -> navigators.v1.AssignUserToTurfResponse
+	8,  // 22: navigators.v1.TurfService.RemoveUserFromTurf:output_type -> navigators.v1.RemoveUserFromTurfResponse
+	10, // 23: navigators.v1.TurfService.GetUserTurfs:output_type -> navigators.v1.GetUserTurfsResponse
+	13, // 24: navigators.v1.TurfService.GetTurf:output_type -> navigators.v1.GetTurfResponse
+	15, // 25: navigators.v1.TurfService.UpdateTurfBoundary:output_type -> navigators.v1.UpdateTurfBoundaryResponse
+	17, // 26: navigators.v1.TurfService.GetVotersInTurf:output_type -> navigators.v1.GetVotersInTurfResponse
+	20, // 27: navigators.v1.TurfService.GenerateWalkList:output_type -> navigators.v1.GenerateWalkListResponse
+	23, // 28: navigators.v1.TurfService.GetTurfStats:output_type -> navigators.v1.GetTurfStatsResponse
+	26, // 29: navigators.v1.TurfService.GetVoterDensityGrid:output_type -> navigators.v1.GetVoterDensityGridResponse
+	19, // [19:30] is the sub-list for method output_type
+	8,  // [8:19] is the sub-list for method input_type
+	8,  // [8:8] is the sub-list for extension type_name
+	8,  // [8:8] is the sub-list for extension extendee
+	0,  // [0:8] is the sub-list for field type_name
 }
 
 func init() { file_navigators_v1_turf_proto_init() }
@@ -709,7 +1817,7 @@ func file_navigators_v1_turf_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_navigators_v1_turf_proto_rawDesc), len(file_navigators_v1_turf_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   12,
+			NumMessages:   28,
 			NumExtensions: 0,
 			NumServices:   1,
 		},

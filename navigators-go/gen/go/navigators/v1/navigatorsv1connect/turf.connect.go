@@ -46,6 +46,23 @@ const (
 	// TurfServiceGetUserTurfsProcedure is the fully-qualified name of the TurfService's GetUserTurfs
 	// RPC.
 	TurfServiceGetUserTurfsProcedure = "/navigators.v1.TurfService/GetUserTurfs"
+	// TurfServiceGetTurfProcedure is the fully-qualified name of the TurfService's GetTurf RPC.
+	TurfServiceGetTurfProcedure = "/navigators.v1.TurfService/GetTurf"
+	// TurfServiceUpdateTurfBoundaryProcedure is the fully-qualified name of the TurfService's
+	// UpdateTurfBoundary RPC.
+	TurfServiceUpdateTurfBoundaryProcedure = "/navigators.v1.TurfService/UpdateTurfBoundary"
+	// TurfServiceGetVotersInTurfProcedure is the fully-qualified name of the TurfService's
+	// GetVotersInTurf RPC.
+	TurfServiceGetVotersInTurfProcedure = "/navigators.v1.TurfService/GetVotersInTurf"
+	// TurfServiceGenerateWalkListProcedure is the fully-qualified name of the TurfService's
+	// GenerateWalkList RPC.
+	TurfServiceGenerateWalkListProcedure = "/navigators.v1.TurfService/GenerateWalkList"
+	// TurfServiceGetTurfStatsProcedure is the fully-qualified name of the TurfService's GetTurfStats
+	// RPC.
+	TurfServiceGetTurfStatsProcedure = "/navigators.v1.TurfService/GetTurfStats"
+	// TurfServiceGetVoterDensityGridProcedure is the fully-qualified name of the TurfService's
+	// GetVoterDensityGrid RPC.
+	TurfServiceGetVoterDensityGridProcedure = "/navigators.v1.TurfService/GetVoterDensityGrid"
 )
 
 // TurfServiceClient is a client for the navigators.v1.TurfService service.
@@ -60,6 +77,18 @@ type TurfServiceClient interface {
 	RemoveUserFromTurf(context.Context, *connect.Request[v1.RemoveUserFromTurfRequest]) (*connect.Response[v1.RemoveUserFromTurfResponse], error)
 	// GetUserTurfs returns all turfs assigned to a user.
 	GetUserTurfs(context.Context, *connect.Request[v1.GetUserTurfsRequest]) (*connect.Response[v1.GetUserTurfsResponse], error)
+	// GetTurf returns a single turf with boundary and stats.
+	GetTurf(context.Context, *connect.Request[v1.GetTurfRequest]) (*connect.Response[v1.GetTurfResponse], error)
+	// UpdateTurfBoundary sets or updates the polygon boundary for a turf.
+	UpdateTurfBoundary(context.Context, *connect.Request[v1.UpdateTurfBoundaryRequest]) (*connect.Response[v1.UpdateTurfBoundaryResponse], error)
+	// GetVotersInTurf returns geocoded voters spatially contained by a turf boundary.
+	GetVotersInTurf(context.Context, *connect.Request[v1.GetVotersInTurfRequest]) (*connect.Response[v1.GetVotersInTurfResponse], error)
+	// GenerateWalkList returns voters ordered by nearest-neighbor route for door-knocking.
+	GenerateWalkList(context.Context, *connect.Request[v1.GenerateWalkListRequest]) (*connect.Response[v1.GenerateWalkListResponse], error)
+	// GetTurfStats returns completion statistics for a turf.
+	GetTurfStats(context.Context, *connect.Request[v1.GetTurfStatsRequest]) (*connect.Response[v1.GetTurfStatsResponse], error)
+	// GetVoterDensityGrid returns aggregated voter density cells for heat map rendering.
+	GetVoterDensityGrid(context.Context, *connect.Request[v1.GetVoterDensityGridRequest]) (*connect.Response[v1.GetVoterDensityGridResponse], error)
 }
 
 // NewTurfServiceClient constructs a client for the navigators.v1.TurfService service. By default,
@@ -103,16 +132,58 @@ func NewTurfServiceClient(httpClient connect.HTTPClient, baseURL string, opts ..
 			connect.WithSchema(turfServiceMethods.ByName("GetUserTurfs")),
 			connect.WithClientOptions(opts...),
 		),
+		getTurf: connect.NewClient[v1.GetTurfRequest, v1.GetTurfResponse](
+			httpClient,
+			baseURL+TurfServiceGetTurfProcedure,
+			connect.WithSchema(turfServiceMethods.ByName("GetTurf")),
+			connect.WithClientOptions(opts...),
+		),
+		updateTurfBoundary: connect.NewClient[v1.UpdateTurfBoundaryRequest, v1.UpdateTurfBoundaryResponse](
+			httpClient,
+			baseURL+TurfServiceUpdateTurfBoundaryProcedure,
+			connect.WithSchema(turfServiceMethods.ByName("UpdateTurfBoundary")),
+			connect.WithClientOptions(opts...),
+		),
+		getVotersInTurf: connect.NewClient[v1.GetVotersInTurfRequest, v1.GetVotersInTurfResponse](
+			httpClient,
+			baseURL+TurfServiceGetVotersInTurfProcedure,
+			connect.WithSchema(turfServiceMethods.ByName("GetVotersInTurf")),
+			connect.WithClientOptions(opts...),
+		),
+		generateWalkList: connect.NewClient[v1.GenerateWalkListRequest, v1.GenerateWalkListResponse](
+			httpClient,
+			baseURL+TurfServiceGenerateWalkListProcedure,
+			connect.WithSchema(turfServiceMethods.ByName("GenerateWalkList")),
+			connect.WithClientOptions(opts...),
+		),
+		getTurfStats: connect.NewClient[v1.GetTurfStatsRequest, v1.GetTurfStatsResponse](
+			httpClient,
+			baseURL+TurfServiceGetTurfStatsProcedure,
+			connect.WithSchema(turfServiceMethods.ByName("GetTurfStats")),
+			connect.WithClientOptions(opts...),
+		),
+		getVoterDensityGrid: connect.NewClient[v1.GetVoterDensityGridRequest, v1.GetVoterDensityGridResponse](
+			httpClient,
+			baseURL+TurfServiceGetVoterDensityGridProcedure,
+			connect.WithSchema(turfServiceMethods.ByName("GetVoterDensityGrid")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
 // turfServiceClient implements TurfServiceClient.
 type turfServiceClient struct {
-	createTurf         *connect.Client[v1.CreateTurfRequest, v1.CreateTurfResponse]
-	listTurfs          *connect.Client[v1.ListTurfsRequest, v1.ListTurfsResponse]
-	assignUserToTurf   *connect.Client[v1.AssignUserToTurfRequest, v1.AssignUserToTurfResponse]
-	removeUserFromTurf *connect.Client[v1.RemoveUserFromTurfRequest, v1.RemoveUserFromTurfResponse]
-	getUserTurfs       *connect.Client[v1.GetUserTurfsRequest, v1.GetUserTurfsResponse]
+	createTurf          *connect.Client[v1.CreateTurfRequest, v1.CreateTurfResponse]
+	listTurfs           *connect.Client[v1.ListTurfsRequest, v1.ListTurfsResponse]
+	assignUserToTurf    *connect.Client[v1.AssignUserToTurfRequest, v1.AssignUserToTurfResponse]
+	removeUserFromTurf  *connect.Client[v1.RemoveUserFromTurfRequest, v1.RemoveUserFromTurfResponse]
+	getUserTurfs        *connect.Client[v1.GetUserTurfsRequest, v1.GetUserTurfsResponse]
+	getTurf             *connect.Client[v1.GetTurfRequest, v1.GetTurfResponse]
+	updateTurfBoundary  *connect.Client[v1.UpdateTurfBoundaryRequest, v1.UpdateTurfBoundaryResponse]
+	getVotersInTurf     *connect.Client[v1.GetVotersInTurfRequest, v1.GetVotersInTurfResponse]
+	generateWalkList    *connect.Client[v1.GenerateWalkListRequest, v1.GenerateWalkListResponse]
+	getTurfStats        *connect.Client[v1.GetTurfStatsRequest, v1.GetTurfStatsResponse]
+	getVoterDensityGrid *connect.Client[v1.GetVoterDensityGridRequest, v1.GetVoterDensityGridResponse]
 }
 
 // CreateTurf calls navigators.v1.TurfService.CreateTurf.
@@ -140,6 +211,36 @@ func (c *turfServiceClient) GetUserTurfs(ctx context.Context, req *connect.Reque
 	return c.getUserTurfs.CallUnary(ctx, req)
 }
 
+// GetTurf calls navigators.v1.TurfService.GetTurf.
+func (c *turfServiceClient) GetTurf(ctx context.Context, req *connect.Request[v1.GetTurfRequest]) (*connect.Response[v1.GetTurfResponse], error) {
+	return c.getTurf.CallUnary(ctx, req)
+}
+
+// UpdateTurfBoundary calls navigators.v1.TurfService.UpdateTurfBoundary.
+func (c *turfServiceClient) UpdateTurfBoundary(ctx context.Context, req *connect.Request[v1.UpdateTurfBoundaryRequest]) (*connect.Response[v1.UpdateTurfBoundaryResponse], error) {
+	return c.updateTurfBoundary.CallUnary(ctx, req)
+}
+
+// GetVotersInTurf calls navigators.v1.TurfService.GetVotersInTurf.
+func (c *turfServiceClient) GetVotersInTurf(ctx context.Context, req *connect.Request[v1.GetVotersInTurfRequest]) (*connect.Response[v1.GetVotersInTurfResponse], error) {
+	return c.getVotersInTurf.CallUnary(ctx, req)
+}
+
+// GenerateWalkList calls navigators.v1.TurfService.GenerateWalkList.
+func (c *turfServiceClient) GenerateWalkList(ctx context.Context, req *connect.Request[v1.GenerateWalkListRequest]) (*connect.Response[v1.GenerateWalkListResponse], error) {
+	return c.generateWalkList.CallUnary(ctx, req)
+}
+
+// GetTurfStats calls navigators.v1.TurfService.GetTurfStats.
+func (c *turfServiceClient) GetTurfStats(ctx context.Context, req *connect.Request[v1.GetTurfStatsRequest]) (*connect.Response[v1.GetTurfStatsResponse], error) {
+	return c.getTurfStats.CallUnary(ctx, req)
+}
+
+// GetVoterDensityGrid calls navigators.v1.TurfService.GetVoterDensityGrid.
+func (c *turfServiceClient) GetVoterDensityGrid(ctx context.Context, req *connect.Request[v1.GetVoterDensityGridRequest]) (*connect.Response[v1.GetVoterDensityGridResponse], error) {
+	return c.getVoterDensityGrid.CallUnary(ctx, req)
+}
+
 // TurfServiceHandler is an implementation of the navigators.v1.TurfService service.
 type TurfServiceHandler interface {
 	// CreateTurf creates a new turf for the company.
@@ -152,6 +253,18 @@ type TurfServiceHandler interface {
 	RemoveUserFromTurf(context.Context, *connect.Request[v1.RemoveUserFromTurfRequest]) (*connect.Response[v1.RemoveUserFromTurfResponse], error)
 	// GetUserTurfs returns all turfs assigned to a user.
 	GetUserTurfs(context.Context, *connect.Request[v1.GetUserTurfsRequest]) (*connect.Response[v1.GetUserTurfsResponse], error)
+	// GetTurf returns a single turf with boundary and stats.
+	GetTurf(context.Context, *connect.Request[v1.GetTurfRequest]) (*connect.Response[v1.GetTurfResponse], error)
+	// UpdateTurfBoundary sets or updates the polygon boundary for a turf.
+	UpdateTurfBoundary(context.Context, *connect.Request[v1.UpdateTurfBoundaryRequest]) (*connect.Response[v1.UpdateTurfBoundaryResponse], error)
+	// GetVotersInTurf returns geocoded voters spatially contained by a turf boundary.
+	GetVotersInTurf(context.Context, *connect.Request[v1.GetVotersInTurfRequest]) (*connect.Response[v1.GetVotersInTurfResponse], error)
+	// GenerateWalkList returns voters ordered by nearest-neighbor route for door-knocking.
+	GenerateWalkList(context.Context, *connect.Request[v1.GenerateWalkListRequest]) (*connect.Response[v1.GenerateWalkListResponse], error)
+	// GetTurfStats returns completion statistics for a turf.
+	GetTurfStats(context.Context, *connect.Request[v1.GetTurfStatsRequest]) (*connect.Response[v1.GetTurfStatsResponse], error)
+	// GetVoterDensityGrid returns aggregated voter density cells for heat map rendering.
+	GetVoterDensityGrid(context.Context, *connect.Request[v1.GetVoterDensityGridRequest]) (*connect.Response[v1.GetVoterDensityGridResponse], error)
 }
 
 // NewTurfServiceHandler builds an HTTP handler from the service implementation. It returns the path
@@ -191,6 +304,42 @@ func NewTurfServiceHandler(svc TurfServiceHandler, opts ...connect.HandlerOption
 		connect.WithSchema(turfServiceMethods.ByName("GetUserTurfs")),
 		connect.WithHandlerOptions(opts...),
 	)
+	turfServiceGetTurfHandler := connect.NewUnaryHandler(
+		TurfServiceGetTurfProcedure,
+		svc.GetTurf,
+		connect.WithSchema(turfServiceMethods.ByName("GetTurf")),
+		connect.WithHandlerOptions(opts...),
+	)
+	turfServiceUpdateTurfBoundaryHandler := connect.NewUnaryHandler(
+		TurfServiceUpdateTurfBoundaryProcedure,
+		svc.UpdateTurfBoundary,
+		connect.WithSchema(turfServiceMethods.ByName("UpdateTurfBoundary")),
+		connect.WithHandlerOptions(opts...),
+	)
+	turfServiceGetVotersInTurfHandler := connect.NewUnaryHandler(
+		TurfServiceGetVotersInTurfProcedure,
+		svc.GetVotersInTurf,
+		connect.WithSchema(turfServiceMethods.ByName("GetVotersInTurf")),
+		connect.WithHandlerOptions(opts...),
+	)
+	turfServiceGenerateWalkListHandler := connect.NewUnaryHandler(
+		TurfServiceGenerateWalkListProcedure,
+		svc.GenerateWalkList,
+		connect.WithSchema(turfServiceMethods.ByName("GenerateWalkList")),
+		connect.WithHandlerOptions(opts...),
+	)
+	turfServiceGetTurfStatsHandler := connect.NewUnaryHandler(
+		TurfServiceGetTurfStatsProcedure,
+		svc.GetTurfStats,
+		connect.WithSchema(turfServiceMethods.ByName("GetTurfStats")),
+		connect.WithHandlerOptions(opts...),
+	)
+	turfServiceGetVoterDensityGridHandler := connect.NewUnaryHandler(
+		TurfServiceGetVoterDensityGridProcedure,
+		svc.GetVoterDensityGrid,
+		connect.WithSchema(turfServiceMethods.ByName("GetVoterDensityGrid")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/navigators.v1.TurfService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case TurfServiceCreateTurfProcedure:
@@ -203,6 +352,18 @@ func NewTurfServiceHandler(svc TurfServiceHandler, opts ...connect.HandlerOption
 			turfServiceRemoveUserFromTurfHandler.ServeHTTP(w, r)
 		case TurfServiceGetUserTurfsProcedure:
 			turfServiceGetUserTurfsHandler.ServeHTTP(w, r)
+		case TurfServiceGetTurfProcedure:
+			turfServiceGetTurfHandler.ServeHTTP(w, r)
+		case TurfServiceUpdateTurfBoundaryProcedure:
+			turfServiceUpdateTurfBoundaryHandler.ServeHTTP(w, r)
+		case TurfServiceGetVotersInTurfProcedure:
+			turfServiceGetVotersInTurfHandler.ServeHTTP(w, r)
+		case TurfServiceGenerateWalkListProcedure:
+			turfServiceGenerateWalkListHandler.ServeHTTP(w, r)
+		case TurfServiceGetTurfStatsProcedure:
+			turfServiceGetTurfStatsHandler.ServeHTTP(w, r)
+		case TurfServiceGetVoterDensityGridProcedure:
+			turfServiceGetVoterDensityGridHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -230,4 +391,28 @@ func (UnimplementedTurfServiceHandler) RemoveUserFromTurf(context.Context, *conn
 
 func (UnimplementedTurfServiceHandler) GetUserTurfs(context.Context, *connect.Request[v1.GetUserTurfsRequest]) (*connect.Response[v1.GetUserTurfsResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.TurfService.GetUserTurfs is not implemented"))
+}
+
+func (UnimplementedTurfServiceHandler) GetTurf(context.Context, *connect.Request[v1.GetTurfRequest]) (*connect.Response[v1.GetTurfResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.TurfService.GetTurf is not implemented"))
+}
+
+func (UnimplementedTurfServiceHandler) UpdateTurfBoundary(context.Context, *connect.Request[v1.UpdateTurfBoundaryRequest]) (*connect.Response[v1.UpdateTurfBoundaryResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.TurfService.UpdateTurfBoundary is not implemented"))
+}
+
+func (UnimplementedTurfServiceHandler) GetVotersInTurf(context.Context, *connect.Request[v1.GetVotersInTurfRequest]) (*connect.Response[v1.GetVotersInTurfResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.TurfService.GetVotersInTurf is not implemented"))
+}
+
+func (UnimplementedTurfServiceHandler) GenerateWalkList(context.Context, *connect.Request[v1.GenerateWalkListRequest]) (*connect.Response[v1.GenerateWalkListResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.TurfService.GenerateWalkList is not implemented"))
+}
+
+func (UnimplementedTurfServiceHandler) GetTurfStats(context.Context, *connect.Request[v1.GetTurfStatsRequest]) (*connect.Response[v1.GetTurfStatsResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.TurfService.GetTurfStats is not implemented"))
+}
+
+func (UnimplementedTurfServiceHandler) GetVoterDensityGrid(context.Context, *connect.Request[v1.GetVoterDensityGridRequest]) (*connect.Response[v1.GetVoterDensityGridResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.TurfService.GetVoterDensityGrid is not implemented"))
 }

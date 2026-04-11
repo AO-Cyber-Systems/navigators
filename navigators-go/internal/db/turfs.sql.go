@@ -29,6 +29,27 @@ func (q *Queries) AssignUserToTurf(ctx context.Context, arg AssignUserToTurfPara
 	return err
 }
 
+const countVotersInTurf = `-- name: CountVotersInTurf :one
+SELECT COUNT(*) FROM voters v
+JOIN turfs t ON t.id = $1
+WHERE v.company_id = $2
+  AND v.location IS NOT NULL
+  AND v.geocode_status = 'success'
+  AND ST_Contains(t.boundary, v.location)
+`
+
+type CountVotersInTurfParams struct {
+	TurfID    uuid.UUID `json:"turf_id"`
+	CompanyID uuid.UUID `json:"company_id"`
+}
+
+func (q *Queries) CountVotersInTurf(ctx context.Context, arg CountVotersInTurfParams) (int64, error) {
+	row := q.db.QueryRow(ctx, countVotersInTurf, arg.TurfID, arg.CompanyID)
+	var count int64
+	err := row.Scan(&count)
+	return count, err
+}
+
 const createTurf = `-- name: CreateTurf :one
 INSERT INTO turfs (company_id, name, description)
 VALUES ($1, $2, $3)
@@ -60,6 +81,62 @@ func (q *Queries) CreateTurf(ctx context.Context, arg CreateTurfParams) (CreateT
 		&i.Name,
 		&i.Description,
 		&i.IsActive,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const createTurfWithBoundary = `-- name: CreateTurfWithBoundary :one
+INSERT INTO turfs (company_id, name, description, boundary)
+VALUES ($1, $2, $3, ST_ForcePolygonCCW(ST_GeomFromGeoJSON($4)))
+RETURNING id, company_id, name, description, is_active,
+    ST_AsGeoJSON(boundary) as boundary_geojson,
+    ST_Y(ST_Centroid(boundary)) as center_lat,
+    ST_X(ST_Centroid(boundary)) as center_lng,
+    ST_Area(boundary::geography) as area_sq_meters,
+    created_at, updated_at
+`
+
+type CreateTurfWithBoundaryParams struct {
+	CompanyID       uuid.UUID   `json:"company_id"`
+	Name            string      `json:"name"`
+	Description     string      `json:"description"`
+	BoundaryGeojson interface{} `json:"boundary_geojson"`
+}
+
+type CreateTurfWithBoundaryRow struct {
+	ID              uuid.UUID   `json:"id"`
+	CompanyID       uuid.UUID   `json:"company_id"`
+	Name            string      `json:"name"`
+	Description     string      `json:"description"`
+	IsActive        bool        `json:"is_active"`
+	BoundaryGeojson interface{} `json:"boundary_geojson"`
+	CenterLat       interface{} `json:"center_lat"`
+	CenterLng       interface{} `json:"center_lng"`
+	AreaSqMeters    interface{} `json:"area_sq_meters"`
+	CreatedAt       time.Time   `json:"created_at"`
+	UpdatedAt       time.Time   `json:"updated_at"`
+}
+
+func (q *Queries) CreateTurfWithBoundary(ctx context.Context, arg CreateTurfWithBoundaryParams) (CreateTurfWithBoundaryRow, error) {
+	row := q.db.QueryRow(ctx, createTurfWithBoundary,
+		arg.CompanyID,
+		arg.Name,
+		arg.Description,
+		arg.BoundaryGeojson,
+	)
+	var i CreateTurfWithBoundaryRow
+	err := row.Scan(
+		&i.ID,
+		&i.CompanyID,
+		&i.Name,
+		&i.Description,
+		&i.IsActive,
+		&i.BoundaryGeojson,
+		&i.CenterLat,
+		&i.CenterLng,
+		&i.AreaSqMeters,
 		&i.CreatedAt,
 		&i.UpdatedAt,
 	)
@@ -98,6 +175,92 @@ func (q *Queries) GetTurfAssignmentsForUser(ctx context.Context, userID uuid.UUI
 	return items, nil
 }
 
+const getTurfByID = `-- name: GetTurfByID :one
+SELECT t.id, t.company_id, t.name, t.description, t.is_active,
+    ST_AsGeoJSON(t.boundary) as boundary_geojson,
+    ST_Y(ST_Centroid(t.boundary)) as center_lat,
+    ST_X(ST_Centroid(t.boundary)) as center_lng,
+    ST_Area(t.boundary::geography) as area_sq_meters,
+    (SELECT COUNT(*) FROM voters v
+     WHERE v.company_id = t.company_id
+       AND v.location IS NOT NULL
+       AND v.geocode_status = 'success'
+       AND ST_Contains(t.boundary, v.location))::bigint as voter_count,
+    t.created_at, t.updated_at
+FROM turfs t
+WHERE t.id = $1 AND t.company_id = $2
+`
+
+type GetTurfByIDParams struct {
+	TurfID    uuid.UUID `json:"turf_id"`
+	CompanyID uuid.UUID `json:"company_id"`
+}
+
+type GetTurfByIDRow struct {
+	ID              uuid.UUID   `json:"id"`
+	CompanyID       uuid.UUID   `json:"company_id"`
+	Name            string      `json:"name"`
+	Description     string      `json:"description"`
+	IsActive        bool        `json:"is_active"`
+	BoundaryGeojson interface{} `json:"boundary_geojson"`
+	CenterLat       interface{} `json:"center_lat"`
+	CenterLng       interface{} `json:"center_lng"`
+	AreaSqMeters    interface{} `json:"area_sq_meters"`
+	VoterCount      int64       `json:"voter_count"`
+	CreatedAt       time.Time   `json:"created_at"`
+	UpdatedAt       time.Time   `json:"updated_at"`
+}
+
+func (q *Queries) GetTurfByID(ctx context.Context, arg GetTurfByIDParams) (GetTurfByIDRow, error) {
+	row := q.db.QueryRow(ctx, getTurfByID, arg.TurfID, arg.CompanyID)
+	var i GetTurfByIDRow
+	err := row.Scan(
+		&i.ID,
+		&i.CompanyID,
+		&i.Name,
+		&i.Description,
+		&i.IsActive,
+		&i.BoundaryGeojson,
+		&i.CenterLat,
+		&i.CenterLng,
+		&i.AreaSqMeters,
+		&i.VoterCount,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
+}
+
+const getTurfCompletionStats = `-- name: GetTurfCompletionStats :one
+SELECT
+    COUNT(DISTINCT v.id)::bigint as total_voters,
+    COUNT(DISTINCT cl.voter_id)::bigint as contacted_voters
+FROM voters v
+JOIN turfs t ON t.id = $1
+LEFT JOIN contact_logs cl ON cl.voter_id = v.id AND cl.turf_id = $1
+WHERE v.company_id = $2
+  AND v.location IS NOT NULL
+  AND v.geocode_status = 'success'
+  AND ST_Contains(t.boundary, v.location)
+`
+
+type GetTurfCompletionStatsParams struct {
+	TurfID    uuid.UUID `json:"turf_id"`
+	CompanyID uuid.UUID `json:"company_id"`
+}
+
+type GetTurfCompletionStatsRow struct {
+	TotalVoters     int64 `json:"total_voters"`
+	ContactedVoters int64 `json:"contacted_voters"`
+}
+
+func (q *Queries) GetTurfCompletionStats(ctx context.Context, arg GetTurfCompletionStatsParams) (GetTurfCompletionStatsRow, error) {
+	row := q.db.QueryRow(ctx, getTurfCompletionStats, arg.TurfID, arg.CompanyID)
+	var i GetTurfCompletionStatsRow
+	err := row.Scan(&i.TotalVoters, &i.ContactedVoters)
+	return i, err
+}
+
 const getTurfsByCompany = `-- name: GetTurfsByCompany :many
 SELECT id, company_id, name, description, is_active, created_at, updated_at
 FROM turfs WHERE company_id = $1 AND is_active = true
@@ -128,6 +291,70 @@ func (q *Queries) GetTurfsByCompany(ctx context.Context, companyID uuid.UUID) ([
 			&i.Name,
 			&i.Description,
 			&i.IsActive,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const getTurfsByCompanyWithBoundary = `-- name: GetTurfsByCompanyWithBoundary :many
+SELECT t.id, t.company_id, t.name, t.description, t.is_active,
+    ST_AsGeoJSON(t.boundary) as boundary_geojson,
+    ST_Y(ST_Centroid(t.boundary)) as center_lat,
+    ST_X(ST_Centroid(t.boundary)) as center_lng,
+    ST_Area(t.boundary::geography) as area_sq_meters,
+    (SELECT COUNT(*) FROM voters v
+     WHERE v.company_id = t.company_id
+       AND v.location IS NOT NULL
+       AND v.geocode_status = 'success'
+       AND ST_Contains(t.boundary, v.location))::bigint as voter_count,
+    t.created_at, t.updated_at
+FROM turfs t
+WHERE t.company_id = $1 AND t.is_active = true
+`
+
+type GetTurfsByCompanyWithBoundaryRow struct {
+	ID              uuid.UUID   `json:"id"`
+	CompanyID       uuid.UUID   `json:"company_id"`
+	Name            string      `json:"name"`
+	Description     string      `json:"description"`
+	IsActive        bool        `json:"is_active"`
+	BoundaryGeojson interface{} `json:"boundary_geojson"`
+	CenterLat       interface{} `json:"center_lat"`
+	CenterLng       interface{} `json:"center_lng"`
+	AreaSqMeters    interface{} `json:"area_sq_meters"`
+	VoterCount      int64       `json:"voter_count"`
+	CreatedAt       time.Time   `json:"created_at"`
+	UpdatedAt       time.Time   `json:"updated_at"`
+}
+
+func (q *Queries) GetTurfsByCompanyWithBoundary(ctx context.Context, companyID uuid.UUID) ([]GetTurfsByCompanyWithBoundaryRow, error) {
+	rows, err := q.db.Query(ctx, getTurfsByCompanyWithBoundary, companyID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []GetTurfsByCompanyWithBoundaryRow{}
+	for rows.Next() {
+		var i GetTurfsByCompanyWithBoundaryRow
+		if err := rows.Scan(
+			&i.ID,
+			&i.CompanyID,
+			&i.Name,
+			&i.Description,
+			&i.IsActive,
+			&i.BoundaryGeojson,
+			&i.CenterLat,
+			&i.CenterLng,
+			&i.AreaSqMeters,
+			&i.VoterCount,
 			&i.CreatedAt,
 			&i.UpdatedAt,
 		); err != nil {
@@ -177,4 +404,56 @@ type RemoveUserFromTurfParams struct {
 func (q *Queries) RemoveUserFromTurf(ctx context.Context, arg RemoveUserFromTurfParams) error {
 	_, err := q.db.Exec(ctx, removeUserFromTurf, arg.TurfID, arg.UserID)
 	return err
+}
+
+const updateTurfBoundary = `-- name: UpdateTurfBoundary :one
+UPDATE turfs
+SET boundary = ST_ForcePolygonCCW(ST_GeomFromGeoJSON($1)),
+    updated_at = now()
+WHERE id = $2 AND company_id = $3
+RETURNING id, company_id, name, description, is_active,
+    ST_AsGeoJSON(boundary) as boundary_geojson,
+    ST_Y(ST_Centroid(boundary)) as center_lat,
+    ST_X(ST_Centroid(boundary)) as center_lng,
+    ST_Area(boundary::geography) as area_sq_meters,
+    created_at, updated_at
+`
+
+type UpdateTurfBoundaryParams struct {
+	BoundaryGeojson interface{} `json:"boundary_geojson"`
+	TurfID          uuid.UUID   `json:"turf_id"`
+	CompanyID       uuid.UUID   `json:"company_id"`
+}
+
+type UpdateTurfBoundaryRow struct {
+	ID              uuid.UUID   `json:"id"`
+	CompanyID       uuid.UUID   `json:"company_id"`
+	Name            string      `json:"name"`
+	Description     string      `json:"description"`
+	IsActive        bool        `json:"is_active"`
+	BoundaryGeojson interface{} `json:"boundary_geojson"`
+	CenterLat       interface{} `json:"center_lat"`
+	CenterLng       interface{} `json:"center_lng"`
+	AreaSqMeters    interface{} `json:"area_sq_meters"`
+	CreatedAt       time.Time   `json:"created_at"`
+	UpdatedAt       time.Time   `json:"updated_at"`
+}
+
+func (q *Queries) UpdateTurfBoundary(ctx context.Context, arg UpdateTurfBoundaryParams) (UpdateTurfBoundaryRow, error) {
+	row := q.db.QueryRow(ctx, updateTurfBoundary, arg.BoundaryGeojson, arg.TurfID, arg.CompanyID)
+	var i UpdateTurfBoundaryRow
+	err := row.Scan(
+		&i.ID,
+		&i.CompanyID,
+		&i.Name,
+		&i.Description,
+		&i.IsActive,
+		&i.BoundaryGeojson,
+		&i.CenterLat,
+		&i.CenterLng,
+		&i.AreaSqMeters,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
