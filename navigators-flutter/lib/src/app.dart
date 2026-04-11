@@ -8,6 +8,9 @@ import '../main.dart' show generateEncryptionKey;
 import 'database/database.dart';
 import 'features/import/import_screen.dart';
 import 'features/map/turf_map_screen.dart';
+import 'features/sms/campaign_list_screen.dart';
+import 'features/sms/conversation_list_screen.dart';
+import 'features/sms/template_list_screen.dart';
 import 'features/sync/sync_status_widget.dart';
 import 'features/sync/turf_download_screen.dart';
 import 'features/voters/voter_list_screen.dart';
@@ -182,6 +185,11 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
         icon: Icons.map_outlined,
         activeIcon: Icons.map,
       ),
+      const _TabItem(
+        label: 'Messages',
+        icon: Icons.chat_bubble_outline,
+        activeIcon: Icons.chat_bubble,
+      ),
       if (isAdmin)
         const _TabItem(
           label: 'Import',
@@ -202,6 +210,7 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
           _buildHomeTab(auth),
           const VoterListScreen(),
           const TurfMapScreen(),
+          _buildSmsTab(isAdmin),
           if (isAdmin) const ImportScreen(),
         ],
       ),
@@ -216,6 +225,41 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
                 ))
             .toList(),
       ),
+    );
+  }
+
+  Widget _buildSmsTab(bool isAdmin) {
+    return Scaffold(
+      appBar: AppBar(
+        title: const Text('Messages'),
+        actions: [
+          if (isAdmin) ...[
+            IconButton(
+              icon: const Icon(Icons.description_outlined),
+              tooltip: 'Templates',
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const TemplateListScreen(),
+                  ),
+                );
+              },
+            ),
+            IconButton(
+              icon: const Icon(Icons.campaign_outlined),
+              tooltip: 'Campaigns',
+              onPressed: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => const CampaignListScreen(),
+                  ),
+                );
+              },
+            ),
+          ],
+        ],
+      ),
+      body: const ConversationListScreen(),
     );
   }
 
