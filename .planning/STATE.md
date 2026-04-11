@@ -10,9 +10,9 @@ See: .planning/PROJECT.md (updated 2026-04-10)
 ## Current Position
 
 **Objective:** 5 of 10 (Door Knocking & Contact Log)
-**Current Job:** 1
+**Current Job:** 2
 **Total Jobs in Objective:** 3
-**Status:** In progress
+**Status:** Ready to execute
 **Last Activity:** 2026-04-11
 
 Progress: [##........] 13%
@@ -43,6 +43,7 @@ Progress: [##........] 13%
 | Objective 04 P02 | 43min | 2 tasks | 12 files |
 | Objective 04 P03 | 11min | 3 tasks | 11 files |
 | Objective 05 P01 | 11min | 2 tasks | 27 files |
+| Objective 05 P02 | 12min | 2 tasks | 9 files |
 
 ## Accumulated Context
 
@@ -90,6 +91,9 @@ Recent decisions affecting current work:
 - [Objective 05]: sqlc generates *int32 for nullable INT columns (sentiment) -- pass directly instead of pgtype.Int4
 - [Objective 05]: PullVoterNotes uses raw pgxpool for role-scoped filtering (complex WHERE clause with role_level param)
 - [Objective 05]: Survey forms are pull-only (admin creates on server); responses and notes are push+pull via outbox
+- [Objective 05]: Step-based flow with local enum state instead of EdenFormWizard for door knock screen
+- [Objective 05]: UUID v4 generated with dart:math Random.secure (no uuid package dependency)
+- [Objective 05]: Walk list map view extracted to widgets/ subdirectory to keep screen under 400 lines
 
 ### Pending Todos
 
