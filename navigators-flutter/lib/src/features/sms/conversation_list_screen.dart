@@ -1,3 +1,4 @@
+import 'package:eden_ui_flutter/eden_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -20,6 +21,10 @@ class _ConversationListScreenState
   String? _error;
   String _nextPageToken = '';
   final ScrollController _scrollController = ScrollController();
+
+  // Desktop master-detail state
+  String? _selectedVoterId;
+  String? _selectedVoterName;
 
   @override
   void initState() {
@@ -112,8 +117,65 @@ class _ConversationListScreenState
     }
   }
 
+  void _onConversationTap(ConversationSummary conv) {
+    final isDesktop = EdenResponsive.isDesktop(context);
+    if (isDesktop) {
+      setState(() {
+        _selectedVoterId = conv.voterId;
+        _selectedVoterName = conv.voterName;
+      });
+    } else {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => ConversationThreadScreen(
+            voterId: conv.voterId,
+            voterName: conv.voterName,
+          ),
+        ),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
+    final isDesktop = EdenResponsive.isDesktop(context);
+
+    if (isDesktop) {
+      return _buildDesktopLayout();
+    }
+    return _buildConversationList();
+  }
+
+  Widget _buildDesktopLayout() {
+    return Row(
+      children: [
+        // Left panel: conversation list
+        SizedBox(
+          width: 380,
+          child: _buildConversationList(),
+        ),
+        const VerticalDivider(width: 1),
+        // Right panel: thread or empty state
+        Expanded(
+          child: _selectedVoterId != null
+              ? ConversationThreadScreen(
+                  key: ValueKey(_selectedVoterId),
+                  voterId: _selectedVoterId!,
+                  voterName: _selectedVoterName ?? '',
+                )
+              : const Center(
+                  child: EdenEmptyState(
+                    title: 'Select a conversation',
+                    description: 'Choose a conversation to view messages.',
+                    icon: Icons.chat_bubble_outline,
+                  ),
+                ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildConversationList() {
     if (_isLoading && _conversations.isEmpty) {
       return const Center(child: CircularProgressIndicator());
     }
@@ -181,7 +243,13 @@ class _ConversationListScreenState
                 );
               }
               final conv = _conversations[index];
+              final isSelected = conv.voterId == _selectedVoterId;
               return ListTile(
+                selected: isSelected,
+                selectedTileColor: Theme.of(context)
+                    .colorScheme
+                    .primary
+                    .withValues(alpha: 0.08),
                 leading: CircleAvatar(
                   child: Text(
                     conv.voterName.isNotEmpty
@@ -203,16 +271,7 @@ class _ConversationListScreenState
                   _formatRelativeTime(conv.lastMessageAt),
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
-                onTap: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => ConversationThreadScreen(
-                        voterId: conv.voterId,
-                        voterName: conv.voterName,
-                      ),
-                    ),
-                  );
-                },
+                onTap: () => _onConversationTap(conv),
               );
             },
           ),

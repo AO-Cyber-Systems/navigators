@@ -7,6 +7,21 @@ import 'package:http/http.dart' as http;
 
 /// Data classes for analytics responses.
 
+/// Parse a JSON value that may be a num or a string-encoded number.
+int _parseInt(dynamic v) {
+  if (v == null) return 0;
+  if (v is num) return v.toInt();
+  if (v is String) return int.tryParse(v) ?? 0;
+  return 0;
+}
+
+double _parseDouble(dynamic v) {
+  if (v == null) return 0.0;
+  if (v is num) return v.toDouble();
+  if (v is String) return double.tryParse(v) ?? 0.0;
+  return 0.0;
+}
+
 class DashboardMetrics {
   final int doorsKnocked;
   final int callsMade;
@@ -37,8 +52,7 @@ class DashboardMetrics {
     final sentimentMap = <int, int>{};
     for (final bucket in sentimentList) {
       final b = bucket as Map<String, dynamic>;
-      sentimentMap[(b['sentiment'] as num?)?.toInt() ?? 0] =
-          (b['count'] as num?)?.toInt() ?? 0;
+      sentimentMap[_parseInt(b['sentiment'])] = _parseInt(b['count']);
     }
 
     final turfList = json['turfSummaries'] as List<dynamic>? ?? [];
@@ -47,15 +61,15 @@ class DashboardMetrics {
         .toList();
 
     return DashboardMetrics(
-      doorsKnocked: (json['doorsKnocked'] as num?)?.toInt() ?? 0,
-      callsMade: (json['callsMade'] as num?)?.toInt() ?? 0,
-      textsSent: (json['textsSent'] as num?)?.toInt() ?? 0,
-      contactRate: (json['contactRate'] as num?)?.toDouble() ?? 0.0,
-      totalVoters: (json['totalVoters'] as num?)?.toInt() ?? 0,
-      contactedVoters: (json['contactedVoters'] as num?)?.toInt() ?? 0,
+      doorsKnocked: _parseInt(json['doorsKnocked']),
+      callsMade: _parseInt(json['callsMade']),
+      textsSent: _parseInt(json['textsSent']),
+      contactRate: _parseDouble(json['contactRate']),
+      totalVoters: _parseInt(json['totalVoters']),
+      contactedVoters: _parseInt(json['contactedVoters']),
       sentimentDistribution: sentimentMap,
-      totalTasks: (json['totalTasks'] as num?)?.toInt() ?? 0,
-      completedTasks: (json['completedTasks'] as num?)?.toInt() ?? 0,
+      totalTasks: _parseInt(json['totalTasks']),
+      completedTasks: _parseInt(json['completedTasks']),
       turfSummaries: turfs,
     );
   }
@@ -79,10 +93,10 @@ class TrendPoint {
   factory TrendPoint.fromJson(Map<String, dynamic> json) {
     return TrendPoint(
       date: DateTime.tryParse(json['date'] as String? ?? '') ?? DateTime.now(),
-      doorKnocks: (json['doorKnocks'] as num?)?.toInt() ?? 0,
-      calls: (json['calls'] as num?)?.toInt() ?? 0,
-      texts: (json['texts'] as num?)?.toInt() ?? 0,
-      totalContacts: (json['totalContacts'] as num?)?.toInt() ?? 0,
+      doorKnocks: _parseInt(json['doorKnocks']),
+      calls: _parseInt(json['calls']),
+      texts: _parseInt(json['texts']),
+      totalContacts: _parseInt(json['totalContacts']),
     );
   }
 }
@@ -110,11 +124,11 @@ class NavigatorPerformance {
     return NavigatorPerformance(
       userId: json['userId'] as String? ?? '',
       displayName: json['displayName'] as String? ?? 'Unknown',
-      doorsKnocked: (json['doorsKnocked'] as num?)?.toInt() ?? 0,
-      callsMade: (json['callsMade'] as num?)?.toInt() ?? 0,
-      textsSent: (json['textsSent'] as num?)?.toInt() ?? 0,
-      totalContacts: (json['totalContacts'] as num?)?.toInt() ?? 0,
-      contactRate: (json['contactRate'] as num?)?.toDouble() ?? 0.0,
+      doorsKnocked: _parseInt(json['doorsKnocked']),
+      callsMade: _parseInt(json['callsMade']),
+      textsSent: _parseInt(json['textsSent']),
+      totalContacts: _parseInt(json['totalContacts']),
+      contactRate: _parseDouble(json['contactRate']),
     );
   }
 }
@@ -136,8 +150,8 @@ class TurfSummary {
     return TurfSummary(
       turfId: json['turfId'] as String? ?? '',
       turfName: json['turfName'] as String? ?? '',
-      voterCount: (json['voterCount'] as num?)?.toInt() ?? 0,
-      contactedCount: (json['contactedCount'] as num?)?.toInt() ?? 0,
+      voterCount: _parseInt(json['voterCount']),
+      contactedCount: _parseInt(json['contactedCount']),
     );
   }
 }

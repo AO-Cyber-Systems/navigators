@@ -9,6 +9,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 	"github.com/xuri/excelize/v2"
 
@@ -36,10 +37,10 @@ func (s *ExportService) Export(ctx context.Context, companyID uuid.UUID, exportT
 		return nil, "", "", fmt.Errorf("resolve scope: %w", err)
 	}
 
-	userID := uuid.Nil
+	var userID pgtype.UUID
 	var turfIDs []uuid.UUID
 	if scope.Type == ScopeOwn {
-		userID = scope.UserID
+		userID = pgtype.UUID{Bytes: scope.UserID, Valid: true}
 		turfIDs = scope.TurfIDs
 	} else if scope.Type == ScopeTeam {
 		turfIDs = scope.TurfIDs
@@ -92,7 +93,7 @@ func (s *ExportService) Export(ctx context.Context, companyID uuid.UUID, exportT
 
 // --- Contacts export ---
 
-func (s *ExportService) exportContactsCSV(ctx context.Context, companyID, userID uuid.UUID, turfIDs []uuid.UUID, since, until time.Time) ([]byte, error) {
+func (s *ExportService) exportContactsCSV(ctx context.Context, companyID uuid.UUID, userID pgtype.UUID, turfIDs []uuid.UUID, since, until time.Time) ([]byte, error) {
 	rows, err := s.queries.GetExportContacts(ctx, db.GetExportContactsParams{
 		CompanyID: companyID,
 		Since:     since,
@@ -138,7 +139,7 @@ func (s *ExportService) exportContactsCSV(ctx context.Context, companyID, userID
 	return buf.Bytes(), nil
 }
 
-func (s *ExportService) exportContactsExcel(ctx context.Context, companyID, userID uuid.UUID, turfIDs []uuid.UUID, since, until time.Time) ([]byte, error) {
+func (s *ExportService) exportContactsExcel(ctx context.Context, companyID uuid.UUID, userID pgtype.UUID, turfIDs []uuid.UUID, since, until time.Time) ([]byte, error) {
 	rows, err := s.queries.GetExportContacts(ctx, db.GetExportContactsParams{
 		CompanyID: companyID,
 		Since:     since,
@@ -304,7 +305,7 @@ func (s *ExportService) exportVotersExcel(ctx context.Context, companyID uuid.UU
 
 // --- Tasks export ---
 
-func (s *ExportService) exportTasksCSV(ctx context.Context, companyID, userID uuid.UUID) ([]byte, error) {
+func (s *ExportService) exportTasksCSV(ctx context.Context, companyID uuid.UUID, userID pgtype.UUID) ([]byte, error) {
 	rows, err := s.queries.GetExportTasks(ctx, db.GetExportTasksParams{
 		CompanyID: companyID,
 		UserID:    userID,
@@ -346,7 +347,7 @@ func (s *ExportService) exportTasksCSV(ctx context.Context, companyID, userID uu
 	return buf.Bytes(), nil
 }
 
-func (s *ExportService) exportTasksExcel(ctx context.Context, companyID, userID uuid.UUID) ([]byte, error) {
+func (s *ExportService) exportTasksExcel(ctx context.Context, companyID uuid.UUID, userID pgtype.UUID) ([]byte, error) {
 	rows, err := s.queries.GetExportTasks(ctx, db.GetExportTasksParams{
 		CompanyID: companyID,
 		UserID:    userID,

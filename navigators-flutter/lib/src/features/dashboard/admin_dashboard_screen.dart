@@ -1,3 +1,4 @@
+import 'package:eden_ui_flutter/eden_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -31,13 +32,11 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
   bool _loading = true;
   String? _error;
 
-  // Heat map loading state (separate from main loading)
   bool _mapLoading = false;
   String? _mapError;
 
   final MapController _mapController = MapController();
 
-  // Maine center
   static const _maineCenter = LatLng(45.2538, -69.4455);
   static const _maineZoom = 7.0;
 
@@ -76,7 +75,6 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
         _metrics = results[0] as DashboardMetrics;
         _trend = results[1] as List<TrendPoint>;
         _performance = results[2] as List<NavigatorPerformance>;
-        // density cells set in _fetchDensityCells
         _loading = false;
       });
     } catch (e) {
@@ -161,6 +159,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
     }
 
     final metrics = _metrics!;
+    final isWide = EdenResponsive.isDesktop(context);
 
     return Scaffold(
       body: RefreshIndicator(
@@ -168,49 +167,104 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
         child: SingleChildScrollView(
           physics: const AlwaysScrollableScrollPhysics(),
           padding: const EdgeInsets.all(16),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // Section 1: Key Metrics
-              _buildMetricCards(metrics),
-              const SizedBox(height: 16),
+          child: Center(
+            child: ConstrainedBox(
+              constraints: const BoxConstraints(maxWidth: 1200),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  // Section 1: Key Metrics — 4 columns on desktop, wrap on mobile
+                  _buildMetricCards(metrics, isWide),
+                  const SizedBox(height: 16),
 
-              // Section 2: Activity Trends
-              _buildSectionCard(
-                title: 'Activity Trends (Last 30 Days)',
-                child: ActivityChart(data: _trend),
-              ),
-              const SizedBox(height: 16),
+                  if (isWide) ...[
+                    // Desktop: Activity Trends + Sentiment side by side
+                    IntrinsicHeight(child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: _buildSectionCard(
+                            title: 'Activity Trends (Last 30 Days)',
+                            child: ActivityChart(data: _trend),
+                          ),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          flex: 1,
+                          child: _buildSectionCard(
+                            title: 'Sentiment Distribution',
+                            child: Column(
+                              children: [
+                                SentimentPieChart(
+                                    distribution:
+                                        metrics.sentimentDistribution),
+                                const SizedBox(height: 8),
+                                _buildSentimentCounts(
+                                    metrics.sentimentDistribution),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    )),
+                    const SizedBox(height: 16),
 
-              // Section 3: Sentiment Distribution
-              _buildSectionCard(
-                title: 'Sentiment Distribution',
-                child: Column(
-                  children: [
-                    SentimentPieChart(
-                        distribution: metrics.sentimentDistribution),
-                    const SizedBox(height: 8),
-                    _buildSentimentCounts(metrics.sentimentDistribution),
+                    // Desktop: Heat Map + Top Navigators side by side
+                    IntrinsicHeight(child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.stretch,
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: _buildHeatMapSection(),
+                        ),
+                        const SizedBox(width: 16),
+                        Expanded(
+                          flex: 1,
+                          child: _buildSectionCard(
+                            title: 'Top Navigators',
+                            child: LeaderboardWidget(
+                                navigators: _performance),
+                          ),
+                        ),
+                      ],
+                    )),
+                    const SizedBox(height: 16),
+                    _buildTurfCoverage(metrics.turfSummaries),
+                  ] else ...[
+                    // Mobile: single column stack
+                    _buildSectionCard(
+                      title: 'Activity Trends (Last 30 Days)',
+                      child: ActivityChart(data: _trend),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildSectionCard(
+                      title: 'Sentiment Distribution',
+                      child: Column(
+                        children: [
+                          SentimentPieChart(
+                              distribution: metrics.sentimentDistribution),
+                          const SizedBox(height: 8),
+                          _buildSentimentCounts(
+                              metrics.sentimentDistribution),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildHeatMapSection(),
+                    const SizedBox(height: 16),
+                    _buildSectionCard(
+                      title: 'Top Navigators',
+                      child:
+                          LeaderboardWidget(navigators: _performance),
+                    ),
+                    const SizedBox(height: 16),
+                    _buildTurfCoverage(metrics.turfSummaries),
                   ],
-                ),
+                  const SizedBox(height: 80), // FAB clearance
+                ],
               ),
-              const SizedBox(height: 16),
-
-              // Section 4: Geographic Analytics
-              _buildHeatMapSection(),
-              const SizedBox(height: 16),
-
-              // Section 5: Top Navigators
-              _buildSectionCard(
-                title: 'Top Navigators',
-                child: LeaderboardWidget(navigators: _performance),
-              ),
-              const SizedBox(height: 16),
-
-              // Section 6: Turf Coverage
-              _buildTurfCoverage(metrics.turfSummaries),
-              const SizedBox(height: 80), // FAB clearance
-            ],
+            ),
           ),
         ),
       ),
@@ -227,36 +281,51 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
     );
   }
 
-  Widget _buildMetricCards(DashboardMetrics metrics) {
+  Widget _buildMetricCards(DashboardMetrics metrics, bool isWide) {
+    final cards = [
+      MetricCard(
+        label: 'Doors Knocked',
+        value: '${metrics.doorsKnocked}',
+        icon: Icons.door_front_door,
+        color: Colors.blue,
+      ),
+      MetricCard(
+        label: 'Calls Made',
+        value: '${metrics.callsMade}',
+        icon: Icons.phone,
+        color: Colors.orange,
+      ),
+      MetricCard(
+        label: 'Texts Sent',
+        value: '${metrics.textsSent}',
+        icon: Icons.sms,
+        color: Colors.green,
+      ),
+      MetricCard(
+        label: 'Contact Rate',
+        value: '${(metrics.contactRate * 100).toStringAsFixed(1)}%',
+        icon: Icons.trending_up,
+        color: Colors.purple,
+      ),
+    ];
+
+    if (isWide) {
+      // Desktop: 4 equal columns
+      return Row(
+        children: [
+          for (var i = 0; i < cards.length; i++) ...[
+            if (i > 0) const SizedBox(width: 12),
+            Expanded(child: cards[i]),
+          ],
+        ],
+      );
+    }
+
+    // Mobile: wrap
     return Wrap(
       spacing: 8,
       runSpacing: 8,
-      children: [
-        MetricCard(
-          label: 'Doors Knocked',
-          value: '${metrics.doorsKnocked}',
-          icon: Icons.door_front_door,
-          color: Colors.blue,
-        ),
-        MetricCard(
-          label: 'Calls Made',
-          value: '${metrics.callsMade}',
-          icon: Icons.phone,
-          color: Colors.orange,
-        ),
-        MetricCard(
-          label: 'Texts Sent',
-          value: '${metrics.textsSent}',
-          icon: Icons.sms,
-          color: Colors.green,
-        ),
-        MetricCard(
-          label: 'Contact Rate',
-          value: '${(metrics.contactRate * 100).toStringAsFixed(1)}%',
-          icon: Icons.trending_up,
-          color: Colors.purple,
-        ),
-      ],
+      children: cards,
     );
   }
 

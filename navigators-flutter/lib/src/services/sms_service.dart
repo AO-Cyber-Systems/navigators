@@ -4,6 +4,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:eden_platform_flutter/eden_platform.dart';
 
+// --- Parse helpers (ConnectRPC sends proto int fields as strings) ---
+
+int _parseInt(dynamic v) {
+  if (v == null) return 0;
+  if (v is num) return v.toInt();
+  if (v is String) return int.tryParse(v) ?? 0;
+  return 0;
+}
+
 // --- Models ---
 
 class SMSMessage {
@@ -146,10 +155,10 @@ class SMSCampaign {
       templateId: json['templateId'] as String? ?? '',
       segmentFilters: json['segmentFilters'] as String? ?? '{}',
       status: json['status'] as String? ?? 'draft',
-      totalRecipients: (json['totalRecipients'] as num?)?.toInt() ?? 0,
-      sentCount: (json['sentCount'] as num?)?.toInt() ?? 0,
-      deliveredCount: (json['deliveredCount'] as num?)?.toInt() ?? 0,
-      failedCount: (json['failedCount'] as num?)?.toInt() ?? 0,
+      totalRecipients: _parseInt(json['totalRecipients']),
+      sentCount: _parseInt(json['sentCount']),
+      deliveredCount: _parseInt(json['deliveredCount']),
+      failedCount: _parseInt(json['failedCount']),
       launchedAt: json['launchedAt'] as String? ?? '',
       completedAt: json['completedAt'] as String? ?? '',
       createdAt: json['createdAt'] as String? ?? '',
@@ -202,8 +211,8 @@ class SMSConfig {
       a2pMessagingServiceSid: json['a2pMessagingServiceSid'] as String? ?? '',
       inboundWebhookUrl: json['inboundWebhookUrl'] as String? ?? '',
       statusWebhookUrl: json['statusWebhookUrl'] as String? ?? '',
-      quietHoursStart: (json['quietHoursStart'] as num?)?.toInt() ?? 0,
-      quietHoursEnd: (json['quietHoursEnd'] as num?)?.toInt() ?? 0,
+      quietHoursStart: _parseInt(json['quietHoursStart']),
+      quietHoursEnd: _parseInt(json['quietHoursEnd']),
       tenDlcBrandSid: json['tenDlcBrandSid'] as String? ?? '',
       tenDlcCampaignSid: json['tenDlcCampaignSid'] as String? ?? '',
       tenDlcStatus: json['tenDlcStatus'] as String? ?? '',

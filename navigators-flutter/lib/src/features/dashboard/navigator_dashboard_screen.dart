@@ -1,3 +1,4 @@
+import 'package:eden_ui_flutter/eden_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
@@ -29,7 +30,6 @@ class _NavigatorDashboardScreenState
   @override
   void initState() {
     super.initState();
-    // Schedule load after first frame to ensure ref is available
     WidgetsBinding.instance.addPostFrameCallback((_) => _loadData());
   }
 
@@ -93,76 +93,123 @@ class _NavigatorDashboardScreenState
     }
 
     final metrics = _metrics!;
+    final isWide = EdenResponsive.isDesktop(context);
 
     return RefreshIndicator(
       onRefresh: _loadData,
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         padding: const EdgeInsets.all(16),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            // Metric cards row
-            _buildMetricCards(metrics),
-            const SizedBox(height: 16),
+        child: Center(
+          child: ConstrainedBox(
+            constraints: const BoxConstraints(maxWidth: 1200),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                _buildMetricCards(metrics, isWide),
+                const SizedBox(height: 16),
 
-            // Activity trend chart
-            _buildSectionCard(
-              title: 'Activity Trend (Last 30 Days)',
-              child: ActivityChart(data: _trend),
+                if (isWide) ...[
+                  // Desktop: chart + sentiment side by side
+                  IntrinsicHeight(child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(
+                        flex: 1,
+                        child: _buildSectionCard(
+                          title: 'Activity Trend (Last 30 Days)',
+                          child: ActivityChart(data: _trend),
+                        ),
+                      ),
+                      const SizedBox(width: 16),
+                      Expanded(
+                        flex: 1,
+                        child: _buildSectionCard(
+                          title: 'Sentiment Distribution',
+                          child: SentimentPieChart(
+                              distribution: metrics.sentimentDistribution),
+                        ),
+                      ),
+                    ],
+                  )),
+                  const SizedBox(height: 16),
+                  // Desktop: tasks + turfs side by side
+                  IntrinsicHeight(child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      Expanded(child: _buildTaskSummary(metrics)),
+                      const SizedBox(width: 16),
+                      Expanded(
+                          child: _buildTurfList(metrics.turfSummaries)),
+                    ],
+                  )),
+                ] else ...[
+                  _buildSectionCard(
+                    title: 'Activity Trend (Last 30 Days)',
+                    child: ActivityChart(data: _trend),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildSectionCard(
+                    title: 'Sentiment Distribution',
+                    child: SentimentPieChart(
+                        distribution: metrics.sentimentDistribution),
+                  ),
+                  const SizedBox(height: 16),
+                  _buildTaskSummary(metrics),
+                  const SizedBox(height: 16),
+                  _buildTurfList(metrics.turfSummaries),
+                ],
+              ],
             ),
-            const SizedBox(height: 16),
-
-            // Sentiment distribution
-            _buildSectionCard(
-              title: 'Sentiment Distribution',
-              child: SentimentPieChart(
-                  distribution: metrics.sentimentDistribution),
-            ),
-            const SizedBox(height: 16),
-
-            // Task summary
-            _buildTaskSummary(metrics),
-            const SizedBox(height: 16),
-
-            // Turf list
-            _buildTurfList(metrics.turfSummaries),
-          ],
+          ),
         ),
       ),
     );
   }
 
-  Widget _buildMetricCards(DashboardMetrics metrics) {
+  Widget _buildMetricCards(DashboardMetrics metrics, bool isWide) {
+    final cards = [
+      MetricCard(
+        label: 'Doors Knocked',
+        value: '${metrics.doorsKnocked}',
+        icon: Icons.door_front_door,
+        color: Colors.blue,
+      ),
+      MetricCard(
+        label: 'Calls Made',
+        value: '${metrics.callsMade}',
+        icon: Icons.phone,
+        color: Colors.orange,
+      ),
+      MetricCard(
+        label: 'Texts Sent',
+        value: '${metrics.textsSent}',
+        icon: Icons.sms,
+        color: Colors.green,
+      ),
+      MetricCard(
+        label: 'Contact Rate',
+        value: '${(metrics.contactRate * 100).toStringAsFixed(1)}%',
+        icon: Icons.trending_up,
+        color: Colors.purple,
+      ),
+    ];
+
+    if (isWide) {
+      return Row(
+        children: [
+          for (var i = 0; i < cards.length; i++) ...[
+            if (i > 0) const SizedBox(width: 12),
+            Expanded(child: cards[i]),
+          ],
+        ],
+      );
+    }
+
     return Wrap(
       spacing: 8,
       runSpacing: 8,
-      children: [
-        MetricCard(
-          label: 'Doors Knocked',
-          value: '${metrics.doorsKnocked}',
-          icon: Icons.door_front_door,
-          color: Colors.blue,
-        ),
-        MetricCard(
-          label: 'Calls Made',
-          value: '${metrics.callsMade}',
-          icon: Icons.phone,
-          color: Colors.orange,
-        ),
-        MetricCard(
-          label: 'Texts Sent',
-          value: '${metrics.textsSent}',
-          icon: Icons.sms,
-          color: Colors.green,
-        ),
-        MetricCard(
-          label: 'Contact Rate',
-          value: '${(metrics.contactRate * 100).toStringAsFixed(1)}%',
-          icon: Icons.trending_up,
-          color: Colors.purple,
-        ),
-      ],
+      children: cards,
     );
   }
 

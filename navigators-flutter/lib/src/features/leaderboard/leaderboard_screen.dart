@@ -19,7 +19,7 @@ class LeaderboardScreen extends ConsumerStatefulWidget {
 }
 
 class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
-  String _timeWindow = 'this_week';
+  String _timeWindow = 'week';
   List<dynamic> _entries = [];
   bool _isLoading = true;
   bool _optedIn = false;
@@ -27,8 +27,8 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
   String? _error;
 
   static const _windows = {
-    'this_week': 'This Week',
-    'this_month': 'This Month',
+    'week': 'This Week',
+    'month': 'This Month',
     'all_time': 'All Time',
   };
 

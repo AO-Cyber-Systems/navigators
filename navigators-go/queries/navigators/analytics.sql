@@ -15,7 +15,7 @@ FROM contact_logs
 WHERE company_id = @company_id
   AND created_at >= @since
   AND created_at < @until
-  AND (@user_id::uuid IS NULL OR user_id = @user_id)
+  AND (sqlc.narg('user_id')::uuid IS NULL OR user_id = sqlc.narg('user_id'))
   AND (@turf_ids::uuid[] IS NULL OR turf_id = ANY(@turf_ids));
 
 -- name: GetContactTrendDay :many
@@ -30,7 +30,7 @@ FROM contact_logs
 WHERE company_id = @company_id
   AND created_at >= @since
   AND created_at < @until
-  AND (@user_id::uuid IS NULL OR user_id = @user_id)
+  AND (sqlc.narg('user_id')::uuid IS NULL OR user_id = sqlc.narg('user_id'))
   AND (@turf_ids::uuid[] IS NULL OR turf_id = ANY(@turf_ids))
 GROUP BY day
 ORDER BY day;
@@ -47,7 +47,7 @@ FROM contact_logs
 WHERE company_id = @company_id
   AND created_at >= @since
   AND created_at < @until
-  AND (@user_id::uuid IS NULL OR user_id = @user_id)
+  AND (sqlc.narg('user_id')::uuid IS NULL OR user_id = sqlc.narg('user_id'))
   AND (@turf_ids::uuid[] IS NULL OR turf_id = ANY(@turf_ids))
 GROUP BY day
 ORDER BY day;
@@ -77,7 +77,7 @@ SELECT
     COUNT(*) FILTER (WHERE status = 'completed') AS completed_tasks
 FROM tasks
 WHERE company_id = @company_id
-  AND (@user_id::uuid IS NULL OR created_by = @user_id);
+  AND (sqlc.narg('user_id')::uuid IS NULL OR created_by = sqlc.narg('user_id'));
 
 -- name: GetAnalyticsTurfSummaries :many
 -- Per-turf voter/contacted counts for dashboard.
@@ -127,7 +127,7 @@ LEFT JOIN turfs t ON t.id = cl.turf_id
 WHERE cl.company_id = @company_id
   AND cl.created_at >= @since
   AND cl.created_at < @until
-  AND (@user_id::uuid IS NULL OR cl.user_id = @user_id)
+  AND (sqlc.narg('user_id')::uuid IS NULL OR cl.user_id = sqlc.narg('user_id'))
   AND (@turf_ids::uuid[] IS NULL OR cl.turf_id = ANY(@turf_ids))
 ORDER BY cl.created_at DESC;
 
@@ -167,5 +167,5 @@ SELECT
 FROM tasks t
 LEFT JOIN users u ON u.id = t.created_by
 WHERE t.company_id = @company_id
-  AND (@user_id::uuid IS NULL OR t.created_by = @user_id)
+  AND (sqlc.narg('user_id')::uuid IS NULL OR t.created_by = sqlc.narg('user_id'))
 ORDER BY t.created_at DESC;

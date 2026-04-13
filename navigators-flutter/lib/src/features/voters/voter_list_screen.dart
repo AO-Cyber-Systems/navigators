@@ -8,6 +8,7 @@ import 'voter_filter_panel.dart';
 import 'voter_search_bar.dart';
 
 /// Main voter list screen with search, filters, and paginated list.
+/// On desktop, shows a master-detail layout with voter detail inline.
 class VoterListScreen extends ConsumerStatefulWidget {
   const VoterListScreen({super.key});
 
@@ -18,12 +19,12 @@ class VoterListScreen extends ConsumerStatefulWidget {
 class _VoterListScreenState extends ConsumerState<VoterListScreen> {
   final _scrollController = ScrollController();
   bool _isSearchMode = false;
+  String? _selectedVoterId;
 
   @override
   void initState() {
     super.initState();
     _scrollController.addListener(_onScroll);
-    // Load initial voter list
     Future.microtask(() {
       ref.read(voterListProvider.notifier).loadVoters();
     });
@@ -54,15 +55,64 @@ class _VoterListScreenState extends ConsumerState<VoterListScreen> {
   }
 
   void _onVoterTap(VoterSummary voter) {
-    Navigator.of(context).push(
-      MaterialPageRoute(
-        builder: (_) => VoterDetailScreen(voterId: voter.id),
-      ),
-    );
+    final isDesktop = EdenResponsive.isDesktop(context);
+    if (isDesktop) {
+      setState(() => _selectedVoterId = voter.id);
+    } else {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (_) => VoterDetailScreen(voterId: voter.id),
+        ),
+      );
+    }
   }
 
   @override
   Widget build(BuildContext context) {
+    final isDesktop = EdenResponsive.isDesktop(context);
+
+    if (isDesktop) {
+      return _buildDesktopLayout();
+    }
+    return _buildMobileLayout();
+  }
+
+  Widget _buildDesktopLayout() {
+    return Row(
+      children: [
+        // Left panel: voter list
+        SizedBox(
+          width: 420,
+          child: _buildVoterListPanel(),
+        ),
+        const VerticalDivider(width: 1),
+        // Right panel: voter detail or empty state
+        Expanded(
+          child: _selectedVoterId != null
+              ? VoterDetailScreen(
+                  key: ValueKey(_selectedVoterId),
+                  voterId: _selectedVoterId!,
+                )
+              : const Center(
+                  child: EdenEmptyState(
+                    title: 'Select a voter',
+                    description: 'Choose a voter from the list to view their profile.',
+                    icon: Icons.person_search,
+                  ),
+                ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildMobileLayout() {
+    return Scaffold(
+      appBar: AppBar(title: const Text('Voters')),
+      body: _buildVoterListPanel(),
+    );
+  }
+
+  Widget _buildVoterListPanel() {
     final searchState = ref.watch(voterSearchProvider);
     final listState = ref.watch(voterListProvider);
 
@@ -72,73 +122,72 @@ class _VoterListScreenState extends ConsumerState<VoterListScreen> {
     final totalCount =
         _isSearchMode ? searchState.totalCount : listState.totalCount;
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Voters')),
-      body: Column(
-        children: [
+    return Column(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(16),
+          child: VoterSearchBar(onSearchChanged: _onSearchChanged),
+        ),
+        if (!_isSearchMode) const VoterFilterPanel(),
+        if (error != null)
           Padding(
-            padding: const EdgeInsets.all(16),
-            child: VoterSearchBar(onSearchChanged: _onSearchChanged),
+            padding: const EdgeInsets.symmetric(horizontal: 16),
+            child: EdenAlert(
+              title: 'Error loading voters',
+              message: error,
+              variant: EdenAlertVariant.danger,
+            ),
           ),
-          if (!_isSearchMode) const VoterFilterPanel(),
-          if (error != null)
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              child: EdenAlert(
-                title: 'Error loading voters',
-                message: error,
-                variant: EdenAlertVariant.danger,
+        Padding(
+          padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+          child: Row(
+            children: [
+              Text(
+                '$totalCount voters',
+                style: Theme.of(context).textTheme.bodySmall,
               ),
-            ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-            child: Row(
-              children: [
-                Text(
-                  '$totalCount voters',
-                  style: Theme.of(context).textTheme.bodySmall,
-                ),
-              ],
-            ),
+            ],
           ),
-          Expanded(
-            child: RefreshIndicator(
-              onRefresh: () async {
-                if (_isSearchMode) {
-                  await ref.read(voterSearchProvider.notifier).search(searchState.query);
-                } else {
-                  await ref.read(voterListProvider.notifier).refresh();
-                }
-              },
-              child: voters.isEmpty && !isLoading
-                  ? const Center(
-                      child: EdenEmptyState(
-                        title: 'No voters found',
-                        description: 'Try adjusting your search or filters.',
-                        icon: Icons.people_outline,
-                      ),
-                    )
-                  : ListView.builder(
-                      controller: _scrollController,
-                      itemCount: voters.length + (isLoading ? 3 : 0),
-                      itemBuilder: (context, index) {
-                        if (index >= voters.length) {
-                          return const Padding(
-                            padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
-                            child: EdenSkeleton(height: 72),
-                          );
-                        }
-                        final voter = voters[index];
-                        return _VoterCard(
-                          voter: voter,
-                          onTap: () => _onVoterTap(voter),
-                        );
-                      },
+        ),
+        Expanded(
+          child: RefreshIndicator(
+            onRefresh: () async {
+              if (_isSearchMode) {
+                await ref.read(voterSearchProvider.notifier).search(searchState.query);
+              } else {
+                await ref.read(voterListProvider.notifier).refresh();
+              }
+            },
+            child: voters.isEmpty && !isLoading
+                ? const Center(
+                    child: EdenEmptyState(
+                      title: 'No voters found',
+                      description: 'Try adjusting your search or filters.',
+                      icon: Icons.people_outline,
                     ),
-            ),
+                  )
+                : ListView.builder(
+                    controller: _scrollController,
+                    itemCount: voters.length + (isLoading ? 3 : 0),
+                    itemBuilder: (context, index) {
+                      if (index >= voters.length) {
+                        return const Padding(
+                          padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                          child: EdenSkeleton(height: 72),
+                        );
+                      }
+                      final voter = voters[index];
+                      final isSelected = voter.id == _selectedVoterId;
+                      return _VoterCard(
+                        voter: voter,
+                        isSelected: isSelected,
+                        onTap: () => _onVoterTap(voter),
+                      );
+                    },
+                  ),
           ),
-        ],
-      ),
+        ),
+      ],
     );
   }
 }
@@ -146,8 +195,13 @@ class _VoterListScreenState extends ConsumerState<VoterListScreen> {
 class _VoterCard extends StatelessWidget {
   final VoterSummary voter;
   final VoidCallback onTap;
+  final bool isSelected;
 
-  const _VoterCard({required this.voter, required this.onTap});
+  const _VoterCard({
+    required this.voter,
+    required this.onTap,
+    this.isSelected = false,
+  });
 
   Color _partyColor(String party) {
     switch (party.toUpperCase()) {
@@ -179,6 +233,8 @@ class _VoterCard extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListTile(
       onTap: onTap,
+      selected: isSelected,
+      selectedTileColor: Theme.of(context).colorScheme.primary.withValues(alpha: 0.08),
       leading: CircleAvatar(
         backgroundColor: _partyColor(voter.party),
         child: Text(

@@ -150,8 +150,8 @@ type DensityGridCell struct {
 func (s *TurfStatsService) GetVoterDensityGrid(ctx context.Context, companyID uuid.UUID, minLat, minLng, maxLat, maxLng, gridSize float64) ([]DensityGridCell, error) {
 	query := `
 		SELECT
-			ST_Y(ST_SnapToGrid(v.location, $3)) as grid_lat,
-			ST_X(ST_SnapToGrid(v.location, $3)) as grid_lng,
+			ST_Y(ST_SnapToGrid(v.location, $2)) as grid_lat,
+			ST_X(ST_SnapToGrid(v.location, $2)) as grid_lng,
 			COUNT(*)::int as voter_count,
 			COUNT(DISTINCT cl.voter_id)::int as contacted_count,
 			COUNT(DISTINCT CASE WHEN cl.outcome = 'support' THEN cl.voter_id END)::int as support_count
@@ -160,11 +160,11 @@ func (s *TurfStatsService) GetVoterDensityGrid(ctx context.Context, companyID uu
 		WHERE v.company_id = $1
 		  AND v.location IS NOT NULL
 		  AND v.geocode_status = 'success'
-		  AND ST_Within(v.location, ST_MakeEnvelope($4, $5, $6, $7, 4326))
+		  AND ST_Within(v.location, ST_MakeEnvelope($3, $4, $5, $6, 4326))
 		GROUP BY grid_lat, grid_lng
 		ORDER BY grid_lat, grid_lng
 	`
-	rows, err := s.pool.Query(ctx, query, companyID, companyID, gridSize, minLng, minLat, maxLng, maxLat)
+	rows, err := s.pool.Query(ctx, query, companyID, gridSize, minLng, minLat, maxLng, maxLat)
 	if err != nil {
 		return nil, fmt.Errorf("query density grid: %w", err)
 	}

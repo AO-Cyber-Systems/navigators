@@ -5,6 +5,22 @@ import 'package:http/http.dart' as http;
 import 'package:eden_platform_flutter/eden_platform.dart';
 import 'package:latlong2/latlong.dart';
 
+// --- Parse helpers (ConnectRPC sends proto int fields as strings) ---
+
+int _parseInt(dynamic v) {
+  if (v == null) return 0;
+  if (v is num) return v.toInt();
+  if (v is String) return int.tryParse(v) ?? 0;
+  return 0;
+}
+
+double _parseDouble(dynamic v) {
+  if (v == null) return 0.0;
+  if (v is num) return v.toDouble();
+  if (v is String) return double.tryParse(v) ?? 0.0;
+  return 0.0;
+}
+
 // --- Models ---
 
 class TurfInfo {
@@ -41,10 +57,10 @@ class TurfInfo {
       description: json['description'] as String? ?? '',
       isActive: json['isActive'] as bool? ?? true,
       boundaryGeojson: json['boundaryGeojson'] as String? ?? '',
-      centerLat: (json['centerLat'] as num?)?.toDouble() ?? 0.0,
-      centerLng: (json['centerLng'] as num?)?.toDouble() ?? 0.0,
-      areaSqMeters: (json['areaSqMeters'] as num?)?.toDouble() ?? 0.0,
-      voterCount: (json['voterCount'] as num?)?.toInt() ?? 0,
+      centerLat: _parseDouble(json['centerLat']),
+      centerLng: _parseDouble(json['centerLng']),
+      areaSqMeters: _parseDouble(json['areaSqMeters']),
+      voterCount: _parseInt(json['voterCount']),
       createdAt: json['createdAt'] as String? ?? '',
       updatedAt: json['updatedAt'] as String? ?? '',
     );
@@ -62,8 +78,8 @@ class TurfInfo {
       final ring = coords[0] as List<dynamic>;
       return ring.map((point) {
         final p = point as List<dynamic>;
-        final lng = (p[0] as num).toDouble();
-        final lat = (p[1] as num).toDouble();
+        final lng = _parseDouble(p[0]);
+        final lat = _parseDouble(p[1]);
         return LatLng(lat, lng);
       }).toList();
     } catch (_) {
@@ -101,8 +117,8 @@ class VoterPin {
       voterId: json['voterId'] as String? ?? '',
       firstName: json['firstName'] as String? ?? '',
       lastName: json['lastName'] as String? ?? '',
-      latitude: (json['latitude'] as num?)?.toDouble() ?? 0.0,
-      longitude: (json['longitude'] as num?)?.toDouble() ?? 0.0,
+      latitude: _parseDouble(json['latitude']),
+      longitude: _parseDouble(json['longitude']),
       party: json['party'] as String? ?? '',
       status: json['status'] as String? ?? '',
     );
@@ -139,11 +155,11 @@ class WalkListVoter {
       voterId: json['voterId'] as String? ?? '',
       firstName: json['firstName'] as String? ?? '',
       lastName: json['lastName'] as String? ?? '',
-      latitude: (json['latitude'] as num?)?.toDouble() ?? 0.0,
-      longitude: (json['longitude'] as num?)?.toDouble() ?? 0.0,
+      latitude: _parseDouble(json['latitude']),
+      longitude: _parseDouble(json['longitude']),
       resStreetAddress: json['resStreetAddress'] as String? ?? '',
       party: json['party'] as String? ?? '',
-      sequence: (json['sequence'] as num?)?.toInt() ?? 0,
+      sequence: _parseInt(json['sequence']),
     );
   }
 
@@ -168,10 +184,10 @@ class TurfStats {
   factory TurfStats.fromJson(Map<String, dynamic> json) {
     return TurfStats(
       turfId: json['turfId'] as String? ?? '',
-      totalVoters: (json['totalVoters'] as num?)?.toInt() ?? 0,
-      contactedVoters: (json['contactedVoters'] as num?)?.toInt() ?? 0,
+      totalVoters: _parseInt(json['totalVoters']),
+      contactedVoters: _parseInt(json['contactedVoters']),
       completionPercentage:
-          (json['completionPercentage'] as num?)?.toDouble() ?? 0.0,
+          _parseDouble(json['completionPercentage']),
     );
   }
 }
@@ -193,11 +209,11 @@ class DensityGridCell {
 
   factory DensityGridCell.fromJson(Map<String, dynamic> json) {
     return DensityGridCell(
-      gridLat: (json['gridLat'] as num?)?.toDouble() ?? 0.0,
-      gridLng: (json['gridLng'] as num?)?.toDouble() ?? 0.0,
-      voterCount: (json['voterCount'] as num?)?.toInt() ?? 0,
-      contactedCount: (json['contactedCount'] as num?)?.toInt() ?? 0,
-      supportCount: (json['supportCount'] as num?)?.toInt() ?? 0,
+      gridLat: _parseDouble(json['gridLat']),
+      gridLng: _parseDouble(json['gridLng']),
+      voterCount: _parseInt(json['voterCount']),
+      contactedCount: _parseInt(json['contactedCount']),
+      supportCount: _parseInt(json['supportCount']),
     );
   }
 
@@ -276,7 +292,7 @@ class MapService {
     final voters = (result['voters'] as List<dynamic>? ?? [])
         .map((v) => VoterPin.fromJson(v as Map<String, dynamic>))
         .toList();
-    final totalCount = (result['totalCount'] as num?)?.toInt() ?? 0;
+    final totalCount = _parseInt(result['totalCount']);
     return (voters: voters, totalCount: totalCount);
   }
 

@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"github.com/google/uuid"
+	"github.com/jackc/pgx/v5/pgtype"
 	"github.com/jackc/pgx/v5/pgxpool"
 
 	"navigators-go/internal/db"
@@ -60,15 +61,16 @@ func (s *AnalyticsService) GetDashboardMetrics(ctx context.Context, companyID uu
 	}
 
 	// Determine scope params for queries.
-	userID := uuid.Nil
+	// Use pgtype.UUID so SQL NULL is sent when no user filter is needed.
+	var userID pgtype.UUID
 	var turfIDs []uuid.UUID
 	if scope.Type == ScopeOwn {
-		userID = scope.UserID
+		userID = pgtype.UUID{Bytes: scope.UserID, Valid: true}
 		turfIDs = scope.TurfIDs
 	} else if scope.Type == ScopeTeam {
 		turfIDs = scope.TurfIDs
 	}
-	// ScopeAll: userID = Nil (NULL), turfIDs = nil (NULL) -> no filtering
+	// ScopeAll: userID.Valid=false (SQL NULL), turfIDs = nil (SQL NULL) -> no filtering
 
 	// Contact stats
 	contactStats, err := s.queries.GetContactStats(ctx, db.GetContactStatsParams{
@@ -158,10 +160,10 @@ func (s *AnalyticsService) GetTrendData(ctx context.Context, companyID uuid.UUID
 		return nil, fmt.Errorf("resolve scope: %w", err)
 	}
 
-	userID := uuid.Nil
+	var userID pgtype.UUID
 	var turfIDs []uuid.UUID
 	if scope.Type == ScopeOwn {
-		userID = scope.UserID
+		userID = pgtype.UUID{Bytes: scope.UserID, Valid: true}
 		turfIDs = scope.TurfIDs
 	} else if scope.Type == ScopeTeam {
 		turfIDs = scope.TurfIDs

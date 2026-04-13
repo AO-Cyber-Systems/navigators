@@ -7,6 +7,15 @@ import 'package:eden_platform_flutter/eden_platform.dart';
 import '../database/database.dart';
 import '../database/daos/voter_dao.dart';
 
+// --- Parse helpers (ConnectRPC sends proto int fields as strings) ---
+
+int _parseInt(dynamic v) {
+  if (v == null) return 0;
+  if (v is num) return v.toInt();
+  if (v is String) return int.tryParse(v) ?? 0;
+  return 0;
+}
+
 // --- Models ---
 
 class VoterSummary {
@@ -42,7 +51,7 @@ class VoterSummary {
       resCity: json['resCity'] as String? ?? '',
       resZip: json['resZip'] as String? ?? '',
       municipality: json['municipality'] as String? ?? '',
-      yearOfBirth: (json['yearOfBirth'] as num?)?.toInt() ?? 0,
+      yearOfBirth: _parseInt(json['yearOfBirth']),
     );
   }
 
@@ -130,7 +139,7 @@ class Voter {
       middleName: json['middleName'] as String? ?? '',
       lastName: json['lastName'] as String? ?? '',
       suffix: json['suffix'] as String? ?? '',
-      yearOfBirth: (json['yearOfBirth'] as num?)?.toInt() ?? 0,
+      yearOfBirth: _parseInt(json['yearOfBirth']),
       resStreetAddress: json['resStreetAddress'] as String? ?? '',
       resCity: json['resCity'] as String? ?? '',
       resState: json['resState'] as String? ?? '',
@@ -335,7 +344,7 @@ class VoterService {
     final voters = (result['voters'] as List<dynamic>? ?? [])
         .map((v) => VoterSummary.fromJson(v as Map<String, dynamic>))
         .toList();
-    final totalCount = (result['totalCount'] as num?)?.toInt() ?? 0;
+    final totalCount = _parseInt(result['totalCount']);
     return (voters: voters, totalCount: totalCount);
   }
 
@@ -365,7 +374,7 @@ class VoterService {
     final voters = (result['voters'] as List<dynamic>? ?? [])
         .map((v) => VoterSummary.fromJson(v as Map<String, dynamic>))
         .toList();
-    final totalCount = (result['totalCount'] as num?)?.toInt() ?? 0;
+    final totalCount = _parseInt(result['totalCount']);
     return (voters: voters, totalCount: totalCount);
   }
 

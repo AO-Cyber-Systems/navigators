@@ -6,6 +6,15 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:http/http.dart' as http;
 import 'package:eden_platform_flutter/eden_platform.dart';
 
+// --- Parse helpers (ConnectRPC sends proto int fields as strings) ---
+
+int _parseInt(dynamic v) {
+  if (v == null) return 0;
+  if (v is num) return v.toInt();
+  if (v is String) return int.tryParse(v) ?? 0;
+  return 0;
+}
+
 // --- Models ---
 
 class ImportJob {
@@ -50,12 +59,12 @@ class ImportJob {
       fileName: json['fileName'] as String? ?? '',
       sourceType: json['sourceType'] as String? ?? '',
       status: json['status'] as String? ?? '',
-      totalRows: (json['totalRows'] as num?)?.toInt() ?? 0,
-      parsedRows: (json['parsedRows'] as num?)?.toInt() ?? 0,
-      mergedRows: (json['mergedRows'] as num?)?.toInt() ?? 0,
-      skippedRows: (json['skippedRows'] as num?)?.toInt() ?? 0,
-      errorRows: (json['errorRows'] as num?)?.toInt() ?? 0,
-      geocodedRows: (json['geocodedRows'] as num?)?.toInt() ?? 0,
+      totalRows: _parseInt(json['totalRows']),
+      parsedRows: _parseInt(json['parsedRows']),
+      mergedRows: _parseInt(json['mergedRows']),
+      skippedRows: _parseInt(json['skippedRows']),
+      errorRows: _parseInt(json['errorRows']),
+      geocodedRows: _parseInt(json['geocodedRows']),
       errors: json['errors'] as String? ?? '',
       fieldMapping: json['fieldMapping'] as String? ?? '{}',
       createdAt: json['createdAt'] as String? ?? '',
@@ -165,7 +174,7 @@ class ImportService {
     final jobs = (result['jobs'] as List<dynamic>? ?? [])
         .map((j) => ImportJob.fromJson(j as Map<String, dynamic>))
         .toList();
-    final totalCount = (result['totalCount'] as num?)?.toInt() ?? 0;
+    final totalCount = _parseInt(result['totalCount']);
     return (jobs: jobs, totalCount: totalCount);
   }
 }

@@ -106,6 +106,19 @@ class NavigatorsDatabase extends _$NavigatorsDatabase {
   /// The [encryptionKey] is retrieved from flutter_secure_storage before
   /// calling this factory. SQLite3MultipleCiphers encrypts the database
   /// with AES-256 using PRAGMA key.
+  /// Create a database for web using WASM (no encryption).
+  static NavigatorsDatabase createWeb() {
+    return NavigatorsDatabase(
+      driftDatabase(
+        name: 'navigators_web',
+        web: DriftWebOptions(
+          sqlite3Wasm: Uri.parse('sqlite3.wasm'),
+          driftWorker: Uri.parse('drift_worker.js'),
+        ),
+      ),
+    );
+  }
+
   static NavigatorsDatabase create(String encryptionKey) {
     return NavigatorsDatabase(
       driftDatabase(

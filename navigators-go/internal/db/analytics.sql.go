@@ -98,7 +98,7 @@ type GetContactStatsParams struct {
 	CompanyID uuid.UUID   `json:"company_id"`
 	Since     time.Time   `json:"since"`
 	Until     time.Time   `json:"until"`
-	UserID    uuid.UUID   `json:"user_id"`
+	UserID    pgtype.UUID `json:"user_id"`
 	TurfIds   []uuid.UUID `json:"turf_ids"`
 }
 
@@ -161,7 +161,7 @@ type GetContactTrendDayParams struct {
 	CompanyID uuid.UUID   `json:"company_id"`
 	Since     time.Time   `json:"since"`
 	Until     time.Time   `json:"until"`
-	UserID    uuid.UUID   `json:"user_id"`
+	UserID    pgtype.UUID `json:"user_id"`
 	TurfIds   []uuid.UUID `json:"turf_ids"`
 }
 
@@ -227,7 +227,7 @@ type GetContactTrendWeekParams struct {
 	CompanyID uuid.UUID   `json:"company_id"`
 	Since     time.Time   `json:"since"`
 	Until     time.Time   `json:"until"`
-	UserID    uuid.UUID   `json:"user_id"`
+	UserID    pgtype.UUID `json:"user_id"`
 	TurfIds   []uuid.UUID `json:"turf_ids"`
 }
 
@@ -331,7 +331,7 @@ type GetExportContactsParams struct {
 	CompanyID uuid.UUID   `json:"company_id"`
 	Since     time.Time   `json:"since"`
 	Until     time.Time   `json:"until"`
-	UserID    uuid.UUID   `json:"user_id"`
+	UserID    pgtype.UUID `json:"user_id"`
 	TurfIds   []uuid.UUID `json:"turf_ids"`
 }
 
@@ -400,8 +400,8 @@ ORDER BY t.created_at DESC
 `
 
 type GetExportTasksParams struct {
-	CompanyID uuid.UUID `json:"company_id"`
-	UserID    uuid.UUID `json:"user_id"`
+	CompanyID uuid.UUID   `json:"company_id"`
+	UserID    pgtype.UUID `json:"user_id"`
 }
 
 type GetExportTasksRow struct {
@@ -594,8 +594,8 @@ WHERE company_id = $1
 `
 
 type GetTaskStatsParams struct {
-	CompanyID uuid.UUID `json:"company_id"`
-	UserID    uuid.UUID `json:"user_id"`
+	CompanyID uuid.UUID   `json:"company_id"`
+	UserID    pgtype.UUID `json:"user_id"`
 }
 
 type GetTaskStatsRow struct {
