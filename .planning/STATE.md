@@ -145,6 +145,7 @@ Recent decisions affecting current work:
 - [Objective 10]: Events and training pull sync are company-wide (not turf-scoped)
 - [Objective 10]: VolunteerService combines OnboardingService, LeaderboardService, TrainingService RPCs into one Flutter client
 - [Objective 10]: Leaderboard is online-only (aggregation query not suitable for local storage)
+- [A11y convention]: All interactive widgets tagged with semanticsIdentifier in kebab-case (feature-role-id). Maestro drives E2E via OS accessibility tree.
 
 ### Pending Todos
 
