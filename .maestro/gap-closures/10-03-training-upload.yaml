@@ -1,75 +1,80 @@
 # Gap-closure 10-03: training material upload / edit / delete (admin)
 #
 # As an admin:
-#   1. Open the Training list
+#   1. Open the Training list from the overflow nav
 #   2. Tap the FAB to open the upload screen
-#   3. Pick a file (NATIVE SAF dialog -- see TODO), fill metadata, submit
-#   4. Confirm the new row appears in the list
-#   5. Edit its title via the row overflow menu
-#   6. Delete it via the row overflow menu and confirm it's gone
+#   3. Assert the upload screen renders with its file-picker + submit button
 #
-# NOTE on file picker: `training-upload-file-picker` launches the platform's
-# native Storage Access Framework picker on Android. That picker is a
-# separate system UI package (com.android.documentsui) and is NOT visible
-# under appId com.mainegop.navigators -- Maestro's view hierarchy filters by
-# appId by default. See TODO below.
+# NOTE on file picker: `training-upload-file-picker` launches Android's
+# Storage Access Framework (com.android.documentsui). That UI is a separate
+# package and Maestro's view hierarchy filters by appId by default, so
+# driving the SAF end-to-end requires:
+#   a) adb push tools/fixtures/maestro-training.pdf /sdcard/Download/
+#   b) a secondary flow with documentsui appId to navigate Roots -> Downloads
+#      -> maestro-training.pdf
+# That infra is a follow-up. Until it lands, this flow validates the path
+# up to (but not through) the SAF picker and asserts the submit button is
+# visible. Full end-to-end upload is explicitly out of scope here.
 appId: com.mainegop.navigators
 ---
 - runFlow: ../auth/login-admin.yaml
 
 # --- 1. Open training list ---------------------------------------------------
 - tapOn:
+    id: "eden-nav-more"
+- tapOn:
     id: "nav-training"
-- assertVisible:
-    id: "training-list-screen"
+- extendedWaitUntil:
+    visible:
+      id: "training-list-screen"
+    timeout: 30000
 
 # --- 2. Open upload screen ---------------------------------------------------
 - tapOn:
     id: "training-list-fab"
+- extendedWaitUntil:
+    visible:
+      id: "training-upload-screen"
+    timeout: 15000
+
+# --- 3. Smoke-assert upload UI ----------------------------------------------
 - assertVisible:
-    id: "training-upload-screen"
-
-# --- 3. Pick a file ----------------------------------------------------------
-- tapOn:
     id: "training-upload-file-picker"
-# TODO(file-picker): after the tap above, Android shows the system SAF
-# picker. To drive it in Maestro we need to:
-#   a) push a fixture PDF onto the emulator before the run:
-#        adb push tools/fixtures/maestro-training.pdf /sdcard/Download/
-#   b) switch Maestro's hierarchy root to the documentsui app, e.g.:
-#        - runFlow:
-#            when:
-#              platform: Android
-#            commands:
-#              - tapOn: "Show roots"       # hamburger in SAF
-#              - tapOn: "Downloads"
-#              - tapOn: "maestro-training.pdf"
-#   iOS uses a different picker (UIDocumentPickerViewController); the file
-#   would need to already exist in the Files app sandbox.
-# Until that infra lands, the rest of this flow is unreachable from the
-# stop-gap above. We still author the remaining steps so that once the
-# picker is drivable, this flow works end-to-end.
+- assertVisible:
+    id: "training-upload-submit"
 
+# --- 4. TODO(SAF): drive the native file picker ------------------------------
+# Once a fixture PDF is pushed to /sdcard/Download/ and we have a
+# documentsui secondary flow, uncomment the block below:
+#
+# - tapOn: { id: "training-upload-file-picker" }
+# - runFlow:
+#     when:
+#       platform: Android
+#     commands:
+#       # Maestro still scopes to appId; we need to drive the SAF app.
+#       # Either switch appIds via a nested flow, or use adb intents.
+#       - tapOn: "Show roots"
+#       - tapOn: "Downloads"
+#       - tapOn: "maestro-training.pdf"
 # - tapOn: { id: "training-upload-title" }
 # - inputText: "Maestro E2E training"
 # - tapOn: { id: "training-upload-description" }
 # - inputText: "Created by the 10-03 Maestro flow."
 # - tapOn: { id: "training-upload-submit" }
-# - assertVisible: { id: "training-list-screen" }
-# - assertVisible: "Maestro E2E training"
+# - extendedWaitUntil: { visible: { id: "training-list-screen" }, timeout: 20000 }
+# - extendedWaitUntil: { visible: "Maestro E2E training", timeout: 60000 }
 #
-# # --- 5. Edit title via row menu -------------------------------------------
 # - tapOn: { id: "training-list-row-menu-.*", index: 0 }
 # - tapOn: "Edit"
-# - assertVisible: { id: "training-edit-dialog" }
+# - extendedWaitUntil: { visible: { id: "training-edit-dialog" }, timeout: 10000 }
 # - tapOn: { id: "training-edit-title" }
 # - eraseText: 32
 # - inputText: "Maestro E2E training (edited)"
 # - tapOn: { id: "training-edit-save" }
-# - assertVisible: "Maestro E2E training (edited)"
+# - extendedWaitUntil: { visible: "Maestro E2E training (edited)", timeout: 30000 }
 #
-# # --- 6. Delete via row menu -----------------------------------------------
 # - tapOn: { id: "training-list-row-menu-.*", index: 0 }
 # - tapOn: "Delete"
 # - tapOn: { id: "training-list-delete-confirm" }
-# - assertNotVisible: "Maestro E2E training (edited)"
+# - extendedWaitUntil: { notVisible: "Maestro E2E training (edited)", timeout: 30000 }

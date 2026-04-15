@@ -22,7 +22,13 @@ class CallScriptManagerScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final auth = ref.watch(authProvider);
     final isAdmin = auth.role?.toLowerCase() == 'admin';
-    final db = ref.read(databaseProvider);
+    NavigatorsDatabase? db;
+    try {
+      db = ref.watch(databaseProvider);
+    } catch (_) {
+      // Database not yet initialized (first login before restart).
+      // Show empty state instead of crashing the screen.
+    }
 
     return Semantics(
       identifier: 'call-script-manager-screen',
@@ -31,7 +37,16 @@ class CallScriptManagerScreen extends ConsumerWidget {
       appBar: AppBar(
         title: Text(isAdmin ? 'Manage Call Scripts' : 'Call Scripts'),
       ),
-      body: StreamBuilder<List<CallScript>>(
+      body: db == null
+          ? Center(
+              child: EdenEmptyState(
+                title: 'Initializing database',
+                description:
+                    'The local database is not yet available. Please restart the app after your first login.',
+                icon: Icons.hourglass_empty,
+              ),
+            )
+          : StreamBuilder<List<CallScript>>(
         stream: db.callScriptDao.watchActiveCallScripts(),
         builder: (context, snapshot) {
           if (snapshot.hasError) {

@@ -154,7 +154,22 @@ class NavigatorsDatabase extends _$NavigatorsDatabase {
 ///   child: const MyApp(),
 /// )
 /// ```
+/// Mutable slot for the Drift database.
+///
+/// Populated either by:
+///   * main.dart override (key already existed in secure storage at boot), or
+///   * `_ensureDatabaseInitialized` in app.dart after first-login key
+///     generation via `ref.read(databaseInitializerProvider.notifier).set(...)`.
+final databaseInstanceProvider = StateProvider<NavigatorsDatabase?>((_) => null);
+
+/// Riverpod provider for the encrypted Drift database.
+///
+/// Reads from [databaseInstanceProvider] and throws only if still unset.
+/// main.dart's `ProviderScope` override is kept for the fast-path where the
+/// encryption key was already present at app launch.
 final databaseProvider = Provider<NavigatorsDatabase>((ref) {
+  final db = ref.watch(databaseInstanceProvider);
+  if (db != null) return db;
   throw UnimplementedError(
     'databaseProvider must be overridden with NavigatorsDatabase.create(encryptionKey)',
   );

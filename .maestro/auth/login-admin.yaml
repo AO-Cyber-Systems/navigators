@@ -25,7 +25,20 @@ env:
 - inputText: ${PASSWORD}
 - tapOn:
     id: "eden-login-submit"
+# First-login path: local DB is fresh, so _onAuthenticated pushes the turf
+# download screen. Dismiss it (or download all) so the main shell is reached.
+- runFlow:
+    when:
+      visible:
+        id: "turf-download-screen"
+    commands:
+      - tapOn:
+          id: "turf-download-all-btn"
+      - extendedWaitUntil:
+          visible: "All Downloaded"
+          timeout: 60000
+      - back
 - extendedWaitUntil:
     visible:
       id: "nav-home"
-    timeout: 20000
+    timeout: 30000

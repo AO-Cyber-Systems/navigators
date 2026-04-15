@@ -18,6 +18,7 @@ import 'features/dashboard/team_dashboard_screen.dart';
 import 'features/events/event_list_screen.dart';
 import 'features/leaderboard/leaderboard_screen.dart';
 import 'features/onboarding/onboarding_screen.dart';
+import 'features/phone_calls/call_script_manager_screen.dart';
 import 'features/sync/sync_status_widget.dart';
 import 'features/sync/turf_download_screen.dart';
 import 'features/tasks/task_list_screen.dart';
@@ -111,7 +112,16 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
     try {
       ref.read(databaseProvider);
     } catch (_) {
-      // Not initialized -- relies on next app launch
+      // Provider not yet initialized (fresh install / cleared state). Build
+      // the database now and publish it via databaseInstanceProvider so
+      // downstream screens/providers can use it without an app restart.
+      try {
+        final db = NavigatorsDatabase.create(key);
+        ref.read(databaseInstanceProvider.notifier).state = db;
+      } catch (_) {
+        // If this still fails we fall back to the previous behaviour: the
+        // database will come up on the next cold launch via main.dart.
+      }
     }
   }
 
@@ -231,6 +241,14 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
           activeIcon: Icons.block,
           semanticsIdentifier: 'nav-suppression',
         ),
+      if (isAdmin)
+        const EdenNavItem(
+          id: 'call_scripts',
+          label: 'Call Scripts',
+          icon: Icons.record_voice_over_outlined,
+          activeIcon: Icons.record_voice_over,
+          semanticsIdentifier: 'nav-call-scripts',
+        ),
     ];
   }
 
@@ -247,6 +265,7 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
       'training' => const TrainingListScreen(),
       'import' when isAdmin => const ImportScreen(),
       'suppression' when isAdmin => const SuppressionListScreen(),
+      'call_scripts' when isAdmin => const CallScriptManagerScreen(),
       _ => _buildDashboardBody(auth),
     };
   }
@@ -316,6 +335,7 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
       'training' => 'Training',
       'import' => 'Import',
       'suppression' => 'Suppression',
+      'call_scripts' => 'Call Scripts',
       _ => 'Dashboard',
     };
   }

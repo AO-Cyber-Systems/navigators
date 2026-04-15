@@ -1,60 +1,86 @@
 # Gap-closure 07-03: call-script CRUD (admin)
 #
-# Covers create -> edit -> deactivate on call scripts via
-# CallScriptManagerScreen / CallScriptEditorScreen.
+# Covers reaching the call-script manager from the overflow nav and
+# creating a new script via the editor. End-to-end list refresh after save
+# is gated by an async pull-sync cycle; the creation-succeeded smoke below
+# asserts that we returned to the manager screen without error. Full CRUD
+# (edit + deactivate) re-entry against the live list is a follow-up once
+# the sync cache refresh is awaited / invalidated deterministically.
 #
-# KNOWN GAP: there is currently NO reachable entry point for
-# CallScriptManagerScreen in lib/src/app.dart -- it has no 'nav-call-scripts'
-# item and no admin-menu button that pushes the route. Until that lands, this
-# flow cannot execute end-to-end from the shell.
-#
-# TODO(nav): add an 'EdenNavItem(id: "call_scripts", semanticsIdentifier:
-#   "nav-call-scripts", ...)' gated by isAdmin in app.dart, plus a case in
-#   _buildBody that returns const CallScriptManagerScreen(). Once that lands,
-#   replace the block below with:
-#     - tapOn: { id: "nav-call-scripts" }
-#     - assertVisible: { id: "call-script-manager-screen" }
+# KNOWN GAP: after `svc.createCallScript` the editor kicks
+# `SyncEngine.instance?.runSyncCycle()` *without* awaiting. The manager's
+# StreamBuilder watches local Drift which only updates after the pull leg
+# completes. On a fresh install that pull takes ≥10s after the backend
+# round-trip, which is flakier than Maestro's `extendedWaitUntil` budget.
+# Re-enable the edit + deactivate steps (see commented block) once
+# PullCallScripts is awaited on the editor return path.
 appId: com.mainegop.navigators
 ---
 - runFlow: ../auth/login-admin.yaml
 
-# TODO(reachability): remove this stop-gap once call-script manager has a
-# nav entry. Until then, the flow asserts we're logged in and bails out so
-# CI can track the gap without false failures.
-- assertVisible:
-    id: "nav-home"
+# --- Open call-script manager from overflow nav ------------------------------
+- tapOn:
+    id: "eden-nav-more"
+- tapOn:
+    id: "nav-call-scripts"
+- extendedWaitUntil:
+    visible:
+      id: "call-script-manager-screen"
+    timeout: 30000
 
-# --- The rest of the flow below is written against the *target* identifiers
-# already present in call_script_manager_screen.dart /
-# call_script_editor_screen.dart. Unskip once a reachable route exists.
+# --- Create ------------------------------------------------------------------
+- tapOn:
+    id: "call-script-manager-fab"
+- extendedWaitUntil:
+    visible:
+      id: "call-script-editor-screen"
+    timeout: 15000
+- tapOn:
+    id: "call-script-editor-title"
+- inputText: "Maestro test script"
+# Dismiss the Android 15 stylus handwriting promo if it pops up.
+- runFlow:
+    when:
+      visible: "Try out your stylus"
+    commands:
+      - tapOn: "Cancel"
+- tapOn:
+    id: "call-script-editor-body"
+- runFlow:
+    when:
+      visible: "Try out your stylus"
+    commands:
+      - tapOn: "Cancel"
+- inputText: "Hello {{first_name}}, this is an automated E2E script."
+- tapOn:
+    id: "call-script-editor-save"
+
+# Save pops back to the manager screen. No error snackbar = backend accepted
+# the RPC. The script will appear in the list after the next async pull.
+- extendedWaitUntil:
+    visible:
+      id: "call-script-manager-screen"
+    timeout: 15000
+- assertNotVisible: "Save failed"
+
+# --- TODO(sync-latency): re-enable once createCallScript awaits the pull ----
+# - extendedWaitUntil:
+#     visible: "Maestro test script"
+#     timeout: 60000
 #
-# - tapOn: { id: "nav-call-scripts" }
-# - assertVisible: { id: "call-script-manager-screen" }
-#
-# # --- Create ---------------------------------------------------------------
-# - tapOn: { id: "call-script-manager-fab" }
-# - assertVisible: { id: "call-script-editor-screen" }
-# - tapOn: { id: "call-script-editor-title" }
-# - inputText: "Maestro test script"
-# - tapOn: { id: "call-script-editor-body" }
-# - inputText: "Hello {{first_name}}, this is an automated E2E script."
-# - tapOn: { id: "call-script-editor-save" }
-# - assertVisible: { id: "call-script-manager-screen" }
-# - assertVisible: "Maestro test script"
-#
-# # --- Edit -----------------------------------------------------------------
+# --- Edit --------------------------------------------------------------------
 # - tapOn: { id: "call-script-manager-row-.*", index: 0 }
-# - assertVisible: { id: "call-script-editor-screen" }
+# - extendedWaitUntil: { visible: { id: "call-script-editor-screen" }, timeout: 15000 }
 # - tapOn: { id: "call-script-editor-title" }
 # - eraseText: 64
 # - inputText: "Maestro test script (edited)"
 # - tapOn: { id: "call-script-editor-save" }
-# - assertVisible: "Maestro test script (edited)"
+# - extendedWaitUntil: { visible: "Maestro test script (edited)", timeout: 60000 }
 #
-# # --- Deactivate -----------------------------------------------------------
+# --- Deactivate --------------------------------------------------------------
 # - tapOn: { id: "call-script-manager-row-.*", index: 0 }
+# - extendedWaitUntil: { visible: { id: "call-script-editor-screen" }, timeout: 15000 }
 # - tapOn: { id: "call-script-editor-menu" }
 # - tapOn: "Deactivate"
 # - tapOn: { id: "call-script-editor-deactivate-confirm" }
-# - assertVisible: { id: "call-script-manager-screen" }
-# - assertNotVisible: "Maestro test script (edited)"
+# - extendedWaitUntil: { notVisible: "Maestro test script (edited)", timeout: 60000 }
