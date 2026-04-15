@@ -144,12 +144,19 @@ class _PhoneCallScreenState extends ConsumerState<PhoneCallScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
+    return Semantics(
+      identifier: 'phone-call-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       appBar: AppBar(
         title: Text(widget.voterName),
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () => Navigator.of(context).pop(),
+        leading: Semantics(
+          identifier: 'phone-call-close-btn',
+          button: true,
+          child: IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
         ),
       ),
       body: Column(
@@ -168,6 +175,7 @@ class _PhoneCallScreenState extends ConsumerState<PhoneCallScreen> {
           // Bottom action bar
           _buildBottomBar(theme),
         ],
+      ),
       ),
     );
   }
@@ -352,12 +360,16 @@ class _PhoneCallScreenState extends ConsumerState<PhoneCallScreen> {
         ),
         const SizedBox(height: 24),
         Center(
-          child: EdenRating(
-            value: _sentiment,
-            size: EdenRatingSize.lg,
-            onChanged: (value) {
-              setState(() => _sentiment = value);
-            },
+          child: Semantics(
+            identifier: 'phone-call-sentiment-rating',
+            slider: true,
+            child: EdenRating(
+              value: _sentiment,
+              size: EdenRatingSize.lg,
+              onChanged: (value) {
+                setState(() => _sentiment = value);
+              },
+            ),
           ),
         ),
         const SizedBox(height: 16),
@@ -404,13 +416,17 @@ class _PhoneCallScreenState extends ConsumerState<PhoneCallScreen> {
         child: SafeArea(
           child: SizedBox(
             width: double.infinity,
-            child: FilledButton.icon(
-              onPressed: _onCallEnded,
-              icon: const Icon(Icons.call_end),
-              label: const Text('Call Ended'),
-              style: FilledButton.styleFrom(
-                backgroundColor: Colors.red,
-                foregroundColor: Colors.white,
+            child: Semantics(
+              identifier: 'phone-call-ended-btn',
+              button: true,
+              child: FilledButton.icon(
+                onPressed: _onCallEnded,
+                icon: const Icon(Icons.call_end),
+                label: const Text('Call Ended'),
+                style: FilledButton.styleFrom(
+                  backgroundColor: Colors.red,
+                  foregroundColor: Colors.white,
+                ),
               ),
             ),
           ),
@@ -438,21 +454,30 @@ class _PhoneCallScreenState extends ConsumerState<PhoneCallScreen> {
         child: Row(
           children: [
             if (_currentStep != _PhoneCallStep.sentiment)
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    switch (_currentStep) {
-                      case _PhoneCallStep.notes:
-                        _currentStep = _PhoneCallStep.sentiment;
-                      default:
-                        break;
-                    }
-                  });
-                },
-                child: const Text('Back'),
+              Semantics(
+                identifier: 'phone-call-back-btn',
+                button: true,
+                child: TextButton(
+                  onPressed: () {
+                    setState(() {
+                      switch (_currentStep) {
+                        case _PhoneCallStep.notes:
+                          _currentStep = _PhoneCallStep.sentiment;
+                        default:
+                          break;
+                      }
+                    });
+                  },
+                  child: const Text('Back'),
+                ),
               ),
             const Spacer(),
-            FilledButton.icon(
+            Semantics(
+              identifier: isLastStep
+                  ? 'phone-call-save-btn'
+                  : 'phone-call-continue-btn',
+              button: true,
+              child: FilledButton.icon(
               onPressed: _isSaving
                   ? null
                   : isLastStep
@@ -466,6 +491,7 @@ class _PhoneCallScreenState extends ConsumerState<PhoneCallScreen> {
                     )
                   : Icon(isLastStep ? Icons.check : Icons.arrow_forward),
               label: Text(isLastStep ? 'Save & Next' : 'Continue'),
+              ),
             ),
           ],
         ),
