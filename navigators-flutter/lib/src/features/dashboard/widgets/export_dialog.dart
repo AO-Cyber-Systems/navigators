@@ -100,14 +100,19 @@ class _ExportDialogState extends ConsumerState<ExportDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    return Semantics(
+      identifier: 'export-dialog',
+      explicitChildNodes: true,
+      child: AlertDialog(
       title: const Text('Export Data'),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         crossAxisAlignment: CrossAxisAlignment.stretch,
         children: [
           // Export type
-          DropdownButtonFormField<String>(
+          Semantics(
+            identifier: 'export-dialog-type',
+            child: DropdownButtonFormField<String>(
             initialValue: _exportType,
             decoration: const InputDecoration(
               labelText: 'Data Type',
@@ -122,11 +127,14 @@ class _ExportDialogState extends ConsumerState<ExportDialog> {
             onChanged: (v) {
               if (v != null) setState(() => _exportType = v);
             },
+            ),
           ),
           const SizedBox(height: 16),
 
           // Format
-          DropdownButtonFormField<String>(
+          Semantics(
+            identifier: 'export-dialog-format',
+            child: DropdownButtonFormField<String>(
             initialValue: _format,
             decoration: const InputDecoration(
               labelText: 'Format',
@@ -141,40 +149,54 @@ class _ExportDialogState extends ConsumerState<ExportDialog> {
             onChanged: (v) {
               if (v != null) setState(() => _format = v);
             },
+            ),
           ),
           const SizedBox(height: 16),
 
           // Date range
-          InkWell(
-            onTap: _pickDateRange,
-            child: InputDecorator(
-              decoration: const InputDecoration(
-                labelText: 'Date Range',
-                border: OutlineInputBorder(),
-                suffixIcon: Icon(Icons.calendar_today),
+          Semantics(
+            identifier: 'export-dialog-date-range',
+            button: true,
+            child: InkWell(
+              onTap: _pickDateRange,
+              child: InputDecorator(
+                decoration: const InputDecoration(
+                  labelText: 'Date Range',
+                  border: OutlineInputBorder(),
+                  suffixIcon: Icon(Icons.calendar_today),
+                ),
+                child: Text(_formattedDateRange),
               ),
-              child: Text(_formattedDateRange),
             ),
           ),
         ],
       ),
       actions: [
-        TextButton(
-          onPressed: _exporting ? null : () => Navigator.of(context).pop(),
-          child: const Text('Cancel'),
+        Semantics(
+          identifier: 'export-dialog-cancel',
+          button: true,
+          child: TextButton(
+            onPressed: _exporting ? null : () => Navigator.of(context).pop(),
+            child: const Text('Cancel'),
+          ),
         ),
-        ElevatedButton.icon(
-          onPressed: _exporting ? null : _export,
-          icon: _exporting
-              ? const SizedBox(
-                  width: 16,
-                  height: 16,
-                  child: CircularProgressIndicator(strokeWidth: 2),
-                )
-              : const Icon(Icons.download),
-          label: const Text('Export'),
+        Semantics(
+          identifier: 'export-dialog-submit',
+          button: true,
+          child: ElevatedButton.icon(
+            onPressed: _exporting ? null : _export,
+            icon: _exporting
+                ? const SizedBox(
+                    width: 16,
+                    height: 16,
+                    child: CircularProgressIndicator(strokeWidth: 2),
+                  )
+                : const Icon(Icons.download),
+            label: const Text('Export'),
+          ),
         ),
       ],
+      ),
     );
   }
 }

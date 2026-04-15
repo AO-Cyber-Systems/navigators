@@ -82,10 +82,14 @@ class _NavigatorDashboardScreenState
                   style: Theme.of(context).textTheme.bodySmall),
             ),
             const SizedBox(height: 16),
-            FilledButton.icon(
-              onPressed: _loadData,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Retry'),
+            Semantics(
+              identifier: 'navigator-dashboard-retry-btn',
+              button: true,
+              child: FilledButton.icon(
+                onPressed: _loadData,
+                icon: const Icon(Icons.refresh),
+                label: const Text('Retry'),
+              ),
             ),
           ],
         ),
@@ -95,7 +99,10 @@ class _NavigatorDashboardScreenState
     final metrics = _metrics!;
     final isWide = EdenResponsive.isDesktop(context);
 
-    return RefreshIndicator(
+    return Semantics(
+      identifier: 'navigator-dashboard-screen',
+      explicitChildNodes: true,
+      child: RefreshIndicator(
       onRefresh: _loadData,
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -163,6 +170,7 @@ class _NavigatorDashboardScreenState
             ),
           ),
         ),
+      ),
       ),
     );
   }

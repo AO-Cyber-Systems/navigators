@@ -148,10 +148,14 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                   style: Theme.of(context).textTheme.bodySmall),
             ),
             const SizedBox(height: 16),
-            FilledButton.icon(
-              onPressed: _loadData,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Retry'),
+            Semantics(
+              identifier: 'admin-dashboard-retry-btn',
+              button: true,
+              child: FilledButton.icon(
+                onPressed: _loadData,
+                icon: const Icon(Icons.refresh),
+                label: const Text('Retry'),
+              ),
             ),
           ],
         ),
@@ -161,7 +165,10 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
     final metrics = _metrics!;
     final isWide = EdenResponsive.isDesktop(context);
 
-    return Scaffold(
+    return Semantics(
+      identifier: 'admin-dashboard-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       body: RefreshIndicator(
         onRefresh: _loadData,
         child: SingleChildScrollView(
@@ -268,15 +275,20 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
           ),
         ),
       ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          showDialog(
-            context: context,
-            builder: (_) => const ExportDialog(),
-          );
-        },
-        tooltip: 'Export Data',
-        child: const Icon(Icons.download),
+      floatingActionButton: Semantics(
+        identifier: 'admin-dashboard-export-fab',
+        button: true,
+        child: FloatingActionButton(
+          onPressed: () {
+            showDialog(
+              context: context,
+              builder: (_) => const ExportDialog(),
+            );
+          },
+          tooltip: 'Export Data',
+          child: const Icon(Icons.download),
+        ),
+      ),
       ),
     );
   }
@@ -379,26 +391,29 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
               children: [
                 Text('Contact Density',
                     style: Theme.of(context).textTheme.titleMedium),
-                ToggleButtons(
-                  isSelected: [
-                    _heatMapMode == HeatMapMode.density,
-                    _heatMapMode == HeatMapMode.support,
-                  ],
-                  onPressed: (index) {
-                    setState(() {
-                      _heatMapMode = index == 0
-                          ? HeatMapMode.density
-                          : HeatMapMode.support;
-                    });
-                  },
-                  borderRadius: BorderRadius.circular(8),
-                  constraints:
-                      const BoxConstraints(minWidth: 70, minHeight: 32),
-                  textStyle: Theme.of(context).textTheme.bodySmall,
-                  children: const [
-                    Text('Density'),
-                    Text('Support'),
-                  ],
+                Semantics(
+                  identifier: 'admin-dashboard-heatmap-toggle',
+                  child: ToggleButtons(
+                    isSelected: [
+                      _heatMapMode == HeatMapMode.density,
+                      _heatMapMode == HeatMapMode.support,
+                    ],
+                    onPressed: (index) {
+                      setState(() {
+                        _heatMapMode = index == 0
+                            ? HeatMapMode.density
+                            : HeatMapMode.support;
+                      });
+                    },
+                    borderRadius: BorderRadius.circular(8),
+                    constraints:
+                        const BoxConstraints(minWidth: 70, minHeight: 32),
+                    textStyle: Theme.of(context).textTheme.bodySmall,
+                    children: const [
+                      Text('Density'),
+                      Text('Support'),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -412,17 +427,21 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                     children: [
                       const Text('Unable to load map data'),
                       const SizedBox(height: 8),
-                      FilledButton.icon(
-                        onPressed: _mapLoading ? null : _retryMapLoad,
-                        icon: _mapLoading
-                            ? const SizedBox(
-                                width: 16,
-                                height: 16,
-                                child: CircularProgressIndicator(
-                                    strokeWidth: 2),
-                              )
-                            : const Icon(Icons.refresh),
-                        label: const Text('Retry'),
+                      Semantics(
+                        identifier: 'admin-dashboard-map-retry-btn',
+                        button: true,
+                        child: FilledButton.icon(
+                          onPressed: _mapLoading ? null : _retryMapLoad,
+                          icon: _mapLoading
+                              ? const SizedBox(
+                                  width: 16,
+                                  height: 16,
+                                  child: CircularProgressIndicator(
+                                      strokeWidth: 2),
+                                )
+                              : const Icon(Icons.refresh),
+                          label: const Text('Retry'),
+                        ),
                       ),
                     ],
                   ),

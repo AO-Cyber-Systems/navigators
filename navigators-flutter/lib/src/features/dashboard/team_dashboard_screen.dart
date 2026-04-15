@@ -84,10 +84,14 @@ class _TeamDashboardScreenState extends ConsumerState<TeamDashboardScreen> {
                   style: Theme.of(context).textTheme.bodySmall),
             ),
             const SizedBox(height: 16),
-            FilledButton.icon(
-              onPressed: _loadData,
-              icon: const Icon(Icons.refresh),
-              label: const Text('Retry'),
+            Semantics(
+              identifier: 'team-dashboard-retry-btn',
+              button: true,
+              child: FilledButton.icon(
+                onPressed: _loadData,
+                icon: const Icon(Icons.refresh),
+                label: const Text('Retry'),
+              ),
             ),
           ],
         ),
@@ -97,7 +101,10 @@ class _TeamDashboardScreenState extends ConsumerState<TeamDashboardScreen> {
     final metrics = _metrics!;
     final isWide = EdenResponsive.isDesktop(context);
 
-    return RefreshIndicator(
+    return Semantics(
+      identifier: 'team-dashboard-screen',
+      explicitChildNodes: true,
+      child: RefreshIndicator(
       onRefresh: _loadData,
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
@@ -170,6 +177,7 @@ class _TeamDashboardScreenState extends ConsumerState<TeamDashboardScreen> {
             ),
           ),
         ),
+      ),
       ),
     );
   }
