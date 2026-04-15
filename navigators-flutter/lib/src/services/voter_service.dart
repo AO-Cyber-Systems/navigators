@@ -252,6 +252,59 @@ class VotingRecord {
   }
 }
 
+class SuppressedVoter {
+  final String id;
+  final String voterId;
+  final String firstName;
+  final String lastName;
+  final String resStreetAddress;
+  final String resCity;
+  final String resState;
+  final String resZip;
+  final String reason;
+  final String addedBy; // user UUID
+  final DateTime? addedAt;
+
+  const SuppressedVoter({
+    required this.id,
+    required this.voterId,
+    required this.firstName,
+    required this.lastName,
+    required this.resStreetAddress,
+    required this.resCity,
+    required this.resState,
+    required this.resZip,
+    required this.reason,
+    required this.addedBy,
+    this.addedAt,
+  });
+
+  factory SuppressedVoter.fromJson(Map<String, dynamic> json) {
+    return SuppressedVoter(
+      id: json['id'] as String? ?? '',
+      voterId: json['voterId'] as String? ?? '',
+      firstName: json['firstName'] as String? ?? '',
+      lastName: json['lastName'] as String? ?? '',
+      resStreetAddress: json['resStreetAddress'] as String? ?? '',
+      resCity: json['resCity'] as String? ?? '',
+      resState: json['resState'] as String? ?? '',
+      resZip: json['resZip'] as String? ?? '',
+      reason: json['reason'] as String? ?? '',
+      addedBy: json['addedBy'] as String? ?? '',
+      addedAt: DateTime.tryParse(json['addedAt'] as String? ?? ''),
+    );
+  }
+
+  String get fullName => '$firstName $lastName'.trim();
+
+  String get residenceAddress {
+    final parts = [resStreetAddress, resCity, resState, resZip]
+        .where((s) => s.isNotEmpty)
+        .toList();
+    return parts.join(', ');
+  }
+}
+
 class VoterFilters {
   final String? party;
   final String? status;
@@ -391,6 +444,29 @@ class VoterService {
 
   Future<void> removeTagFromVoter(String voterId, String tagId) async {
     await _post('RemoveTagFromVoter', {'voterId': voterId, 'tagId': tagId});
+  }
+
+  Future<void> addToSuppressionList(String voterId, String reason) async {
+    await _post('AddToSuppressionList', {'voterId': voterId, 'reason': reason});
+  }
+
+  Future<void> removeFromSuppressionList(String voterId) async {
+    await _post('RemoveFromSuppressionList', {'voterId': voterId});
+  }
+
+  Future<({List<SuppressedVoter> voters, int totalCount})> listSuppressedVoters({
+    int pageSize = 50,
+    int page = 0,
+  }) async {
+    final result = await _post('ListSuppressedVoters', {
+      'pageSize': pageSize,
+      'page': page,
+    });
+    final voters = (result['voters'] as List<dynamic>? ?? [])
+        .map((v) => SuppressedVoter.fromJson(v as Map<String, dynamic>))
+        .toList();
+    final totalCount = _parseInt(result['totalCount']);
+    return (voters: voters, totalCount: totalCount);
   }
 }
 
