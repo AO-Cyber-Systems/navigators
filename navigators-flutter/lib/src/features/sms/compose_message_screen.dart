@@ -120,19 +120,26 @@ class _ComposeMessageScreenState extends ConsumerState<ComposeMessageScreen> {
     final canSend =
         _selectedVoterId != null && _bodyController.text.trim().isNotEmpty;
 
-    return Scaffold(
+    return Semantics(
+      identifier: 'sms-compose-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       appBar: AppBar(
         title: const Text('New Message'),
         actions: [
-          TextButton(
-            onPressed: canSend && !_isSending ? _send : null,
-            child: _isSending
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Text('Send'),
+          Semantics(
+            identifier: 'sms-compose-send-btn',
+            button: true,
+            child: TextButton(
+              onPressed: canSend && !_isSending ? _send : null,
+              child: _isSending
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Send'),
+            ),
           ),
         ],
       ),
@@ -162,15 +169,19 @@ class _ComposeMessageScreenState extends ConsumerState<ComposeMessageScreen> {
                 : Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      TextField(
-                        controller: _searchController,
-                        decoration: const InputDecoration(
-                          hintText: 'Search voter by name...',
-                          prefixIcon: Icon(Icons.search),
-                          border: OutlineInputBorder(),
-                          isDense: true,
+                      Semantics(
+                        identifier: 'sms-compose-voter-search',
+                        textField: true,
+                        child: TextField(
+                          controller: _searchController,
+                          decoration: const InputDecoration(
+                            hintText: 'Search voter by name...',
+                            prefixIcon: Icon(Icons.search),
+                            border: OutlineInputBorder(),
+                            isDense: true,
+                          ),
+                          onChanged: _searchVoters,
                         ),
-                        onChanged: _searchVoters,
                       ),
                       if (_isSearching)
                         const Padding(
@@ -187,12 +198,17 @@ class _ComposeMessageScreenState extends ConsumerState<ComposeMessageScreen> {
                             itemCount: _searchResults.length,
                             itemBuilder: (context, index) {
                               final voter = _searchResults[index];
-                              return ListTile(
-                                dense: true,
-                                title: Text(voter.fullName),
-                                subtitle: Text(
-                                    '${voter.party} - ${voter.resCity}'),
-                                onTap: () => _selectVoter(voter),
+                              return Semantics(
+                                identifier:
+                                    'sms-compose-voter-result-${voter.id}',
+                                button: true,
+                                child: ListTile(
+                                  dense: true,
+                                  title: Text(voter.fullName),
+                                  subtitle: Text(
+                                      '${voter.party} - ${voter.resCity}'),
+                                  onTap: () => _selectVoter(voter),
+                                ),
                               );
                             },
                           ),
@@ -205,17 +221,21 @@ class _ComposeMessageScreenState extends ConsumerState<ComposeMessageScreen> {
           Expanded(
             child: Padding(
               padding: const EdgeInsets.all(12),
-              child: TextField(
-                controller: _bodyController,
-                maxLines: null,
-                maxLength: 1600,
-                expands: true,
-                textAlignVertical: TextAlignVertical.top,
-                decoration: const InputDecoration(
-                  hintText: 'Type your message...',
-                  border: InputBorder.none,
+              child: Semantics(
+                identifier: 'sms-compose-body',
+                textField: true,
+                child: TextField(
+                  controller: _bodyController,
+                  maxLines: null,
+                  maxLength: 1600,
+                  expands: true,
+                  textAlignVertical: TextAlignVertical.top,
+                  decoration: const InputDecoration(
+                    hintText: 'Type your message...',
+                    border: InputBorder.none,
+                  ),
+                  onChanged: (_) => setState(() {}),
                 ),
-                onChanged: (_) => setState(() {}),
               ),
             ),
           ),
@@ -245,6 +265,7 @@ class _ComposeMessageScreenState extends ConsumerState<ComposeMessageScreen> {
             ),
           ),
         ],
+      ),
       ),
     );
   }

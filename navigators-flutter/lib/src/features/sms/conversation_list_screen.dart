@@ -191,9 +191,13 @@ class _ConversationListScreenState
             Text('Failed to load conversations',
                 style: Theme.of(context).textTheme.titleMedium),
             const SizedBox(height: 8),
-            ElevatedButton(
-              onPressed: _loadConversations,
-              child: const Text('Retry'),
+            Semantics(
+              identifier: 'sms-conversations-retry-btn',
+              button: true,
+              child: ElevatedButton(
+                onPressed: _loadConversations,
+                child: const Text('Retry'),
+              ),
             ),
           ],
         ),
@@ -216,11 +220,15 @@ class _ConversationListScreenState
                       color: Theme.of(context).colorScheme.outline,
                     )),
             const SizedBox(height: 24),
-            FloatingActionButton.extended(
-              heroTag: 'compose_empty',
-              onPressed: () => _navigateToCompose(),
-              icon: const Icon(Icons.edit),
-              label: const Text('New Message'),
+            Semantics(
+              identifier: 'sms-compose-fab-empty',
+              button: true,
+              child: FloatingActionButton.extended(
+                heroTag: 'compose_empty',
+                onPressed: () => _navigateToCompose(),
+                icon: const Icon(Icons.edit),
+                label: const Text('New Message'),
+              ),
             ),
           ],
         ),
@@ -244,7 +252,11 @@ class _ConversationListScreenState
               }
               final conv = _conversations[index];
               final isSelected = conv.voterId == _selectedVoterId;
-              return ListTile(
+              return Semantics(
+                identifier: 'sms-conversation-row-${conv.voterId}',
+                button: true,
+                selected: isSelected,
+                child: ListTile(
                 selected: isSelected,
                 selectedTileColor: Theme.of(context)
                     .colorScheme
@@ -272,6 +284,7 @@ class _ConversationListScreenState
                   style: Theme.of(context).textTheme.bodySmall,
                 ),
                 onTap: () => _onConversationTap(conv),
+                ),
               );
             },
           ),
@@ -279,10 +292,14 @@ class _ConversationListScreenState
         Positioned(
           bottom: 16,
           right: 16,
-          child: FloatingActionButton(
-            heroTag: 'compose_fab',
-            onPressed: () => _navigateToCompose(),
-            child: const Icon(Icons.edit),
+          child: Semantics(
+            identifier: 'sms-compose-fab',
+            button: true,
+            child: FloatingActionButton(
+              heroTag: 'compose_fab',
+              onPressed: () => _navigateToCompose(),
+              child: const Icon(Icons.edit),
+            ),
           ),
         ),
       ],

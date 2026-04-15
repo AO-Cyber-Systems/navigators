@@ -69,13 +69,21 @@ class _CampaignListScreenState extends ConsumerState<CampaignListScreen> {
         content:
             Text('Cancel "${campaign.name}"? This cannot be undone.'),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Keep'),
+          Semantics(
+            identifier: 'sms-campaign-cancel-keep',
+            button: true,
+            child: TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: const Text('Keep'),
+            ),
           ),
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Cancel Campaign'),
+          Semantics(
+            identifier: 'sms-campaign-cancel-confirm',
+            button: true,
+            child: TextButton(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: const Text('Cancel Campaign'),
+            ),
           ),
         ],
       ),
@@ -115,21 +123,29 @@ class _CampaignListScreenState extends ConsumerState<CampaignListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Semantics(
+      identifier: 'sms-campaign-list-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       appBar: AppBar(title: const Text('Campaigns')),
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'campaign_create',
-        onPressed: () async {
-          await Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => const CampaignCreateScreen(),
-            ),
-          );
-          _loadCampaigns();
-        },
-        child: const Icon(Icons.add),
+      floatingActionButton: Semantics(
+        identifier: 'sms-campaign-list-fab',
+        button: true,
+        child: FloatingActionButton(
+          heroTag: 'campaign_create',
+          onPressed: () async {
+            await Navigator.of(context).push(
+              MaterialPageRoute(
+                builder: (_) => const CampaignCreateScreen(),
+              ),
+            );
+            _loadCampaigns();
+          },
+          child: const Icon(Icons.add),
+        ),
       ),
       body: _buildBody(),
+      ),
     );
   }
 
@@ -145,9 +161,13 @@ class _CampaignListScreenState extends ConsumerState<CampaignListScreen> {
           children: [
             Text('Failed to load campaigns'),
             const SizedBox(height: 8),
-            ElevatedButton(
-              onPressed: _loadCampaigns,
-              child: const Text('Retry'),
+            Semantics(
+              identifier: 'sms-campaign-list-retry-btn',
+              button: true,
+              child: ElevatedButton(
+                onPressed: _loadCampaigns,
+                child: const Text('Retry'),
+              ),
             ),
           ],
         ),
@@ -187,7 +207,10 @@ class _CampaignListScreenState extends ConsumerState<CampaignListScreen> {
   }
 
   Widget _buildCampaignCard(SMSCampaign campaign) {
-    return Card(
+    return Semantics(
+      identifier: 'sms-campaign-row-${campaign.id}',
+      button: true,
+      child: Card(
       margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
       child: InkWell(
         onTap: () => _showCampaignDetail(campaign),
@@ -282,6 +305,7 @@ class _CampaignListScreenState extends ConsumerState<CampaignListScreen> {
             ],
           ),
         ),
+      ),
       ),
     );
   }

@@ -213,19 +213,23 @@ class _ConversationThreadScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text(widget.voterName.isNotEmpty
-            ? widget.voterName
-            : 'Conversation'),
-      ),
-      body: Column(
-        children: [
-          Expanded(
-            child: _buildMessageList(),
-          ),
-          _buildComposeBar(),
-        ],
+    return Semantics(
+      identifier: 'sms-thread-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
+        appBar: AppBar(
+          title: Text(widget.voterName.isNotEmpty
+              ? widget.voterName
+              : 'Conversation'),
+        ),
+        body: Column(
+          children: [
+            Expanded(
+              child: _buildMessageList(),
+            ),
+            _buildComposeBar(),
+          ],
+        ),
       ),
     );
   }
@@ -242,9 +246,13 @@ class _ConversationThreadScreenState
           children: [
             Text('Failed to load messages'),
             const SizedBox(height: 8),
-            ElevatedButton(
-              onPressed: _loadMessages,
-              child: const Text('Retry'),
+            Semantics(
+              identifier: 'sms-thread-retry-btn',
+              button: true,
+              child: ElevatedButton(
+                onPressed: _loadMessages,
+                child: const Text('Retry'),
+              ),
             ),
           ],
         ),
@@ -354,34 +362,42 @@ class _ConversationThreadScreenState
         child: Row(
           children: [
             Expanded(
-              child: TextField(
-                controller: _messageController,
-                maxLines: null,
-                maxLength: 1600,
-                buildCounter: (_, {required currentLength, required isFocused, maxLength}) => null,
-                decoration: const InputDecoration(
-                  hintText: 'Type a message...',
-                  border: OutlineInputBorder(
-                    borderRadius: BorderRadius.all(Radius.circular(24)),
+              child: Semantics(
+                identifier: 'sms-thread-compose-input',
+                textField: true,
+                child: TextField(
+                  controller: _messageController,
+                  maxLines: null,
+                  maxLength: 1600,
+                  buildCounter: (_, {required currentLength, required isFocused, maxLength}) => null,
+                  decoration: const InputDecoration(
+                    hintText: 'Type a message...',
+                    border: OutlineInputBorder(
+                      borderRadius: BorderRadius.all(Radius.circular(24)),
+                    ),
+                    contentPadding:
+                        EdgeInsets.symmetric(horizontal: 16, vertical: 10),
                   ),
-                  contentPadding:
-                      EdgeInsets.symmetric(horizontal: 16, vertical: 10),
+                  textInputAction: TextInputAction.send,
+                  onSubmitted: (_) => _sendMessage(),
                 ),
-                textInputAction: TextInputAction.send,
-                onSubmitted: (_) => _sendMessage(),
               ),
             ),
             const SizedBox(width: 8),
-            IconButton(
-              onPressed: _isSending ? null : _sendMessage,
-              icon: _isSending
-                  ? const SizedBox(
-                      width: 20,
-                      height: 20,
-                      child: CircularProgressIndicator(strokeWidth: 2),
-                    )
-                  : const Icon(Icons.send),
-              color: Theme.of(context).colorScheme.primary,
+            Semantics(
+              identifier: 'sms-thread-send-btn',
+              button: true,
+              child: IconButton(
+                onPressed: _isSending ? null : _sendMessage,
+                icon: _isSending
+                    ? const SizedBox(
+                        width: 20,
+                        height: 20,
+                        child: CircularProgressIndicator(strokeWidth: 2),
+                      )
+                    : const Icon(Icons.send),
+                color: Theme.of(context).colorScheme.primary,
+              ),
             ),
           ],
         ),

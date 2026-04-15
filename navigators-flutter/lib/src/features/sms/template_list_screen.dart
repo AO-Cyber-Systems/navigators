@@ -53,13 +53,21 @@ class _TemplateListScreenState extends ConsumerState<TemplateListScreen> {
         title: const Text('Delete Template'),
         content: Text('Delete "${template.name}"? This cannot be undone.'),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancel'),
+          Semantics(
+            identifier: 'sms-template-delete-cancel',
+            button: true,
+            child: TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: const Text('Cancel'),
+            ),
           ),
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Delete'),
+          Semantics(
+            identifier: 'sms-template-delete-confirm',
+            button: true,
+            child: TextButton(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: const Text('Delete'),
+            ),
           ),
         ],
       ),
@@ -89,21 +97,29 @@ class _TemplateListScreenState extends ConsumerState<TemplateListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Message Templates')),
-      floatingActionButton: FloatingActionButton(
-        heroTag: 'template_create',
-        onPressed: () async {
-          await Navigator.of(context).push(
-            MaterialPageRoute(
-              builder: (_) => const TemplateFormScreen(),
-            ),
-          );
-          _loadTemplates();
-        },
-        child: const Icon(Icons.add),
+    return Semantics(
+      identifier: 'sms-template-list-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Message Templates')),
+        floatingActionButton: Semantics(
+          identifier: 'sms-template-list-fab',
+          button: true,
+          child: FloatingActionButton(
+            heroTag: 'template_create',
+            onPressed: () async {
+              await Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (_) => const TemplateFormScreen(),
+                ),
+              );
+              _loadTemplates();
+            },
+            child: const Icon(Icons.add),
+          ),
+        ),
+        body: _buildBody(),
       ),
-      body: _buildBody(),
     );
   }
 
@@ -119,9 +135,13 @@ class _TemplateListScreenState extends ConsumerState<TemplateListScreen> {
           children: [
             Text('Failed to load templates'),
             const SizedBox(height: 8),
-            ElevatedButton(
-              onPressed: _loadTemplates,
-              child: const Text('Retry'),
+            Semantics(
+              identifier: 'sms-template-list-retry-btn',
+              button: true,
+              child: ElevatedButton(
+                onPressed: _loadTemplates,
+                child: const Text('Retry'),
+              ),
             ),
           ],
         ),
@@ -168,7 +188,10 @@ class _TemplateListScreenState extends ConsumerState<TemplateListScreen> {
               await _deleteTemplate(template);
               return false; // We handle removal in _deleteTemplate
             },
-            child: Card(
+            child: Semantics(
+              identifier: 'sms-template-row-${template.id}',
+              button: true,
+              child: Card(
               margin: const EdgeInsets.symmetric(horizontal: 12, vertical: 6),
               child: ListTile(
                 title: Text(template.name,
@@ -210,6 +233,7 @@ class _TemplateListScreenState extends ConsumerState<TemplateListScreen> {
                   );
                   _loadTemplates();
                 },
+              ),
               ),
             ),
           );

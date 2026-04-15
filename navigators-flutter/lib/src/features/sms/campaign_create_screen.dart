@@ -185,15 +185,19 @@ class _CampaignCreateScreenState extends ConsumerState<CampaignCreateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Create Campaign'),
+    return Semantics(
+      identifier: 'sms-campaign-create-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Create Campaign'),
+        ),
+        body: _createdCampaign != null
+            ? _buildSuccessView()
+            : _buildStepContent(),
+        bottomNavigationBar:
+            _createdCampaign != null ? null : _buildBottomNav(),
       ),
-      body: _createdCampaign != null
-          ? _buildSuccessView()
-          : _buildStepContent(),
-      bottomNavigationBar:
-          _createdCampaign != null ? null : _buildBottomNav(),
     );
   }
 
@@ -204,26 +208,38 @@ class _CampaignCreateScreenState extends ConsumerState<CampaignCreateScreen> {
         child: Row(
           children: [
             if (_currentStep != _CampaignStep.name)
-              OutlinedButton(
-                onPressed: _previousStep,
-                child: const Text('Back'),
+              Semantics(
+                identifier: 'sms-campaign-create-back-btn',
+                button: true,
+                child: OutlinedButton(
+                  onPressed: _previousStep,
+                  child: const Text('Back'),
+                ),
               ),
             const Spacer(),
             if (_currentStep != _CampaignStep.review)
-              FilledButton(
-                onPressed: _nextStep,
-                child: const Text('Next'),
+              Semantics(
+                identifier: 'sms-campaign-create-next-btn',
+                button: true,
+                child: FilledButton(
+                  onPressed: _nextStep,
+                  child: const Text('Next'),
+                ),
               ),
             if (_currentStep == _CampaignStep.review)
-              FilledButton(
-                onPressed: _isCreating ? null : _createCampaign,
-                child: _isCreating
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(strokeWidth: 2),
-                      )
-                    : const Text('Create Campaign'),
+              Semantics(
+                identifier: 'sms-campaign-create-submit',
+                button: true,
+                child: FilledButton(
+                  onPressed: _isCreating ? null : _createCampaign,
+                  child: _isCreating
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(strokeWidth: 2),
+                        )
+                      : const Text('Create Campaign'),
+                ),
               ),
           ],
         ),
@@ -294,13 +310,17 @@ class _CampaignCreateScreenState extends ConsumerState<CampaignCreateScreen> {
         Text('Campaign Name',
             style: Theme.of(context).textTheme.titleMedium),
         const SizedBox(height: 8),
-        TextField(
-          controller: _nameController,
-          decoration: const InputDecoration(
-            hintText: 'e.g., "Spring Outreach 2026"',
-            border: OutlineInputBorder(),
+        Semantics(
+          identifier: 'sms-campaign-create-name',
+          textField: true,
+          child: TextField(
+            controller: _nameController,
+            decoration: const InputDecoration(
+              hintText: 'e.g., "Spring Outreach 2026"',
+              border: OutlineInputBorder(),
+            ),
+            onChanged: (_) => setState(() {}),
           ),
-          onChanged: (_) => setState(() {}),
         ),
       ],
     );
@@ -332,7 +352,11 @@ class _CampaignCreateScreenState extends ConsumerState<CampaignCreateScreen> {
         ...List.generate(_templates.length, (i) {
           final template = _templates[i];
           final isSelected = template.id == _selectedTemplateId;
-          return Card(
+          return Semantics(
+            identifier: 'sms-campaign-create-template-${template.id}',
+            button: true,
+            selected: isSelected,
+            child: Card(
             color: isSelected
                 ? Theme.of(context).colorScheme.primaryContainer
                 : null,
@@ -350,6 +374,7 @@ class _CampaignCreateScreenState extends ConsumerState<CampaignCreateScreen> {
                   _selectedTemplate = template;
                 });
               },
+            ),
             ),
           );
         }),
@@ -369,32 +394,38 @@ class _CampaignCreateScreenState extends ConsumerState<CampaignCreateScreen> {
                   color: Theme.of(context).colorScheme.outline,
                 )),
         const SizedBox(height: 16),
-        DropdownButtonFormField<String>(
-          initialValue: _selectedDistrict,
-          decoration: const InputDecoration(
-            labelText: 'District',
-            border: OutlineInputBorder(),
+        Semantics(
+          identifier: 'sms-campaign-create-district',
+          child: DropdownButtonFormField<String>(
+            initialValue: _selectedDistrict,
+            decoration: const InputDecoration(
+              labelText: 'District',
+              border: OutlineInputBorder(),
+            ),
+            items: [
+              const DropdownMenuItem(value: null, child: Text('All districts')),
+              ..._districts
+                  .map((d) => DropdownMenuItem(value: d, child: Text(d))),
+            ],
+            onChanged: (v) => setState(() => _selectedDistrict = v),
           ),
-          items: [
-            const DropdownMenuItem(value: null, child: Text('All districts')),
-            ..._districts
-                .map((d) => DropdownMenuItem(value: d, child: Text(d))),
-          ],
-          onChanged: (v) => setState(() => _selectedDistrict = v),
         ),
         const SizedBox(height: 12),
-        DropdownButtonFormField<String>(
-          initialValue: _selectedParty,
-          decoration: const InputDecoration(
-            labelText: 'Party',
-            border: OutlineInputBorder(),
+        Semantics(
+          identifier: 'sms-campaign-create-party',
+          child: DropdownButtonFormField<String>(
+            initialValue: _selectedParty,
+            decoration: const InputDecoration(
+              labelText: 'Party',
+              border: OutlineInputBorder(),
+            ),
+            items: [
+              const DropdownMenuItem(value: null, child: Text('All parties')),
+              ..._parties
+                  .map((p) => DropdownMenuItem(value: p, child: Text(p))),
+            ],
+            onChanged: (v) => setState(() => _selectedParty = v),
           ),
-          items: [
-            const DropdownMenuItem(value: null, child: Text('All parties')),
-            ..._parties
-                .map((p) => DropdownMenuItem(value: p, child: Text(p))),
-          ],
-          onChanged: (v) => setState(() => _selectedParty = v),
         ),
         const SizedBox(height: 12),
         Text('Tags', style: Theme.of(context).textTheme.titleSmall),
@@ -404,18 +435,23 @@ class _CampaignCreateScreenState extends ConsumerState<CampaignCreateScreen> {
           runSpacing: 4,
           children: _tags.map((tag) {
             final isSelected = _selectedTags.contains(tag);
-            return FilterChip(
-              label: Text(tag),
+            return Semantics(
+              identifier: 'sms-campaign-create-tag-$tag',
+              button: true,
               selected: isSelected,
-              onSelected: (selected) {
-                setState(() {
-                  if (selected) {
-                    _selectedTags.add(tag);
-                  } else {
-                    _selectedTags.remove(tag);
-                  }
-                });
-              },
+              child: FilterChip(
+                label: Text(tag),
+                selected: isSelected,
+                onSelected: (selected) {
+                  setState(() {
+                    if (selected) {
+                      _selectedTags.add(tag);
+                    } else {
+                      _selectedTags.remove(tag);
+                    }
+                  });
+                },
+              ),
             );
           }).toList(),
         ),
@@ -550,10 +586,14 @@ class _CampaignCreateScreenState extends ConsumerState<CampaignCreateScreen> {
                 style: Theme.of(context).textTheme.bodyLarge),
             const SizedBox(height: 24),
             if (is10DLCApproved)
-              FilledButton.icon(
-                onPressed: _launchCampaign,
-                icon: const Icon(Icons.rocket_launch),
-                label: const Text('Launch Now'),
+              Semantics(
+                identifier: 'sms-campaign-create-launch-btn',
+                button: true,
+                child: FilledButton.icon(
+                  onPressed: _launchCampaign,
+                  icon: const Icon(Icons.rocket_launch),
+                  label: const Text('Launch Now'),
+                ),
               )
             else
               Column(
@@ -572,9 +612,13 @@ class _CampaignCreateScreenState extends ConsumerState<CampaignCreateScreen> {
                 ],
               ),
             const SizedBox(height: 12),
-            OutlinedButton(
-              onPressed: () => Navigator.of(context).pop(),
-              child: const Text('Back to Campaigns'),
+            Semantics(
+              identifier: 'sms-campaign-create-back-to-list-btn',
+              button: true,
+              child: OutlinedButton(
+                onPressed: () => Navigator.of(context).pop(),
+                child: const Text('Back to Campaigns'),
+              ),
             ),
           ],
         ),

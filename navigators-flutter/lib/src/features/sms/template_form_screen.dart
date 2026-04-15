@@ -175,19 +175,26 @@ class _TemplateFormScreenState extends ConsumerState<TemplateFormScreen> {
       );
     }
 
-    return Scaffold(
+    return Semantics(
+      identifier: 'sms-template-form-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       appBar: AppBar(
         title: Text(_isEditMode ? 'Edit Template' : 'New Template'),
         actions: [
-          TextButton(
-            onPressed: _isSaving ? null : _save,
-            child: _isSaving
-                ? const SizedBox(
-                    width: 20,
-                    height: 20,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Text('Save'),
+          Semantics(
+            identifier: 'sms-template-form-save',
+            button: true,
+            child: TextButton(
+              onPressed: _isSaving ? null : _save,
+              child: _isSaving
+                  ? const SizedBox(
+                      width: 20,
+                      height: 20,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Save'),
+            ),
           ),
         ],
       ),
@@ -196,30 +203,38 @@ class _TemplateFormScreenState extends ConsumerState<TemplateFormScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            TextField(
-              controller: _nameController,
-              decoration: const InputDecoration(
-                labelText: 'Template Name',
-                border: OutlineInputBorder(),
+            Semantics(
+              identifier: 'sms-template-form-name',
+              textField: true,
+              child: TextField(
+                controller: _nameController,
+                decoration: const InputDecoration(
+                  labelText: 'Template Name',
+                  border: OutlineInputBorder(),
+                ),
               ),
             ),
             const SizedBox(height: 16),
-            TextField(
-              controller: _bodyController,
-              focusNode: _bodyFocusNode,
-              maxLines: 6,
-              maxLength: 1600,
-              decoration: const InputDecoration(
-                labelText: 'Message Body',
-                hintText:
-                    'Use {{.FirstName}}, {{.LastName}}, etc. for merge fields',
-                border: OutlineInputBorder(),
-                alignLabelWithHint: true,
+            Semantics(
+              identifier: 'sms-template-form-body',
+              textField: true,
+              child: TextField(
+                controller: _bodyController,
+                focusNode: _bodyFocusNode,
+                maxLines: 6,
+                maxLength: 1600,
+                decoration: const InputDecoration(
+                  labelText: 'Message Body',
+                  hintText:
+                      'Use {{.FirstName}}, {{.LastName}}, etc. for merge fields',
+                  border: OutlineInputBorder(),
+                  alignLabelWithHint: true,
+                ),
+                onChanged: (_) => setState(() {
+                  _previewText = null;
+                  _previewError = null;
+                }),
               ),
-              onChanged: (_) => setState(() {
-                _previewText = null;
-                _previewError = null;
-              }),
             ),
             const SizedBox(height: 12),
             Text('Merge Fields',
@@ -238,10 +253,14 @@ class _TemplateFormScreenState extends ConsumerState<TemplateFormScreen> {
             const SizedBox(height: 16),
             Row(
               children: [
-                OutlinedButton.icon(
-                  onPressed: _preview,
-                  icon: const Icon(Icons.preview),
-                  label: const Text('Preview'),
+                Semantics(
+                  identifier: 'sms-template-form-preview-btn',
+                  button: true,
+                  child: OutlinedButton.icon(
+                    onPressed: _preview,
+                    icon: const Icon(Icons.preview),
+                    label: const Text('Preview'),
+                  ),
                 ),
               ],
             ),
@@ -283,6 +302,7 @@ class _TemplateFormScreenState extends ConsumerState<TemplateFormScreen> {
             ],
           ],
         ),
+      ),
       ),
     );
   }
