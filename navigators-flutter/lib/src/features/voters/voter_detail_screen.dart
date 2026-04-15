@@ -1,3 +1,4 @@
+import 'package:eden_platform_flutter/eden_platform.dart';
 import 'package:eden_ui_flutter/eden_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -5,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../services/voter_service.dart';
 import '../phone_calls/phone_call_screen.dart';
 import 'contact_timeline_widget.dart';
+import 'suppress_voter_dialog.dart';
 import 'voter_notes_tab.dart';
 
 /// Full voter profile display screen with tabbed layout.
@@ -89,14 +91,65 @@ class VoterDetailScreen extends ConsumerWidget {
   }
 }
 
-class _VoterProfileBody extends StatelessWidget {
+class _VoterProfileBody extends ConsumerWidget {
   final Voter voter;
 
   const _VoterProfileBody({required this.voter});
 
+  Future<void> _handleRemoveSuppression(
+      BuildContext context, WidgetRef ref) async {
+    final confirm = await showDialog<bool>(
+      context: context,
+      builder: (ctx) => AlertDialog(
+        title: const Text('Remove from suppression list?'),
+        content: Text(
+            '${voter.fullName} will be removed from the suppression list and eligible for outreach again.'),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.of(ctx).pop(false),
+            child: const Text('Cancel'),
+          ),
+          FilledButton(
+            onPressed: () => Navigator.of(ctx).pop(true),
+            child: const Text('Remove'),
+          ),
+        ],
+      ),
+    );
+    if (confirm != true) return;
+    try {
+      await ref
+          .read(voterServiceProvider)
+          .removeFromSuppressionList(voter.id);
+      ref.invalidate(voterDetailProvider(voter.id));
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(content: Text('Removed from suppression list')),
+      );
+    } catch (e) {
+      if (!context.mounted) return;
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Failed to remove: $e')),
+      );
+    }
+  }
+
+  Future<void> _handleAddSuppression(
+      BuildContext context, WidgetRef ref) async {
+    final ok = await SuppressVoterDialog.show(
+      context,
+      voterId: voter.id,
+      voterName: voter.fullName,
+      isAlreadySuppressed: voter.isSuppressed,
+    );
+    if (ok) ref.invalidate(voterDetailProvider(voter.id));
+  }
+
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
+    final auth = ref.watch(authProvider);
+    final isAdmin = auth.role?.toLowerCase() == 'admin';
 
     return SingleChildScrollView(
       padding: const EdgeInsets.all(16),
@@ -111,9 +164,27 @@ class _VoterProfileBody extends StatelessWidget {
           if (voter.isSuppressed) ...[
             EdenAlert(
               title: 'Voter is suppressed',
-              message: 'This voter is on the suppression list and will be excluded from outreach operations.',
+              message:
+                  'This voter is on the suppression list and will be excluded from outreach operations.',
               variant: EdenAlertVariant.danger,
             ),
+            const SizedBox(height: 16),
+          ],
+
+          // Admin suppression actions
+          if (isAdmin) ...[
+            if (voter.isSuppressed)
+              EdenButton(
+                label: 'Remove from suppression list',
+                icon: Icons.person_remove_outlined,
+                onPressed: () => _handleRemoveSuppression(context, ref),
+              )
+            else
+              EdenButton(
+                label: 'Add to suppression list',
+                icon: Icons.person_off_outlined,
+                onPressed: () => _handleAddSuppression(context, ref),
+              ),
             const SizedBox(height: 16),
           ],
 

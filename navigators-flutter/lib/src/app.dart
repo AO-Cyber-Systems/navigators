@@ -22,6 +22,7 @@ import 'features/sync/sync_status_widget.dart';
 import 'features/sync/turf_download_screen.dart';
 import 'features/tasks/task_list_screen.dart';
 import 'features/training/training_list_screen.dart';
+import 'features/voters/suppression_list_screen.dart';
 import 'features/voters/voter_list_screen.dart';
 import 'services/volunteer_service.dart';
 import 'sync/sync_engine.dart';
@@ -213,6 +214,13 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
           icon: Icons.cloud_upload_outlined,
           activeIcon: Icons.cloud_upload,
         ),
+      if (isAdmin)
+        const EdenNavItem(
+          id: 'suppression',
+          label: 'Suppression',
+          icon: Icons.block_outlined,
+          activeIcon: Icons.block,
+        ),
     ];
   }
 
@@ -228,6 +236,7 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
       'leaderboard' => const LeaderboardScreen(),
       'training' => const TrainingListScreen(),
       'import' when isAdmin => const ImportScreen(),
+      'suppression' when isAdmin => const SuppressionListScreen(),
       _ => _buildDashboardBody(auth),
     };
   }
@@ -288,6 +297,7 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
       'leaderboard' => 'Leaderboard',
       'training' => 'Training',
       'import' => 'Import',
+      'suppression' => 'Suppression',
       _ => 'Dashboard',
     };
   }
