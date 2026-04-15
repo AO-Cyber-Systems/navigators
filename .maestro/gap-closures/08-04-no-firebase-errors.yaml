@@ -14,8 +14,9 @@ appId: com.mainegop.navigators
     clearState: true
 # Reaching the login screen proves: Flutter engine started, plugin registrants
 # ran, and nothing in the startup path threw (including Firebase init).
-- assertVisible:
-    id: "eden-login-screen"
+- extendedWaitUntil:
+    visible:
+      id: "eden-login-screen"
     timeout: 30000
 - takeScreenshot: "08-04-cold-start-login"
 
@@ -24,8 +25,9 @@ appId: com.mainegop.navigators
 - launchApp:
     clearState: false
     stopApp: true
-- assertVisible:
-    id: "eden-login-screen"
+- extendedWaitUntil:
+    visible:
+      id: "eden-login-screen"
     timeout: 30000
 - takeScreenshot: "08-04-warm-start-login"
 

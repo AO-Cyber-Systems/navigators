@@ -13,8 +13,10 @@ env:
 ---
 - launchApp:
     clearState: true
-- assertVisible:
-    id: "eden-login-screen"
+- extendedWaitUntil:
+    visible:
+      id: "eden-login-screen"
+    timeout: 30000
 - tapOn:
     id: "eden-login-email"
 - inputText: ${EMAIL}
@@ -23,6 +25,7 @@ env:
 - inputText: ${PASSWORD}
 - tapOn:
     id: "eden-login-submit"
-- assertVisible:
-    id: "nav-home"
+- extendedWaitUntil:
+    visible:
+      id: "nav-home"
     timeout: 20000
