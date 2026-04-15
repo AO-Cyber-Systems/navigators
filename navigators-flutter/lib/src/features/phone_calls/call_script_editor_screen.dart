@@ -105,16 +105,24 @@ class _CallScriptEditorScreenState
           'This can be undone by editing the script and re-enabling it.',
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton.tonal(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            style: FilledButton.styleFrom(
-              foregroundColor: Theme.of(ctx).colorScheme.error,
+          Semantics(
+            identifier: 'call-script-editor-deactivate-cancel',
+            button: true,
+            child: TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: const Text('Cancel'),
             ),
-            child: const Text('Deactivate'),
+          ),
+          Semantics(
+            identifier: 'call-script-editor-deactivate-confirm',
+            button: true,
+            child: FilledButton.tonal(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              style: FilledButton.styleFrom(
+                foregroundColor: Theme.of(ctx).colorScheme.error,
+              ),
+              child: const Text('Deactivate'),
+            ),
           ),
         ],
       ),
@@ -156,31 +164,42 @@ class _CallScriptEditorScreenState
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
-    return Scaffold(
+    return Semantics(
+      identifier: 'call-script-editor-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       appBar: AppBar(
         title: Text(_isEditMode ? 'Edit Call Script' : 'New Call Script'),
         actions: [
           if (_isEditMode)
-            PopupMenuButton<String>(
-              onSelected: (value) {
-                if (value == 'deactivate') _deactivate();
-              },
-              itemBuilder: (_) => const [
-                PopupMenuItem(
-                  value: 'deactivate',
-                  child: Text('Deactivate'),
-                ),
-              ],
+            Semantics(
+              identifier: 'call-script-editor-menu',
+              button: true,
+              child: PopupMenuButton<String>(
+                onSelected: (value) {
+                  if (value == 'deactivate') _deactivate();
+                },
+                itemBuilder: (_) => const [
+                  PopupMenuItem(
+                    value: 'deactivate',
+                    child: Text('Deactivate'),
+                  ),
+                ],
+              ),
             ),
-          TextButton(
-            onPressed: _isLoading ? null : _save,
-            child: _isLoading
-                ? const SizedBox(
-                    width: 16,
-                    height: 16,
-                    child: CircularProgressIndicator(strokeWidth: 2),
-                  )
-                : const Text('Save'),
+          Semantics(
+            identifier: 'call-script-editor-save',
+            button: true,
+            child: TextButton(
+              onPressed: _isLoading ? null : _save,
+              child: _isLoading
+                  ? const SizedBox(
+                      width: 16,
+                      height: 16,
+                      child: CircularProgressIndicator(strokeWidth: 2),
+                    )
+                  : const Text('Save'),
+            ),
           ),
         ],
       ),
@@ -189,30 +208,38 @@ class _CallScriptEditorScreenState
         child: ListView(
           padding: const EdgeInsets.all(16),
           children: [
-            TextFormField(
-              controller: _titleController,
-              decoration: const InputDecoration(
-                labelText: 'Title',
-                border: OutlineInputBorder(),
+            Semantics(
+              identifier: 'call-script-editor-title',
+              textField: true,
+              child: TextFormField(
+                controller: _titleController,
+                decoration: const InputDecoration(
+                  labelText: 'Title',
+                  border: OutlineInputBorder(),
+                ),
+                maxLength: 120,
+                validator: (v) => (v == null || v.trim().isEmpty)
+                    ? 'Title is required'
+                    : null,
               ),
-              maxLength: 120,
-              validator: (v) => (v == null || v.trim().isEmpty)
-                  ? 'Title is required'
-                  : null,
             ),
             const SizedBox(height: 16),
-            TextFormField(
-              controller: _contentController,
-              decoration: const InputDecoration(
-                labelText: 'Body',
-                alignLabelWithHint: true,
-                border: OutlineInputBorder(),
+            Semantics(
+              identifier: 'call-script-editor-body',
+              textField: true,
+              child: TextFormField(
+                controller: _contentController,
+                decoration: const InputDecoration(
+                  labelText: 'Body',
+                  alignLabelWithHint: true,
+                  border: OutlineInputBorder(),
+                ),
+                minLines: 8,
+                maxLines: 20,
+                validator: (v) => (v == null || v.trim().isEmpty)
+                    ? 'Body is required'
+                    : null,
               ),
-              minLines: 8,
-              maxLines: 20,
-              validator: (v) => (v == null || v.trim().isEmpty)
-                  ? 'Body is required'
-                  : null,
             ),
             const SizedBox(height: 12),
             Card(
@@ -253,18 +280,23 @@ class _CallScriptEditorScreenState
             ),
             if (_isEditMode) ...[
               const SizedBox(height: 12),
-              SwitchListTile(
-                title: const Text('Active'),
-                subtitle: const Text(
-                    'Inactive scripts are hidden from Navigators after their next sync'),
-                value: _isActive,
-                onChanged: _isLoading
-                    ? null
-                    : (v) => setState(() => _isActive = v),
+              Semantics(
+                identifier: 'call-script-editor-active-toggle',
+                toggled: _isActive,
+                child: SwitchListTile(
+                  title: const Text('Active'),
+                  subtitle: const Text(
+                      'Inactive scripts are hidden from Navigators after their next sync'),
+                  value: _isActive,
+                  onChanged: _isLoading
+                      ? null
+                      : (v) => setState(() => _isActive = v),
+                ),
               ),
             ],
           ],
         ),
+      ),
       ),
     );
   }

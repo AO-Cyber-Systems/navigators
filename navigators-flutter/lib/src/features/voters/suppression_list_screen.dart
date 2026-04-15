@@ -65,13 +65,21 @@ class _SuppressionListScreenState extends ConsumerState<SuppressionListScreen> {
         content: Text(
             '${v.fullName} will be removed from the suppression list and eligible for outreach again.'),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancel'),
+          Semantics(
+            identifier: 'suppression-remove-dialog-cancel',
+            button: true,
+            child: TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: const Text('Cancel'),
+            ),
           ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Remove'),
+          Semantics(
+            identifier: 'suppression-remove-dialog-confirm',
+            button: true,
+            child: FilledButton(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: const Text('Remove'),
+            ),
           ),
         ],
       ),
@@ -123,34 +131,46 @@ class _SuppressionListScreenState extends ConsumerState<SuppressionListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: const Text('Suppression List'),
-        actions: [
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            tooltip: 'Refresh',
-            onPressed: _loading ? null : _refresh,
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(12),
-            child: TextField(
-              decoration: const InputDecoration(
-                hintText: 'Search by name or city...',
-                prefixIcon: Icon(Icons.search),
-                border: OutlineInputBorder(),
-                isDense: true,
+    return Semantics(
+      identifier: 'suppression-list-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
+        appBar: AppBar(
+          title: const Text('Suppression List'),
+          actions: [
+            Semantics(
+              identifier: 'suppression-list-refresh-btn',
+              button: true,
+              child: IconButton(
+                icon: const Icon(Icons.refresh),
+                tooltip: 'Refresh',
+                onPressed: _loading ? null : _refresh,
               ),
-              onChanged: (v) => setState(() => _searchQuery = v),
             ),
-          ),
-          Expanded(child: _buildBody()),
-          _buildFooter(),
-        ],
+          ],
+        ),
+        body: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(12),
+              child: Semantics(
+                identifier: 'suppression-list-search',
+                textField: true,
+                child: TextField(
+                  decoration: const InputDecoration(
+                    hintText: 'Search by name or city...',
+                    prefixIcon: Icon(Icons.search),
+                    border: OutlineInputBorder(),
+                    isDense: true,
+                  ),
+                  onChanged: (v) => setState(() => _searchQuery = v),
+                ),
+              ),
+            ),
+            Expanded(child: _buildBody()),
+            _buildFooter(),
+          ],
+        ),
       ),
     );
   }
@@ -171,10 +191,14 @@ class _SuppressionListScreenState extends ConsumerState<SuppressionListScreen> {
               variant: EdenAlertVariant.danger,
             ),
             const SizedBox(height: 16),
-            EdenButton(
-              label: 'Retry',
-              icon: Icons.refresh,
-              onPressed: _refresh,
+            Semantics(
+              identifier: 'suppression-list-retry-btn',
+              button: true,
+              child: EdenButton(
+                label: 'Retry',
+                icon: Icons.refresh,
+                onPressed: _refresh,
+              ),
             ),
           ],
         ),
@@ -203,7 +227,10 @@ class _SuppressionListScreenState extends ConsumerState<SuppressionListScreen> {
           final v = filtered[i];
           final addedByShort =
               v.addedBy.isEmpty ? '-' : v.addedBy.substring(0, v.addedBy.length < 8 ? v.addedBy.length : 8);
-          return ListTile(
+          return Semantics(
+            identifier: 'suppression-list-row-${v.voterId}',
+            button: true,
+            child: ListTile(
             title: Text(v.fullName.isEmpty ? '(unnamed)' : v.fullName),
             subtitle: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -219,20 +246,24 @@ class _SuppressionListScreenState extends ConsumerState<SuppressionListScreen> {
               ],
             ),
             isThreeLine: true,
-            trailing: PopupMenuButton<String>(
-              onSelected: (value) {
-                if (value == 'remove') _remove(v);
-              },
-              itemBuilder: (_) => const [
-                PopupMenuItem<String>(
-                  value: 'remove',
-                  child: ListTile(
-                    leading: Icon(Icons.person_remove_outlined),
-                    title: Text('Remove from suppression list'),
-                    dense: true,
+            trailing: Semantics(
+              identifier: 'suppression-list-row-menu-${v.voterId}',
+              button: true,
+              child: PopupMenuButton<String>(
+                onSelected: (value) {
+                  if (value == 'remove') _remove(v);
+                },
+                itemBuilder: (_) => const [
+                  PopupMenuItem<String>(
+                    value: 'remove',
+                    child: ListTile(
+                      leading: Icon(Icons.person_remove_outlined),
+                      title: Text('Remove from suppression list'),
+                      dense: true,
+                    ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             onTap: () {
               Navigator.of(context).push(
@@ -241,6 +272,7 @@ class _SuppressionListScreenState extends ConsumerState<SuppressionListScreen> {
                 ),
               );
             },
+            ),
           );
         },
       ),
@@ -257,23 +289,31 @@ class _SuppressionListScreenState extends ConsumerState<SuppressionListScreen> {
           Text('Page ${_page + 1} of $_totalPages ($_totalCount total)'),
           Row(
             children: [
-              IconButton(
-                icon: const Icon(Icons.chevron_left),
-                onPressed: _hasPrev && !_loading
-                    ? () {
-                        setState(() => _page--);
-                        _refresh();
-                      }
-                    : null,
+              Semantics(
+                identifier: 'suppression-list-prev-page-btn',
+                button: true,
+                child: IconButton(
+                  icon: const Icon(Icons.chevron_left),
+                  onPressed: _hasPrev && !_loading
+                      ? () {
+                          setState(() => _page--);
+                          _refresh();
+                        }
+                      : null,
+                ),
               ),
-              IconButton(
-                icon: const Icon(Icons.chevron_right),
-                onPressed: _hasNext && !_loading
-                    ? () {
-                        setState(() => _page++);
-                        _refresh();
-                      }
-                    : null,
+              Semantics(
+                identifier: 'suppression-list-next-page-btn',
+                button: true,
+                child: IconButton(
+                  icon: const Icon(Icons.chevron_right),
+                  onPressed: _hasNext && !_loading
+                      ? () {
+                          setState(() => _page++);
+                          _refresh();
+                        }
+                      : null,
+                ),
               ),
             ],
           ),

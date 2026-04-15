@@ -24,7 +24,10 @@ class CallScriptManagerScreen extends ConsumerWidget {
     final isAdmin = auth.role?.toLowerCase() == 'admin';
     final db = ref.read(databaseProvider);
 
-    return Scaffold(
+    return Semantics(
+      identifier: 'call-script-manager-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       appBar: AppBar(
         title: Text(isAdmin ? 'Manage Call Scripts' : 'Call Scripts'),
       ),
@@ -60,7 +63,10 @@ class CallScriptManagerScreen extends ConsumerWidget {
             itemCount: scripts.length,
             itemBuilder: (context, index) {
               final script = scripts[index];
-              return _CallScriptCard(
+              return Semantics(
+                identifier: 'call-script-manager-row-${script.id}',
+                button: true,
+                child: _CallScriptCard(
                 script: script,
                 trailing: isAdmin
                     ? const Icon(Icons.chevron_right)
@@ -74,22 +80,28 @@ class CallScriptManagerScreen extends ConsumerWidget {
                           ),
                         )
                     : () => _showScriptDetail(context, script),
+                ),
               );
             },
           );
         },
       ),
       floatingActionButton: isAdmin
-          ? FloatingActionButton(
-              onPressed: () => Navigator.of(context).push(
-                MaterialPageRoute<bool>(
-                  builder: (_) => const CallScriptEditorScreen(),
+          ? Semantics(
+              identifier: 'call-script-manager-fab',
+              button: true,
+              child: FloatingActionButton(
+                onPressed: () => Navigator.of(context).push(
+                  MaterialPageRoute<bool>(
+                    builder: (_) => const CallScriptEditorScreen(),
+                  ),
                 ),
+                tooltip: 'New call script',
+                child: const Icon(Icons.add),
               ),
-              tooltip: 'New call script',
-              child: const Icon(Icons.add),
             )
           : null,
+      ),
     );
   }
 

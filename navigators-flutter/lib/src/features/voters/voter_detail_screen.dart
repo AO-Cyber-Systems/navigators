@@ -48,12 +48,18 @@ class VoterDetailScreen extends ConsumerWidget {
       ),
       data: (voter) => DefaultTabController(
         length: 3,
-        child: Scaffold(
+        child: Semantics(
+          identifier: 'voter-detail-screen',
+          explicitChildNodes: true,
+          child: Scaffold(
           appBar: AppBar(
             title: Text(voter.fullName),
             actions: [
               if (voter.phone.isNotEmpty)
-                IconButton(
+                Semantics(
+                  identifier: 'voter-detail-call-btn',
+                  button: true,
+                  child: IconButton(
                   icon: const Icon(Icons.phone),
                   tooltip: 'Call voter',
                   onPressed: () async {
@@ -68,6 +74,7 @@ class VoterDetailScreen extends ConsumerWidget {
                       ),
                     );
                   },
+                  ),
                 ),
             ],
             bottom: const TabBar(
@@ -84,6 +91,7 @@ class VoterDetailScreen extends ConsumerWidget {
               ContactTimelineWidget(voterId: voterId),
               VoterNotesTab(voterId: voterId, turfId: turfId),
             ],
+          ),
           ),
         ),
       ),
@@ -105,13 +113,21 @@ class _VoterProfileBody extends ConsumerWidget {
         content: Text(
             '${voter.fullName} will be removed from the suppression list and eligible for outreach again.'),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancel'),
+          Semantics(
+            identifier: 'voter-detail-remove-suppression-cancel',
+            button: true,
+            child: TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: const Text('Cancel'),
+            ),
           ),
-          FilledButton(
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Remove'),
+          Semantics(
+            identifier: 'voter-detail-remove-suppression-confirm',
+            button: true,
+            child: FilledButton(
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: const Text('Remove'),
+            ),
           ),
         ],
       ),
@@ -174,16 +190,24 @@ class _VoterProfileBody extends ConsumerWidget {
           // Admin suppression actions
           if (isAdmin) ...[
             if (voter.isSuppressed)
-              EdenButton(
-                label: 'Remove from suppression list',
-                icon: Icons.person_remove_outlined,
-                onPressed: () => _handleRemoveSuppression(context, ref),
+              Semantics(
+                identifier: 'voter-detail-remove-suppression-btn',
+                button: true,
+                child: EdenButton(
+                  label: 'Remove from suppression list',
+                  icon: Icons.person_remove_outlined,
+                  onPressed: () => _handleRemoveSuppression(context, ref),
+                ),
               )
             else
-              EdenButton(
-                label: 'Add to suppression list',
-                icon: Icons.person_off_outlined,
-                onPressed: () => _handleAddSuppression(context, ref),
+              Semantics(
+                identifier: 'voter-detail-suppress-btn',
+                button: true,
+                child: EdenButton(
+                  label: 'Add to suppression list',
+                  icon: Icons.person_off_outlined,
+                  onPressed: () => _handleAddSuppression(context, ref),
+                ),
               ),
             const SizedBox(height: 16),
           ],

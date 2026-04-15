@@ -256,27 +256,35 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
         title: const Text('Messages'),
         actions: [
           if (isAdmin) ...[
-            IconButton(
-              icon: const Icon(Icons.description_outlined),
-              tooltip: 'Templates',
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const TemplateListScreen(),
-                  ),
-                );
-              },
+            Semantics(
+              identifier: 'messages-templates-btn',
+              button: true,
+              child: IconButton(
+                icon: const Icon(Icons.description_outlined),
+                tooltip: 'Templates',
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const TemplateListScreen(),
+                    ),
+                  );
+                },
+              ),
             ),
-            IconButton(
-              icon: const Icon(Icons.campaign_outlined),
-              tooltip: 'Campaigns',
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const CampaignListScreen(),
-                  ),
-                );
-              },
+            Semantics(
+              identifier: 'messages-campaigns-btn',
+              button: true,
+              child: IconButton(
+                icon: const Icon(Icons.campaign_outlined),
+                tooltip: 'Campaigns',
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const CampaignListScreen(),
+                    ),
+                  );
+                },
+              ),
             ),
           ],
         ],
@@ -483,13 +491,17 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
                 ),
               ),
               const Divider(),
-              ListTile(
-                leading: const Icon(Icons.logout),
-                title: const Text('Logout'),
-                onTap: () {
-                  Navigator.pop(ctx);
-                  ref.read(authProvider.notifier).logout();
-                },
+              Semantics(
+                identifier: 'app-user-menu-logout',
+                button: true,
+                child: ListTile(
+                  leading: const Icon(Icons.logout),
+                  title: const Text('Logout'),
+                  onTap: () {
+                    Navigator.pop(ctx);
+                    ref.read(authProvider.notifier).logout();
+                  },
+                ),
               ),
             ],
           ),

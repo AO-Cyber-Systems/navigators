@@ -42,12 +42,18 @@ class TrainingListScreen extends ConsumerWidget {
       );
     }
 
-    return Scaffold(
+    return Semantics(
+      identifier: 'training-list-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       appBar: AppBar(
         title: const Text('Training Materials'),
       ),
       floatingActionButton: isAdmin
-          ? FloatingActionButton.extended(
+          ? Semantics(
+              identifier: 'training-list-fab',
+              button: true,
+              child: FloatingActionButton.extended(
               onPressed: () async {
                 final uploaded = await Navigator.of(context).push<bool>(
                   MaterialPageRoute(
@@ -63,6 +69,7 @@ class TrainingListScreen extends ConsumerWidget {
               },
               icon: const Icon(Icons.upload_file),
               label: const Text('Upload'),
+              ),
             )
           : null,
       body: StreamBuilder<List<TrainingMaterial>>(
@@ -100,7 +107,10 @@ class TrainingListScreen extends ConsumerWidget {
             itemCount: materials.length,
             itemBuilder: (context, index) {
               final material = materials[index];
-              return Card(
+              return Semantics(
+                identifier: 'training-list-row-${material.id}',
+                button: true,
+                child: Card(
                 margin: const EdgeInsets.only(bottom: 8),
                 child: ListTile(
                   leading: CircleAvatar(
@@ -137,10 +147,12 @@ class TrainingListScreen extends ConsumerWidget {
                     );
                   },
                 ),
+                ),
               );
             },
           );
         },
+      ),
       ),
     );
   }
@@ -171,16 +183,24 @@ class _AdminActionsMenu extends ConsumerWidget {
         title: const Text('Delete training material?'),
         content: Text('"${material.title}" will be removed from navigators.'),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.of(ctx).pop(false),
-            child: const Text('Cancel'),
-          ),
-          FilledButton(
-            style: FilledButton.styleFrom(
-              backgroundColor: Theme.of(ctx).colorScheme.error,
+          Semantics(
+            identifier: 'training-list-delete-cancel',
+            button: true,
+            child: TextButton(
+              onPressed: () => Navigator.of(ctx).pop(false),
+              child: const Text('Cancel'),
             ),
-            onPressed: () => Navigator.of(ctx).pop(true),
-            child: const Text('Delete'),
+          ),
+          Semantics(
+            identifier: 'training-list-delete-confirm',
+            button: true,
+            child: FilledButton(
+              style: FilledButton.styleFrom(
+                backgroundColor: Theme.of(ctx).colorScheme.error,
+              ),
+              onPressed: () => Navigator.of(ctx).pop(true),
+              child: const Text('Delete'),
+            ),
           ),
         ],
       ),
@@ -208,7 +228,10 @@ class _AdminActionsMenu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    return PopupMenuButton<String>(
+    return Semantics(
+      identifier: 'training-list-row-menu-${material.id}',
+      button: true,
+      child: PopupMenuButton<String>(
       onSelected: (action) {
         switch (action) {
           case 'edit':
@@ -223,6 +246,7 @@ class _AdminActionsMenu extends ConsumerWidget {
         PopupMenuItem(value: 'edit', child: Text('Edit')),
         PopupMenuItem(value: 'delete', child: Text('Delete')),
       ],
+      ),
     );
   }
 }
@@ -291,36 +315,55 @@ class _EditTrainingDialogState extends ConsumerState<_EditTrainingDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
+    return Semantics(
+      identifier: 'training-edit-dialog',
+      explicitChildNodes: true,
+      child: AlertDialog(
       title: const Text('Edit training material'),
       content: SingleChildScrollView(
         child: Column(
           mainAxisSize: MainAxisSize.min,
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            TextField(
-              controller: _titleCtl,
-              decoration: const InputDecoration(labelText: 'Title'),
+            Semantics(
+              identifier: 'training-edit-title',
+              textField: true,
+              child: TextField(
+                controller: _titleCtl,
+                decoration: const InputDecoration(labelText: 'Title'),
+              ),
             ),
             const SizedBox(height: 8),
-            TextField(
-              controller: _descCtl,
-              decoration: const InputDecoration(labelText: 'Description'),
-              minLines: 2,
-              maxLines: 4,
+            Semantics(
+              identifier: 'training-edit-description',
+              textField: true,
+              child: TextField(
+                controller: _descCtl,
+                decoration: const InputDecoration(labelText: 'Description'),
+                minLines: 2,
+                maxLines: 4,
+              ),
             ),
             const SizedBox(height: 8),
-            TextField(
-              controller: _sortOrderCtl,
-              decoration: const InputDecoration(labelText: 'Sort order'),
-              keyboardType: TextInputType.number,
+            Semantics(
+              identifier: 'training-edit-sort-order',
+              textField: true,
+              child: TextField(
+                controller: _sortOrderCtl,
+                decoration: const InputDecoration(labelText: 'Sort order'),
+                keyboardType: TextInputType.number,
+              ),
             ),
             const SizedBox(height: 8),
-            SwitchListTile(
-              contentPadding: EdgeInsets.zero,
-              title: const Text('Published'),
-              value: _isPublished,
-              onChanged: (v) => setState(() => _isPublished = v),
+            Semantics(
+              identifier: 'training-edit-published-toggle',
+              toggled: _isPublished,
+              child: SwitchListTile(
+                contentPadding: EdgeInsets.zero,
+                title: const Text('Published'),
+                value: _isPublished,
+                onChanged: (v) => setState(() => _isPublished = v),
+              ),
             ),
             if (_error != null)
               Text(
@@ -331,15 +374,24 @@ class _EditTrainingDialogState extends ConsumerState<_EditTrainingDialog> {
         ),
       ),
       actions: [
-        TextButton(
-          onPressed: _saving ? null : () => Navigator.of(context).pop(false),
-          child: const Text('Cancel'),
+        Semantics(
+          identifier: 'training-edit-cancel',
+          button: true,
+          child: TextButton(
+            onPressed: _saving ? null : () => Navigator.of(context).pop(false),
+            child: const Text('Cancel'),
+          ),
         ),
-        FilledButton(
-          onPressed: _saving ? null : _save,
-          child: Text(_saving ? 'Saving...' : 'Save'),
+        Semantics(
+          identifier: 'training-edit-save',
+          button: true,
+          child: FilledButton(
+            onPressed: _saving ? null : _save,
+            child: Text(_saving ? 'Saving...' : 'Save'),
+          ),
         ),
       ],
+      ),
     );
   }
 }

@@ -157,7 +157,10 @@ class _TrainingUploadScreenState extends ConsumerState<TrainingUploadScreen> {
     final theme = Theme.of(context);
     final fileLabel = _selectedFile?.name ?? 'Choose a file';
 
-    return Scaffold(
+    return Semantics(
+      identifier: 'training-upload-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       appBar: AppBar(title: const Text('Upload Training Material')),
       body: AbsorbPointer(
         absorbing: _isUploading,
@@ -168,39 +171,56 @@ class _TrainingUploadScreenState extends ConsumerState<TrainingUploadScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                OutlinedButton.icon(
-                  onPressed: _pickFile,
-                  icon: const Icon(Icons.attach_file),
-                  label: Text(fileLabel, overflow: TextOverflow.ellipsis),
+                Semantics(
+                  identifier: 'training-upload-file-picker',
+                  button: true,
+                  child: OutlinedButton.icon(
+                    onPressed: _pickFile,
+                    icon: const Icon(Icons.attach_file),
+                    label: Text(fileLabel, overflow: TextOverflow.ellipsis),
+                  ),
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
-                  controller: _titleCtl,
-                  decoration: const InputDecoration(
-                    labelText: 'Title',
-                    border: OutlineInputBorder(),
+                Semantics(
+                  identifier: 'training-upload-title',
+                  textField: true,
+                  child: TextFormField(
+                    controller: _titleCtl,
+                    decoration: const InputDecoration(
+                      labelText: 'Title',
+                      border: OutlineInputBorder(),
+                    ),
+                    validator: (v) => (v == null || v.trim().isEmpty)
+                        ? 'Title is required'
+                        : null,
                   ),
-                  validator: (v) =>
-                      (v == null || v.trim().isEmpty) ? 'Title is required' : null,
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
-                  controller: _descCtl,
-                  decoration: const InputDecoration(
-                    labelText: 'Description',
-                    border: OutlineInputBorder(),
+                Semantics(
+                  identifier: 'training-upload-description',
+                  textField: true,
+                  child: TextFormField(
+                    controller: _descCtl,
+                    decoration: const InputDecoration(
+                      labelText: 'Description',
+                      border: OutlineInputBorder(),
+                    ),
+                    minLines: 2,
+                    maxLines: 5,
                   ),
-                  minLines: 2,
-                  maxLines: 5,
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
-                  controller: _sortOrderCtl,
-                  decoration: const InputDecoration(
-                    labelText: 'Sort order',
-                    border: OutlineInputBorder(),
+                Semantics(
+                  identifier: 'training-upload-sort-order',
+                  textField: true,
+                  child: TextFormField(
+                    controller: _sortOrderCtl,
+                    decoration: const InputDecoration(
+                      labelText: 'Sort order',
+                      border: OutlineInputBorder(),
+                    ),
+                    keyboardType: TextInputType.number,
                   ),
-                  keyboardType: TextInputType.number,
                 ),
                 const SizedBox(height: 24),
                 if (_isUploading) const LinearProgressIndicator(),
@@ -212,15 +232,20 @@ class _TrainingUploadScreenState extends ConsumerState<TrainingUploadScreen> {
                   ),
                 ],
                 const SizedBox(height: 16),
-                FilledButton.icon(
-                  onPressed: _isUploading ? null : _upload,
-                  icon: const Icon(Icons.cloud_upload),
-                  label: const Text('Upload'),
+                Semantics(
+                  identifier: 'training-upload-submit',
+                  button: true,
+                  child: FilledButton.icon(
+                    onPressed: _isUploading ? null : _upload,
+                    icon: const Icon(Icons.cloud_upload),
+                    label: const Text('Upload'),
+                  ),
                 ),
               ],
             ),
           ),
         ),
+      ),
       ),
     );
   }

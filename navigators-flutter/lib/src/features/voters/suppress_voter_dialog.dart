@@ -95,72 +95,92 @@ class _SuppressVoterDialogState extends ConsumerState<SuppressVoterDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return AlertDialog(
-      title: Text(widget.isAlreadySuppressed
-          ? 'Update suppression reason'
-          : 'Suppress voter'),
-      content: SingleChildScrollView(
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Text(
-              widget.voterName,
-              style: Theme.of(context).textTheme.titleSmall,
-            ),
-            const SizedBox(height: 16),
-            DropdownButtonFormField<String>(
-              initialValue: _reason,
-              decoration: const InputDecoration(
-                labelText: 'Reason',
-                border: OutlineInputBorder(),
-              ),
-              items: _reasonOptions
-                  .map((o) => DropdownMenuItem<String>(
-                        value: o.value,
-                        child: Text(o.label),
-                      ))
-                  .toList(),
-              onChanged: _submitting
-                  ? null
-                  : (v) {
-                      if (v != null) setState(() => _reason = v);
-                    },
-            ),
-            const SizedBox(height: 12),
-            TextField(
-              controller: _notesCtrl,
-              enabled: !_submitting,
-              maxLines: 3,
-              decoration: InputDecoration(
-                labelText:
-                    _reason == 'other' ? 'Note (required)' : 'Note (optional)',
-                border: const OutlineInputBorder(),
-              ),
-            ),
-            if (_error != null) ...[
-              const SizedBox(height: 12),
+    return Semantics(
+      identifier: 'suppress-voter-dialog',
+      explicitChildNodes: true,
+      child: AlertDialog(
+        title: Text(widget.isAlreadySuppressed
+            ? 'Update suppression reason'
+            : 'Suppress voter'),
+        content: SingleChildScrollView(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: [
               Text(
-                _error!,
-                style: TextStyle(color: Theme.of(context).colorScheme.error),
+                widget.voterName,
+                style: Theme.of(context).textTheme.titleSmall,
               ),
+              const SizedBox(height: 16),
+              Semantics(
+                identifier: 'suppress-voter-dialog-reason',
+                child: DropdownButtonFormField<String>(
+                  initialValue: _reason,
+                  decoration: const InputDecoration(
+                    labelText: 'Reason',
+                    border: OutlineInputBorder(),
+                  ),
+                  items: _reasonOptions
+                      .map((o) => DropdownMenuItem<String>(
+                            value: o.value,
+                            child: Text(o.label),
+                          ))
+                      .toList(),
+                  onChanged: _submitting
+                      ? null
+                      : (v) {
+                          if (v != null) setState(() => _reason = v);
+                        },
+                ),
+              ),
+              const SizedBox(height: 12),
+              Semantics(
+                identifier: 'suppress-voter-dialog-note',
+                textField: true,
+                child: TextField(
+                  controller: _notesCtrl,
+                  enabled: !_submitting,
+                  maxLines: 3,
+                  decoration: InputDecoration(
+                    labelText: _reason == 'other'
+                        ? 'Note (required)'
+                        : 'Note (optional)',
+                    border: const OutlineInputBorder(),
+                  ),
+                ),
+              ),
+              if (_error != null) ...[
+                const SizedBox(height: 12),
+                Text(
+                  _error!,
+                  style: TextStyle(color: Theme.of(context).colorScheme.error),
+                ),
+              ],
             ],
-          ],
+          ),
         ),
+        actions: [
+          Semantics(
+            identifier: 'suppress-voter-dialog-cancel',
+            button: true,
+            child: TextButton(
+              onPressed:
+                  _submitting ? null : () => Navigator.of(context).pop(false),
+              child: const Text('Cancel'),
+            ),
+          ),
+          Semantics(
+            identifier: 'suppress-voter-dialog-submit',
+            button: true,
+            child: FilledButton(
+              onPressed: _submitting ? null : _submit,
+              child: Text(_submitting
+                  ? 'Saving...'
+                  : (widget.isAlreadySuppressed ? 'Update' : 'Suppress')),
+            ),
+          ),
+        ],
       ),
-      actions: [
-        TextButton(
-          onPressed:
-              _submitting ? null : () => Navigator.of(context).pop(false),
-          child: const Text('Cancel'),
-        ),
-        FilledButton(
-          onPressed: _submitting ? null : _submit,
-          child: Text(_submitting
-              ? 'Saving...'
-              : (widget.isAlreadySuppressed ? 'Update' : 'Suppress')),
-        ),
-      ],
     );
   }
 }
