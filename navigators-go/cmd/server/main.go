@@ -24,13 +24,10 @@ import (
 	"github.com/golang-migrate/migrate/v4"
 	_ "github.com/golang-migrate/migrate/v4/database/pgx/v5"
 	"github.com/golang-migrate/migrate/v4/source/iofs"
-	firebase "firebase.google.com/go/v4"
 	"github.com/minio/minio-go/v7"
 	"github.com/minio/minio-go/v7/pkg/credentials"
 	"github.com/nats-io/nats.go"
 	"github.com/nats-io/nats.go/jetstream"
-
-	"github.com/aocybersystems/eden-platform-go/platform/notification"
 
 	navigators "navigators-go"
 	"navigators-go/gen/go/navigators/v1/navigatorsv1connect"
@@ -212,22 +209,6 @@ func main() {
 		}
 	}
 
-	// --- Firebase Admin SDK (graceful degradation) ---
-	var fcmDispatcher notification.Dispatcher
-	var fcmDisp *navpkg.FCMDispatcher
-	firebaseApp, err := firebase.NewApp(ctx, nil)
-	if err != nil {
-		slog.Warn("Firebase init failed, push notifications disabled", "error", err)
-	} else {
-		fcmDisp, err = navpkg.NewFCMDispatcher(firebaseApp, pgBackend.Pool())
-		if err != nil {
-			slog.Warn("FCM dispatcher init failed, push notifications disabled", "error", err)
-		} else {
-			fcmDispatcher = fcmDisp
-			slog.Info("Firebase push notifications enabled")
-		}
-	}
-
 	// --- Ensure training-materials bucket exists ---
 	trainingBucket := "training-materials"
 	tmExists, err := minioClient.BucketExists(ctx, trainingBucket)
@@ -269,9 +250,14 @@ func main() {
 	mux.Handle(analyticsPath, analyticsHTTPHandler)
 
 	// --- Task handler ---
-	taskHandler := navpkg.NewTaskHandler(taskService, fcmDisp)
+	taskHandler := navpkg.NewTaskHandler(taskService)
 	taskPath, taskHTTPHandler := navigatorsv1connect.NewTaskServiceHandler(taskHandler, interceptors)
 	mux.Handle(taskPath, taskHTTPHandler)
+
+	// --- Call script admin handler ---
+	callScriptHandler := navpkg.NewCallScriptHandler(callScriptService)
+	callScriptPath, callScriptHTTPHandler := navigatorsv1connect.NewCallScriptServiceHandler(callScriptHandler, interceptors)
+	mux.Handle(callScriptPath, callScriptHTTPHandler)
 
 	// --- Event service ---
 	eventService := navpkg.NewEventService(navQueries, pgBackend.Pool(), js)
@@ -315,7 +301,7 @@ func main() {
 
 	// --- Task NATS worker ---
 	if js != nil {
-		taskWorker := navpkg.NewTaskWorker(js, navQueries, pgBackend.Pool(), fcmDispatcher)
+		taskWorker := navpkg.NewTaskWorker(js, navQueries, pgBackend.Pool())
 		if err := taskWorker.Start(ctx); err != nil {
 			slog.Warn("Task NATS worker failed to start", "error", err)
 		} else {
@@ -325,7 +311,7 @@ func main() {
 
 	// --- Event NATS worker ---
 	if js != nil {
-		eventWorker := navpkg.NewEventWorker(js, navQueries, pgBackend.Pool(), fcmDispatcher)
+		eventWorker := navpkg.NewEventWorker(js, navQueries, pgBackend.Pool())
 		if err := eventWorker.Start(ctx); err != nil {
 			slog.Warn("Event NATS worker failed to start", "error", err)
 		} else {

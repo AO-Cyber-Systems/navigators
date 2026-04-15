@@ -21,6 +21,24 @@ UPDATE call_scripts
 SET title = $3, content = $4, version = $5, is_active = $6, updated_at = now()
 WHERE id = $1 AND company_id = $2;
 
+-- name: DeactivateCallScript :exec
+-- Soft-delete a call script by setting is_active=false.
+-- Pull-sync propagates the row with updated_at bump so clients hide it.
+UPDATE call_scripts
+SET is_active = false, updated_at = now()
+WHERE id = $1 AND company_id = $2;
+
+-- name: GetCallScriptCurrentVersion :one
+-- Fetch the current version number for optimistic increment on update.
+SELECT version FROM call_scripts
+WHERE id = $1 AND company_id = $2;
+
+-- name: ListAllCallScripts :many
+-- List ALL call scripts (active + inactive) for the admin management view.
+SELECT * FROM call_scripts
+WHERE company_id = $1
+ORDER BY updated_at DESC;
+
 -- name: PullCallScriptsUpdated :many
 -- Pull call scripts updated since cursor for sync.
 SELECT id, company_id, title, content, version, is_active, created_by, created_at, updated_at

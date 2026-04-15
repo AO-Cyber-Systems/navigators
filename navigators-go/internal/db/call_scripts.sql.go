@@ -52,6 +52,24 @@ func (q *Queries) CreateCallScript(ctx context.Context, arg CreateCallScriptPara
 	return i, err
 }
 
+const deactivateCallScript = `-- name: DeactivateCallScript :exec
+UPDATE call_scripts
+SET is_active = false, updated_at = now()
+WHERE id = $1 AND company_id = $2
+`
+
+type DeactivateCallScriptParams struct {
+	ID        uuid.UUID `json:"id"`
+	CompanyID uuid.UUID `json:"company_id"`
+}
+
+// Soft-delete a call script by setting is_active=false.
+// Pull-sync propagates the row with updated_at bump so clients hide it.
+func (q *Queries) DeactivateCallScript(ctx context.Context, arg DeactivateCallScriptParams) error {
+	_, err := q.db.Exec(ctx, deactivateCallScript, arg.ID, arg.CompanyID)
+	return err
+}
+
 const getCallScript = `-- name: GetCallScript :one
 SELECT id, company_id, title, content, version, is_active, created_by, created_at, updated_at FROM call_scripts
 WHERE id = $1 AND company_id = $2
@@ -80,6 +98,24 @@ func (q *Queries) GetCallScript(ctx context.Context, arg GetCallScriptParams) (C
 	return i, err
 }
 
+const getCallScriptCurrentVersion = `-- name: GetCallScriptCurrentVersion :one
+SELECT version FROM call_scripts
+WHERE id = $1 AND company_id = $2
+`
+
+type GetCallScriptCurrentVersionParams struct {
+	ID        uuid.UUID `json:"id"`
+	CompanyID uuid.UUID `json:"company_id"`
+}
+
+// Fetch the current version number for optimistic increment on update.
+func (q *Queries) GetCallScriptCurrentVersion(ctx context.Context, arg GetCallScriptCurrentVersionParams) (int32, error) {
+	row := q.db.QueryRow(ctx, getCallScriptCurrentVersion, arg.ID, arg.CompanyID)
+	var version int32
+	err := row.Scan(&version)
+	return version, err
+}
+
 const listActiveCallScripts = `-- name: ListActiveCallScripts :many
 SELECT id, company_id, title, content, version, is_active, created_by, created_at, updated_at FROM call_scripts
 WHERE company_id = $1 AND is_active = true
@@ -89,6 +125,43 @@ ORDER BY created_at DESC
 // List active call scripts for a company.
 func (q *Queries) ListActiveCallScripts(ctx context.Context, companyID uuid.UUID) ([]CallScript, error) {
 	rows, err := q.db.Query(ctx, listActiveCallScripts, companyID)
+	if err != nil {
+		return nil, err
+	}
+	defer rows.Close()
+	items := []CallScript{}
+	for rows.Next() {
+		var i CallScript
+		if err := rows.Scan(
+			&i.ID,
+			&i.CompanyID,
+			&i.Title,
+			&i.Content,
+			&i.Version,
+			&i.IsActive,
+			&i.CreatedBy,
+			&i.CreatedAt,
+			&i.UpdatedAt,
+		); err != nil {
+			return nil, err
+		}
+		items = append(items, i)
+	}
+	if err := rows.Err(); err != nil {
+		return nil, err
+	}
+	return items, nil
+}
+
+const listAllCallScripts = `-- name: ListAllCallScripts :many
+SELECT id, company_id, title, content, version, is_active, created_by, created_at, updated_at FROM call_scripts
+WHERE company_id = $1
+ORDER BY updated_at DESC
+`
+
+// List ALL call scripts (active + inactive) for the admin management view.
+func (q *Queries) ListAllCallScripts(ctx context.Context, companyID uuid.UUID) ([]CallScript, error) {
+	rows, err := q.db.Query(ctx, listAllCallScripts, companyID)
 	if err != nil {
 		return nil, err
 	}

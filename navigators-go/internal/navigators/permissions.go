@@ -209,6 +209,12 @@ func NavigatorsProcedurePermissions() map[string]server.Permission {
 		"/navigators.v1.SMSService/Get10DLCStatus":    {Feature: "sms", Action: "config"},
 		"/navigators.v1.SMSService/Update10DLCStatus": {Feature: "sms", Action: "config"},
 
+		// Call script admin CRUD (mutations admin-only, list viewable by members)
+		"/navigators.v1.CallScriptService/CreateCallScript":     {Feature: "call_scripts", Action: "admin"},
+		"/navigators.v1.CallScriptService/UpdateCallScript":     {Feature: "call_scripts", Action: "admin"},
+		"/navigators.v1.CallScriptService/DeactivateCallScript": {Feature: "call_scripts", Action: "admin"},
+		"/navigators.v1.CallScriptService/ListCallScripts":      {Feature: "call_scripts", Action: "view"},
+
 		// Task management
 		"/navigators.v1.TaskService/CreateTask":         {Feature: "tasks", Action: "create"},
 		"/navigators.v1.TaskService/GetTask":             {Feature: "tasks", Action: "view"},
