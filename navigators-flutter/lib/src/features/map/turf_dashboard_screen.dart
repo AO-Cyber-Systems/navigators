@@ -105,11 +105,17 @@ class _TurfDashboardScreenState extends ConsumerState<TurfDashboardScreen> {
     final turfState = ref.watch(turfListProvider);
     final turfs = _filteredAndSorted(turfState.turfs);
 
-    return Scaffold(
+    return Semantics(
+      identifier: 'turf-dashboard-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       appBar: AppBar(
         title: const Text('Turf Dashboard'),
         actions: [
-          PopupMenuButton<_SortBy>(
+          Semantics(
+            identifier: 'turf-dashboard-sort-menu',
+            button: true,
+            child: PopupMenuButton<_SortBy>(
             icon: const Icon(Icons.sort),
             tooltip: 'Sort by',
             onSelected: (sort) => setState(() => _sortBy = sort),
@@ -130,14 +136,19 @@ class _TurfDashboardScreenState extends ConsumerState<TurfDashboardScreen> {
                 child: const Text('Voter count'),
               ),
             ],
+            ),
           ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () {
-              ref.read(turfListProvider.notifier).refresh();
-              _loadAllStats();
-            },
-            tooltip: 'Refresh',
+          Semantics(
+            identifier: 'turf-dashboard-refresh-btn',
+            button: true,
+            child: IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: () {
+                ref.read(turfListProvider.notifier).refresh();
+                _loadAllStats();
+              },
+              tooltip: 'Refresh',
+            ),
           ),
         ],
       ),
@@ -146,26 +157,30 @@ class _TurfDashboardScreenState extends ConsumerState<TurfDashboardScreen> {
           // Search bar
           Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: TextField(
-              controller: _searchController,
-              decoration: InputDecoration(
-                hintText: 'Search turfs...',
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(
-                  borderRadius: BorderRadius.circular(12),
+            child: Semantics(
+              identifier: 'turf-dashboard-search',
+              textField: true,
+              child: TextField(
+                controller: _searchController,
+                decoration: InputDecoration(
+                  hintText: 'Search turfs...',
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(
+                    borderRadius: BorderRadius.circular(12),
+                  ),
+                  isDense: true,
+                  suffixIcon: _searchQuery.isNotEmpty
+                      ? IconButton(
+                          icon: const Icon(Icons.clear),
+                          onPressed: () {
+                            _searchController.clear();
+                            setState(() => _searchQuery = '');
+                          },
+                        )
+                      : null,
                 ),
-                isDense: true,
-                suffixIcon: _searchQuery.isNotEmpty
-                    ? IconButton(
-                        icon: const Icon(Icons.clear),
-                        onPressed: () {
-                          _searchController.clear();
-                          setState(() => _searchQuery = '');
-                        },
-                      )
-                    : null,
+                onChanged: (value) => setState(() => _searchQuery = value),
               ),
-              onChanged: (value) => setState(() => _searchQuery = value),
             ),
           ),
           // Loading
@@ -185,19 +200,24 @@ class _TurfDashboardScreenState extends ConsumerState<TurfDashboardScreen> {
                     itemBuilder: (context, index) {
                       final turf = turfs[index];
                       final stats = _statsMap[turf.turfId];
-                      return _TurfDashboardCard(
-                        turf: turf,
-                        stats: stats,
-                        formatArea: _formatArea,
-                        onTap: () {
-                          // Navigate back to map screen focused on this turf
-                          Navigator.of(context).pop(turf.turfId);
-                        },
+                      return Semantics(
+                        identifier: 'turf-dashboard-row-${turf.turfId}',
+                        button: true,
+                        child: _TurfDashboardCard(
+                          turf: turf,
+                          stats: stats,
+                          formatArea: _formatArea,
+                          onTap: () {
+                            // Navigate back to map screen focused on this turf
+                            Navigator.of(context).pop(turf.turfId);
+                          },
+                        ),
                       );
                     },
                   ),
           ),
         ],
+      ),
       ),
     );
   }

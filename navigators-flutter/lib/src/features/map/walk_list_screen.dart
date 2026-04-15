@@ -191,7 +191,10 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Semantics(
+      identifier: 'walk-list-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       appBar: AppBar(
         title: Text('Walk List: ${widget.turfName}'),
         actions: [
@@ -203,26 +206,39 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
                 child: Icon(Icons.offline_pin, size: 20, color: Colors.orange),
               ),
             ),
-          IconButton(
-            icon: Icon(_showMap ? Icons.list : Icons.map),
-            onPressed: () => setState(() => _showMap = !_showMap),
-            tooltip: _showMap ? 'Show list' : 'Show map',
+          Semantics(
+            identifier: 'walk-list-toggle-map-btn',
+            button: true,
+            child: IconButton(
+              icon: Icon(_showMap ? Icons.list : Icons.map),
+              onPressed: () => setState(() => _showMap = !_showMap),
+              tooltip: _showMap ? 'Show list' : 'Show map',
+            ),
           ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: _loadWalkList,
-            tooltip: 'Refresh',
+          Semantics(
+            identifier: 'walk-list-refresh-btn',
+            button: true,
+            child: IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: _loadWalkList,
+              tooltip: 'Refresh',
+            ),
           ),
         ],
       ),
       body: _buildBody(),
       floatingActionButton: _voters.isNotEmpty && !_allVisited && !_showMap
-          ? FloatingActionButton.extended(
-              onPressed: () => _openDoorKnock(_voters[_currentIndex]),
-              icon: const Icon(Icons.door_front_door),
-              label: const Text('Knock Next'),
+          ? Semantics(
+              identifier: 'walk-list-knock-next-fab',
+              button: true,
+              child: FloatingActionButton.extended(
+                onPressed: () => _openDoorKnock(_voters[_currentIndex]),
+                icon: const Icon(Icons.door_front_door),
+                label: const Text('Knock Next'),
+              ),
             )
           : null,
+      ),
     );
   }
 
@@ -243,8 +259,14 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
             const SizedBox(height: 4),
             Text(_error!, style: Theme.of(context).textTheme.bodySmall),
             const SizedBox(height: 16),
-            OutlinedButton(
-                onPressed: _loadWalkList, child: const Text('Retry')),
+            Semantics(
+              identifier: 'walk-list-retry-btn',
+              button: true,
+              child: OutlinedButton(
+                onPressed: _loadWalkList,
+                child: const Text('Retry'),
+              ),
+            ),
           ],
         ),
       );
@@ -294,7 +316,10 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
               final status = _doorStatuses[voter.voterId];
               final isCurrent = index == _currentIndex && !_allVisited;
 
-              return Material(
+              return Semantics(
+                identifier: 'walk-list-row-${voter.voterId}',
+                button: true,
+                child: Material(
                 color: isCurrent
                     ? Theme.of(context)
                         .colorScheme
@@ -327,13 +352,18 @@ class _WalkListScreenState extends ConsumerState<WalkListScreen> {
                             MaterialTapTargetSize.shrinkWrap,
                       ),
                       const SizedBox(width: 4),
-                      IconButton(
-                        icon: const Icon(Icons.directions, size: 20),
-                        onPressed: () => _navigateToVoter(voter),
-                        tooltip: 'Navigate',
+                      Semantics(
+                        identifier: 'walk-list-navigate-btn-${voter.voterId}',
+                        button: true,
+                        child: IconButton(
+                          icon: const Icon(Icons.directions, size: 20),
+                          onPressed: () => _navigateToVoter(voter),
+                          tooltip: 'Navigate',
+                        ),
                       ),
                     ],
                   ),
+                ),
                 ),
               );
             },

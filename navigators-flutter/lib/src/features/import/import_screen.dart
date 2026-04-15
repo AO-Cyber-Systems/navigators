@@ -97,7 +97,10 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
     final theme = Theme.of(context);
     final jobsState = ref.watch(importJobsProvider);
 
-    return Scaffold(
+    return Semantics(
+      identifier: 'import-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       appBar: AppBar(title: const Text('Import Voters')),
       body: SingleChildScrollView(
         padding: const EdgeInsets.all(16),
@@ -119,14 +122,17 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
                       children: [
                         Text('Source Type:', style: theme.textTheme.bodyMedium),
                         const SizedBox(width: 16),
-                        SegmentedButton<String>(
-                          segments: const [
-                            ButtonSegment(value: 'cvr', label: Text('CVR')),
-                            ButtonSegment(value: 'l2', label: Text('L2')),
-                          ],
-                          selected: {_sourceType},
-                          onSelectionChanged: (v) =>
-                              setState(() => _sourceType = v.first),
+                        Semantics(
+                          identifier: 'import-source-type',
+                          child: SegmentedButton<String>(
+                            segments: const [
+                              ButtonSegment(value: 'cvr', label: Text('CVR')),
+                              ButtonSegment(value: 'l2', label: Text('L2')),
+                            ],
+                            selected: {_sourceType},
+                            onSelectionChanged: (v) =>
+                                setState(() => _sourceType = v.first),
+                          ),
                         ),
                       ],
                     ),
@@ -135,10 +141,14 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
                     // File picker
                     Row(
                       children: [
-                        EdenButton(
-                          label: 'Select File',
-                          onPressed: _isUploading ? null : _pickFile,
-                          icon: Icons.upload_file,
+                        Semantics(
+                          identifier: 'import-select-file-btn',
+                          button: true,
+                          child: EdenButton(
+                            label: 'Select File',
+                            onPressed: _isUploading ? null : _pickFile,
+                            icon: Icons.upload_file,
+                          ),
                         ),
                         const SizedBox(width: 12),
                         if (_selectedFileName != null)
@@ -174,12 +184,16 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
                     ],
 
                     // Start import button
-                    EdenButton(
-                      label: _isUploading ? 'Uploading...' : 'Start Import',
-                      onPressed: _isUploading || _selectedFile == null
-                          ? null
-                          : _startImport,
-                      icon: Icons.play_arrow,
+                    Semantics(
+                      identifier: 'import-start-btn',
+                      button: true,
+                      child: EdenButton(
+                        label: _isUploading ? 'Uploading...' : 'Start Import',
+                        onPressed: _isUploading || _selectedFile == null
+                            ? null
+                            : _startImport,
+                        icon: Icons.play_arrow,
+                      ),
                     ),
 
                     if (_isUploading) ...[
@@ -219,6 +233,7 @@ class _ImportScreenState extends ConsumerState<ImportScreen> {
               ),
           ],
         ),
+      ),
       ),
     );
   }

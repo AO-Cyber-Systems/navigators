@@ -182,7 +182,10 @@ class _OfflineDownloadScreenState
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Semantics(
+      identifier: 'offline-download-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       appBar: AppBar(
         title: Text('Offline Tiles: ${widget.turfName}'),
       ),
@@ -259,10 +262,14 @@ class _OfflineDownloadScreenState
                 style: Theme.of(context).textTheme.bodyMedium,
               ),
               const SizedBox(height: 16),
-              OutlinedButton.icon(
-                onPressed: _cancelDownload,
-                icon: const Icon(Icons.cancel),
-                label: const Text('Cancel Download'),
+              Semantics(
+                identifier: 'offline-download-cancel-btn',
+                button: true,
+                child: OutlinedButton.icon(
+                  onPressed: _cancelDownload,
+                  icon: const Icon(Icons.cancel),
+                  label: const Text('Cancel Download'),
+                ),
               ),
             ],
 
@@ -311,9 +318,13 @@ class _OfflineDownloadScreenState
                 ),
               ),
               const SizedBox(height: 8),
-              OutlinedButton(
-                onPressed: _initialize,
-                child: const Text('Retry'),
+              Semantics(
+                identifier: 'offline-download-retry-btn',
+                button: true,
+                child: OutlinedButton(
+                  onPressed: _initialize,
+                  child: const Text('Retry'),
+                ),
               ),
             ],
 
@@ -321,27 +332,36 @@ class _OfflineDownloadScreenState
 
             // Action buttons
             if (_state == _DownloadState.ready) ...[
-              FilledButton.icon(
-                onPressed: _startDownload,
-                icon: const Icon(Icons.download),
-                label: const Text('Download Tiles'),
+              Semantics(
+                identifier: 'offline-download-start-btn',
+                button: true,
+                child: FilledButton.icon(
+                  onPressed: _startDownload,
+                  icon: const Icon(Icons.download),
+                  label: const Text('Download Tiles'),
+                ),
               ),
             ],
 
             if (_hasCachedTiles &&
                 _state != _DownloadState.downloading) ...[
               const SizedBox(height: 8),
-              OutlinedButton.icon(
-                onPressed: _deleteCachedTiles,
-                icon: const Icon(Icons.delete_outline),
-                label: const Text('Delete Cached Tiles'),
-                style: OutlinedButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.error,
+              Semantics(
+                identifier: 'offline-download-delete-cached-btn',
+                button: true,
+                child: OutlinedButton.icon(
+                  onPressed: _deleteCachedTiles,
+                  icon: const Icon(Icons.delete_outline),
+                  label: const Text('Delete Cached Tiles'),
+                  style: OutlinedButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.error,
+                  ),
                 ),
               ),
             ],
           ],
         ),
+      ),
       ),
     );
   }

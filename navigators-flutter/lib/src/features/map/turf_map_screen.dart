@@ -180,21 +180,33 @@ class _TurfMapScreenState extends ConsumerState<TurfMapScreen> {
       context: context,
       builder: (context) => AlertDialog(
         title: Text('Assign Navigator to ${turf.name}'),
-        content: TextField(
-          controller: userIdController,
-          decoration: const InputDecoration(
-            labelText: 'User ID',
-            hintText: 'Enter navigator user ID',
+        content: Semantics(
+          identifier: 'turf-assign-user-id',
+          textField: true,
+          child: TextField(
+            controller: userIdController,
+            decoration: const InputDecoration(
+              labelText: 'User ID',
+              hintText: 'Enter navigator user ID',
+            ),
           ),
         ),
         actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(context),
-            child: const Text('Cancel'),
+          Semantics(
+            identifier: 'turf-assign-cancel',
+            button: true,
+            child: TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
           ),
-          FilledButton(
-            onPressed: () => Navigator.pop(context, userIdController.text.trim()),
-            child: const Text('Assign'),
+          Semantics(
+            identifier: 'turf-assign-confirm',
+            button: true,
+            child: FilledButton(
+              onPressed: () => Navigator.pop(context, userIdController.text.trim()),
+              child: const Text('Assign'),
+            ),
           ),
         ],
       ),
@@ -224,34 +236,49 @@ class _TurfMapScreenState extends ConsumerState<TurfMapScreen> {
     final auth = ref.watch(authProvider);
     final isAdmin = auth.role?.toLowerCase() == 'admin';
 
-    return Scaffold(
+    return Semantics(
+      identifier: 'turf-map-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       appBar: AppBar(
         title: const Text('Turf Map'),
         actions: [
-          IconButton(
-            icon: Icon(
-              _heatMapMode == null
-                  ? Icons.thermostat_outlined
+          Semantics(
+            identifier: 'turf-map-heatmap-toggle-btn',
+            button: true,
+            child: IconButton(
+              icon: Icon(
+                _heatMapMode == null
+                    ? Icons.thermostat_outlined
+                    : _heatMapMode == HeatMapMode.density
+                        ? Icons.thermostat
+                        : Icons.favorite,
+              ),
+              onPressed: _toggleHeatMap,
+              tooltip: _heatMapMode == null
+                  ? 'Enable heat map'
                   : _heatMapMode == HeatMapMode.density
-                      ? Icons.thermostat
-                      : Icons.favorite,
+                      ? 'Switch to support mode'
+                      : 'Disable heat map',
             ),
-            onPressed: _toggleHeatMap,
-            tooltip: _heatMapMode == null
-                ? 'Enable heat map'
-                : _heatMapMode == HeatMapMode.density
-                    ? 'Switch to support mode'
-                    : 'Disable heat map',
           ),
-          IconButton(
-            icon: const Icon(Icons.dashboard_outlined),
-            onPressed: _navigateToDashboard,
-            tooltip: 'Turf Dashboard',
+          Semantics(
+            identifier: 'turf-map-dashboard-btn',
+            button: true,
+            child: IconButton(
+              icon: const Icon(Icons.dashboard_outlined),
+              onPressed: _navigateToDashboard,
+              tooltip: 'Turf Dashboard',
+            ),
           ),
-          IconButton(
-            icon: const Icon(Icons.refresh),
-            onPressed: () => ref.read(turfListProvider.notifier).refresh(),
-            tooltip: 'Refresh turfs',
+          Semantics(
+            identifier: 'turf-map-refresh-btn',
+            button: true,
+            child: IconButton(
+              icon: const Icon(Icons.refresh),
+              onPressed: () => ref.read(turfListProvider.notifier).refresh(),
+              tooltip: 'Refresh turfs',
+            ),
           ),
         ],
       ),
@@ -370,12 +397,17 @@ class _TurfMapScreenState extends ConsumerState<TurfMapScreen> {
         ],
       ),
       floatingActionButton: isAdmin
-          ? FloatingActionButton.extended(
-              onPressed: _navigateToDrawScreen,
-              icon: const Icon(Icons.draw),
-              label: const Text('Draw New Turf'),
+          ? Semantics(
+              identifier: 'turf-map-draw-fab',
+              button: true,
+              child: FloatingActionButton.extended(
+                onPressed: _navigateToDrawScreen,
+                icon: const Icon(Icons.draw),
+                label: const Text('Draw New Turf'),
+              ),
             )
           : null,
+      ),
     );
   }
 
@@ -508,21 +540,33 @@ class _TurfDetailPanel extends StatelessWidget {
             spacing: 8,
             runSpacing: 8,
             children: [
-              FilledButton.tonalIcon(
-                onPressed: onWalkList,
-                icon: const Icon(Icons.list_alt, size: 18),
-                label: const Text('Walk List'),
+              Semantics(
+                identifier: 'turf-map-walk-list-btn',
+                button: true,
+                child: FilledButton.tonalIcon(
+                  onPressed: onWalkList,
+                  icon: const Icon(Icons.list_alt, size: 18),
+                  label: const Text('Walk List'),
+                ),
               ),
-              FilledButton.tonalIcon(
-                onPressed: onDownloadTiles,
-                icon: const Icon(Icons.download, size: 18),
-                label: const Text('Offline Tiles'),
+              Semantics(
+                identifier: 'turf-map-offline-tiles-btn',
+                button: true,
+                child: FilledButton.tonalIcon(
+                  onPressed: onDownloadTiles,
+                  icon: const Icon(Icons.download, size: 18),
+                  label: const Text('Offline Tiles'),
+                ),
               ),
               if (isAdmin)
-                FilledButton.tonalIcon(
-                  onPressed: onAssign,
-                  icon: const Icon(Icons.person_add, size: 18),
-                  label: const Text('Assign'),
+                Semantics(
+                  identifier: 'turf-map-assign-btn',
+                  button: true,
+                  child: FilledButton.tonalIcon(
+                    onPressed: onAssign,
+                    icon: const Icon(Icons.person_add, size: 18),
+                    label: const Text('Assign'),
+                  ),
                 ),
             ],
           ),

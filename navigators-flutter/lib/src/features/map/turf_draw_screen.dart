@@ -109,19 +109,30 @@ class _TurfDrawScreenState extends ConsumerState<TurfDrawScreen> {
   Widget build(BuildContext context) {
     final canSave = _nameController.text.trim().isNotEmpty && _polygonPoints.length >= 3;
 
-    return Scaffold(
+    return Semantics(
+      identifier: 'turf-draw-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       appBar: AppBar(
         title: const Text('Draw Turf Boundary'),
         actions: [
-          TextButton.icon(
-            onPressed: _polygonPoints.isNotEmpty ? _undoLastPoint : null,
-            icon: const Icon(Icons.undo),
-            label: const Text('Undo'),
+          Semantics(
+            identifier: 'turf-draw-undo-btn',
+            button: true,
+            child: TextButton.icon(
+              onPressed: _polygonPoints.isNotEmpty ? _undoLastPoint : null,
+              icon: const Icon(Icons.undo),
+              label: const Text('Undo'),
+            ),
           ),
-          TextButton.icon(
-            onPressed: _polygonPoints.isNotEmpty ? _clearPoints : null,
-            icon: const Icon(Icons.clear),
-            label: const Text('Clear'),
+          Semantics(
+            identifier: 'turf-draw-clear-btn',
+            button: true,
+            child: TextButton.icon(
+              onPressed: _polygonPoints.isNotEmpty ? _clearPoints : null,
+              icon: const Icon(Icons.clear),
+              label: const Text('Clear'),
+            ),
           ),
         ],
       ),
@@ -179,33 +190,42 @@ class _TurfDrawScreenState extends ConsumerState<TurfDrawScreen> {
                     style: Theme.of(context).textTheme.bodySmall,
                   ),
                   const SizedBox(height: 8),
-                  TextField(
-                    controller: _nameController,
-                    decoration: const InputDecoration(
-                      labelText: 'Turf Name',
-                      hintText: 'Enter a name for this turf',
-                      border: OutlineInputBorder(),
-                      isDense: true,
+                  Semantics(
+                    identifier: 'turf-draw-name',
+                    textField: true,
+                    child: TextField(
+                      controller: _nameController,
+                      decoration: const InputDecoration(
+                        labelText: 'Turf Name',
+                        hintText: 'Enter a name for this turf',
+                        border: OutlineInputBorder(),
+                        isDense: true,
+                      ),
+                      onChanged: (_) => setState(() {}),
                     ),
-                    onChanged: (_) => setState(() {}),
                   ),
                   const SizedBox(height: 12),
-                  FilledButton.icon(
-                    onPressed: canSave && !_saving ? _saveTurf : null,
-                    icon: _saving
-                        ? const SizedBox(
-                            width: 18,
-                            height: 18,
-                            child: CircularProgressIndicator(strokeWidth: 2),
-                          )
-                        : const Icon(Icons.save),
-                    label: Text(_saving ? 'Saving...' : 'Save Turf'),
+                  Semantics(
+                    identifier: 'turf-draw-save-btn',
+                    button: true,
+                    child: FilledButton.icon(
+                      onPressed: canSave && !_saving ? _saveTurf : null,
+                      icon: _saving
+                          ? const SizedBox(
+                              width: 18,
+                              height: 18,
+                              child: CircularProgressIndicator(strokeWidth: 2),
+                            )
+                          : const Icon(Icons.save),
+                      label: Text(_saving ? 'Saving...' : 'Save Turf'),
+                    ),
                   ),
                 ],
               ),
             ),
           ),
         ],
+      ),
       ),
     );
   }
