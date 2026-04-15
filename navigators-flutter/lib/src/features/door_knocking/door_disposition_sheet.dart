@@ -69,7 +69,10 @@ class _DispositionCard extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Material(
+    return Semantics(
+      identifier: 'door-knock-disposition-${disposition.value.replaceAll('_', '-')}',
+      button: true,
+      child: Material(
       color: disposition.color.withValues(alpha: 0.1),
       borderRadius: BorderRadius.circular(12),
       child: InkWell(
@@ -104,6 +107,7 @@ class _DispositionCard extends StatelessWidget {
             ],
           ),
         ),
+      ),
       ),
     );
   }

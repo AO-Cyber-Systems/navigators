@@ -132,12 +132,19 @@ class _DoorKnockScreenState extends ConsumerState<DoorKnockScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
+    return Semantics(
+      identifier: 'door-knock-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       appBar: AppBar(
         title: Text(widget.voterName),
-        leading: IconButton(
-          icon: const Icon(Icons.close),
-          onPressed: () => Navigator.of(context).pop(),
+        leading: Semantics(
+          identifier: 'door-knock-close-btn',
+          button: true,
+          child: IconButton(
+            icon: const Icon(Icons.close),
+            onPressed: () => Navigator.of(context).pop(),
+          ),
         ),
       ),
       body: Column(
@@ -158,6 +165,7 @@ class _DoorKnockScreenState extends ConsumerState<DoorKnockScreen> {
               _currentStep != _DoorKnockStep.disposition)
             _buildBottomBar(theme),
         ],
+      ),
       ),
     );
   }
@@ -261,12 +269,16 @@ class _DoorKnockScreenState extends ConsumerState<DoorKnockScreen> {
         ),
         const SizedBox(height: 24),
         Center(
-          child: EdenRating(
-            value: _sentiment,
-            size: EdenRatingSize.lg,
-            onChanged: (value) {
-              setState(() => _sentiment = value);
-            },
+          child: Semantics(
+            identifier: 'door-knock-sentiment-rating',
+            slider: true,
+            child: EdenRating(
+              value: _sentiment,
+              size: EdenRatingSize.lg,
+              onChanged: (value) {
+                setState(() => _sentiment = value);
+              },
+            ),
           ),
         ),
         const SizedBox(height: 16),
@@ -339,25 +351,34 @@ class _DoorKnockScreenState extends ConsumerState<DoorKnockScreen> {
         child: Row(
           children: [
             if (_currentStep != _DoorKnockStep.sentiment)
-              TextButton(
-                onPressed: () {
-                  setState(() {
-                    switch (_currentStep) {
-                      case _DoorKnockStep.notes:
-                        _currentStep = _activeSurveyForm != null
-                            ? _DoorKnockStep.survey
-                            : _DoorKnockStep.sentiment;
-                      case _DoorKnockStep.survey:
-                        _currentStep = _DoorKnockStep.sentiment;
-                      default:
-                        break;
-                    }
-                  });
-                },
-                child: const Text('Back'),
+              Semantics(
+                identifier: 'door-knock-back-btn',
+                button: true,
+                child: TextButton(
+                  onPressed: () {
+                    setState(() {
+                      switch (_currentStep) {
+                        case _DoorKnockStep.notes:
+                          _currentStep = _activeSurveyForm != null
+                              ? _DoorKnockStep.survey
+                              : _DoorKnockStep.sentiment;
+                        case _DoorKnockStep.survey:
+                          _currentStep = _DoorKnockStep.sentiment;
+                        default:
+                          break;
+                      }
+                    });
+                  },
+                  child: const Text('Back'),
+                ),
               ),
             const Spacer(),
-            FilledButton.icon(
+            Semantics(
+              identifier: isLastStep
+                  ? 'door-knock-save-btn'
+                  : 'door-knock-continue-btn',
+              button: true,
+              child: FilledButton.icon(
               onPressed: _isSaving
                   ? null
                   : isLastStep
@@ -371,6 +392,7 @@ class _DoorKnockScreenState extends ConsumerState<DoorKnockScreen> {
                     )
                   : Icon(isLastStep ? Icons.check : Icons.arrow_forward),
               label: Text(isLastStep ? 'Save & Next' : 'Continue'),
+              ),
             ),
           ],
         ),
