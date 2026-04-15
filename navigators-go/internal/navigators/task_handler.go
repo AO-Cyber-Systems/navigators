@@ -20,13 +20,12 @@ var _ navigatorsv1connect.TaskServiceHandler = (*TaskHandler)(nil)
 
 // TaskHandler implements the navigators.v1.TaskService ConnectRPC handler.
 type TaskHandler struct {
-	taskService   *TaskService
-	fcmDispatcher *FCMDispatcher // nil if push notifications disabled
+	taskService *TaskService
 }
 
 // NewTaskHandler creates a new TaskHandler.
-func NewTaskHandler(taskService *TaskService, fcmDispatcher *FCMDispatcher) *TaskHandler {
-	return &TaskHandler{taskService: taskService, fcmDispatcher: fcmDispatcher}
+func NewTaskHandler(taskService *TaskService) *TaskHandler {
+	return &TaskHandler{taskService: taskService}
 }
 
 func (h *TaskHandler) CreateTask(ctx context.Context, req *connect.Request[navigatorsv1.CreateTaskRequest]) (*connect.Response[navigatorsv1.CreateTaskResponse], error) {
@@ -346,40 +345,6 @@ func (h *TaskHandler) ListTaskNotes(ctx context.Context, req *connect.Request[na
 	return connect.NewResponse(&navigatorsv1.ListTaskNotesResponse{
 		Notes: pbNotes,
 	}), nil
-}
-
-func (h *TaskHandler) RegisterDeviceToken(ctx context.Context, req *connect.Request[navigatorsv1.RegisterDeviceTokenRequest]) (*connect.Response[navigatorsv1.RegisterDeviceTokenResponse], error) {
-	claims := server.ClaimsFromContext(ctx)
-	userID, err := uuid.Parse(claims.UserID)
-	if err != nil {
-		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("parse user ID: %w", err))
-	}
-
-	token := req.Msg.GetToken()
-	if token == "" {
-		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("token is required"))
-	}
-
-	platform := req.Msg.GetPlatform()
-	if platform == "" {
-		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("platform is required"))
-	}
-	switch platform {
-	case "ios", "android":
-	default:
-		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("platform must be 'ios' or 'android'"))
-	}
-
-	if h.fcmDispatcher == nil {
-		// Push notifications not configured; accept the token silently
-		return connect.NewResponse(&navigatorsv1.RegisterDeviceTokenResponse{}), nil
-	}
-
-	if err := h.fcmDispatcher.RegisterDeviceToken(ctx, userID, token, platform); err != nil {
-		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("register device token: %w", err))
-	}
-
-	return connect.NewResponse(&navigatorsv1.RegisterDeviceTokenResponse{}), nil
 }
 
 // --- Proto conversion helpers ---

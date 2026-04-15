@@ -1,55 +1,60 @@
+import 'package:eden_platform_flutter/eden_platform.dart';
 import 'package:eden_ui_flutter/eden_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../database/database.dart';
+import 'call_script_editor_screen.dart';
 
-/// Watches all active call scripts from the local database.
-final _callScriptsProvider = StreamProvider<List<CallScript>>((ref) {
-  final db = ref.read(databaseProvider);
-  return db.callScriptDao.watchActiveCallScripts();
-});
-
-/// Admin screen for viewing and managing call scripts.
+/// Call script management + read-only view.
 ///
-/// Displays call scripts synced from the server. Scripts are created and
-/// edited on the server side; this screen provides a read-only view of
-/// active scripts with content preview. Admin can view full script content
-/// by tapping a script card.
+/// Admin role: sees list, FAB to create, tap-to-edit each script.
+/// Non-admin role: sees read-only list, no FAB, detail bottom sheet on tap.
 ///
-/// Only accessible to Admin role users.
+/// List data always comes from the local Drift cache (watchActiveCallScripts)
+/// which is populated by SyncService.PullCallScripts. Mutations flow through
+/// CallScriptService RPCs; a sync cycle is kicked after save so the cache
+/// refreshes quickly.
 class CallScriptManagerScreen extends ConsumerWidget {
   const CallScriptManagerScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final scriptsAsync = ref.watch(_callScriptsProvider);
+    final auth = ref.watch(authProvider);
+    final isAdmin = auth.role?.toLowerCase() == 'admin';
+    final db = ref.read(databaseProvider);
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Call Scripts'),
+        title: Text(isAdmin ? 'Manage Call Scripts' : 'Call Scripts'),
       ),
-      body: scriptsAsync.when(
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (error, _) => Center(
-          child: EdenEmptyState(
-            title: 'Error loading scripts',
-            description: error.toString(),
-            icon: Icons.error_outline,
-          ),
-        ),
-        data: (scripts) {
+      body: StreamBuilder<List<CallScript>>(
+        stream: db.callScriptDao.watchActiveCallScripts(),
+        builder: (context, snapshot) {
+          if (snapshot.hasError) {
+            return Center(
+              child: EdenEmptyState(
+                title: 'Error loading scripts',
+                description: snapshot.error.toString(),
+                icon: Icons.error_outline,
+              ),
+            );
+          }
+          if (!snapshot.hasData) {
+            return const Center(child: CircularProgressIndicator());
+          }
+          final scripts = snapshot.data!;
           if (scripts.isEmpty) {
-            return const Center(
+            return Center(
               child: EdenEmptyState(
                 title: 'No call scripts',
-                description:
-                    'Call scripts are created on the server and synced to devices. No active scripts found.',
+                description: isAdmin
+                    ? 'Tap + to create your first call script.'
+                    : 'No active call scripts. Check back after your next sync.',
                 icon: Icons.description_outlined,
               ),
             );
           }
-
           return ListView.builder(
             padding: const EdgeInsets.all(16),
             itemCount: scripts.length,
@@ -57,12 +62,34 @@ class CallScriptManagerScreen extends ConsumerWidget {
               final script = scripts[index];
               return _CallScriptCard(
                 script: script,
-                onTap: () => _showScriptDetail(context, script),
+                trailing: isAdmin
+                    ? const Icon(Icons.chevron_right)
+                    : null,
+                onTap: isAdmin
+                    ? () => Navigator.of(context).push(
+                          MaterialPageRoute<bool>(
+                            builder: (_) => CallScriptEditorScreen(
+                              existing: script,
+                            ),
+                          ),
+                        )
+                    : () => _showScriptDetail(context, script),
               );
             },
           );
         },
       ),
+      floatingActionButton: isAdmin
+          ? FloatingActionButton(
+              onPressed: () => Navigator.of(context).push(
+                MaterialPageRoute<bool>(
+                  builder: (_) => const CallScriptEditorScreen(),
+                ),
+              ),
+              tooltip: 'New call script',
+              child: const Icon(Icons.add),
+            )
+          : null,
     );
   }
 
@@ -70,7 +97,7 @@ class CallScriptManagerScreen extends ConsumerWidget {
     showModalBottomSheet(
       context: context,
       isScrollControlled: true,
-      builder: (context) => DraggableScrollableSheet(
+      builder: (_) => DraggableScrollableSheet(
         initialChildSize: 0.7,
         minChildSize: 0.4,
         maxChildSize: 0.95,
@@ -82,7 +109,6 @@ class CallScriptManagerScreen extends ConsumerWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                // Handle bar
                 Center(
                   child: Container(
                     width: 40,
@@ -94,11 +120,9 @@ class CallScriptManagerScreen extends ConsumerWidget {
                     ),
                   ),
                 ),
-                // Title
                 Row(
                   children: [
-                    Icon(Icons.description,
-                        color: theme.colorScheme.primary),
+                    Icon(Icons.description, color: theme.colorScheme.primary),
                     const SizedBox(width: 8),
                     Expanded(
                       child: Text(
@@ -114,15 +138,13 @@ class CallScriptManagerScreen extends ConsumerWidget {
                   ],
                 ),
                 const Divider(height: 24),
-                // Content
                 Expanded(
                   child: SingleChildScrollView(
                     controller: scrollController,
                     child: Text(
                       script.content,
-                      style: theme.textTheme.bodyLarge?.copyWith(
-                        height: 1.6,
-                      ),
+                      style:
+                          theme.textTheme.bodyLarge?.copyWith(height: 1.6),
                     ),
                   ),
                 ),
@@ -138,10 +160,12 @@ class CallScriptManagerScreen extends ConsumerWidget {
 class _CallScriptCard extends StatelessWidget {
   final CallScript script;
   final VoidCallback onTap;
+  final Widget? trailing;
 
   const _CallScriptCard({
     required this.script,
     required this.onTap,
+    this.trailing,
   });
 
   @override
@@ -166,9 +190,8 @@ class _CallScriptCard extends StatelessWidget {
                   Expanded(
                     child: Text(
                       script.title,
-                      style: theme.textTheme.titleMedium?.copyWith(
-                        fontWeight: FontWeight.w600,
-                      ),
+                      style: theme.textTheme.titleMedium
+                          ?.copyWith(fontWeight: FontWeight.w600),
                     ),
                   ),
                   const SizedBox(width: 8),
@@ -200,11 +223,14 @@ class _CallScriptCard extends StatelessWidget {
                     size: EdenBadgeSize.sm,
                   ),
                   const Spacer(),
-                  Icon(
-                    Icons.chevron_right,
-                    color:
-                        theme.colorScheme.onSurface.withValues(alpha: 0.4),
-                  ),
+                  if (trailing != null)
+                    IconTheme(
+                      data: IconThemeData(
+                        color: theme.colorScheme.onSurface
+                            .withValues(alpha: 0.4),
+                      ),
+                      child: trailing!,
+                    ),
                 ],
               ),
             ],

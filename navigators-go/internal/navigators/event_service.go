@@ -2,9 +2,7 @@ package navigators
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"log/slog"
 	"time"
 
 	"github.com/google/uuid"
@@ -191,18 +189,7 @@ func (s *EventService) RSVPEvent(ctx context.Context, eventID, userID uuid.UUID,
 		return nil, fmt.Errorf("rsvp event: %w", err)
 	}
 
-	// Publish RSVP event to NATS for potential notifications
-	if status == "going" && s.js != nil {
-		event := EventRSVPEvent{
-			EventID: eventID.String(),
-			UserID:  userID.String(),
-			Status:  status,
-		}
-		data, _ := json.Marshal(event)
-		if _, pubErr := s.js.Publish(ctx, eventRSVPSubject, data); pubErr != nil {
-			slog.Warn("failed to publish event.rsvp event", "error", pubErr, "event_id", eventID, "user_id", userID)
-		}
-	}
+	// Remote push was descoped; no event.rsvp event is published.
 
 	return &rsvp, nil
 }

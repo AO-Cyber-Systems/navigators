@@ -2,9 +2,7 @@ package navigators
 
 import (
 	"context"
-	"encoding/json"
 	"fmt"
-	"log/slog"
 	"time"
 
 	"github.com/google/uuid"
@@ -164,28 +162,8 @@ func (s *TaskService) AssignTask(ctx context.Context, companyID, taskID, userID,
 		return fmt.Errorf("assign task: %w", err)
 	}
 
-	// Publish task.assigned event for push notification
-	if s.js != nil {
-		// Get task title for the notification
-		task, taskErr := s.queries.GetTask(ctx, db.GetTaskParams{
-			ID:        taskID,
-			CompanyID: companyID,
-		})
-		taskTitle := "New Task"
-		if taskErr == nil {
-			taskTitle = task.Title
-		}
-
-		event := TaskAssignedEvent{
-			TaskID:    taskID.String(),
-			UserID:    userID.String(),
-			TaskTitle: taskTitle,
-		}
-		data, _ := json.Marshal(event)
-		if _, pubErr := s.js.Publish(ctx, taskAssignedSubject, data); pubErr != nil {
-			slog.Warn("failed to publish task.assigned event", "error", pubErr, "task_id", taskID, "user_id", userID)
-		}
-	}
+	// Remote push was descoped; no task.assigned event is published.
+	// Task UI surfaces assignments via ListTasks / pull sync.
 
 	return nil
 }
