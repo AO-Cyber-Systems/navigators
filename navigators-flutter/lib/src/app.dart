@@ -163,36 +163,42 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
         label: 'Dashboard',
         icon: Icons.home_outlined,
         activeIcon: Icons.home,
+        semanticsIdentifier: 'nav-home',
       ),
       const EdenNavItem(
         id: 'voters',
         label: 'Voters',
         icon: Icons.people_outline,
         activeIcon: Icons.people,
+        semanticsIdentifier: 'nav-voters',
       ),
       const EdenNavItem(
         id: 'map',
         label: 'Map',
         icon: Icons.map_outlined,
         activeIcon: Icons.map,
+        semanticsIdentifier: 'nav-map',
       ),
       const EdenNavItem(
         id: 'messages',
         label: 'Messages',
         icon: Icons.chat_bubble_outline,
         activeIcon: Icons.chat_bubble,
+        semanticsIdentifier: 'nav-messages',
       ),
       const EdenNavItem(
         id: 'tasks',
         label: 'Tasks',
         icon: Icons.task_alt_outlined,
         activeIcon: Icons.task_alt,
+        semanticsIdentifier: 'nav-tasks',
       ),
       const EdenNavItem(
         id: 'events',
         label: 'Events',
         icon: Icons.event_outlined,
         activeIcon: Icons.event,
+        semanticsIdentifier: 'nav-events',
       ),
       const EdenNavItem.divider(),
       const EdenNavItem(
@@ -200,12 +206,14 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
         label: 'Leaderboard',
         icon: Icons.leaderboard_outlined,
         activeIcon: Icons.leaderboard,
+        semanticsIdentifier: 'nav-leaderboard',
       ),
       const EdenNavItem(
         id: 'training',
         label: 'Training',
         icon: Icons.school_outlined,
         activeIcon: Icons.school,
+        semanticsIdentifier: 'nav-training',
       ),
       if (isAdmin)
         const EdenNavItem(
@@ -213,6 +221,7 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
           label: 'Import',
           icon: Icons.cloud_upload_outlined,
           activeIcon: Icons.cloud_upload,
+          semanticsIdentifier: 'nav-import',
         ),
       if (isAdmin)
         const EdenNavItem(
@@ -220,6 +229,7 @@ class _NavigatorsHomeState extends ConsumerState<_NavigatorsHome> {
           label: 'Suppression',
           icon: Icons.block_outlined,
           activeIcon: Icons.block,
+          semanticsIdentifier: 'nav-suppression',
         ),
     ];
   }
