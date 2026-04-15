@@ -235,6 +235,24 @@ func (q *Queries) ListTrainingMaterials(ctx context.Context, companyID uuid.UUID
 	return items, nil
 }
 
+const softDeleteTrainingMaterial = `-- name: SoftDeleteTrainingMaterial :exec
+UPDATE training_materials
+SET is_published = false,
+    updated_at = now()
+WHERE id = $1 AND company_id = $2
+`
+
+type SoftDeleteTrainingMaterialParams struct {
+	ID        uuid.UUID `json:"id"`
+	CompanyID uuid.UUID `json:"company_id"`
+}
+
+// Soft-delete a training material by flipping is_published to false.
+func (q *Queries) SoftDeleteTrainingMaterial(ctx context.Context, arg SoftDeleteTrainingMaterialParams) error {
+	_, err := q.db.Exec(ctx, softDeleteTrainingMaterial, arg.ID, arg.CompanyID)
+	return err
+}
+
 const updateLeaderboardOptIn = `-- name: UpdateLeaderboardOptIn :exec
 UPDATE navigator_profiles
 SET leaderboard_opt_in = $2,
@@ -270,6 +288,52 @@ type UpdateLegalAcknowledgmentParams struct {
 func (q *Queries) UpdateLegalAcknowledgment(ctx context.Context, arg UpdateLegalAcknowledgmentParams) error {
 	_, err := q.db.Exec(ctx, updateLegalAcknowledgment, arg.UserID, arg.LegalAcknowledgmentVersion)
 	return err
+}
+
+const updateTrainingMaterial = `-- name: UpdateTrainingMaterial :one
+UPDATE training_materials
+SET title = $3,
+    description = $4,
+    sort_order = $5,
+    is_published = $6,
+    updated_at = now()
+WHERE id = $1 AND company_id = $2
+RETURNING id, company_id, title, description, content_url, sort_order, is_published, created_by, created_at, updated_at
+`
+
+type UpdateTrainingMaterialParams struct {
+	ID          uuid.UUID `json:"id"`
+	CompanyID   uuid.UUID `json:"company_id"`
+	Title       string    `json:"title"`
+	Description string    `json:"description"`
+	SortOrder   int32     `json:"sort_order"`
+	IsPublished bool      `json:"is_published"`
+}
+
+// Update mutable fields on a training material scoped by company.
+func (q *Queries) UpdateTrainingMaterial(ctx context.Context, arg UpdateTrainingMaterialParams) (TrainingMaterial, error) {
+	row := q.db.QueryRow(ctx, updateTrainingMaterial,
+		arg.ID,
+		arg.CompanyID,
+		arg.Title,
+		arg.Description,
+		arg.SortOrder,
+		arg.IsPublished,
+	)
+	var i TrainingMaterial
+	err := row.Scan(
+		&i.ID,
+		&i.CompanyID,
+		&i.Title,
+		&i.Description,
+		&i.ContentUrl,
+		&i.SortOrder,
+		&i.IsPublished,
+		&i.CreatedBy,
+		&i.CreatedAt,
+		&i.UpdatedAt,
+	)
+	return i, err
 }
 
 const upsertNavigatorProfile = `-- name: UpsertNavigatorProfile :one

@@ -123,6 +123,49 @@ func (s *VolunteerService) CreateTrainingMaterial(ctx context.Context, companyID
 	return &material, nil
 }
 
+// UpdateTrainingMaterial updates mutable fields on a training material.
+func (s *VolunteerService) UpdateTrainingMaterial(ctx context.Context, companyID, id uuid.UUID, title, description string, sortOrder int32, isPublished bool) (*db.TrainingMaterial, error) {
+	material, err := s.queries.UpdateTrainingMaterial(ctx, db.UpdateTrainingMaterialParams{
+		ID:          id,
+		CompanyID:   companyID,
+		Title:       title,
+		Description: description,
+		SortOrder:   sortOrder,
+		IsPublished: isPublished,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("update training material: %w", err)
+	}
+	return &material, nil
+}
+
+// DeleteTrainingMaterial soft-deletes a training material (is_published=false).
+// The row is retained so pull sync can propagate the removal to clients.
+func (s *VolunteerService) DeleteTrainingMaterial(ctx context.Context, companyID, id uuid.UUID) error {
+	if err := s.queries.SoftDeleteTrainingMaterial(ctx, db.SoftDeleteTrainingMaterialParams{
+		ID:        id,
+		CompanyID: companyID,
+	}); err != nil {
+		return fmt.Errorf("soft delete training material: %w", err)
+	}
+	return nil
+}
+
+// GetTrainingUploadURL returns a 15-minute presigned PUT URL and a server-generated
+// storage key. The client uploads bytes directly to MinIO, then passes the same
+// storageKey to CreateTrainingMaterial as content_url.
+func (s *VolunteerService) GetTrainingUploadURL(ctx context.Context, filename, _contentType string) (string, string, int32, error) {
+	if filename == "" {
+		return "", "", 0, fmt.Errorf("filename is required")
+	}
+	storageKey := uuid.NewString() + "/" + filename
+	u, err := s.minioClient.PresignedPutObject(ctx, s.trainingBucket, storageKey, 15*time.Minute)
+	if err != nil {
+		return "", "", 0, fmt.Errorf("presign training upload: %w", err)
+	}
+	return u.String(), storageKey, int32(15 * 60), nil
+}
+
 // GetTrainingDownloadURL returns a presigned download URL for a training material.
 func (s *VolunteerService) GetTrainingDownloadURL(ctx context.Context, materialID uuid.UUID) (string, error) {
 	material, err := s.queries.GetTrainingMaterial(ctx, materialID)

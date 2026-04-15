@@ -61,6 +61,15 @@ const (
 	// TrainingServiceGetTrainingDownloadUrlProcedure is the fully-qualified name of the
 	// TrainingService's GetTrainingDownloadUrl RPC.
 	TrainingServiceGetTrainingDownloadUrlProcedure = "/navigators.v1.TrainingService/GetTrainingDownloadUrl"
+	// TrainingServiceUpdateTrainingMaterialProcedure is the fully-qualified name of the
+	// TrainingService's UpdateTrainingMaterial RPC.
+	TrainingServiceUpdateTrainingMaterialProcedure = "/navigators.v1.TrainingService/UpdateTrainingMaterial"
+	// TrainingServiceDeleteTrainingMaterialProcedure is the fully-qualified name of the
+	// TrainingService's DeleteTrainingMaterial RPC.
+	TrainingServiceDeleteTrainingMaterialProcedure = "/navigators.v1.TrainingService/DeleteTrainingMaterial"
+	// TrainingServiceGetTrainingUploadUrlProcedure is the fully-qualified name of the TrainingService's
+	// GetTrainingUploadUrl RPC.
+	TrainingServiceGetTrainingUploadUrlProcedure = "/navigators.v1.TrainingService/GetTrainingUploadUrl"
 )
 
 // OnboardingServiceClient is a client for the navigators.v1.OnboardingService service.
@@ -299,6 +308,12 @@ type TrainingServiceClient interface {
 	CreateTrainingMaterial(context.Context, *connect.Request[v1.CreateTrainingMaterialRequest]) (*connect.Response[v1.CreateTrainingMaterialResponse], error)
 	// GetTrainingDownloadUrl returns a presigned download URL for a training material.
 	GetTrainingDownloadUrl(context.Context, *connect.Request[v1.GetTrainingDownloadUrlRequest]) (*connect.Response[v1.GetTrainingDownloadUrlResponse], error)
+	// UpdateTrainingMaterial updates title/description/sort_order/is_published of an existing material.
+	UpdateTrainingMaterial(context.Context, *connect.Request[v1.UpdateTrainingMaterialRequest]) (*connect.Response[v1.UpdateTrainingMaterialResponse], error)
+	// DeleteTrainingMaterial soft-deletes a training material (sets is_published=false).
+	DeleteTrainingMaterial(context.Context, *connect.Request[v1.DeleteTrainingMaterialRequest]) (*connect.Response[v1.DeleteTrainingMaterialResponse], error)
+	// GetTrainingUploadUrl returns a presigned PUT URL and server-generated storage key for direct upload.
+	GetTrainingUploadUrl(context.Context, *connect.Request[v1.GetTrainingUploadUrlRequest]) (*connect.Response[v1.GetTrainingUploadUrlResponse], error)
 }
 
 // NewTrainingServiceClient constructs a client for the navigators.v1.TrainingService service. By
@@ -330,6 +345,24 @@ func NewTrainingServiceClient(httpClient connect.HTTPClient, baseURL string, opt
 			connect.WithSchema(trainingServiceMethods.ByName("GetTrainingDownloadUrl")),
 			connect.WithClientOptions(opts...),
 		),
+		updateTrainingMaterial: connect.NewClient[v1.UpdateTrainingMaterialRequest, v1.UpdateTrainingMaterialResponse](
+			httpClient,
+			baseURL+TrainingServiceUpdateTrainingMaterialProcedure,
+			connect.WithSchema(trainingServiceMethods.ByName("UpdateTrainingMaterial")),
+			connect.WithClientOptions(opts...),
+		),
+		deleteTrainingMaterial: connect.NewClient[v1.DeleteTrainingMaterialRequest, v1.DeleteTrainingMaterialResponse](
+			httpClient,
+			baseURL+TrainingServiceDeleteTrainingMaterialProcedure,
+			connect.WithSchema(trainingServiceMethods.ByName("DeleteTrainingMaterial")),
+			connect.WithClientOptions(opts...),
+		),
+		getTrainingUploadUrl: connect.NewClient[v1.GetTrainingUploadUrlRequest, v1.GetTrainingUploadUrlResponse](
+			httpClient,
+			baseURL+TrainingServiceGetTrainingUploadUrlProcedure,
+			connect.WithSchema(trainingServiceMethods.ByName("GetTrainingUploadUrl")),
+			connect.WithClientOptions(opts...),
+		),
 	}
 }
 
@@ -338,6 +371,9 @@ type trainingServiceClient struct {
 	listTrainingMaterials  *connect.Client[v1.ListTrainingMaterialsRequest, v1.ListTrainingMaterialsResponse]
 	createTrainingMaterial *connect.Client[v1.CreateTrainingMaterialRequest, v1.CreateTrainingMaterialResponse]
 	getTrainingDownloadUrl *connect.Client[v1.GetTrainingDownloadUrlRequest, v1.GetTrainingDownloadUrlResponse]
+	updateTrainingMaterial *connect.Client[v1.UpdateTrainingMaterialRequest, v1.UpdateTrainingMaterialResponse]
+	deleteTrainingMaterial *connect.Client[v1.DeleteTrainingMaterialRequest, v1.DeleteTrainingMaterialResponse]
+	getTrainingUploadUrl   *connect.Client[v1.GetTrainingUploadUrlRequest, v1.GetTrainingUploadUrlResponse]
 }
 
 // ListTrainingMaterials calls navigators.v1.TrainingService.ListTrainingMaterials.
@@ -355,6 +391,21 @@ func (c *trainingServiceClient) GetTrainingDownloadUrl(ctx context.Context, req 
 	return c.getTrainingDownloadUrl.CallUnary(ctx, req)
 }
 
+// UpdateTrainingMaterial calls navigators.v1.TrainingService.UpdateTrainingMaterial.
+func (c *trainingServiceClient) UpdateTrainingMaterial(ctx context.Context, req *connect.Request[v1.UpdateTrainingMaterialRequest]) (*connect.Response[v1.UpdateTrainingMaterialResponse], error) {
+	return c.updateTrainingMaterial.CallUnary(ctx, req)
+}
+
+// DeleteTrainingMaterial calls navigators.v1.TrainingService.DeleteTrainingMaterial.
+func (c *trainingServiceClient) DeleteTrainingMaterial(ctx context.Context, req *connect.Request[v1.DeleteTrainingMaterialRequest]) (*connect.Response[v1.DeleteTrainingMaterialResponse], error) {
+	return c.deleteTrainingMaterial.CallUnary(ctx, req)
+}
+
+// GetTrainingUploadUrl calls navigators.v1.TrainingService.GetTrainingUploadUrl.
+func (c *trainingServiceClient) GetTrainingUploadUrl(ctx context.Context, req *connect.Request[v1.GetTrainingUploadUrlRequest]) (*connect.Response[v1.GetTrainingUploadUrlResponse], error) {
+	return c.getTrainingUploadUrl.CallUnary(ctx, req)
+}
+
 // TrainingServiceHandler is an implementation of the navigators.v1.TrainingService service.
 type TrainingServiceHandler interface {
 	// ListTrainingMaterials returns published training materials.
@@ -363,6 +414,12 @@ type TrainingServiceHandler interface {
 	CreateTrainingMaterial(context.Context, *connect.Request[v1.CreateTrainingMaterialRequest]) (*connect.Response[v1.CreateTrainingMaterialResponse], error)
 	// GetTrainingDownloadUrl returns a presigned download URL for a training material.
 	GetTrainingDownloadUrl(context.Context, *connect.Request[v1.GetTrainingDownloadUrlRequest]) (*connect.Response[v1.GetTrainingDownloadUrlResponse], error)
+	// UpdateTrainingMaterial updates title/description/sort_order/is_published of an existing material.
+	UpdateTrainingMaterial(context.Context, *connect.Request[v1.UpdateTrainingMaterialRequest]) (*connect.Response[v1.UpdateTrainingMaterialResponse], error)
+	// DeleteTrainingMaterial soft-deletes a training material (sets is_published=false).
+	DeleteTrainingMaterial(context.Context, *connect.Request[v1.DeleteTrainingMaterialRequest]) (*connect.Response[v1.DeleteTrainingMaterialResponse], error)
+	// GetTrainingUploadUrl returns a presigned PUT URL and server-generated storage key for direct upload.
+	GetTrainingUploadUrl(context.Context, *connect.Request[v1.GetTrainingUploadUrlRequest]) (*connect.Response[v1.GetTrainingUploadUrlResponse], error)
 }
 
 // NewTrainingServiceHandler builds an HTTP handler from the service implementation. It returns the
@@ -390,6 +447,24 @@ func NewTrainingServiceHandler(svc TrainingServiceHandler, opts ...connect.Handl
 		connect.WithSchema(trainingServiceMethods.ByName("GetTrainingDownloadUrl")),
 		connect.WithHandlerOptions(opts...),
 	)
+	trainingServiceUpdateTrainingMaterialHandler := connect.NewUnaryHandler(
+		TrainingServiceUpdateTrainingMaterialProcedure,
+		svc.UpdateTrainingMaterial,
+		connect.WithSchema(trainingServiceMethods.ByName("UpdateTrainingMaterial")),
+		connect.WithHandlerOptions(opts...),
+	)
+	trainingServiceDeleteTrainingMaterialHandler := connect.NewUnaryHandler(
+		TrainingServiceDeleteTrainingMaterialProcedure,
+		svc.DeleteTrainingMaterial,
+		connect.WithSchema(trainingServiceMethods.ByName("DeleteTrainingMaterial")),
+		connect.WithHandlerOptions(opts...),
+	)
+	trainingServiceGetTrainingUploadUrlHandler := connect.NewUnaryHandler(
+		TrainingServiceGetTrainingUploadUrlProcedure,
+		svc.GetTrainingUploadUrl,
+		connect.WithSchema(trainingServiceMethods.ByName("GetTrainingUploadUrl")),
+		connect.WithHandlerOptions(opts...),
+	)
 	return "/navigators.v1.TrainingService/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		switch r.URL.Path {
 		case TrainingServiceListTrainingMaterialsProcedure:
@@ -398,6 +473,12 @@ func NewTrainingServiceHandler(svc TrainingServiceHandler, opts ...connect.Handl
 			trainingServiceCreateTrainingMaterialHandler.ServeHTTP(w, r)
 		case TrainingServiceGetTrainingDownloadUrlProcedure:
 			trainingServiceGetTrainingDownloadUrlHandler.ServeHTTP(w, r)
+		case TrainingServiceUpdateTrainingMaterialProcedure:
+			trainingServiceUpdateTrainingMaterialHandler.ServeHTTP(w, r)
+		case TrainingServiceDeleteTrainingMaterialProcedure:
+			trainingServiceDeleteTrainingMaterialHandler.ServeHTTP(w, r)
+		case TrainingServiceGetTrainingUploadUrlProcedure:
+			trainingServiceGetTrainingUploadUrlHandler.ServeHTTP(w, r)
 		default:
 			http.NotFound(w, r)
 		}
@@ -417,4 +498,16 @@ func (UnimplementedTrainingServiceHandler) CreateTrainingMaterial(context.Contex
 
 func (UnimplementedTrainingServiceHandler) GetTrainingDownloadUrl(context.Context, *connect.Request[v1.GetTrainingDownloadUrlRequest]) (*connect.Response[v1.GetTrainingDownloadUrlResponse], error) {
 	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.TrainingService.GetTrainingDownloadUrl is not implemented"))
+}
+
+func (UnimplementedTrainingServiceHandler) UpdateTrainingMaterial(context.Context, *connect.Request[v1.UpdateTrainingMaterialRequest]) (*connect.Response[v1.UpdateTrainingMaterialResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.TrainingService.UpdateTrainingMaterial is not implemented"))
+}
+
+func (UnimplementedTrainingServiceHandler) DeleteTrainingMaterial(context.Context, *connect.Request[v1.DeleteTrainingMaterialRequest]) (*connect.Response[v1.DeleteTrainingMaterialResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.TrainingService.DeleteTrainingMaterial is not implemented"))
+}
+
+func (UnimplementedTrainingServiceHandler) GetTrainingUploadUrl(context.Context, *connect.Request[v1.GetTrainingUploadUrlRequest]) (*connect.Response[v1.GetTrainingUploadUrlResponse], error) {
+	return nil, connect.NewError(connect.CodeUnimplemented, errors.New("navigators.v1.TrainingService.GetTrainingUploadUrl is not implemented"))
 }

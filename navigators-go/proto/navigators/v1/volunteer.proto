@@ -35,6 +35,15 @@ service TrainingService {
 
   // GetTrainingDownloadUrl returns a presigned download URL for a training material.
   rpc GetTrainingDownloadUrl(GetTrainingDownloadUrlRequest) returns (GetTrainingDownloadUrlResponse);
+
+  // UpdateTrainingMaterial updates title/description/sort_order/is_published of an existing material.
+  rpc UpdateTrainingMaterial(UpdateTrainingMaterialRequest) returns (UpdateTrainingMaterialResponse);
+
+  // DeleteTrainingMaterial soft-deletes a training material (sets is_published=false).
+  rpc DeleteTrainingMaterial(DeleteTrainingMaterialRequest) returns (DeleteTrainingMaterialResponse);
+
+  // GetTrainingUploadUrl returns a presigned PUT URL and server-generated storage key for direct upload.
+  rpc GetTrainingUploadUrl(GetTrainingUploadUrlRequest) returns (GetTrainingUploadUrlResponse);
 }
 
 // --- Messages ---
@@ -132,4 +141,33 @@ message GetTrainingDownloadUrlRequest {
 
 message GetTrainingDownloadUrlResponse {
   string presigned_url = 1;
+}
+
+message UpdateTrainingMaterialRequest {
+  string id = 1;
+  string title = 2;
+  string description = 3;
+  int32 sort_order = 4;
+  bool is_published = 5;
+}
+
+message UpdateTrainingMaterialResponse {
+  TrainingMaterial material = 1;
+}
+
+message DeleteTrainingMaterialRequest {
+  string id = 1;
+}
+
+message DeleteTrainingMaterialResponse {}
+
+message GetTrainingUploadUrlRequest {
+  string filename = 1;
+  string content_type = 2;
+}
+
+message GetTrainingUploadUrlResponse {
+  string presigned_url = 1;
+  string storage_key = 2;
+  int32 expires_in_seconds = 3;
 }

@@ -109,8 +109,10 @@ ORDER BY er.created_at ASC
 LIMIT $3;
 
 -- name: PullTrainingMaterialsUpdated :many
--- Pull published training materials updated since cursor for sync.
+-- Pull training materials updated since cursor for sync.
+-- NOTE: does not filter is_published so clients see soft-deleted rows and can
+-- reconcile local state (Drift DAO filters isPublished=true on the read side).
 SELECT * FROM training_materials
-WHERE company_id = $1 AND updated_at > $2 AND is_published = true
+WHERE company_id = $1 AND updated_at > $2
 ORDER BY updated_at ASC
 LIMIT $3;

@@ -227,7 +227,6 @@ func NavigatorsProcedurePermissions() map[string]server.Permission {
 		"/navigators.v1.TaskService/LinkTaskVoters":        {Feature: "tasks", Action: "create"},
 		"/navigators.v1.TaskService/CreateTaskNote":        {Feature: "tasks", Action: "view"},
 		"/navigators.v1.TaskService/ListTaskNotes":         {Feature: "tasks", Action: "view"},
-		"/navigators.v1.TaskService/RegisterDeviceToken":   {Feature: "tasks", Action: "view"}, // All authenticated users (Member level)
 
 		// Task sync
 		"/navigators.v1.SyncService/PullTasks":     {Feature: "sync", Action: "pull"},
@@ -253,6 +252,9 @@ func NavigatorsProcedurePermissions() map[string]server.Permission {
 		"/navigators.v1.TrainingService/ListTrainingMaterials":   {Feature: "training", Action: "view"},
 		"/navigators.v1.TrainingService/CreateTrainingMaterial":  {Feature: "training", Action: "create"},
 		"/navigators.v1.TrainingService/GetTrainingDownloadUrl":  {Feature: "training", Action: "view"},
+		"/navigators.v1.TrainingService/UpdateTrainingMaterial":  {Feature: "training", Action: "create"},
+		"/navigators.v1.TrainingService/DeleteTrainingMaterial":  {Feature: "training", Action: "create"},
+		"/navigators.v1.TrainingService/GetTrainingUploadUrl":    {Feature: "training", Action: "create"},
 
 		// Events
 		"/navigators.v1.EventService/CreateEvent":         {Feature: "events", Action: "create"},

@@ -74,3 +74,21 @@ RETURNING *;
 -- Get a training material by ID.
 SELECT * FROM training_materials
 WHERE id = $1;
+
+-- name: UpdateTrainingMaterial :one
+-- Update mutable fields on a training material scoped by company.
+UPDATE training_materials
+SET title = $3,
+    description = $4,
+    sort_order = $5,
+    is_published = $6,
+    updated_at = now()
+WHERE id = $1 AND company_id = $2
+RETURNING *;
+
+-- name: SoftDeleteTrainingMaterial :exec
+-- Soft-delete a training material by flipping is_published to false.
+UPDATE training_materials
+SET is_published = false,
+    updated_at = now()
+WHERE id = $1 AND company_id = $2;

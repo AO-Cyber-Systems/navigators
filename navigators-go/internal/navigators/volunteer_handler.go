@@ -246,6 +246,83 @@ func (h *TrainingHandler) GetTrainingDownloadUrl(ctx context.Context, req *conne
 	}), nil
 }
 
+func (h *TrainingHandler) UpdateTrainingMaterial(ctx context.Context, req *connect.Request[navigatorsv1.UpdateTrainingMaterialRequest]) (*connect.Response[navigatorsv1.UpdateTrainingMaterialResponse], error) {
+	companyID, err := extractCompanyID(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	claims := server.ClaimsFromContext(ctx)
+	if claims.RoleLevel < 60 {
+		return nil, connect.NewError(connect.CodePermissionDenied, fmt.Errorf("insufficient permissions"))
+	}
+
+	id, err := uuid.Parse(req.Msg.GetId())
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("invalid id: %w", err))
+	}
+
+	title := req.Msg.GetTitle()
+	if title == "" {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("title is required"))
+	}
+
+	material, err := h.volunteerService.UpdateTrainingMaterial(ctx, companyID, id, title, req.Msg.GetDescription(), req.Msg.GetSortOrder(), req.Msg.GetIsPublished())
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("update training material: %w", err))
+	}
+
+	return connect.NewResponse(&navigatorsv1.UpdateTrainingMaterialResponse{
+		Material: dbTrainingMaterialToProto(material),
+	}), nil
+}
+
+func (h *TrainingHandler) DeleteTrainingMaterial(ctx context.Context, req *connect.Request[navigatorsv1.DeleteTrainingMaterialRequest]) (*connect.Response[navigatorsv1.DeleteTrainingMaterialResponse], error) {
+	companyID, err := extractCompanyID(ctx)
+	if err != nil {
+		return nil, err
+	}
+
+	claims := server.ClaimsFromContext(ctx)
+	if claims.RoleLevel < 60 {
+		return nil, connect.NewError(connect.CodePermissionDenied, fmt.Errorf("insufficient permissions"))
+	}
+
+	id, err := uuid.Parse(req.Msg.GetId())
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("invalid id: %w", err))
+	}
+
+	if err := h.volunteerService.DeleteTrainingMaterial(ctx, companyID, id); err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("delete training material: %w", err))
+	}
+
+	return connect.NewResponse(&navigatorsv1.DeleteTrainingMaterialResponse{}), nil
+}
+
+func (h *TrainingHandler) GetTrainingUploadUrl(ctx context.Context, req *connect.Request[navigatorsv1.GetTrainingUploadUrlRequest]) (*connect.Response[navigatorsv1.GetTrainingUploadUrlResponse], error) {
+	claims := server.ClaimsFromContext(ctx)
+	if claims.RoleLevel < 60 {
+		return nil, connect.NewError(connect.CodePermissionDenied, fmt.Errorf("insufficient permissions"))
+	}
+
+	filename := req.Msg.GetFilename()
+	if filename == "" {
+		return nil, connect.NewError(connect.CodeInvalidArgument, fmt.Errorf("filename is required"))
+	}
+
+	presignedURL, storageKey, expiresIn, err := h.volunteerService.GetTrainingUploadURL(ctx, filename, req.Msg.GetContentType())
+	if err != nil {
+		return nil, connect.NewError(connect.CodeInternal, fmt.Errorf("get training upload url: %w", err))
+	}
+
+	return connect.NewResponse(&navigatorsv1.GetTrainingUploadUrlResponse{
+		PresignedUrl:     presignedURL,
+		StorageKey:       storageKey,
+		ExpiresInSeconds: expiresIn,
+	}), nil
+}
+
 // --- Proto conversion helpers ---
 
 func dbProfileToProto(p *db.NavigatorProfile) *navigatorsv1.NavigatorProfile {

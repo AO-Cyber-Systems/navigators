@@ -490,7 +490,7 @@ func (q *Queries) PullEventsUpdated(ctx context.Context, arg PullEventsUpdatedPa
 
 const pullTrainingMaterialsUpdated = `-- name: PullTrainingMaterialsUpdated :many
 SELECT id, company_id, title, description, content_url, sort_order, is_published, created_by, created_at, updated_at FROM training_materials
-WHERE company_id = $1 AND updated_at > $2 AND is_published = true
+WHERE company_id = $1 AND updated_at > $2
 ORDER BY updated_at ASC
 LIMIT $3
 `
@@ -501,7 +501,9 @@ type PullTrainingMaterialsUpdatedParams struct {
 	Limit     int32     `json:"limit"`
 }
 
-// Pull published training materials updated since cursor for sync.
+// Pull training materials updated since cursor for sync.
+// NOTE: does not filter is_published so clients see soft-deleted rows and can
+// reconcile local state (Drift DAO filters isPublished=true on the read side).
 func (q *Queries) PullTrainingMaterialsUpdated(ctx context.Context, arg PullTrainingMaterialsUpdatedParams) ([]TrainingMaterial, error) {
 	rows, err := q.db.Query(ctx, pullTrainingMaterialsUpdated, arg.CompanyID, arg.UpdatedAt, arg.Limit)
 	if err != nil {

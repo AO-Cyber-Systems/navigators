@@ -1001,6 +1001,318 @@ func (x *GetTrainingDownloadUrlResponse) GetPresignedUrl() string {
 	return ""
 }
 
+type UpdateTrainingMaterialRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	Title         string                 `protobuf:"bytes,2,opt,name=title,proto3" json:"title,omitempty"`
+	Description   string                 `protobuf:"bytes,3,opt,name=description,proto3" json:"description,omitempty"`
+	SortOrder     int32                  `protobuf:"varint,4,opt,name=sort_order,json=sortOrder,proto3" json:"sort_order,omitempty"`
+	IsPublished   bool                   `protobuf:"varint,5,opt,name=is_published,json=isPublished,proto3" json:"is_published,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateTrainingMaterialRequest) Reset() {
+	*x = UpdateTrainingMaterialRequest{}
+	mi := &file_navigators_v1_volunteer_proto_msgTypes[19]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateTrainingMaterialRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateTrainingMaterialRequest) ProtoMessage() {}
+
+func (x *UpdateTrainingMaterialRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_volunteer_proto_msgTypes[19]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateTrainingMaterialRequest.ProtoReflect.Descriptor instead.
+func (*UpdateTrainingMaterialRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_volunteer_proto_rawDescGZIP(), []int{19}
+}
+
+func (x *UpdateTrainingMaterialRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+func (x *UpdateTrainingMaterialRequest) GetTitle() string {
+	if x != nil {
+		return x.Title
+	}
+	return ""
+}
+
+func (x *UpdateTrainingMaterialRequest) GetDescription() string {
+	if x != nil {
+		return x.Description
+	}
+	return ""
+}
+
+func (x *UpdateTrainingMaterialRequest) GetSortOrder() int32 {
+	if x != nil {
+		return x.SortOrder
+	}
+	return 0
+}
+
+func (x *UpdateTrainingMaterialRequest) GetIsPublished() bool {
+	if x != nil {
+		return x.IsPublished
+	}
+	return false
+}
+
+type UpdateTrainingMaterialResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Material      *TrainingMaterial      `protobuf:"bytes,1,opt,name=material,proto3" json:"material,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *UpdateTrainingMaterialResponse) Reset() {
+	*x = UpdateTrainingMaterialResponse{}
+	mi := &file_navigators_v1_volunteer_proto_msgTypes[20]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *UpdateTrainingMaterialResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*UpdateTrainingMaterialResponse) ProtoMessage() {}
+
+func (x *UpdateTrainingMaterialResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_volunteer_proto_msgTypes[20]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use UpdateTrainingMaterialResponse.ProtoReflect.Descriptor instead.
+func (*UpdateTrainingMaterialResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_volunteer_proto_rawDescGZIP(), []int{20}
+}
+
+func (x *UpdateTrainingMaterialResponse) GetMaterial() *TrainingMaterial {
+	if x != nil {
+		return x.Material
+	}
+	return nil
+}
+
+type DeleteTrainingMaterialRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Id            string                 `protobuf:"bytes,1,opt,name=id,proto3" json:"id,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteTrainingMaterialRequest) Reset() {
+	*x = DeleteTrainingMaterialRequest{}
+	mi := &file_navigators_v1_volunteer_proto_msgTypes[21]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteTrainingMaterialRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteTrainingMaterialRequest) ProtoMessage() {}
+
+func (x *DeleteTrainingMaterialRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_volunteer_proto_msgTypes[21]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteTrainingMaterialRequest.ProtoReflect.Descriptor instead.
+func (*DeleteTrainingMaterialRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_volunteer_proto_rawDescGZIP(), []int{21}
+}
+
+func (x *DeleteTrainingMaterialRequest) GetId() string {
+	if x != nil {
+		return x.Id
+	}
+	return ""
+}
+
+type DeleteTrainingMaterialResponse struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *DeleteTrainingMaterialResponse) Reset() {
+	*x = DeleteTrainingMaterialResponse{}
+	mi := &file_navigators_v1_volunteer_proto_msgTypes[22]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *DeleteTrainingMaterialResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*DeleteTrainingMaterialResponse) ProtoMessage() {}
+
+func (x *DeleteTrainingMaterialResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_volunteer_proto_msgTypes[22]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use DeleteTrainingMaterialResponse.ProtoReflect.Descriptor instead.
+func (*DeleteTrainingMaterialResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_volunteer_proto_rawDescGZIP(), []int{22}
+}
+
+type GetTrainingUploadUrlRequest struct {
+	state         protoimpl.MessageState `protogen:"open.v1"`
+	Filename      string                 `protobuf:"bytes,1,opt,name=filename,proto3" json:"filename,omitempty"`
+	ContentType   string                 `protobuf:"bytes,2,opt,name=content_type,json=contentType,proto3" json:"content_type,omitempty"`
+	unknownFields protoimpl.UnknownFields
+	sizeCache     protoimpl.SizeCache
+}
+
+func (x *GetTrainingUploadUrlRequest) Reset() {
+	*x = GetTrainingUploadUrlRequest{}
+	mi := &file_navigators_v1_volunteer_proto_msgTypes[23]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTrainingUploadUrlRequest) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTrainingUploadUrlRequest) ProtoMessage() {}
+
+func (x *GetTrainingUploadUrlRequest) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_volunteer_proto_msgTypes[23]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTrainingUploadUrlRequest.ProtoReflect.Descriptor instead.
+func (*GetTrainingUploadUrlRequest) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_volunteer_proto_rawDescGZIP(), []int{23}
+}
+
+func (x *GetTrainingUploadUrlRequest) GetFilename() string {
+	if x != nil {
+		return x.Filename
+	}
+	return ""
+}
+
+func (x *GetTrainingUploadUrlRequest) GetContentType() string {
+	if x != nil {
+		return x.ContentType
+	}
+	return ""
+}
+
+type GetTrainingUploadUrlResponse struct {
+	state            protoimpl.MessageState `protogen:"open.v1"`
+	PresignedUrl     string                 `protobuf:"bytes,1,opt,name=presigned_url,json=presignedUrl,proto3" json:"presigned_url,omitempty"`
+	StorageKey       string                 `protobuf:"bytes,2,opt,name=storage_key,json=storageKey,proto3" json:"storage_key,omitempty"`
+	ExpiresInSeconds int32                  `protobuf:"varint,3,opt,name=expires_in_seconds,json=expiresInSeconds,proto3" json:"expires_in_seconds,omitempty"`
+	unknownFields    protoimpl.UnknownFields
+	sizeCache        protoimpl.SizeCache
+}
+
+func (x *GetTrainingUploadUrlResponse) Reset() {
+	*x = GetTrainingUploadUrlResponse{}
+	mi := &file_navigators_v1_volunteer_proto_msgTypes[24]
+	ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+	ms.StoreMessageInfo(mi)
+}
+
+func (x *GetTrainingUploadUrlResponse) String() string {
+	return protoimpl.X.MessageStringOf(x)
+}
+
+func (*GetTrainingUploadUrlResponse) ProtoMessage() {}
+
+func (x *GetTrainingUploadUrlResponse) ProtoReflect() protoreflect.Message {
+	mi := &file_navigators_v1_volunteer_proto_msgTypes[24]
+	if x != nil {
+		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
+		if ms.LoadMessageInfo() == nil {
+			ms.StoreMessageInfo(mi)
+		}
+		return ms
+	}
+	return mi.MessageOf(x)
+}
+
+// Deprecated: Use GetTrainingUploadUrlResponse.ProtoReflect.Descriptor instead.
+func (*GetTrainingUploadUrlResponse) Descriptor() ([]byte, []int) {
+	return file_navigators_v1_volunteer_proto_rawDescGZIP(), []int{24}
+}
+
+func (x *GetTrainingUploadUrlResponse) GetPresignedUrl() string {
+	if x != nil {
+		return x.PresignedUrl
+	}
+	return ""
+}
+
+func (x *GetTrainingUploadUrlResponse) GetStorageKey() string {
+	if x != nil {
+		return x.StorageKey
+	}
+	return ""
+}
+
+func (x *GetTrainingUploadUrlResponse) GetExpiresInSeconds() int32 {
+	if x != nil {
+		return x.ExpiresInSeconds
+	}
+	return 0
+}
+
 var File_navigators_v1_volunteer_proto protoreflect.FileDescriptor
 
 const file_navigators_v1_volunteer_proto_rawDesc = "" +
@@ -1073,18 +1385,41 @@ const file_navigators_v1_volunteer_proto_rawDesc = "" +
 	"\vmaterial_id\x18\x01 \x01(\tR\n" +
 	"materialId\"E\n" +
 	"\x1eGetTrainingDownloadUrlResponse\x12#\n" +
-	"\rpresigned_url\x18\x01 \x01(\tR\fpresignedUrl2\xc8\x03\n" +
+	"\rpresigned_url\x18\x01 \x01(\tR\fpresignedUrl\"\xa9\x01\n" +
+	"\x1dUpdateTrainingMaterialRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\x12\x14\n" +
+	"\x05title\x18\x02 \x01(\tR\x05title\x12 \n" +
+	"\vdescription\x18\x03 \x01(\tR\vdescription\x12\x1d\n" +
+	"\n" +
+	"sort_order\x18\x04 \x01(\x05R\tsortOrder\x12!\n" +
+	"\fis_published\x18\x05 \x01(\bR\visPublished\"]\n" +
+	"\x1eUpdateTrainingMaterialResponse\x12;\n" +
+	"\bmaterial\x18\x01 \x01(\v2\x1f.navigators.v1.TrainingMaterialR\bmaterial\"/\n" +
+	"\x1dDeleteTrainingMaterialRequest\x12\x0e\n" +
+	"\x02id\x18\x01 \x01(\tR\x02id\" \n" +
+	"\x1eDeleteTrainingMaterialResponse\"\\\n" +
+	"\x1bGetTrainingUploadUrlRequest\x12\x1a\n" +
+	"\bfilename\x18\x01 \x01(\tR\bfilename\x12!\n" +
+	"\fcontent_type\x18\x02 \x01(\tR\vcontentType\"\x92\x01\n" +
+	"\x1cGetTrainingUploadUrlResponse\x12#\n" +
+	"\rpresigned_url\x18\x01 \x01(\tR\fpresignedUrl\x12\x1f\n" +
+	"\vstorage_key\x18\x02 \x01(\tR\n" +
+	"storageKey\x12,\n" +
+	"\x12expires_in_seconds\x18\x03 \x01(\x05R\x10expiresInSeconds2\xc8\x03\n" +
 	"\x11OnboardingService\x12l\n" +
 	"\x13GetOnboardingStatus\x12).navigators.v1.GetOnboardingStatusRequest\x1a*.navigators.v1.GetOnboardingStatusResponse\x12c\n" +
 	"\x10AcknowledgeLegal\x12&.navigators.v1.AcknowledgeLegalRequest\x1a'.navigators.v1.AcknowledgeLegalResponse\x12i\n" +
 	"\x12CompleteOnboarding\x12(.navigators.v1.CompleteOnboardingRequest\x1a).navigators.v1.CompleteOnboardingResponse\x12u\n" +
 	"\x16UpdateLeaderboardOptIn\x12,.navigators.v1.UpdateLeaderboardOptInRequest\x1a-.navigators.v1.UpdateLeaderboardOptInResponse2s\n" +
 	"\x12LeaderboardService\x12]\n" +
-	"\x0eGetLeaderboard\x12$.navigators.v1.GetLeaderboardRequest\x1a%.navigators.v1.GetLeaderboardResponse2\xf3\x02\n" +
+	"\x0eGetLeaderboard\x12$.navigators.v1.GetLeaderboardRequest\x1a%.navigators.v1.GetLeaderboardResponse2\xd2\x05\n" +
 	"\x0fTrainingService\x12r\n" +
 	"\x15ListTrainingMaterials\x12+.navigators.v1.ListTrainingMaterialsRequest\x1a,.navigators.v1.ListTrainingMaterialsResponse\x12u\n" +
 	"\x16CreateTrainingMaterial\x12,.navigators.v1.CreateTrainingMaterialRequest\x1a-.navigators.v1.CreateTrainingMaterialResponse\x12u\n" +
-	"\x16GetTrainingDownloadUrl\x12,.navigators.v1.GetTrainingDownloadUrlRequest\x1a-.navigators.v1.GetTrainingDownloadUrlResponseB1Z/navigators-go/gen/go/navigators/v1;navigatorsv1b\x06proto3"
+	"\x16GetTrainingDownloadUrl\x12,.navigators.v1.GetTrainingDownloadUrlRequest\x1a-.navigators.v1.GetTrainingDownloadUrlResponse\x12u\n" +
+	"\x16UpdateTrainingMaterial\x12,.navigators.v1.UpdateTrainingMaterialRequest\x1a-.navigators.v1.UpdateTrainingMaterialResponse\x12u\n" +
+	"\x16DeleteTrainingMaterial\x12,.navigators.v1.DeleteTrainingMaterialRequest\x1a-.navigators.v1.DeleteTrainingMaterialResponse\x12o\n" +
+	"\x14GetTrainingUploadUrl\x12*.navigators.v1.GetTrainingUploadUrlRequest\x1a+.navigators.v1.GetTrainingUploadUrlResponseB1Z/navigators-go/gen/go/navigators/v1;navigatorsv1b\x06proto3"
 
 var (
 	file_navigators_v1_volunteer_proto_rawDescOnce sync.Once
@@ -1098,7 +1433,7 @@ func file_navigators_v1_volunteer_proto_rawDescGZIP() []byte {
 	return file_navigators_v1_volunteer_proto_rawDescData
 }
 
-var file_navigators_v1_volunteer_proto_msgTypes = make([]protoimpl.MessageInfo, 19)
+var file_navigators_v1_volunteer_proto_msgTypes = make([]protoimpl.MessageInfo, 25)
 var file_navigators_v1_volunteer_proto_goTypes = []any{
 	(*NavigatorProfile)(nil),               // 0: navigators.v1.NavigatorProfile
 	(*GetOnboardingStatusRequest)(nil),     // 1: navigators.v1.GetOnboardingStatusRequest
@@ -1119,6 +1454,12 @@ var file_navigators_v1_volunteer_proto_goTypes = []any{
 	(*CreateTrainingMaterialResponse)(nil), // 16: navigators.v1.CreateTrainingMaterialResponse
 	(*GetTrainingDownloadUrlRequest)(nil),  // 17: navigators.v1.GetTrainingDownloadUrlRequest
 	(*GetTrainingDownloadUrlResponse)(nil), // 18: navigators.v1.GetTrainingDownloadUrlResponse
+	(*UpdateTrainingMaterialRequest)(nil),  // 19: navigators.v1.UpdateTrainingMaterialRequest
+	(*UpdateTrainingMaterialResponse)(nil), // 20: navigators.v1.UpdateTrainingMaterialResponse
+	(*DeleteTrainingMaterialRequest)(nil),  // 21: navigators.v1.DeleteTrainingMaterialRequest
+	(*DeleteTrainingMaterialResponse)(nil), // 22: navigators.v1.DeleteTrainingMaterialResponse
+	(*GetTrainingUploadUrlRequest)(nil),    // 23: navigators.v1.GetTrainingUploadUrlRequest
+	(*GetTrainingUploadUrlResponse)(nil),   // 24: navigators.v1.GetTrainingUploadUrlResponse
 }
 var file_navigators_v1_volunteer_proto_depIdxs = []int32{
 	0,  // 0: navigators.v1.GetOnboardingStatusResponse.profile:type_name -> navigators.v1.NavigatorProfile
@@ -1126,27 +1467,34 @@ var file_navigators_v1_volunteer_proto_depIdxs = []int32{
 	9,  // 2: navigators.v1.GetLeaderboardResponse.entries:type_name -> navigators.v1.LeaderboardEntry
 	12, // 3: navigators.v1.ListTrainingMaterialsResponse.materials:type_name -> navigators.v1.TrainingMaterial
 	12, // 4: navigators.v1.CreateTrainingMaterialResponse.material:type_name -> navigators.v1.TrainingMaterial
-	1,  // 5: navigators.v1.OnboardingService.GetOnboardingStatus:input_type -> navigators.v1.GetOnboardingStatusRequest
-	3,  // 6: navigators.v1.OnboardingService.AcknowledgeLegal:input_type -> navigators.v1.AcknowledgeLegalRequest
-	5,  // 7: navigators.v1.OnboardingService.CompleteOnboarding:input_type -> navigators.v1.CompleteOnboardingRequest
-	7,  // 8: navigators.v1.OnboardingService.UpdateLeaderboardOptIn:input_type -> navigators.v1.UpdateLeaderboardOptInRequest
-	10, // 9: navigators.v1.LeaderboardService.GetLeaderboard:input_type -> navigators.v1.GetLeaderboardRequest
-	13, // 10: navigators.v1.TrainingService.ListTrainingMaterials:input_type -> navigators.v1.ListTrainingMaterialsRequest
-	15, // 11: navigators.v1.TrainingService.CreateTrainingMaterial:input_type -> navigators.v1.CreateTrainingMaterialRequest
-	17, // 12: navigators.v1.TrainingService.GetTrainingDownloadUrl:input_type -> navigators.v1.GetTrainingDownloadUrlRequest
-	2,  // 13: navigators.v1.OnboardingService.GetOnboardingStatus:output_type -> navigators.v1.GetOnboardingStatusResponse
-	4,  // 14: navigators.v1.OnboardingService.AcknowledgeLegal:output_type -> navigators.v1.AcknowledgeLegalResponse
-	6,  // 15: navigators.v1.OnboardingService.CompleteOnboarding:output_type -> navigators.v1.CompleteOnboardingResponse
-	8,  // 16: navigators.v1.OnboardingService.UpdateLeaderboardOptIn:output_type -> navigators.v1.UpdateLeaderboardOptInResponse
-	11, // 17: navigators.v1.LeaderboardService.GetLeaderboard:output_type -> navigators.v1.GetLeaderboardResponse
-	14, // 18: navigators.v1.TrainingService.ListTrainingMaterials:output_type -> navigators.v1.ListTrainingMaterialsResponse
-	16, // 19: navigators.v1.TrainingService.CreateTrainingMaterial:output_type -> navigators.v1.CreateTrainingMaterialResponse
-	18, // 20: navigators.v1.TrainingService.GetTrainingDownloadUrl:output_type -> navigators.v1.GetTrainingDownloadUrlResponse
-	13, // [13:21] is the sub-list for method output_type
-	5,  // [5:13] is the sub-list for method input_type
-	5,  // [5:5] is the sub-list for extension type_name
-	5,  // [5:5] is the sub-list for extension extendee
-	0,  // [0:5] is the sub-list for field type_name
+	12, // 5: navigators.v1.UpdateTrainingMaterialResponse.material:type_name -> navigators.v1.TrainingMaterial
+	1,  // 6: navigators.v1.OnboardingService.GetOnboardingStatus:input_type -> navigators.v1.GetOnboardingStatusRequest
+	3,  // 7: navigators.v1.OnboardingService.AcknowledgeLegal:input_type -> navigators.v1.AcknowledgeLegalRequest
+	5,  // 8: navigators.v1.OnboardingService.CompleteOnboarding:input_type -> navigators.v1.CompleteOnboardingRequest
+	7,  // 9: navigators.v1.OnboardingService.UpdateLeaderboardOptIn:input_type -> navigators.v1.UpdateLeaderboardOptInRequest
+	10, // 10: navigators.v1.LeaderboardService.GetLeaderboard:input_type -> navigators.v1.GetLeaderboardRequest
+	13, // 11: navigators.v1.TrainingService.ListTrainingMaterials:input_type -> navigators.v1.ListTrainingMaterialsRequest
+	15, // 12: navigators.v1.TrainingService.CreateTrainingMaterial:input_type -> navigators.v1.CreateTrainingMaterialRequest
+	17, // 13: navigators.v1.TrainingService.GetTrainingDownloadUrl:input_type -> navigators.v1.GetTrainingDownloadUrlRequest
+	19, // 14: navigators.v1.TrainingService.UpdateTrainingMaterial:input_type -> navigators.v1.UpdateTrainingMaterialRequest
+	21, // 15: navigators.v1.TrainingService.DeleteTrainingMaterial:input_type -> navigators.v1.DeleteTrainingMaterialRequest
+	23, // 16: navigators.v1.TrainingService.GetTrainingUploadUrl:input_type -> navigators.v1.GetTrainingUploadUrlRequest
+	2,  // 17: navigators.v1.OnboardingService.GetOnboardingStatus:output_type -> navigators.v1.GetOnboardingStatusResponse
+	4,  // 18: navigators.v1.OnboardingService.AcknowledgeLegal:output_type -> navigators.v1.AcknowledgeLegalResponse
+	6,  // 19: navigators.v1.OnboardingService.CompleteOnboarding:output_type -> navigators.v1.CompleteOnboardingResponse
+	8,  // 20: navigators.v1.OnboardingService.UpdateLeaderboardOptIn:output_type -> navigators.v1.UpdateLeaderboardOptInResponse
+	11, // 21: navigators.v1.LeaderboardService.GetLeaderboard:output_type -> navigators.v1.GetLeaderboardResponse
+	14, // 22: navigators.v1.TrainingService.ListTrainingMaterials:output_type -> navigators.v1.ListTrainingMaterialsResponse
+	16, // 23: navigators.v1.TrainingService.CreateTrainingMaterial:output_type -> navigators.v1.CreateTrainingMaterialResponse
+	18, // 24: navigators.v1.TrainingService.GetTrainingDownloadUrl:output_type -> navigators.v1.GetTrainingDownloadUrlResponse
+	20, // 25: navigators.v1.TrainingService.UpdateTrainingMaterial:output_type -> navigators.v1.UpdateTrainingMaterialResponse
+	22, // 26: navigators.v1.TrainingService.DeleteTrainingMaterial:output_type -> navigators.v1.DeleteTrainingMaterialResponse
+	24, // 27: navigators.v1.TrainingService.GetTrainingUploadUrl:output_type -> navigators.v1.GetTrainingUploadUrlResponse
+	17, // [17:28] is the sub-list for method output_type
+	6,  // [6:17] is the sub-list for method input_type
+	6,  // [6:6] is the sub-list for extension type_name
+	6,  // [6:6] is the sub-list for extension extendee
+	0,  // [0:6] is the sub-list for field type_name
 }
 
 func init() { file_navigators_v1_volunteer_proto_init() }
@@ -1160,7 +1508,7 @@ func file_navigators_v1_volunteer_proto_init() {
 			GoPackagePath: reflect.TypeOf(x{}).PkgPath(),
 			RawDescriptor: unsafe.Slice(unsafe.StringData(file_navigators_v1_volunteer_proto_rawDesc), len(file_navigators_v1_volunteer_proto_rawDesc)),
 			NumEnums:      0,
-			NumMessages:   19,
+			NumMessages:   25,
 			NumExtensions: 0,
 			NumServices:   3,
 		},
