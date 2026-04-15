@@ -83,7 +83,10 @@ class _VoterFilterPanelState extends ConsumerState<VoterFilterPanel> {
 
     return Column(
       children: [
-        InkWell(
+        Semantics(
+          identifier: 'voter-filter-toggle',
+          button: true,
+          child: InkWell(
           onTap: () => setState(() => _expanded = !_expanded),
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
@@ -103,6 +106,7 @@ class _VoterFilterPanelState extends ConsumerState<VoterFilterPanel> {
               ],
             ),
           ),
+          ),
         ),
         if (_expanded) ...[
           Padding(
@@ -111,64 +115,82 @@ class _VoterFilterPanelState extends ConsumerState<VoterFilterPanel> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 // Party dropdown
-                DropdownButtonFormField<String?>(
-                  initialValue: _party,
-                  decoration: const InputDecoration(
-                    labelText: 'Party',
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                Semantics(
+                  identifier: 'voter-filter-party',
+                  child: DropdownButtonFormField<String?>(
+                    initialValue: _party,
+                    decoration: const InputDecoration(
+                      labelText: 'Party',
+                      isDense: true,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    ),
+                    items: _parties
+                        .map((p) =>
+                            DropdownMenuItem(value: p.$2, child: Text(p.$1)))
+                        .toList(),
+                    onChanged: (v) => setState(() => _party = v),
                   ),
-                  items: _parties
-                      .map((p) =>
-                          DropdownMenuItem(value: p.$2, child: Text(p.$1)))
-                      .toList(),
-                  onChanged: (v) => setState(() => _party = v),
                 ),
                 const SizedBox(height: 8),
                 // Status dropdown
-                DropdownButtonFormField<String?>(
-                  initialValue: _status,
-                  decoration: const InputDecoration(
-                    labelText: 'Status',
-                    isDense: true,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                Semantics(
+                  identifier: 'voter-filter-status',
+                  child: DropdownButtonFormField<String?>(
+                    initialValue: _status,
+                    decoration: const InputDecoration(
+                      labelText: 'Status',
+                      isDense: true,
+                      contentPadding: EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                    ),
+                    items: _statuses
+                        .map((s) =>
+                            DropdownMenuItem(value: s.$2, child: Text(s.$1)))
+                        .toList(),
+                    onChanged: (v) => setState(() => _status = v),
                   ),
-                  items: _statuses
-                      .map((s) =>
-                          DropdownMenuItem(value: s.$2, child: Text(s.$1)))
-                      .toList(),
-                  onChanged: (v) => setState(() => _status = v),
                 ),
                 const SizedBox(height: 8),
                 // District fields
                 Row(
                   children: [
                     Expanded(
-                      child: TextField(
-                        controller: _congressionalCtrl,
-                        decoration: const InputDecoration(
-                          labelText: 'Cong. District',
-                          isDense: true,
+                      child: Semantics(
+                        identifier: 'voter-filter-congressional',
+                        textField: true,
+                        child: TextField(
+                          controller: _congressionalCtrl,
+                          decoration: const InputDecoration(
+                            labelText: 'Cong. District',
+                            isDense: true,
+                          ),
                         ),
                       ),
                     ),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: TextField(
-                        controller: _senateCtrl,
-                        decoration: const InputDecoration(
-                          labelText: 'Senate Dist.',
-                          isDense: true,
+                      child: Semantics(
+                        identifier: 'voter-filter-senate',
+                        textField: true,
+                        child: TextField(
+                          controller: _senateCtrl,
+                          decoration: const InputDecoration(
+                            labelText: 'Senate Dist.',
+                            isDense: true,
+                          ),
                         ),
                       ),
                     ),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: TextField(
-                        controller: _houseCtrl,
-                        decoration: const InputDecoration(
-                          labelText: 'House Dist.',
-                          isDense: true,
+                      child: Semantics(
+                        identifier: 'voter-filter-house',
+                        textField: true,
+                        child: TextField(
+                          controller: _houseCtrl,
+                          decoration: const InputDecoration(
+                            labelText: 'House Dist.',
+                            isDense: true,
+                          ),
                         ),
                       ),
                     ),
@@ -178,21 +200,29 @@ class _VoterFilterPanelState extends ConsumerState<VoterFilterPanel> {
                 Row(
                   children: [
                     Expanded(
-                      child: TextField(
-                        controller: _municipalityCtrl,
-                        decoration: const InputDecoration(
-                          labelText: 'Municipality',
-                          isDense: true,
+                      child: Semantics(
+                        identifier: 'voter-filter-municipality',
+                        textField: true,
+                        child: TextField(
+                          controller: _municipalityCtrl,
+                          decoration: const InputDecoration(
+                            labelText: 'Municipality',
+                            isDense: true,
+                          ),
                         ),
                       ),
                     ),
                     const SizedBox(width: 8),
                     Expanded(
-                      child: TextField(
-                        controller: _countyCtrl,
-                        decoration: const InputDecoration(
-                          labelText: 'County',
-                          isDense: true,
+                      child: Semantics(
+                        identifier: 'voter-filter-county',
+                        textField: true,
+                        child: TextField(
+                          controller: _countyCtrl,
+                          decoration: const InputDecoration(
+                            labelText: 'County',
+                            isDense: true,
+                          ),
                         ),
                       ),
                     ),
@@ -205,13 +235,17 @@ class _VoterFilterPanelState extends ConsumerState<VoterFilterPanel> {
                     Text('Min Votes: ${_minVoteCount ?? 0}',
                         style: theme.textTheme.bodySmall),
                     Expanded(
-                      child: Slider(
-                        value: (_minVoteCount ?? 0).toDouble(),
-                        min: 0,
-                        max: 20,
-                        divisions: 20,
-                        onChanged: (v) =>
-                            setState(() => _minVoteCount = v.round()),
+                      child: Semantics(
+                        identifier: 'voter-filter-min-votes-slider',
+                        slider: true,
+                        child: Slider(
+                          value: (_minVoteCount ?? 0).toDouble(),
+                          min: 0,
+                          max: 20,
+                          divisions: 20,
+                          onChanged: (v) =>
+                              setState(() => _minVoteCount = v.round()),
+                        ),
                       ),
                     ),
                   ],
@@ -221,14 +255,22 @@ class _VoterFilterPanelState extends ConsumerState<VoterFilterPanel> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
-                    TextButton(
-                      onPressed: _clearFilters,
-                      child: const Text('Clear'),
+                    Semantics(
+                      identifier: 'voter-filter-clear-btn',
+                      button: true,
+                      child: TextButton(
+                        onPressed: _clearFilters,
+                        child: const Text('Clear'),
+                      ),
                     ),
                     const SizedBox(width: 8),
-                    FilledButton(
-                      onPressed: _applyFilters,
-                      child: const Text('Apply'),
+                    Semantics(
+                      identifier: 'voter-filter-apply-btn',
+                      button: true,
+                      child: FilledButton(
+                        onPressed: _applyFilters,
+                        child: const Text('Apply'),
+                      ),
                     ),
                   ],
                 ),

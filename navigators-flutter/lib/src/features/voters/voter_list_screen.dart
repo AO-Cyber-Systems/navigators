@@ -106,9 +106,13 @@ class _VoterListScreenState extends ConsumerState<VoterListScreen> {
   }
 
   Widget _buildMobileLayout() {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Voters')),
-      body: _buildVoterListPanel(),
+    return Semantics(
+      identifier: 'voter-list-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Voters')),
+        body: _buildVoterListPanel(),
+      ),
     );
   }
 
@@ -178,10 +182,14 @@ class _VoterListScreenState extends ConsumerState<VoterListScreen> {
                       }
                       final voter = voters[index];
                       final isSelected = voter.id == _selectedVoterId;
-                      return _VoterCard(
-                        voter: voter,
-                        isSelected: isSelected,
-                        onTap: () => _onVoterTap(voter),
+                      return Semantics(
+                        identifier: 'voter-list-row-${voter.id}',
+                        button: true,
+                        child: _VoterCard(
+                          voter: voter,
+                          isSelected: isSelected,
+                          onTap: () => _onVoterTap(voter),
+                        ),
                       );
                     },
                   ),

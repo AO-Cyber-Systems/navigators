@@ -49,11 +49,15 @@ class _VoterSearchBarState extends ConsumerState<VoterSearchBar> {
 
   @override
   Widget build(BuildContext context) {
-    return EdenSearchInput(
-      controller: _controller,
-      hint: 'Search voters by name, address...',
-      onChanged: _onChanged,
-      onClear: _onClear,
+    return Semantics(
+      identifier: 'voter-list-search',
+      textField: true,
+      child: EdenSearchInput(
+        controller: _controller,
+        hint: 'Search voters by name, address...',
+        onChanged: _onChanged,
+        onClear: _onClear,
+      ),
     );
   }
 }

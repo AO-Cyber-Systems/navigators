@@ -75,9 +75,13 @@ class VoterNotesTab extends ConsumerWidget {
               Positioned(
                 right: 16,
                 bottom: 16,
-                child: FloatingActionButton(
-                  onPressed: () => _showAddNoteSheet(context, ref),
-                  child: const Icon(Icons.note_add),
+                child: Semantics(
+                  identifier: 'voter-notes-add-fab',
+                  button: true,
+                  child: FloatingActionButton(
+                    onPressed: () => _showAddNoteSheet(context, ref),
+                    child: const Icon(Icons.note_add),
+                  ),
                 ),
               ),
           ],
@@ -169,7 +173,10 @@ class VoterNotesTab extends ConsumerWidget {
             const SizedBox(height: 16),
             SizedBox(
               width: double.infinity,
-              child: EdenButton(
+              child: Semantics(
+                identifier: 'voter-notes-save-btn',
+                button: true,
+                child: EdenButton(
                 label: 'Save Note',
                 onPressed: () async {
                   if (noteData.content.trim().isEmpty) return;
@@ -200,6 +207,7 @@ class VoterNotesTab extends ConsumerWidget {
                     Navigator.of(context).pop();
                   }
                 },
+              ),
               ),
             ),
           ],
