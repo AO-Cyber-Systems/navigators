@@ -127,10 +127,8 @@ Recent decisions affecting current work:
 - [Objective 07]: Phone call screen launches dialer immediately on open, does not gate flow on dialer success
 - [Objective 07]: Phone flow has 4 steps (calling, disposition, sentiment, notes) with calling step showing script before disposition
 - [Objective 08]: DueDate uses pgtype.Timestamptz; LinkedEntityID uses pgtype.UUID; InsertTaskVoters uses sqlc copyfrom; task_note entity type for push sync
-- [Objective 08]: Firebase init moved before service wiring for dependency order (NATS, Firebase, then services)
-- [Objective 08]: FCMDispatcher uses raw pgxpool queries for device_tokens (eden pgstore.Backend has no NotificationStore)
 - [Objective 08]: TaskService.AssignTask signature expanded to include companyID for task title lookup in NATS event
-- [Objective 08]: Firebase init commented out pending flutterfire configure -- graceful degradation pattern
+- [Objective 08-04]: **Notifications = local-only** via flutter_local_notifications. Firebase/remote-push entirely removed (gap closure). PUSH-01/02/03 reinterpreted as local-only; task assignment/reminder surfaced in-app via ListTasks. Future remote push would be a new objective (e.g., 11-push-notifications), not piecemeal re-addition. `device_tokens` table lives in eden-platform-go and was intentionally left alone.
 - [Objective 08]: SyncEngine.db made public for SyncScheduler PUSH-03 outbox access
 - [Objective 08]: Tasks tab visible for all roles; FAB create only for Manager/60+ (super_navigator, admin)
 - [Objective 09]: Contact rate computed in Go (sqlc maps float division to int32)
