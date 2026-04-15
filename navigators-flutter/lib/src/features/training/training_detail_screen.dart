@@ -76,7 +76,10 @@ class _TrainingDetailScreenState extends ConsumerState<TrainingDetailScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
+    return Semantics(
+      identifier: 'training-detail-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       appBar: AppBar(
         title: Text(widget.title),
       ),
@@ -103,9 +106,13 @@ class _TrainingDetailScreenState extends ConsumerState<TrainingDetailScreen> {
                           textAlign: TextAlign.center,
                         ),
                         const SizedBox(height: 16),
-                        FilledButton.tonal(
-                          onPressed: _loadContent,
-                          child: const Text('Retry'),
+                        Semantics(
+                          identifier: 'training-detail-retry-btn',
+                          button: true,
+                          child: FilledButton.tonal(
+                            onPressed: _loadContent,
+                            child: const Text('Retry'),
+                          ),
                         ),
                       ],
                     ),
@@ -117,6 +124,7 @@ class _TrainingDetailScreenState extends ConsumerState<TrainingDetailScreen> {
                     data: _markdownContent ?? '',
                   ),
                 ),
+      ),
     );
   }
 }

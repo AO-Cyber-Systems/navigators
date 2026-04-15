@@ -95,7 +95,10 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
+    return Semantics(
+      identifier: 'leaderboard-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       appBar: AppBar(
         title: const Text('Leaderboard'),
       ),
@@ -107,9 +110,13 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
               content: const Text('Opt in to appear on the leaderboard'),
               leading: const Icon(Icons.info_outline),
               actions: [
-                Switch(
-                  value: _optedIn,
-                  onChanged: _togglingOptIn ? null : _toggleOptIn,
+                Semantics(
+                  identifier: 'leaderboard-optin-toggle-banner',
+                  toggled: _optedIn,
+                  child: Switch(
+                    value: _optedIn,
+                    onChanged: _togglingOptIn ? null : _toggleOptIn,
+                  ),
                 ),
               ],
             ),
@@ -117,18 +124,21 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
           // Time window toggle
           Padding(
             padding: const EdgeInsets.all(16),
-            child: SegmentedButton<String>(
-              segments: _windows.entries
-                  .map((e) => ButtonSegment(
-                        value: e.key,
-                        label: Text(e.value),
-                      ))
-                  .toList(),
-              selected: {_timeWindow},
-              onSelectionChanged: (selection) {
-                setState(() => _timeWindow = selection.first);
-                _loadData();
-              },
+            child: Semantics(
+              identifier: 'leaderboard-window-segmented',
+              child: SegmentedButton<String>(
+                segments: _windows.entries
+                    .map((e) => ButtonSegment(
+                          value: e.key,
+                          label: Text(e.value),
+                        ))
+                    .toList(),
+                selected: {_timeWindow},
+                onSelectionChanged: (selection) {
+                  setState(() => _timeWindow = selection.first);
+                  _loadData();
+                },
+              ),
             ),
           ),
 
@@ -143,9 +153,13 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
                     style: theme.textTheme.bodyMedium,
                   ),
                   const Spacer(),
-                  Switch(
-                    value: _optedIn,
-                    onChanged: _togglingOptIn ? null : _toggleOptIn,
+                  Semantics(
+                    identifier: 'leaderboard-optin-toggle',
+                    toggled: _optedIn,
+                    child: Switch(
+                      value: _optedIn,
+                      onChanged: _togglingOptIn ? null : _toggleOptIn,
+                    ),
                   ),
                 ],
               ),
@@ -174,9 +188,13 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
                               textAlign: TextAlign.center,
                             ),
                             const SizedBox(height: 16),
-                            FilledButton.tonal(
-                              onPressed: _loadData,
-                              child: const Text('Retry'),
+                            Semantics(
+                              identifier: 'leaderboard-retry-btn',
+                              button: true,
+                              child: FilledButton.tonal(
+                                onPressed: _loadData,
+                                child: const Text('Retry'),
+                              ),
                             ),
                           ],
                         ),
@@ -215,6 +233,7 @@ class _LeaderboardScreenState extends ConsumerState<LeaderboardScreen> {
                           ),
           ),
         ],
+      ),
       ),
     );
   }
