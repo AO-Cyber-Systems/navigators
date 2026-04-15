@@ -23,10 +23,14 @@ class SyncStatusWidget extends ConsumerWidget {
     return syncStatus.when(
       data: (status) => _buildIcon(context, status),
       loading: () => const SizedBox.shrink(),
-      error: (_, _) => IconButton(
-        icon: const Icon(Icons.sync_problem, color: Colors.red),
-        onPressed: () => _openProgressScreen(context),
-        tooltip: 'Sync error',
+      error: (_, _) => Semantics(
+        identifier: 'sync-status-btn',
+        button: true,
+        child: IconButton(
+          icon: const Icon(Icons.sync_problem, color: Colors.red),
+          onPressed: () => _openProgressScreen(context),
+          tooltip: 'Sync error',
+        ),
       ),
     );
   }
@@ -62,10 +66,14 @@ class SyncStatusWidget extends ConsumerWidget {
       tooltip = _formatLastSync(status.lastSyncAt);
     }
 
-    return IconButton(
-      icon: icon,
-      onPressed: () => _openProgressScreen(context),
-      tooltip: tooltip,
+    return Semantics(
+      identifier: 'sync-status-btn',
+      button: true,
+      child: IconButton(
+        icon: icon,
+        onPressed: () => _openProgressScreen(context),
+        tooltip: tooltip,
+      ),
     );
   }
 

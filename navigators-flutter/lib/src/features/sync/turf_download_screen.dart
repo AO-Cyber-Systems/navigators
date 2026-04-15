@@ -162,9 +162,13 @@ class _TurfDownloadScreenState extends ConsumerState<TurfDownloadScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(title: const Text('Download Turf Data')),
-      body: _buildBody(context),
+    return Semantics(
+      identifier: 'turf-download-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Download Turf Data')),
+        body: _buildBody(context),
+      ),
     );
   }
 
@@ -187,9 +191,13 @@ class _TurfDownloadScreenState extends ConsumerState<TurfDownloadScreen> {
             Text(_manifestError!,
                 style: Theme.of(context).textTheme.bodySmall),
             const SizedBox(height: 16),
-            OutlinedButton(
-              onPressed: _loadManifest,
-              child: const Text('Retry'),
+            Semantics(
+              identifier: 'turf-download-retry-btn',
+              button: true,
+              child: OutlinedButton(
+                onPressed: _loadManifest,
+                child: const Text('Retry'),
+              ),
             ),
           ],
         ),
@@ -225,13 +233,17 @@ class _TurfDownloadScreenState extends ConsumerState<TurfDownloadScreen> {
                   style: Theme.of(context).textTheme.titleMedium,
                 ),
               ),
-              FilledButton.icon(
-                onPressed: _isDownloadingAll || allComplete
-                    ? null
-                    : _downloadAll,
-                icon: const Icon(Icons.download),
-                label: Text(
-                    allComplete ? 'All Downloaded' : 'Download All'),
+              Semantics(
+                identifier: 'turf-download-all-btn',
+                button: true,
+                child: FilledButton.icon(
+                  onPressed: _isDownloadingAll || allComplete
+                      ? null
+                      : _downloadAll,
+                  icon: const Icon(Icons.download),
+                  label: Text(
+                      allComplete ? 'All Downloaded' : 'Download All'),
+                ),
               ),
             ],
           ),

@@ -70,12 +70,16 @@ class _SyncProgressScreenState extends ConsumerState<SyncProgressScreen> {
   Widget build(BuildContext context) {
     final syncStatus = ref.watch(syncStatusProvider);
 
-    return Scaffold(
-      appBar: AppBar(title: const Text('Sync Status')),
-      body: syncStatus.when(
-        data: (status) => _buildContent(context, status),
-        loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, _) => Center(child: Text('Error: $e')),
+    return Semantics(
+      identifier: 'sync-progress-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
+        appBar: AppBar(title: const Text('Sync Status')),
+        body: syncStatus.when(
+          data: (status) => _buildContent(context, status),
+          loading: () => const Center(child: CircularProgressIndicator()),
+          error: (e, _) => Center(child: Text('Error: $e')),
+        ),
       ),
     );
   }
@@ -131,24 +135,32 @@ class _SyncProgressScreenState extends ConsumerState<SyncProgressScreen> {
         Row(
           children: [
             Expanded(
-              child: FilledButton.icon(
-                onPressed: status.isSyncing ? null : _triggerManualSync,
-                icon: const Icon(Icons.sync),
-                label: const Text('Sync Now'),
+              child: Semantics(
+                identifier: 'sync-now-btn',
+                button: true,
+                child: FilledButton.icon(
+                  onPressed: status.isSyncing ? null : _triggerManualSync,
+                  icon: const Icon(Icons.sync),
+                  label: const Text('Sync Now'),
+                ),
               ),
             ),
             const SizedBox(width: 12),
             Expanded(
-              child: OutlinedButton.icon(
-                onPressed: () {
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (_) => const TurfDownloadScreen(),
-                    ),
-                  );
-                },
-                icon: const Icon(Icons.download),
-                label: const Text('Download Turfs'),
+              child: Semantics(
+                identifier: 'sync-download-turfs-btn',
+                button: true,
+                child: OutlinedButton.icon(
+                  onPressed: () {
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (_) => const TurfDownloadScreen(),
+                      ),
+                    );
+                  },
+                  icon: const Icon(Icons.download),
+                  label: const Text('Download Turfs'),
+                ),
               ),
             ),
           ],
@@ -247,15 +259,23 @@ class _DeadLetterCard extends StatelessWidget {
         trailing: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            IconButton(
-              icon: const Icon(Icons.refresh),
-              onPressed: onRetry,
-              tooltip: 'Retry',
+            Semantics(
+              identifier: 'sync-dead-letter-retry-${operation.id}',
+              button: true,
+              child: IconButton(
+                icon: const Icon(Icons.refresh),
+                onPressed: onRetry,
+                tooltip: 'Retry',
+              ),
             ),
-            IconButton(
-              icon: const Icon(Icons.delete_outline),
-              onPressed: onDismiss,
-              tooltip: 'Dismiss',
+            Semantics(
+              identifier: 'sync-dead-letter-dismiss-${operation.id}',
+              button: true,
+              child: IconButton(
+                icon: const Icon(Icons.delete_outline),
+                onPressed: onDismiss,
+                tooltip: 'Dismiss',
+              ),
             ),
           ],
         ),
