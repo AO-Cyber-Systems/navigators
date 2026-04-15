@@ -39,7 +39,10 @@ class _TaskListScreenState extends ConsumerState<TaskListScreen> {
     final userId = auth.userId ?? '';
     final canCreate = _canCreateTasks(auth.role);
 
-    return Scaffold(
+    return Semantics(
+      identifier: 'task-list-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       appBar: AppBar(
         title: const Text('Tasks'),
       ),
@@ -54,10 +57,15 @@ class _TaskListScreenState extends ConsumerState<TaskListScreen> {
                 final isSelected = _selectedFilter == filter;
                 return Padding(
                   padding: const EdgeInsets.only(right: 8),
-                  child: FilterChip(
-                    label: Text(_filterLabels[filter]!),
+                  child: Semantics(
+                    identifier: 'task-list-filter-$filter',
+                    button: true,
                     selected: isSelected,
-                    onSelected: (_) => setState(() => _selectedFilter = filter),
+                    child: FilterChip(
+                      label: Text(_filterLabels[filter]!),
+                      selected: isSelected,
+                      onSelected: (_) => setState(() => _selectedFilter = filter),
+                    ),
                   ),
                 );
               }).toList(),
@@ -70,17 +78,22 @@ class _TaskListScreenState extends ConsumerState<TaskListScreen> {
         ],
       ),
       floatingActionButton: canCreate
-          ? FloatingActionButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const TaskCreateScreen(),
-                  ),
-                );
-              },
-              child: const Icon(Icons.add),
+          ? Semantics(
+              identifier: 'task-list-fab',
+              button: true,
+              child: FloatingActionButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const TaskCreateScreen(),
+                    ),
+                  );
+                },
+                child: const Icon(Icons.add),
+              ),
             )
           : null,
+      ),
     );
   }
 
@@ -134,15 +147,19 @@ class _TaskListScreenState extends ConsumerState<TaskListScreen> {
         return ListView.builder(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           itemCount: tasks.length,
-          itemBuilder: (context, index) => _TaskCard(
-            task: tasks[index],
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) => TaskDetailScreen(taskId: tasks[index].id),
-                ),
-              );
-            },
+          itemBuilder: (context, index) => Semantics(
+            identifier: 'task-list-row-${tasks[index].id}',
+            button: true,
+            child: _TaskCard(
+              task: tasks[index],
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) => TaskDetailScreen(taskId: tasks[index].id),
+                  ),
+                );
+              },
+            ),
           ),
         );
       },

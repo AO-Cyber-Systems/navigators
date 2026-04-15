@@ -83,7 +83,10 @@ class _TaskCreateScreenState extends ConsumerState<TaskCreateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Semantics(
+      identifier: 'task-create-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       appBar: AppBar(
         title: const Text('Create Task'),
       ),
@@ -93,7 +96,10 @@ class _TaskCreateScreenState extends ConsumerState<TaskCreateScreen> {
           padding: const EdgeInsets.all(16),
           children: [
             // 1. Title
-            TextFormField(
+            Semantics(
+              identifier: 'task-create-title',
+              textField: true,
+              child: TextFormField(
               controller: _titleController,
               decoration: const InputDecoration(
                 labelText: 'Title *',
@@ -108,23 +114,30 @@ class _TaskCreateScreenState extends ConsumerState<TaskCreateScreen> {
                 }
                 return null;
               },
+              ),
             ),
             const SizedBox(height: 16),
 
             // 2. Description
-            TextFormField(
-              controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-                border: OutlineInputBorder(),
-                alignLabelWithHint: true,
+            Semantics(
+              identifier: 'task-create-description',
+              textField: true,
+              child: TextFormField(
+                controller: _descriptionController,
+                decoration: const InputDecoration(
+                  labelText: 'Description',
+                  border: OutlineInputBorder(),
+                  alignLabelWithHint: true,
+                ),
+                maxLines: 3,
               ),
-              maxLines: 3,
             ),
             const SizedBox(height: 16),
 
             // 3. Task Type
-            DropdownButtonFormField<String>(
+            Semantics(
+              identifier: 'task-create-type',
+              child: DropdownButtonFormField<String>(
               initialValue: _taskType,
               decoration: const InputDecoration(
                 labelText: 'Task Type',
@@ -137,11 +150,14 @@ class _TaskCreateScreenState extends ConsumerState<TaskCreateScreen> {
                       ))
                   .toList(),
               onChanged: (v) => setState(() => _taskType = v!),
+              ),
             ),
             const SizedBox(height: 16),
 
             // 4. Priority
-            DropdownButtonFormField<String>(
+            Semantics(
+              identifier: 'task-create-priority',
+              child: DropdownButtonFormField<String>(
               initialValue: _priority,
               decoration: const InputDecoration(
                 labelText: 'Priority',
@@ -154,11 +170,15 @@ class _TaskCreateScreenState extends ConsumerState<TaskCreateScreen> {
                       ))
                   .toList(),
               onChanged: (v) => setState(() => _priority = v!),
+              ),
             ),
             const SizedBox(height: 16),
 
             // 5. Due Date
-            TextFormField(
+            Semantics(
+              identifier: 'task-create-due-date',
+              button: true,
+              child: TextFormField(
               readOnly: true,
               decoration: InputDecoration(
                 labelText: 'Due Date',
@@ -184,11 +204,14 @@ class _TaskCreateScreenState extends ConsumerState<TaskCreateScreen> {
                   setState(() => _dueDate = picked);
                 }
               },
+              ),
             ),
             const SizedBox(height: 16),
 
             // 6. Link to (optional)
-            DropdownButtonFormField<String?>(
+            Semantics(
+              identifier: 'task-create-linked-entity',
+              child: DropdownButtonFormField<String?>(
               initialValue: _linkedEntityType,
               decoration: const InputDecoration(
                 labelText: 'Link to (optional)',
@@ -202,6 +225,7 @@ class _TaskCreateScreenState extends ConsumerState<TaskCreateScreen> {
                     )),
               ],
               onChanged: (v) => setState(() => _linkedEntityType = v),
+              ),
             ),
             const SizedBox(height: 16),
 
@@ -230,18 +254,23 @@ class _TaskCreateScreenState extends ConsumerState<TaskCreateScreen> {
                       member['name'] as String? ?? member['email'] as String? ?? memberId;
                   final isSelected = _selectedAssignees.contains(memberId);
 
-                  return FilterChip(
-                    label: Text(memberName),
+                  return Semantics(
+                    identifier: 'task-create-assignee-$memberId',
+                    button: true,
                     selected: isSelected,
-                    onSelected: (selected) {
-                      setState(() {
-                        if (selected) {
-                          _selectedAssignees.add(memberId);
-                        } else {
-                          _selectedAssignees.remove(memberId);
-                        }
-                      });
-                    },
+                    child: FilterChip(
+                      label: Text(memberName),
+                      selected: isSelected,
+                      onSelected: (selected) {
+                        setState(() {
+                          if (selected) {
+                            _selectedAssignees.add(memberId);
+                          } else {
+                            _selectedAssignees.remove(memberId);
+                          }
+                        });
+                      },
+                    ),
                   );
                 }).toList(),
               ),
@@ -251,22 +280,27 @@ class _TaskCreateScreenState extends ConsumerState<TaskCreateScreen> {
             SizedBox(
               width: double.infinity,
               height: 48,
-              child: FilledButton(
-                onPressed: _isSubmitting ? null : _submit,
-                child: _isSubmitting
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : const Text('Create Task'),
+              child: Semantics(
+                identifier: 'task-create-submit',
+                button: true,
+                child: FilledButton(
+                  onPressed: _isSubmitting ? null : _submit,
+                  child: _isSubmitting
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text('Create Task'),
+                ),
               ),
             ),
           ],
         ),
+      ),
       ),
     );
   }

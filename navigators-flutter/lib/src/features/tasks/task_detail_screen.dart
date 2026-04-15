@@ -47,7 +47,10 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
       );
     }
 
-    return Scaffold(
+    return Semantics(
+      identifier: 'task-detail-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       appBar: AppBar(
         title: const Text('Task Details'),
       ),
@@ -65,6 +68,7 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
 
           return _buildTaskDetail(context, db, task);
         },
+      ),
       ),
     );
   }
@@ -292,27 +296,36 @@ class _TaskDetailScreenState extends ConsumerState<TaskDetailScreen> {
             child: Row(
               children: [
                 Expanded(
-                  child: TextField(
-                    controller: _noteController,
-                    decoration: const InputDecoration(
-                      hintText: 'Add a note...',
-                      border: OutlineInputBorder(),
-                      contentPadding:
-                          EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                  child: Semantics(
+                    identifier: 'task-detail-note-input',
+                    textField: true,
+                    child: TextField(
+                      controller: _noteController,
+                      decoration: const InputDecoration(
+                        hintText: 'Add a note...',
+                        border: OutlineInputBorder(),
+                        contentPadding:
+                            EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+                      ),
+                      maxLines: 1,
                     ),
-                    maxLines: 1,
                   ),
                 ),
                 const SizedBox(width: 8),
-                IconButton(
-                  icon: _isSendingNote
-                      ? const SizedBox(
-                          width: 20,
-                          height: 20,
-                          child: CircularProgressIndicator(strokeWidth: 2),
-                        )
-                      : const Icon(Icons.send),
-                  onPressed: _isSendingNote ? null : () => _addNote(context),
+                Semantics(
+                  identifier: 'task-detail-note-send-btn',
+                  button: true,
+                  child: IconButton(
+                    icon: _isSendingNote
+                        ? const SizedBox(
+                            width: 20,
+                            height: 20,
+                            child: CircularProgressIndicator(strokeWidth: 2),
+                          )
+                        : const Icon(Icons.send),
+                    onPressed:
+                        _isSendingNote ? null : () => _addNote(context),
+                  ),
                 ),
               ],
             ),
