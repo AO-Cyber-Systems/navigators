@@ -1,0 +1,34 @@
+# Gap-closure 08-04: no Firebase init errors on cold start
+#
+# This is an INDIRECT smoke test. Maestro doesn't surface app-side logcat
+# errors, so we can't literally assert "no Firebase errors in logs". What we
+# CAN prove is that the app process survives cold start and reaches the
+# login screen -- a Firebase-init crash would prevent that entirely.
+#
+# Pair this with a separate logcat scrape in CI:
+#   adb logcat -d -s flutter:E FirebaseApp:E | grep -iE "firebase.*(error|crash)"
+# and fail the job if any lines appear after a fresh run of this flow.
+appId: com.mainegop.navigators
+---
+- launchApp:
+    clearState: true
+# Reaching the login screen proves: Flutter engine started, plugin registrants
+# ran, and nothing in the startup path threw (including Firebase init).
+- assertVisible:
+    id: "eden-login-screen"
+    timeout: 30000
+- takeScreenshot: "08-04-cold-start-login"
+
+# Second cold start to cover the "already-initialized" Firebase path, which
+# historically was the source of duplicate-app errors.
+- launchApp:
+    clearState: false
+    stopApp: true
+- assertVisible:
+    id: "eden-login-screen"
+    timeout: 30000
+- takeScreenshot: "08-04-warm-start-login"
+
+# TODO: once the Flutter harness exposes a test-only debug screen that dumps
+# the last N log lines into a Semantics text widget, assert here that none of
+# them contain 'FirebaseApp' + 'Default' duplicates.

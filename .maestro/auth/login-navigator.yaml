@@ -1,0 +1,25 @@
+# Auth: log in as a plain navigator (non-admin)
+#
+# Clears app state and logs in as nav2@mainegop.test (James Carter, role
+# 'navigator' per seed_data.sql). Non-admin so admin-only nav entries like
+# 'nav-suppression' / 'nav-import' must NOT be visible on the shell.
+appId: com.mainegop.navigators
+env:
+  EMAIL: nav2@mainegop.test
+  PASSWORD: ${MAESTRO_PW}
+---
+- launchApp:
+    clearState: true
+- assertVisible:
+    id: "eden-login-screen"
+- tapOn:
+    id: "eden-login-email"
+- inputText: ${EMAIL}
+- tapOn:
+    id: "eden-login-password"
+- inputText: ${PASSWORD}
+- tapOn:
+    id: "eden-login-submit"
+- assertVisible:
+    id: "nav-home"
+    timeout: 20000

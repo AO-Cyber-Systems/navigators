@@ -1,0 +1,40 @@
+# Gap-closure 02-04: non-admin suppression visibility
+#
+# As a plain navigator:
+#   1. The 'nav-suppression' entry MUST NOT be visible in the shell
+#   2. The 'voter-detail-suppress-btn' MUST NOT be visible on voter detail
+#   3. If the voter happens to already be suppressed, the 'Suppressed' badge
+#      is still visible (read-only view).
+#
+# This asserts the admin-gated UI from lib/src/app.dart (suppression nav item
+# wrapped in `if (isAdmin)`) and voter_detail_screen.dart (suppress button
+# wrapped in `if (isAdmin)`).
+appId: com.mainegop.navigators
+---
+- runFlow: ../auth/login-navigator.yaml
+
+# --- 1. Shell should not expose admin-only nav entries -----------------------
+- assertNotVisible:
+    id: "nav-suppression"
+- assertNotVisible:
+    id: "nav-import"
+
+# --- 2. Open a voter and confirm suppression controls are hidden -------------
+- tapOn:
+    id: "nav-voters"
+- assertVisible:
+    id: "voter-list-screen"
+- tapOn:
+    id: "voter-list-row-.*"
+    index: 0
+- assertVisible:
+    id: "voter-detail-screen"
+- assertNotVisible:
+    id: "voter-detail-suppress-btn"
+- assertNotVisible:
+    id: "voter-detail-remove-suppression-btn"
+
+# TODO: to harden this, seed a known-suppressed voter for nav2@mainegop.test's
+# turf and navigate directly to it so we can also assert the 'Suppressed'
+# badge text is visible in read-only mode. For now the non-admin gate itself
+# is what's being validated.

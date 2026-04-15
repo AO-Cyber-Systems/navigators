@@ -1,0 +1,28 @@
+# Auth: log in as admin
+#
+# Clears app state and logs in using the seeded admin account
+# (admin@mainegop.test / testtest from seed_data.sql). Asserts the
+# main shell is reached by waiting for the 'nav-home' nav item.
+#
+# Override credentials at runtime with:
+#   maestro test -e EMAIL=... -e PASSWORD=... .maestro/auth/login-admin.yaml
+appId: com.mainegop.navigators
+env:
+  EMAIL: admin@mainegop.test
+  PASSWORD: ${MAESTRO_PW}
+---
+- launchApp:
+    clearState: true
+- assertVisible:
+    id: "eden-login-screen"
+- tapOn:
+    id: "eden-login-email"
+- inputText: ${EMAIL}
+- tapOn:
+    id: "eden-login-password"
+- inputText: ${PASSWORD}
+- tapOn:
+    id: "eden-login-submit"
+- assertVisible:
+    id: "nav-home"
+    timeout: 20000

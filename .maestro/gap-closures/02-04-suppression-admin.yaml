@@ -1,0 +1,64 @@
+# Gap-closure 02-04: admin suppression workflow
+#
+# As an admin:
+#   1. Open the Suppression list from the main nav
+#   2. Pick any suppressed row, remove it via the row menu
+#   3. Navigate to the Voters list and open the first voter
+#   4. Suppress that voter with reason 'opt_out'
+#   5. Return to the Suppression list and confirm the voter appears
+#
+# Row identifiers are suffixed with the voter's server id, so this flow
+# navigates via popup menus / overflow rather than hard-coded ids.
+appId: com.mainegop.navigators
+---
+- runFlow: ../auth/login-admin.yaml
+
+# --- 1. Open suppression list ------------------------------------------------
+- tapOn:
+    id: "nav-suppression"
+- assertVisible:
+    id: "suppression-list-screen"
+
+# --- 2. Remove the first suppressed voter from the list ----------------------
+# The list row id is `suppression-list-row-<voterId>`; rather than guess the
+# uuid, match by regex on the row-menu id and confirm via dialog.
+- tapOn:
+    id: "suppression-list-row-menu-.*"
+    index: 0
+- tapOn: "Remove from suppression list"
+# No confirm dialog -- action fires immediately per suppression_list_screen.dart.
+
+# --- 3. Navigate to voters and open first voter ------------------------------
+- tapOn:
+    id: "nav-voters"
+- assertVisible:
+    id: "voter-list-screen"
+- tapOn:
+    id: "voter-list-row-.*"
+    index: 0
+- assertVisible:
+    id: "voter-detail-screen"
+
+# --- 4. Suppress this voter (reason=Opt-out is the default) ------------------
+- tapOn:
+    id: "voter-detail-suppress-btn"
+- assertVisible:
+    id: "suppress-voter-dialog"
+# Default reason is 'opt_out' (Opt-out) -- just submit.
+- tapOn:
+    id: "suppress-voter-dialog-submit"
+- assertVisible: "Suppressed"   # badge rendered on voter detail screen
+
+# --- 5. Confirm voter appears back on suppression list -----------------------
+- tapOn:
+    id: "nav-suppression"
+- assertVisible:
+    id: "suppression-list-screen"
+- tapOn:
+    id: "suppression-list-refresh-btn"
+- assertVisible:
+    id: "suppression-list-row-.*"
+
+# TODO: to assert the *specific* voter round-tripped, capture the voterId from
+# step 3 (requires Maestro scripting/copyTextFrom) and assert
+# `suppression-list-row-<that-id>` exists. Leaving as a regex match for now.
