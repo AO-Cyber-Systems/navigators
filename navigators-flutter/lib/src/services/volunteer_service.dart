@@ -87,7 +87,56 @@ class VolunteerService {
     final result = await _post('TrainingService', 'GetTrainingDownloadUrl', {
       'materialId': materialId,
     });
-    return result['url'] as String? ?? '';
+    return result['url'] as String? ?? result['presignedUrl'] as String? ?? '';
+  }
+
+  /// Get a presigned PUT URL for direct upload of a training material to MinIO.
+  /// Returns a map with keys: presignedUrl, storageKey, expiresInSeconds.
+  Future<Map<String, dynamic>> getTrainingUploadUrl({
+    required String filename,
+    required String contentType,
+  }) async {
+    return _post('TrainingService', 'GetTrainingUploadUrl', {
+      'filename': filename,
+      'contentType': contentType,
+    });
+  }
+
+  /// Create a training material metadata record pointing at an already-uploaded object.
+  Future<Map<String, dynamic>> createTrainingMaterial({
+    required String title,
+    required String description,
+    required String contentUrl,
+    required int sortOrder,
+  }) async {
+    return _post('TrainingService', 'CreateTrainingMaterial', {
+      'title': title,
+      'description': description,
+      'contentUrl': contentUrl,
+      'sortOrder': sortOrder,
+    });
+  }
+
+  /// Update an existing training material's metadata.
+  Future<Map<String, dynamic>> updateTrainingMaterial({
+    required String id,
+    required String title,
+    required String description,
+    required int sortOrder,
+    required bool isPublished,
+  }) async {
+    return _post('TrainingService', 'UpdateTrainingMaterial', {
+      'id': id,
+      'title': title,
+      'description': description,
+      'sortOrder': sortOrder,
+      'isPublished': isPublished,
+    });
+  }
+
+  /// Soft-delete a training material (server flips is_published=false).
+  Future<void> deleteTrainingMaterial(String id) async {
+    await _post('TrainingService', 'DeleteTrainingMaterial', {'id': id});
   }
 }
 
