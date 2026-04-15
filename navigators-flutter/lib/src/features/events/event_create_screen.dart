@@ -86,7 +86,10 @@ class _EventCreateScreenState extends ConsumerState<EventCreateScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Semantics(
+      identifier: 'event-create-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       appBar: AppBar(
         title: const Text('Create Event'),
       ),
@@ -96,7 +99,10 @@ class _EventCreateScreenState extends ConsumerState<EventCreateScreen> {
           padding: const EdgeInsets.all(16),
           children: [
             // Title
-            TextFormField(
+            Semantics(
+              identifier: 'event-create-title',
+              textField: true,
+              child: TextFormField(
               controller: _titleController,
               decoration: const InputDecoration(
                 labelText: 'Title *',
@@ -108,23 +114,30 @@ class _EventCreateScreenState extends ConsumerState<EventCreateScreen> {
                 }
                 return null;
               },
+              ),
             ),
             const SizedBox(height: 16),
 
             // Description
-            TextFormField(
-              controller: _descriptionController,
-              decoration: const InputDecoration(
-                labelText: 'Description',
-                border: OutlineInputBorder(),
-                alignLabelWithHint: true,
+            Semantics(
+              identifier: 'event-create-description',
+              textField: true,
+              child: TextFormField(
+                controller: _descriptionController,
+                decoration: const InputDecoration(
+                  labelText: 'Description',
+                  border: OutlineInputBorder(),
+                  alignLabelWithHint: true,
+                ),
+                maxLines: 3,
               ),
-              maxLines: 3,
             ),
             const SizedBox(height: 16),
 
             // Event Type
-            DropdownButtonFormField<String>(
+            Semantics(
+              identifier: 'event-create-type',
+              child: DropdownButtonFormField<String>(
               initialValue: _eventType,
               decoration: const InputDecoration(
                 labelText: 'Event Type',
@@ -137,11 +150,15 @@ class _EventCreateScreenState extends ConsumerState<EventCreateScreen> {
                       ))
                   .toList(),
               onChanged: (v) => setState(() => _eventType = v!),
+              ),
             ),
             const SizedBox(height: 16),
 
             // Start Date/Time
-            TextFormField(
+            Semantics(
+              identifier: 'event-create-starts-at',
+              button: true,
+              child: TextFormField(
               readOnly: true,
               decoration: InputDecoration(
                 labelText: 'Starts At *',
@@ -159,11 +176,15 @@ class _EventCreateScreenState extends ConsumerState<EventCreateScreen> {
                 if (_startsAt == null) return 'Start date is required';
                 return null;
               },
+              ),
             ),
             const SizedBox(height: 16),
 
             // End Date/Time
-            TextFormField(
+            Semantics(
+              identifier: 'event-create-ends-at',
+              button: true,
+              child: TextFormField(
               readOnly: true,
               decoration: InputDecoration(
                 labelText: 'Ends At *',
@@ -184,36 +205,45 @@ class _EventCreateScreenState extends ConsumerState<EventCreateScreen> {
                 }
                 return null;
               },
+              ),
             ),
             const SizedBox(height: 16),
 
             // Location
-            TextFormField(
-              controller: _locationController,
-              decoration: const InputDecoration(
-                labelText: 'Location',
-                border: OutlineInputBorder(),
+            Semantics(
+              identifier: 'event-create-location',
+              textField: true,
+              child: TextFormField(
+                controller: _locationController,
+                decoration: const InputDecoration(
+                  labelText: 'Location',
+                  border: OutlineInputBorder(),
+                ),
               ),
             ),
             const SizedBox(height: 16),
 
             // Max Attendees
-            TextFormField(
-              controller: _maxAttendeesController,
-              decoration: const InputDecoration(
-                labelText: 'Max Attendees (optional)',
-                border: OutlineInputBorder(),
-              ),
-              keyboardType: TextInputType.number,
-              validator: (value) {
-                if (value != null && value.isNotEmpty) {
-                  final n = int.tryParse(value);
-                  if (n == null || n < 1) {
-                    return 'Must be a positive number';
+            Semantics(
+              identifier: 'event-create-max-attendees',
+              textField: true,
+              child: TextFormField(
+                controller: _maxAttendeesController,
+                decoration: const InputDecoration(
+                  labelText: 'Max Attendees (optional)',
+                  border: OutlineInputBorder(),
+                ),
+                keyboardType: TextInputType.number,
+                validator: (value) {
+                  if (value != null && value.isNotEmpty) {
+                    final n = int.tryParse(value);
+                    if (n == null || n < 1) {
+                      return 'Must be a positive number';
+                    }
                   }
-                }
-                return null;
-              },
+                  return null;
+                },
+              ),
             ),
             const SizedBox(height: 24),
 
@@ -221,22 +251,27 @@ class _EventCreateScreenState extends ConsumerState<EventCreateScreen> {
             SizedBox(
               width: double.infinity,
               height: 48,
-              child: FilledButton(
-                onPressed: _isSubmitting ? null : _submit,
-                child: _isSubmitting
-                    ? const SizedBox(
-                        width: 20,
-                        height: 20,
-                        child: CircularProgressIndicator(
-                          strokeWidth: 2,
-                          color: Colors.white,
-                        ),
-                      )
-                    : const Text('Create Event'),
+              child: Semantics(
+                identifier: 'event-create-submit',
+                button: true,
+                child: FilledButton(
+                  onPressed: _isSubmitting ? null : _submit,
+                  child: _isSubmitting
+                      ? const SizedBox(
+                          width: 20,
+                          height: 20,
+                          child: CircularProgressIndicator(
+                            strokeWidth: 2,
+                            color: Colors.white,
+                          ),
+                        )
+                      : const Text('Create Event'),
+                ),
               ),
             ),
           ],
         ),
+      ),
       ),
     );
   }

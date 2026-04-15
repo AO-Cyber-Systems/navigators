@@ -128,7 +128,10 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
+    return Semantics(
+      identifier: 'event-detail-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       appBar: AppBar(
         title: Text(_event?.title ?? 'Event Details'),
       ),
@@ -201,32 +204,47 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                     Row(
                       children: [
                         Expanded(
-                          child: _RsvpButton(
-                            label: 'Going',
-                            icon: Icons.check_circle_outline,
-                            isSelected: _myRsvpStatus == 'going',
-                            isLoading: _isRsvping,
-                            onPressed: () => _handleRsvp('going'),
+                          child: Semantics(
+                            identifier: 'event-detail-rsvp-going',
+                            button: true,
+                            selected: _myRsvpStatus == 'going',
+                            child: _RsvpButton(
+                              label: 'Going',
+                              icon: Icons.check_circle_outline,
+                              isSelected: _myRsvpStatus == 'going',
+                              isLoading: _isRsvping,
+                              onPressed: () => _handleRsvp('going'),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 8),
                         Expanded(
-                          child: _RsvpButton(
-                            label: 'Maybe',
-                            icon: Icons.help_outline,
-                            isSelected: _myRsvpStatus == 'maybe',
-                            isLoading: _isRsvping,
-                            onPressed: () => _handleRsvp('maybe'),
+                          child: Semantics(
+                            identifier: 'event-detail-rsvp-maybe',
+                            button: true,
+                            selected: _myRsvpStatus == 'maybe',
+                            child: _RsvpButton(
+                              label: 'Maybe',
+                              icon: Icons.help_outline,
+                              isSelected: _myRsvpStatus == 'maybe',
+                              isLoading: _isRsvping,
+                              onPressed: () => _handleRsvp('maybe'),
+                            ),
                           ),
                         ),
                         const SizedBox(width: 8),
                         Expanded(
-                          child: _RsvpButton(
-                            label: 'Decline',
-                            icon: Icons.cancel_outlined,
-                            isSelected: _myRsvpStatus == 'declined',
-                            isLoading: _isRsvping,
-                            onPressed: () => _handleRsvp('declined'),
+                          child: Semantics(
+                            identifier: 'event-detail-rsvp-declined',
+                            button: true,
+                            selected: _myRsvpStatus == 'declined',
+                            child: _RsvpButton(
+                              label: 'Decline',
+                              icon: Icons.cancel_outlined,
+                              isSelected: _myRsvpStatus == 'declined',
+                              isLoading: _isRsvping,
+                              onPressed: () => _handleRsvp('declined'),
+                            ),
                           ),
                         ),
                       ],
@@ -239,19 +257,23 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                       SizedBox(
                         width: double.infinity,
                         height: 48,
-                        child: FilledButton.icon(
-                          onPressed: _isCheckingIn ? null : _handleCheckIn,
-                          icon: _isCheckingIn
-                              ? const SizedBox(
-                                  width: 16,
-                                  height: 16,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    color: Colors.white,
-                                  ),
-                                )
-                              : const Icon(Icons.login),
-                          label: const Text('Check In'),
+                        child: Semantics(
+                          identifier: 'event-detail-checkin-btn',
+                          button: true,
+                          child: FilledButton.icon(
+                            onPressed: _isCheckingIn ? null : _handleCheckIn,
+                            icon: _isCheckingIn
+                                ? const SizedBox(
+                                    width: 16,
+                                    height: 16,
+                                    child: CircularProgressIndicator(
+                                      strokeWidth: 2,
+                                      color: Colors.white,
+                                    ),
+                                  )
+                                : const Icon(Icons.login),
+                            label: const Text('Check In'),
+                          ),
                         ),
                       ),
                     ],
@@ -293,6 +315,7 @@ class _EventDetailScreenState extends ConsumerState<EventDetailScreen> {
                     ],
                   ],
                 ),
+      ),
     );
   }
 

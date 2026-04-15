@@ -38,7 +38,10 @@ class _EventListScreenState extends ConsumerState<EventListScreen> {
     final auth = ref.watch(authProvider);
     final canCreate = _canCreateEvents(auth.role);
 
-    return Scaffold(
+    return Semantics(
+      identifier: 'event-list-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       appBar: AppBar(
         title: const Text('Events'),
       ),
@@ -53,11 +56,16 @@ class _EventListScreenState extends ConsumerState<EventListScreen> {
                 final isSelected = _selectedFilter == filter;
                 return Padding(
                   padding: const EdgeInsets.only(right: 8),
-                  child: FilterChip(
-                    label: Text(_filterLabels[filter]!),
+                  child: Semantics(
+                    identifier: 'event-list-filter-$filter',
+                    button: true,
                     selected: isSelected,
-                    onSelected: (_) =>
-                        setState(() => _selectedFilter = filter),
+                    child: FilterChip(
+                      label: Text(_filterLabels[filter]!),
+                      selected: isSelected,
+                      onSelected: (_) =>
+                          setState(() => _selectedFilter = filter),
+                    ),
                   ),
                 );
               }).toList(),
@@ -70,17 +78,22 @@ class _EventListScreenState extends ConsumerState<EventListScreen> {
         ],
       ),
       floatingActionButton: canCreate
-          ? FloatingActionButton(
-              onPressed: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (_) => const EventCreateScreen(),
-                  ),
-                );
-              },
-              child: const Icon(Icons.add),
+          ? Semantics(
+              identifier: 'event-list-fab',
+              button: true,
+              child: FloatingActionButton(
+                onPressed: () {
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (_) => const EventCreateScreen(),
+                    ),
+                  );
+                },
+                child: const Icon(Icons.add),
+              ),
             )
           : null,
+      ),
     );
   }
 
@@ -131,16 +144,20 @@ class _EventListScreenState extends ConsumerState<EventListScreen> {
         return ListView.builder(
           padding: const EdgeInsets.symmetric(horizontal: 16),
           itemCount: events.length,
-          itemBuilder: (context, index) => _EventCard(
-            event: events[index],
-            onTap: () {
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (_) =>
-                      EventDetailScreen(eventId: events[index].id),
-                ),
-              );
-            },
+          itemBuilder: (context, index) => Semantics(
+            identifier: 'event-list-row-${events[index].id}',
+            button: true,
+            child: _EventCard(
+              event: events[index],
+              onTap: () {
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (_) =>
+                        EventDetailScreen(eventId: events[index].id),
+                  ),
+                );
+              },
+            ),
           ),
         );
       },
