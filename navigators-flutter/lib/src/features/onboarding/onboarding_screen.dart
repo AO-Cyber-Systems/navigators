@@ -118,7 +118,10 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    return Scaffold(
+    return Semantics(
+      identifier: 'onboarding-screen',
+      explicitChildNodes: true,
+      child: Scaffold(
       appBar: AppBar(
         title: const Text('Get Started'),
         automaticallyImplyLeading: false,
@@ -144,37 +147,45 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             child: Row(
               children: [
                 if (_currentStep == 2)
-                  FilledButton.icon(
-                    onPressed: _isLoading ? null : _handleComplete,
-                    icon: _isLoading
-                        ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
-                        : const Icon(Icons.check),
-                    label: const Text('Start Using Navigators'),
+                  Semantics(
+                    identifier: 'onboarding-complete-btn',
+                    button: true,
+                    child: FilledButton.icon(
+                      onPressed: _isLoading ? null : _handleComplete,
+                      icon: _isLoading
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : const Icon(Icons.check),
+                      label: const Text('Start Using Navigators'),
+                    ),
                   )
                 else
-                  FilledButton(
-                    onPressed: _isLoading
-                        ? null
-                        : (_currentStep == 0 && !_legalAcknowledged)
-                            ? null
-                            : details.onStepContinue,
-                    child: _isLoading
-                        ? const SizedBox(
-                            width: 16,
-                            height: 16,
-                            child: CircularProgressIndicator(
-                              strokeWidth: 2,
-                              color: Colors.white,
-                            ),
-                          )
-                        : const Text('Continue'),
+                  Semantics(
+                    identifier: 'onboarding-continue-btn',
+                    button: true,
+                    child: FilledButton(
+                      onPressed: _isLoading
+                          ? null
+                          : (_currentStep == 0 && !_legalAcknowledged)
+                              ? null
+                              : details.onStepContinue,
+                      child: _isLoading
+                          ? const SizedBox(
+                              width: 16,
+                              height: 16,
+                              child: CircularProgressIndicator(
+                                strokeWidth: 2,
+                                color: Colors.white,
+                              ),
+                            )
+                          : const Text('Continue'),
+                    ),
                   ),
               ],
             ),
@@ -228,6 +239,7 @@ class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
             state: StepState.indexed,
           ),
         ],
+      ),
       ),
     );
   }

@@ -88,15 +88,19 @@ class LegalAcknowledgmentStep extends StatelessWidget {
           ),
         ),
         const SizedBox(height: 16),
-        CheckboxListTile(
-          value: acknowledged,
-          onChanged: (value) => onChanged(value ?? false),
-          title: const Text(
-            'I acknowledge that I have read and agree to the voter data '
-            'usage terms described above.',
+        Semantics(
+          identifier: 'onboarding-legal-acknowledge-checkbox',
+          toggled: acknowledged,
+          child: CheckboxListTile(
+            value: acknowledged,
+            onChanged: (value) => onChanged(value ?? false),
+            title: const Text(
+              'I acknowledge that I have read and agree to the voter data '
+              'usage terms described above.',
+            ),
+            controlAffinity: ListTileControlAffinity.leading,
+            contentPadding: EdgeInsets.zero,
           ),
-          controlAffinity: ListTileControlAffinity.leading,
-          contentPadding: EdgeInsets.zero,
         ),
       ],
     );
